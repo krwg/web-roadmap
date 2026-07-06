@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check roadmap files exist
+        shell: bash
+        run: |
+          test -f README.md
+          test -f roadmap/weeks/week-01.md
+          test -f roadmap/weeks/week-22.md
+          ls roadmap/weeks/*.md | wc -l | grep -q 22

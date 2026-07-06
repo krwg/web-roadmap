@@ -1,0 +1,11 @@
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.venv/
+venv/
+__pycache__/
+dist/
+build/
+.vscode/settings.json
