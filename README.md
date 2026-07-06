@@ -3,7 +3,7 @@
 Бесплатный структурированный роадмап **full-stack веб-разработки**: от HTML до деплоя production-приложения.
 
 <p align="center">
-  <img src="assets/logo.png" alt="web-roadmap" width="120" />
+  <img src="assets/logo.png" alt="web-roadmap" width="120" height="auto" />
 </p>
 
 <p align="center">

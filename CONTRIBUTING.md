@@ -23,7 +23,8 @@
 2. Создайте ветку: `fix/week-05-typo`, `feat/week-12-extra-exercise`
 3. Внесите изменения в `roadmap/weeks/` или `docs/`
 4. Проверьте Markdown локально
-5. Откройте **Pull Request** с описанием:
+5. Если меняли `roadmap/weeks/*.md` — пересоберите сайт: `python scripts/build-site.py` (нужны `markdown`, `pillow`)
+6. Откройте **Pull Request** с описанием:
    - что изменено
    - зачем (какая проблема ученика решается)
    - неделя/день, если применимо
