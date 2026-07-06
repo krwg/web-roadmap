@@ -22,13 +22,19 @@ HTML/CSS  →  JS    →  React/TS  →  Full-Stack + DevOps
 | Фазы | Недели | Фокус |
 |------|--------|--------|
 | **Вёрстка** | 1–3 | HTML, CSS, адаптив |
-| **Инструменты** | 4 | Git, workflow |
+| **Git & workflow** | 1, 4 | Git с дня 1; нед. 4 — advanced, PR, OSS |
 | **Язык браузера** | 5–10 | JS, async, TypeScript |
 | **Фронтенд** | 11–14 | React, SPA-проект |
 | **Python & данные** | 15–18 | Python, SQL, FastAPI |
 | **JS-бэкенд** | 19 | Node, Express |
 | **Качество** | 20 | Auth, security, tests |
-| **Продакшен** | 21–22 | Docker, deploy, portfolio |
+| **Продакшен** | 21–22 | Docker, **DevHub capstone**, deploy |
+
+## 22 проекта + Capstone
+
+Каждая неделя заканчивается работающим артефактом в `learning-log`. Полный каталог: [docs/projects.md](../docs/projects.md).
+
+Финал — **DevHub** (неделя 22): React + API + PostgreSQL + JWT + Docker + CI + production deploy.
 
 ## Легенда в файлах недель
 

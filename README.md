@@ -7,8 +7,10 @@
 </p>
 
 <p align="center">
+  <a href="https://krwg.github.io/web-roadmap/"><strong>Сайт маршрута</strong></a> ·
   <a href="roadmap/README.md"><strong>Начать обучение</strong></a> ·
   <a href="docs/getting-started.md">Как учиться</a> ·
+  <a href="docs/projects.md">22 проекта</a> ·
   <a href="docs/resources.md">Ресурсы</a> ·
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
@@ -47,6 +49,8 @@ HTML → CSS → Git → JavaScript → TypeScript → React
 ### Что внутри
 
 - **154 учебных дня** (22 недели × 7 дней)
+- **22 проекта недели** + финальный **DevHub capstone**
+- **Git с дня 1** — первый коммит `index.html` в неделю 1
 - Ежедневные блоки: **теория**, **практика**, **ловушки**, **ревью**
 - **22 проекта недели** + финальный capstone
 - Ссылки на MDN, learn.javascript.ru, react.dev, FastAPI, Docker и книги
@@ -61,7 +65,7 @@ HTML → CSS → Git → JavaScript → TypeScript → React
 | 1 | HTML: структура, семантика, формы, a11y | [week-01](roadmap/weeks/week-01.md) |
 | 2 | CSS: селекторы, box model, типографика | [week-02](roadmap/weeks/week-02.md) |
 | 3 | CSS: Flexbox, Grid, адаптив, анимации | [week-03](roadmap/weeks/week-03.md) |
-| 4 | Git, GitHub, DevTools, workflow | [week-04](roadmap/weeks/week-04.md) |
+| 4 | Git advanced, PR, DevTools | [week-04](roadmap/weeks/week-04.md) |
 | 5 | JavaScript: основы | [week-05](roadmap/weeks/week-05.md) |
 | 6 | JavaScript: объекты, DOM, события | [week-06](roadmap/weeks/week-06.md) |
 | 7 | JS: storage, Fetch, формы, модули | [week-07](roadmap/weeks/week-07.md) |
@@ -79,7 +83,7 @@ HTML → CSS → Git → JavaScript → TypeScript → React
 | 19 | Node.js + Express | [week-19](roadmap/weeks/week-19.md) |
 | 20 | Auth, безопасность, тестирование | [week-20](roadmap/weeks/week-20.md) |
 | 21 | Full-stack + Docker | [week-21](roadmap/weeks/week-21.md) |
-| 22 | **Финал:** деплой, портфолио, карьера | [week-22](roadmap/weeks/week-22.md) |
+| 22 | **Capstone:** DevHub full-stack | [week-22](roadmap/weeks/week-22.md) |
 
 ```mermaid
 flowchart TB
@@ -112,10 +116,11 @@ flowchart TB
 
 ## Быстрый старт
 
-1. Прочитай [docs/getting-started.md](docs/getting-started.md) — инструменты, распорядок дня, GitHub
+1. Прочитай [docs/getting-started.md](docs/getting-started.md) — **создай learning-log до дня 1**
 2. Открой [roadmap/introduction.md](roadmap/introduction.md) — принципы и «анти-вайбкодер»
-3. Начни с [roadmap/weeks/week-01.md](roadmap/weeks/week-01.md)
-4. Веди репозиторий `learning-log` на GitHub: коммит каждый день
+3. Начни с [roadmap/weeks/week-01.md](roadmap/weeks/week-01.md) — день 0 = Git, день 1 = первый HTML-коммит
+4. Каталог проектов: [docs/projects.md](docs/projects.md)
+5. Сайт: [krwg.github.io/web-roadmap](https://krwg.github.io/web-roadmap/)
 
 ---
 

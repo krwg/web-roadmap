@@ -16,5 +16,6 @@ jobs:
         run: |
           test -f README.md
           test -f roadmap/weeks/week-01.md
-          test -f roadmap/weeks/week-22.md
+          test -f docs/index.html
+          test -f docs/projects.md
           ls roadmap/weeks/*.md | wc -l | grep -q 22

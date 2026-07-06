@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>web-roadmap — Full-Stack за 22 недели</title>
+  <meta name="description" content="Бесплатный роадмап full-stack веб-разработки: 22 недели, 22 проекта, теория + практика + Git с первого дня.">
+  <meta name="theme-color" content="#050508">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <meta property="og:title" content="web-roadmap — Full-Stack за 22 недели">
+  <meta property="og:description" content="HTML → React → Python → FastAPI → Node → Docker → Deploy. 154 дня практики.">
+  <meta property="og:image" content="assets/logo.png">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050508;
+      --bg-card: rgba(12, 12, 16, 0.82);
+      --border: rgba(255, 255, 255, 0.12);
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+      --neon: #ffffff;
+      --neon-glow: rgba(255, 255, 255, 0.45);
+      --accent: #e4e4e7;
+      --cyan: #67e8f9;
+      --cyan-dim: rgba(103, 232, 249, 0.15);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Consolas, monospace;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    #code-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.08) 2px,
+        rgba(0, 0, 0, 0.08) 4px
+      );
+    }
+    .wrap { position: relative; z-index: 2; }
+    a { color: var(--cyan); text-decoration: none; transition: text-shadow 0.2s; }
+    a:hover {
+      text-shadow: 0 0 12px var(--cyan), 0 0 24px rgba(103, 232, 249, 0.4);
+      text-decoration: underline;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 22px 28px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      background: rgba(5, 5, 8, 0.6);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--neon);
+      text-shadow: 0 0 20px var(--neon-glow);
+    }
+    .brand img { width: 36px; height: 36px; border-radius: 8px; }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; }
+    .nav-links a { color: var(--muted); }
+    .hero {
+      text-align: center;
+      padding: 80px 28px 64px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 28px;
+      box-shadow: 0 0 24px var(--cyan-dim);
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      margin: 0 0 20px;
+      letter-spacing: -0.03em;
+      color: var(--neon);
+      text-shadow: 0 0 40px var(--neon-glow), 0 0 80px rgba(255, 255, 255, 0.15);
+    }
+    .hero .lead {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 auto 36px;
+      font-family: Inter, "Segoe UI", system-ui, sans-serif;
+    }
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+    .stat {
+      padding: 10px 18px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--bg-card);
+    }
+    .stat strong { color: var(--neon); display: block; font-size: 18px; margin-bottom: 2px; }
+    .cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+    .btn {
+      display: inline-block;
+      padding: 14px 26px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      border: 1px solid var(--border);
+      transition: box-shadow 0.25s, transform 0.15s;
+    }
+    .btn:hover { transform: translateY(-2px); text-decoration: none; }
+    .btn-primary {
+      background: var(--neon);
+      color: #050508;
+      border-color: var(--neon);
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
+    }
+    .btn-primary:hover { box-shadow: 0 0 50px rgba(255, 255, 255, 0.45); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 20px var(--cyan-dim);
+    }
+    .section {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 56px 28px;
+    }
+    .section h2 {
+      font-size: 1.5rem;
+      margin: 0 0 8px;
+      color: var(--neon);
+      text-shadow: 0 0 16px var(--neon-glow);
+    }
+    .section .sub {
+      color: var(--muted);
+      margin: 0 0 32px;
+      font-family: Inter, "Segoe UI", system-ui, sans-serif;
+      font-size: 0.95rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px;
+      backdrop-filter: blur(6px);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.28);
+      box-shadow: 0 0 24px rgba(255, 255, 255, 0.06);
+    }
+    .card .week {
+      font-size: 11px;
+      color: var(--cyan);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 1rem; color: var(--text); }
+    .card p { margin: 0; font-size: 12px; color: var(--muted); font-family: Inter, system-ui, sans-serif; }
+    .stack-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      padding: 24px;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      margin-bottom: 32px;
+      color: var(--muted);
+    }
+    .stack-flow span { color: var(--neon); }
+    .stack-flow .arrow { color: var(--cyan); opacity: 0.7; }
+    .footer {
+      text-align: center;
+      padding: 40px 28px 56px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      font-family: Inter, system-ui, sans-serif;
+    }
+    @media (max-width: 600px) {
+      .hero { padding-top: 48px; }
+      .nav-links { width: 100%; justify-content: center; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #code-canvas { display: none; }
+      .scanlines { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="code-canvas" aria-hidden="true"></canvas>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="wrap">
+    <nav class="nav">
+      <div class="brand">
+        <img src="assets/logo.png" alt="" width="36" height="36">
+        web-roadmap
+      </div>
+      <div class="nav-links">
+        <a href="#weeks">22 недели</a>
+        <a href="#projects">Проекты</a>
+        <a href="getting-started.md">Старт</a>
+        <a href="projects.md">Каталог</a>
+        <a href="https://github.com/krwg/web-roadmap">GitHub</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-badge">free · open curriculum · RU</div>
+      <h1>Full-Stack веб за 22 недели</h1>
+      <p class="lead">
+        Структурированный путь от первого <code>index.html</code> и коммита в Git
+        до production-приложения с Docker, тестами и деплоем.
+        154 дня теории, практики и <strong>22 проекта</strong> + финальный capstone.
+      </p>
+      <div class="stats">
+        <div class="stat"><strong>22</strong>недели</div>
+        <div class="stat"><strong>22</strong>проекта</div>
+        <div class="stat"><strong>1</strong>capstone</div>
+        <div class="stat"><strong>6–7ч</strong>в день</div>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="../roadmap/weeks/week-01.md">Начать с недели 1</a>
+        <a class="btn btn-secondary" href="getting-started.md">Как учиться</a>
+        <a class="btn btn-secondary" href="https://github.com/krwg/web-roadmap">Репозиторий</a>
+      </div>
+    </header>
+
+    <section class="section" id="stack">
+      <h2>Стек</h2>
+      <p class="sub">Фундамент → фронтенд → бэкенд → продакшен</p>
+      <div class="stack-flow">
+        <span>HTML</span><span class="arrow">→</span>
+        <span>CSS</span><span class="arrow">→</span>
+        <span>Git</span><span class="arrow">→</span>
+        <span>JS</span><span class="arrow">→</span>
+        <span>TS</span><span class="arrow">→</span>
+        <span>React</span><span class="arrow">→</span>
+        <span>Python</span><span class="arrow">→</span>
+        <span>SQL</span><span class="arrow">→</span>
+        <span>FastAPI</span><span class="arrow">→</span>
+        <span>Node</span><span class="arrow">→</span>
+        <span>Docker</span><span class="arrow">→</span>
+        <span>Deploy</span>
+      </div>
+    </section>
+
+    <section class="section" id="weeks">
+      <h2>22 недели</h2>
+      <p class="sub">Каждая неделя — 7 дней теории, практики, Git-коммитов и один проект</p>
+      <div class="grid">
+        <a class="card" href="../roadmap/weeks/week-01.md"><div class="week">01</div><h3>HTML</h3><p>Семантика, формы, a11y · Git с дня 1</p></a>
+        <a class="card" href="../roadmap/weeks/week-02.md"><div class="week">02</div><h3>CSS основы</h3><p>Селекторы, box model, типографика</p></a>
+        <a class="card" href="../roadmap/weeks/week-03.md"><div class="week">03</div><h3>CSS layouts</h3><p>Flexbox, Grid, адаптив</p></a>
+        <a class="card" href="../roadmap/weeks/week-04.md"><div class="week">04</div><h3>Git advanced</h3><p>Ветки, PR, DevTools, CI</p></a>
+        <a class="card" href="../roadmap/weeks/week-05.md"><div class="week">05</div><h3>JavaScript</h3><p>Типы, функции, массивы</p></a>
+        <a class="card" href="../roadmap/weeks/week-06.md"><div class="week">06</div><h3>DOM</h3><p>События, делегирование</p></a>
+        <a class="card" href="../roadmap/weeks/week-07.md"><div class="week">07</div><h3>Modules & API</h3><p>Fetch, storage, ES modules</p></a>
+        <a class="card" href="../roadmap/weeks/week-08.md"><div class="week">08</div><h3>Async & HTTP</h3><p>Event loop, REST</p></a>
+        <a class="card" href="../roadmap/weeks/week-09.md"><div class="week">09</div><h3>JS advanced</h3><p>Closures, ООП, паттерны</p></a>
+        <a class="card" href="../roadmap/weeks/week-10.md"><div class="week">10</div><h3>TypeScript</h3><p>Типы, generics, strict</p></a>
+        <a class="card" href="../roadmap/weeks/week-11.md"><div class="week">11</div><h3>React basics</h3><p>JSX, компоненты, props</p></a>
+        <a class="card" href="../roadmap/weeks/week-12.md"><div class="week">12</div><h3>React state</h3><p>Hooks, effects, формы</p></a>
+        <a class="card" href="../roadmap/weeks/week-13.md"><div class="week">13</div><h3>Router & Context</h3><p>SPA, custom hooks</p></a>
+        <a class="card" href="../roadmap/weeks/week-14.md"><div class="week">14</div><h3>Frontend SPA</h3><p>Dashboard — проект #14</p></a>
+        <a class="card" href="../roadmap/weeks/week-15.md"><div class="week">15</div><h3>Python</h3><p>Синтаксис, venv, CLI</p></a>
+        <a class="card" href="../roadmap/weeks/week-16.md"><div class="week">16</div><h3>Python OOP</h3><p>SQLite, алгоритмы</p></a>
+        <a class="card" href="../roadmap/weeks/week-17.md"><div class="week">17</div><h3>SQL</h3><p>PostgreSQL, индексы</p></a>
+        <a class="card" href="../roadmap/weeks/week-18.md"><div class="week">18</div><h3>FastAPI</h3><p>REST, SQLAlchemy</p></a>
+        <a class="card" href="../roadmap/weeks/week-19.md"><div class="week">19</div><h3>Node.js</h3><p>Express, layered API</p></a>
+        <a class="card" href="../roadmap/weeks/week-20.md"><div class="week">20</div><h3>Auth & tests</h3><p>JWT, OWASP, pytest</p></a>
+        <a class="card" href="../roadmap/weeks/week-21.md"><div class="week">21</div><h3>Docker</h3><p>Full-stack compose</p></a>
+        <a class="card" href="../roadmap/weeks/week-22.md"><div class="week">22</div><h3>Capstone</h3><p>DevHub — финальный проект</p></a>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <h2>22 проекта + Capstone</h2>
+      <p class="sub">Каждая неделя заканчивается работающим артефактом в вашем learning-log. Неделя 22 — интеграция всех навыков.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="projects.md">Полный каталог проектов</a>
+        <a class="btn btn-secondary" href="resources.md">Литература и ссылки</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>web-roadmap · бесплатный учебный маршрут · <a href="https://github.com/krwg/web-roadmap">GitHub</a></p>
+      <p>Материалы защищены авторским правом · личное использование · см. <a href="https://github.com/krwg/web-roadmap/blob/main/license">license</a></p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const canvas = document.getElementById('code-canvas');
+      const ctx = canvas.getContext('2d');
+      const snippets = [
+        'const app = express()', 'git commit -m "feat: week-01"',
+        'SELECT * FROM users', 'docker compose up', 'useEffect(() => {}, [])',
+        '<section class="hero">', 'async function fetchData()', 'interface User {',
+        'CREATE TABLE books', 'npm run build', 'pytest -v', 'JWT_SECRET=',
+        'grid-template-columns', 'flex: 1', 'await response.json()',
+        'export default function', 'FROM node:20-alpine', 'git push origin main',
+        'type Props = {', 'def main():', 'router.get("/api"', 'localStorage.setItem'
+      ];
+      let cols, drops, fontSize = 14;
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        cols = Math.floor(canvas.width / fontSize);
+        drops = Array(cols).fill(1);
+      }
+
+      function draw() {
+        ctx.fillStyle = 'rgba(5, 5, 8, 0.08)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.font = fontSize + 'px monospace';
+        for (let i = 0; i < drops.length; i++) {
+          const text = snippets[Math.floor(Math.random() * snippets.length)];
+          const x = i * fontSize;
+          const y = drops[i] * fontSize;
+          const bright = Math.random() > 0.96;
+          ctx.fillStyle = bright ? '#ffffff' : 'rgba(180, 180, 190, 0.55)';
+          if (bright) ctx.shadowBlur = 12, ctx.shadowColor = '#fff';
+          else ctx.shadowBlur = 0;
+          ctx.fillText(text, x, y);
+          if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+          drops[i]++;
+        }
+        requestAnimationFrame(draw);
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+      draw();
+    })();
+  </script>
+</body>
+</html>

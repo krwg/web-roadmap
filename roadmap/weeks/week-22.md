@@ -1,196 +1,333 @@
-# Неделя 22: Финальный capstone, деплой, карьера
+# Неделя 22: DevHub Capstone — финальный full-stack проект
 
-> **Цель недели:** задеплоить full-stack проект в production, оформить портфолио и подготовиться к поиску работы.
-> **Литература:** [Vercel Docs](https://vercel.com/docs), [Render Docs](https://render.com/docs), [freeCodeCamp Portfolio](https://www.freecodecamp.org/news/how-to-create-a-great-portfolio/)
+> **Цель недели:** собрать, протестировать и задеплоить **DevHub** — единый capstone, объединяющий весь стек 22 недель обучения.
+> **Литература:** [docs/projects.md — DevHub Capstone](../../docs/projects.md#неделя-22--devhub-capstone-финальный), [Vercel Docs](https://vercel.com/docs), [Render Docs](https://render.com/docs), [GitHub Actions](https://docs.github.com/en/actions)
+> **Проект недели:** [DevHub Capstone](../../docs/projects.md#неделя-22--devhub-capstone-финальный) — персональная платформа разработчика: дашборд + заметки + задачи + GitHub API.
+> **Git:** папка `learning-log/week-22-capstone/`, feature-ветки по дням 149–153; тег `week-22-done` + обновление GitHub Profile README.
 
-## День 148 (Пн): Финальный проект — планирование
-
-### Теория
-- Capstone requirements: full-stack, auth, DB, deploy, tests, docs
-- Выбор проекта: Task Manager Pro vs Secret Notes (или свой)
-- MVP vs nice-to-have — scope control
-- [User stories](https://www.atlassian.com/agile/project-management/user-stories): As a user, I want...
-
-### Практика
-1. Выбери вариант capstone и опиши MVP (≤ 1 страница)
-2. User stories: минимум 8 штук с acceptance criteria
-3. ER-диаграмма, API endpoints list, page map
-4. GitHub repo: branch strategy `main` + feature branches
-5. Project board (GitHub Projects) — To Do / In Progress / Done
-
-**Критерии:**
-- [ ] MVP scope зафиксирован — не расползается
-- [ ] ≥ 8 user stories
-- [ ] Repo создан с README skeleton
-
-### Ловушки
-- Scope creep: drag-and-drop + chat + notifications в MVP
-- Нет плана — хаотичная разработка в последний день
+**Не начинайте с нуля в последний день.** Планируйте в день 148, кодите 149–153, деплой и портфолио — в день 154. Полная спецификация MVP, стека и критериев сдачи — в [каталоге проектов](../../docs/projects.md#неделя-22--devhub-capstone-финальный).
 
 ---
 
-## День 149 (Вт): Backend deploy — Render / Railway
+## День 148 (Пн): Планирование DevHub Capstone
 
 ### Теория
-- [Render Web Services](https://render.com/docs/web-services): Docker или native Node/Python
-- [Render PostgreSQL](https://render.com/docs/databases) или [Neon](https://neon.tech/) / [Supabase](https://supabase.com/)
-- Environment variables в cloud dashboard
-- `DATABASE_URL` — connection string для prod
+- [DevHub — концепция](../../docs/projects.md#концепция-devhub): дашборд + заметки + задачи + интеграция с GitHub API
+- [Обязательный стек](../../docs/projects.md#обязательный-стек): React 18+ TS, FastAPI **или** Express, PostgreSQL, JWT, Docker Compose, CI, deploy
+- MVP vs nice-to-have — [функции MVP](../../docs/projects.md#функции-mvp-минимум) vs [nice-to-have](../../docs/projects.md#nice-to-have-после-mvp)
+- User stories: As a developer, I want… + acceptance criteria
+- [Структура репозитория](../../docs/projects.md#структура-репозитория): `frontend/`, `backend/`, `docker-compose.yml`, `.github/workflows/ci.yml`
+- Scope control: 7 дней — фиксируй MVP, откладывай WebSocket и kanban
 
 ### Практика
-1. Push backend в GitHub
-2. Render: New Web Service → connect repo → Docker или build command
-3. Managed PostgreSQL — скопируй Internal/External URL
-4. Env vars: `DATABASE_URL`, `JWT_SECRET`, `NODE_ENV=production`
-5. Run migrations/seed на prod DB
-6. Проверь `https://your-api.onrender.com/health`
+1. Прочитай [весь раздел capstone](../../docs/projects.md#неделя-22--devhub-capstone-финальный) и выпиши чеклист MVP (9 пунктов из projects.md)
+2. Выбери backend: FastAPI (нед. 18) или Express (нед. 19) — один основной стек
+3. User stories: минимум 10 штук (auth, tasks, notes, dashboard, profile, API, security, tests, docs)
+4. ER-диаграмма: `users`, `tasks`, `notes`, `tags`, `note_tags` — ≥ 5 сущностей со связями
+5. API endpoints list: `/auth/*`, `/api/v1/tasks`, `/api/v1/notes`, `/api/v1/profile`, `/api/v1/dashboard`
+6. Page map React: `/login`, `/register`, `/dashboard`, `/tasks`, `/notes`, `/profile`
+7. GitHub repo `week-22-capstone`, README skeleton, GitHub Projects board
+8. Скопируй структуру из [week-21](../../docs/projects.md#неделя-21--task-manager-docker) как стартовую точку
 
 **Критерии:**
-- [ ] API доступен по HTTPS
-- [ ] Swagger `/docs` работает (FastAPI) или health endpoint
-- [ ] DB migrations applied
+- [ ] MVP scope зафиксирован в `PLAN.md` — не расползается
+- [ ] ≥ 10 user stories с acceptance criteria
+- [ ] ER-диаграмма и API list в repo
+- [ ] Repo создан, ветка `main` + strategy feature branches
+
+### Git
+- Закоммить изменения дня: `git add week-22-capstone/` → `git commit -m "week 22 day 148: DevHub planning PLAN.md and ER diagram"`
 
 ### Ловушки
-- Free tier cold start — 30–60 сек (документируй в README)
-- SQLite на Render — ephemeral filesystem, данные теряются
+- Scope creep: drag-and-drop kanban + WebSocket + chat в MVP
+- Два backend одновременно — выбери один, второй только для сравнения в README
 
 ---
 
-## День 150 (Ср): Frontend deploy — Vercel
+## День 149 (Вт): Backend DevHub
 
 ### Теория
-- [Vercel — Deploy Vite](https://vercel.com/docs/frameworks/vite)
-- Build command: `npm run build`, output: `dist`
-- Environment: `VITE_API_URL=https://your-api.onrender.com`
-- [Netlify](https://docs.netlify.com/) — альтернатива
+- Layered API: routers → services → repositories → PostgreSQL
+- [REST + OpenAPI/Swagger](../../docs/projects.md#функции-mvp-минимум) — пагинация, валидация Pydantic/Zod
+- Миграции: Alembic (FastAPI) или SQL scripts (Express) — версионирование схемы
+- Seed data: demo user + sample tasks/notes для демо и тестов
+- Переиспользуй паттерны из [Library REST API (нед. 18)](../../docs/projects.md#неделя-18--library-rest-api) или [Express Notes (нед. 19)](../../docs/projects.md#неделя-19--express-notes-api)
+- `DATABASE_URL`, connection pool, health endpoint `/api/health`
 
 ### Практика
-1. Import GitHub repo в Vercel
-2. Root directory: `frontend/` (если monorepo)
-3. Set `VITE_API_URL` в Vercel Environment Variables
-4. Deploy → получи `https://your-app.vercel.app`
-5. Обнови CORS на backend — добавь Vercel domain в allow_origins
+1. Инициализируй `backend/` — FastAPI или Express по выбору из дня 148
+2. Модели/таблицы: `users`, `tasks`, `notes`, `tags`, `note_tags` (many-to-many)
+3. CRUD `/api/v1/tasks`: title, priority, status, deadline, `user_id` FK
+4. CRUD `/api/v1/notes`: title, body (markdown), tags, search query param
+5. `GET /api/v1/dashboard/stats` — count tasks by status, recent notes
+6. Swagger `/docs` (FastAPI) или OpenAPI export; пагинация `{ items, total, page, size }`
+7. `schema.sql` / Alembic migration + `seed.sql` с demo данными
+8. `.env.example`: `DATABASE_URL`, `JWT_SECRET`, `APP_ENV`
 
 **Критерии:**
-- [ ] Frontend на HTTPS
-- [ ] API calls идут на production backend (проверь Network tab)
-- [ ] Login/register работает end-to-end
+- [ ] ≥ 5 сущностей в БД со связями (см. [критерии сдачи](../../docs/projects.md#критерии-сдачи-capstone))
+- [ ] Tasks и Notes CRUD работают (пока без auth — заглушка user_id)
+- [ ] OpenAPI/Swagger актуален
+- [ ] Seed выполняется одной командой
+
+### Git
+- Закоммить изменения дня: `git add week-22-capstone/backend/` → `git commit -m "week 22 day 149: DevHub backend models and CRUD API"`
 
 ### Ловушки
-- Забытый CORS update — API works in curl, fails in browser
-- `VITE_API_URL` изменён без redeploy — stale build
+- God router на 500 строк — разбей по доменам
+- Нет пагинации — сломается на реальных данных
 
 ---
 
-## День 151 (Чт): Production hardening
+## День 150 (Ср): Frontend DevHub (React + TypeScript)
 
 ### Теория
-- HTTPS everywhere, HSTS (обзор)
-- Error monitoring: [Sentry](https://sentry.io/) free tier (обзор)
-- Logging: structured logs в production
-- Database backups — managed PG обычно автоматически
+- [Frontend стек](../../docs/projects.md#обязательный-стек): React 18+, TypeScript, React Router, Context или Zustand
+- Структура: `pages/`, `components/`, `hooks/`, `services/api.ts`, `types/`
+- Переиспользуй навыки [React Dashboard (нед. 14)](../../docs/projects.md#неделя-14--react-dashboard-frontend-milestone) и [Portfolio SPA (нед. 13)](../../docs/projects.md#неделя-13--portfolio-spa)
+- `VITE_API_URL` — env для API base URL
+- Loading / error / empty states на каждой странице
+- Mobile-first layout для dashboard
 
 ### Практика
-1. Проверь security headers на prod (securityheaders.com)
-2. Rate limiting включён на prod
-3. `.env.example` актуален, секреты не в git
-4. Custom domain (опционально) — Vercel DNS
-5. Fix любых critical issues из smoke test
+1. `npm create vite@latest frontend -- --template react-ts`
+2. React Router: Layout + routes `/dashboard`, `/tasks`, `/notes`, `/profile`
+3. `services/api.ts` — typed fetch wrapper (пока без auth token)
+4. **Dashboard:** статистика задач (виджеты), placeholder для GitHub repos или погоды
+5. **Tasks:** список, create/edit form, фильтр по status/priority
+6. **Notes:** список с preview, markdown editor (textarea + preview), теги
+7. **Profile:** форма bio, avatar URL (пока mock)
+8. Shared UI: `Button`, `Card`, `Spinner`, `ErrorMessage`
 
 **Критерии:**
-- [ ] security-audit.md обновлён для production
-- [ ] Нет secrets в client bundle (grep VITE_)
-- [ ] 404/500 pages на фронте
+- [ ] 4+ маршрута с общим Layout
+- [ ] Tasks и Notes CRUD через API (без auth пока)
+- [ ] TypeScript strict, нет `any` в api layer
+- [ ] Loading и error states на всех data-fetching страницах
+
+### Git
+- Закоммить изменения дня: `git add week-22-capstone/frontend/` → `git commit -m "week 22 day 150: DevHub React TS pages and API client"`
 
 ### Ловушки
-- JWT_SECRET тот же что в dev — rotate для prod
-- Debug mode `LOG_LEVEL=debug` в prod — утечка информации
+- Fetch в каждом компоненте — один `api.ts`
+- Забытый `VITE_API_URL` — API calls на undefined
 
 ---
 
-## День 152 (Пт): README, документация, демо
+## День 151 (Чт): Auth — JWT end-to-end
 
 ### Теория
-- [Awesome README](https://github.com/matiassingers/awesome-readme): badges, screenshots, demo link
-- Architecture section: stack, diagram, folder structure
-- «How to run locally» vs «Live demo»
-- GIF recording: [ScreenToGif](https://www.screentogif.com/) (Windows)
+- [Auth в MVP](../../docs/projects.md#функции-mvp-минимум): register, login, logout, protected routes
+- Переиспользуй [Secure Notes (нед. 20)](../../docs/projects.md#неделя-20--secure-notes): bcrypt, JWT, middleware
+- Backend: `POST /auth/register`, `POST /auth/login`; все `/api/v1/*` требуют Bearer token
+- Frontend: `AuthContext`, protected routes, token в localStorage (или httpOnly — задокументируй выбор)
+- Per-user data: `user_id` из JWT payload, не из request body
+- [Security](../../docs/projects.md#функции-mvp-минимум): bcrypt, CORS whitelist, rate limit на login
 
 ### Практика
-1. README: badges, live demo URL, screenshots, tech stack, local + docker setup
-2. License: MIT в repo
+1. Backend auth: register, login, JWT middleware на все protected routes
+2. Привяжи tasks и notes к `user_id` из token — миграция если нужно
+3. React: `/login`, `/register` pages; `AuthProvider` + `useAuth()`
+4. Protected routes — redirect на `/login` без token
+5. `api.ts` — автоматический `Authorization: Bearer`, logout on 401
+6. Rate limit на `/auth/login`, helmet/CORS настроены
+7. Начни `SECURITY.md` — OWASP checklist (из нед. 20)
+8. E2E manual: register → login → create task → logout → login → task visible
 
 **Критерии:**
-- [ ] README понятен рекрутеру за 3 минуты
-- [ ] Live demo link работает
-- [ ] Local setup воспроизводим с нуля (попроси друга или проверь сам на чистой машине — checklist)
+- [ ] Auth end-to-end работает (см. [критерии сдачи](../../docs/projects.md#критерии-сдачи-capstone))
+- [ ] User A не видит данные User B
+- [ ] 401 без token, 403 на чужие ресурсы
+- [ ] `SECURITY.md` начат
+
+### Git
+- Закоммить изменения дня: `git add week-22-capstone/` → `git commit -m "week 22 day 151: DevHub JWT auth frontend backend"`
 
 ### Ловушки
-- README без demo link — рекрутер не запустит docker
-- Устаревшие скриншоты после UI changes
+- user_id из body вместо JWT — IDOR уязвимость
+- JWT secret в git — rotate немедленно
 
 ---
 
-## День 153 (Сб): Портфолио и карьера
+## День 152 (Пт): Docker — локальный full-stack
 
 ### Теория
-- [GitHub Profile README](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/managing-your-profile-readme)
-- Portfolio site: 3–5 лучших проектов, не все подряд
-- Resume для junior: projects > certificates
-- [LinkedIn](https://www.linkedin.com/) — headline, featured projects
+- [Infra в стеке](../../docs/projects.md#обязательный-стек): Docker Compose локально
+- [Структура](../../docs/projects.md#структура-репозитория): `docker-compose.yml` в корне monorepo
+- Переиспользуй [Task Manager Docker (нед. 21)](../../docs/projects.md#неделя-21--task-manager-docker)
+- Services: `db`, `backend`, `frontend`; healthchecks; named volumes
+- `docker compose up` — критерий сдачи capstone
+- Build args для `VITE_API_URL` в frontend image
 
 ### Практика
-1. GitHub Profile README: кто ты, стек, топ-3 проекта с ссылками
-2. Portfolio page (можно fork [github.com/krwg](https://github.com) style или свой React site)
-3. Резюме 1 страница с live links
-4. 2-минутный pitch проекта (запиши голосом)
+1. `docker-compose.yml`: postgres + backend + frontend (nginx)
+2. Backend Dockerfile, Frontend multi-stage Dockerfile
+3. Healthcheck на db (`pg_isready`) и backend (`/api/health`)
+4. Entrypoint: wait-for-db → migrate → seed → start
+5. `.dockerignore` в frontend и backend
+6. `docker compose up --build` — полный smoke test
+7. `ARCHITECTURE.md` — Mermaid diagram (client → API → DB → volumes)
+8. Обнови README: «запуск за 5 команд» (клон → env → compose up → open browser)
 
 **Критерии:**
-- [ ] GitHub profile оформлен
-- [ ] Резюме PDF с live links
-- [ ] Pitch записан — можешь рассказать без шпаргалки
+- [ ] `docker compose up` поднимает всё локально ([критерии сдачи](../../docs/projects.md#критерии-сдачи-capstone))
+- [ ] Auth + CRUD работают через dockerized frontend
+- [ ] `ARCHITECTURE.md` с диаграммой
+- [ ] README local setup ≤ 5 команд
+
+### Git
+- Закоммить изменения дня: `git add week-22-capstone/` → `git commit -m "week 22 day 152: DevHub docker-compose and ARCHITECTURE.md"`
 
 ### Ловушки
-- 20 мелких проектов вместо 3 сильных
-- «Знаю React» без ссылки на deployed app
+- Backend стартует до PG — добавь healthcheck и retry
+- `VITE_API_URL` указывает на localhost внутри docker network
 
 ---
 
-## День 154 (Вс): Финальное ревью и собеседования
+## День 153 (Сб): Тесты и CI
 
 ### Теория
-- Junior interview topics: HTML/CSS/JS/React/Node/SQL/Git
-- [Tech interview handbook](https://www.techinterviewhandbook.org/) — behavioral questions
-- STAR method для ответов о проектах
-- Whiteboard: объясни архитектуру capstone
+- [Quality в стеке](../../docs/projects.md#обязательный-стек): pytest ≥ 15, Vitest ≥ 12, ESLint
+- [Tests в MVP](../../docs/projects.md#функции-mvp-минимум): auth flow, CRUD tasks, 401 без токена
+- GitHub Actions: `.github/workflows/ci.yml` — backend tests + frontend tests + lint
+- Test DB isolation — не тестируй на production
+- CI green on push — [критерий сдачи](../../docs/projects.md#критерии-сдачи-capstone)
 
 ### Практика
-1. Пройди ревью-чеклист (ниже) — ответы в `FINAL_REVIEW.md`
-2. Mock interview: 10 вопросов, план post-roadmap на 30 дней
+1. Backend pytest: auth (register, login, 401), tasks CRUD, notes CRUD, 403 cross-user — ≥ 15 тестов
+2. Frontend Vitest: Login form, ProtectedRoute, TaskList, NoteEditor — ≥ 12 тестов
+3. ESLint + `npm run lint` в frontend; ruff или flake8 в backend (опционально)
+4. `.github/workflows/ci.yml`: job `backend` (postgres service, pytest) + job `frontend` (vitest, lint)
+5. Badge CI в README
+6. `npm audit` / `pip audit` — зафиксируй в `SECURITY.md`
+7. Все тесты зелёные локально перед push
 
 **Критерии:**
-- [ ] FINAL_REVIEW.md — ≥ 80% уверенных ответов
-- [ ] Capstone deployed и в портфолио
-- [ ] План post-roadmap написан
+- [ ] pytest ≥ 15, Vitest ≥ 12 — все проходят
+- [ ] CI green on push
+- [ ] ESLint без ошибок (или задокументированные исключения)
+- [ ] Auth flow покрыт тестами
+
+### Git
+- Закоммить изменения дня: `git add week-22-capstone/` → `git commit -m "week 22 day 153: DevHub tests and GitHub Actions CI"`
+
+### Ловушки
+- CI без postgres service — тесты падают на GitHub
+- Flaky tests из-за shared state — изолируй fixtures
+
+---
+
+## День 154 (Вс): Deploy, портфолио и финальное ревью
+
+### Теория
+- [Deploy в стеке](../../docs/projects.md#обязательный-стек): Frontend → Vercel/Netlify; Backend + DB → Render/Railway/Neon
+- [Критерии сдачи](../../docs/projects.md#критерии-сдачи-capstone): live HTTPS demo, docker local, CI green, `FINAL_REVIEW.md`
+- [Портфолио после 22 недель](../../docs/projects.md#портфолио-после-22-недель): таблица всех проектов в learning-log README
+- Production: CORS update для Vercel domain, `JWT_SECRET` rotate, env vars в cloud dashboard
+- GitHub Profile README — ссылки на все 22 проекта + DevHub demo
+
+### Практика
+1. **Deploy backend:** Render/Railway — connect repo, `DATABASE_URL` + `JWT_SECRET`
+2. **Deploy DB:** managed PostgreSQL, run migrations + seed
+3. **Deploy frontend:** Vercel — root `frontend/`, `VITE_API_URL` = production API URL
+4. Update CORS — добавь Vercel domain
+5. Проверь live demo: HTTPS, register → login → CRUD
+6. README: badges, live demo URLs, screenshots/GIF, tech stack
+7. `FINAL_REVIEW.md`: что узнал, что бы сделал иначе
+8. GitHub Profile README: таблица 22 проектов (как в [projects.md](../../docs/projects.md#портфолио-после-22-недель))
+9. Резюме PDF с live links; 2-мин pitch DevHub
+10. Пройди [ревью-чеклист](#ревью-чеклист) — ≥ 80% уверенных ответов
+
+**Критерии:**
+- [ ] Live HTTPS demo (frontend + API)
+- [ ] `FINAL_REVIEW.md` заполнен
+- [ ] GitHub profile README обновлён со ссылками на все 22 проекта
+- [ ] README DevHub — demo link, docker setup, architecture, tests
+
+### Git
+- Закоммить изменения дня: `git add week-22-capstone/` → `git commit -m "week 22 day 154: DevHub deploy portfolio FINAL_REVIEW"`
+- Поставь тег: `git tag week-22-done`
+- Push tags: `git push origin main --tags`
+
+### Ловушки
+- Забытый CORS update — API works in curl, fails in browser on Vercel
+- Free tier cold start 30–60 сек — документируй в README
 
 ---
 
 ## Проект недели
 
-**Финальный Full-Stack Capstone** — Task Manager Pro или Secret Notes: React + Express/FastAPI + PostgreSQL + JWT + Docker local + Vercel + Render.
+# DevHub Capstone — финальный проект роадмапа
 
-**Критерии:**
-- [ ] Live demo + API на HTTPS, docker-compose local
-- [ ] README, auth, ≥ 5 endpoints, tests, CI green
-- [ ] `FINAL_REVIEW.md` и портфолио обновлено
+Полная спецификация: **[docs/projects.md — Неделя 22, DevHub Capstone](../../docs/projects.md#неделя-22--devhub-capstone-финальный)**
+
+### Концепция
+
+Персональная **платформа разработчика**: дашборд + заметки + задачи + интеграция с GitHub API (или виджет погоды) — production full-stack app.
+
+### Обязательный стек
+
+| Слой | Технологии |
+|------|------------|
+| Frontend | React 18+, TypeScript, React Router, Context/Zustand |
+| Backend | FastAPI **или** Express (один основной) |
+| БД | PostgreSQL, миграции, seed |
+| Auth | JWT (register/login), protected routes |
+| Infra | Docker Compose локально, CI (GitHub Actions) |
+| Deploy | Frontend → Vercel/Netlify, Backend + DB → Render/Railway/Neon |
+| Quality | pytest ≥ 15, Vitest ≥ 12, ESLint, README, `.env.example` |
+
+### Функции MVP
+
+См. [projects.md](../../docs/projects.md#функции-mvp-минимум): Auth, Tasks, Notes, Dashboard, Profile, API, Security, Tests, Docs.
+
+### Структура репозитория
+
+```
+week-22-capstone/
+├── frontend/
+├── backend/
+├── docker-compose.yml
+├── .github/workflows/ci.yml
+├── SECURITY.md
+├── ARCHITECTURE.md
+├── FINAL_REVIEW.md
+└── README.md
+```
+
+### Критерии сдачи
+
+- [ ] Live HTTPS demo (frontend + API)
+- [ ] `docker compose up` поднимает всё локально
+- [ ] Auth end-to-end работает
+- [ ] ≥ 5 сущностей в БД со связями
+- [ ] CI green on push
+- [ ] `FINAL_REVIEW.md` заполнен
+- [ ] GitHub profile README — ссылки на все 22 проекта
+- [ ] Тег `week-22-done`
+
+### Связь с проектами 13–21
+
+| Неделя | Переиспользуешь |
+|--------|-----------------|
+| [14 — Dashboard](../../docs/projects.md#неделя-14--react-dashboard-frontend-milestone) | UI виджеты, fetch |
+| [18/19 — API](../../docs/projects.md#неделя-18--library-rest-api) | CRUD, Swagger |
+| [20 — Secure Notes](../../docs/projects.md#неделя-20--secure-notes) | JWT, тесты |
+| [21 — Docker](../../docs/projects.md#неделя-21--task-manager-docker) | compose, monorepo |
+
+Nice-to-have: [projects.md](../../docs/projects.md#nice-to-have-после-mvp).
+
+---
 
 ## Ревью-чеклист
-- HTML/CSS: block vs inline, box-sizing, Flexbox vs Grid?
+
+- HTML/CSS: block vs inline, Flexbox vs Grid?
 - JS: замыкание, Event Loop, var/let/const?
-- React: key, useState vs useEffect, controlled inputs?
-- Python: Big O list vs dict, магические методы, venv?
-- SQL: INNER vs LEFT JOIN, индексы, SQL injection?
-- Node: Node vs Browser, middleware, connection pool?
-- Full-Stack: REST, CORS, JWT vs cookies, Docker?
+- React: key, useState vs useEffect?
+- Python: Big O, магические методы, venv?
+- SQL: JOIN, индексы, injection?
+- Node: middleware, connection pool?
+- Full-Stack: REST, CORS, JWT, Docker?
+- DevHub: архитектура за 2 минуты?
 
 **80%+ уверенных ответов — ты готов к junior full-stack. Поздравляем с завершением 22-недельного роадмапа!**
