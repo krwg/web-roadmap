@@ -1,5 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-size: 20px;
+  line-height: 1;
+  vertical-align: middle;
+  user-select: none;
+}
+.btn .material-symbols-outlined { font-size: 18px; }
+.icon-only { padding: 8px; }
+.icon-only .material-symbols-outlined { font-size: 22px; }
+
 :root {
   color-scheme: dark;
   --bg: #0a0a0c;
@@ -114,12 +125,19 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
   padding: clamp(56px, 10vw, 100px) 0 clamp(48px, 8vw, 80px);
   position: relative;
 }
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 14px; margin-bottom: 24px;
-  background: var(--accent-dim); border: 1px solid rgba(255,204,0,0.25);
-  border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--accent);
+.resume-banner {
+  max-width: 520px; margin: 0 auto 28px; padding: 0;
 }
+.resume-banner-inner {
+  display: flex; align-items: center; gap: 14px; text-align: left;
+  padding: 16px 20px; background: var(--bg-card); border: 1px solid rgba(255,204,0,0.3);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-card);
+}
+.resume-icon { color: var(--accent); font-size: 32px !important; flex-shrink: 0; }
+.resume-text { flex: 1; min-width: 0; }
+.resume-text strong { display: block; font-size: 15px; margin-bottom: 2px; }
+.resume-meta { font-size: 13px; color: var(--text-secondary); }
+.btn-sm { padding: 10px 18px; font-size: 14px; }
 .hero-logo img {
   width: 80px; height: 80px; object-fit: contain;
   filter: drop-shadow(0 0 32px rgba(255,204,0,0.15));
@@ -212,7 +230,50 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
   color: var(--accent); font-size: 11px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
 }
-.path-arrow { color: var(--muted); font-size: 12px; }
+.path-arrow { color: var(--muted); font-size: 18px !important; }
+
+/* How it works — steps */
+.steps-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;
+}
+.step-card {
+  position: relative; padding: 24px 20px; border-radius: var(--radius-md);
+  background: var(--bg-card); border: 1px solid var(--border);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.step-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-card); }
+.step-icon {
+  width: 44px; height: 44px; border-radius: 12px; background: var(--accent-dim);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
+}
+.step-icon .material-symbols-outlined { color: var(--accent); font-size: 24px !important; }
+.step-num {
+  position: absolute; top: 16px; right: 16px; font-size: 11px; font-weight: 700;
+  color: var(--muted); letter-spacing: 0.06em;
+}
+.step-card h3 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
+.step-card p { margin: 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.step-card code {
+  font-family: var(--font-mono); font-size: 0.9em;
+  background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 4px;
+}
+
+/* FAQ */
+.faq-list { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.faq-item {
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  background: var(--bg-card); overflow: hidden;
+}
+.faq-item summary {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  padding: 16px 20px; font-weight: 600; font-size: 15px; color: var(--text); list-style: none;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary .material-symbols-outlined { color: var(--accent); font-size: 20px !important; }
+.faq-item[open] summary { border-bottom: 1px solid var(--border); }
+.faq-item p {
+  margin: 0; padding: 14px 20px 18px; font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+}
 
 .feature-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;
@@ -225,8 +286,9 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
 .feature-icon {
   width: 40px; height: 40px; border-radius: 10px; background: var(--accent-dim);
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; margin-bottom: 14px;
+  margin-bottom: 14px;
 }
+.feature-icon .material-symbols-outlined { color: var(--accent); font-size: 22px !important; }
 .feature h3 { margin: 0 0 8px; font-size: 17px; font-weight: 600; }
 .feature p { margin: 0; color: var(--text-secondary); font-size: 14px; line-height: 1.55; }
 
@@ -304,11 +366,13 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
 .card-project { color: var(--text-secondary); font-weight: 500; }
 .card-duration { font-weight: 500; }
 .done-badge {
+  position: absolute; top: 12px; right: 12px;
   width: 28px; height: 28px; border-radius: 50%; border: none;
   background: rgba(48,209,88,0.15); color: var(--success);
-  cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
+.done-badge .material-symbols-outlined { font-size: 18px !important; }
 .done-badge:hover { background: rgba(48,209,88,0.25); }
 .card.hidden-by-filter { display: none; }
 
@@ -347,6 +411,23 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
   display: inline-flex; align-items: center; gap: 4px; margin-bottom: 8px;
 }
 .back-link:hover { color: var(--accent); text-decoration: none; }
+.back-link .material-symbols-outlined { font-size: 18px !important; }
+
+/* Lesson next module bar */
+.lesson-next {
+  position: sticky; bottom: 0; z-index: 50;
+  border-top: 1px solid var(--border); background: rgba(10,10,12,0.92);
+  backdrop-filter: blur(12px); padding: 14px var(--pad);
+}
+.lesson-next-inner {
+  max-width: calc(var(--max) + var(--toc-w)); margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.lesson-next-label {
+  display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: var(--text-secondary);
+}
+.lesson-next-label .material-symbols-outlined { color: var(--accent); }
+
 .page-header h1 {
   margin: 0; font-size: clamp(1.25rem, 3vw, 1.75rem); font-weight: 700;
   letter-spacing: -0.02em; line-height: 1.25;

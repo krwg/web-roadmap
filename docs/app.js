@@ -6,12 +6,17 @@
   const SEARCH_INDEX = window.SEARCH_INDEX || [];
   const PROGRESS_KEY = 'web-roadmap-progress';
   const READING_KEY = 'web-roadmap-reading';
+  const LAST_ROUTE_KEY = 'web-roadmap-last-route';
 
   const weekCache = {};
   let currentRoute = '';
 
   function $(sel, root = document) { return root.querySelector(sel); }
   function $$(sel, root = document) { return [...root.querySelectorAll(sel)]; }
+
+  function icon(name) {
+    return `<span class="material-symbols-outlined" aria-hidden="true">${name}</span>`;
+  }
 
   function getProgress() {
     try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); }
@@ -23,10 +28,50 @@
     localStorage.setItem(PROGRESS_KEY, JSON.stringify(p));
     updateProgressUI();
     updateCards();
+    updateResumeBanner();
   }
   function toggleWeekDone(id) {
     const p = getProgress();
     setProgress(id, !p[id]);
+  }
+
+  function saveLastRoute(routeId, anchor) {
+    if (!/^week-\d{2}$/.test(routeId)) return;
+    const title = ROUTES.weeks?.[routeId] || routeId;
+    localStorage.setItem(LAST_ROUTE_KEY, JSON.stringify({
+      route: routeId,
+      anchor: anchor || '',
+      title,
+      ts: Date.now(),
+    }));
+    updateResumeBanner();
+  }
+
+  function getLastRoute() {
+    try { return JSON.parse(localStorage.getItem(LAST_ROUTE_KEY) || 'null'); }
+    catch { return null; }
+  }
+
+  function updateResumeBanner() {
+    const banner = $('#resume-banner');
+    const link = $('#resume-link');
+    const titleEl = $('#resume-title');
+    const metaEl = $('#resume-meta');
+    if (!banner || !link) return;
+
+    const last = getLastRoute();
+    if (!last?.route) {
+      banner.hidden = true;
+      return;
+    }
+
+    const weekTitle = ROUTES.weeks?.[last.route] || last.title || last.route;
+    banner.hidden = false;
+    if (titleEl) titleEl.textContent = 'Продолжить обучение';
+    if (metaEl) metaEl.textContent = weekTitle;
+    const hash = last.anchor ? `${last.route}--${last.anchor}` : last.route;
+    link.href = `#${hash}`;
+    link.setAttribute('data-route', last.route);
   }
 
   function updateProgressUI() {
@@ -46,9 +91,10 @@
       let badge = card.querySelector('.done-badge');
       if (p[id]) {
         if (!badge) {
-          badge = document.createElement('span');
+          badge = document.createElement('button');
+          badge.type = 'button';
           badge.className = 'done-badge';
-          badge.textContent = '✓';
+          badge.innerHTML = icon('check_circle');
           badge.title = 'Отметить непройденной';
           badge.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); toggleWeekDone(id); });
           card.appendChild(badge);
@@ -61,6 +107,32 @@
     $$('.view').forEach(v => { v.hidden = true; });
     const el = $(`#view-${name}`);
     if (el) el.hidden = false;
+  }
+
+  function nextWeekId(routeId) {
+    const m = routeId.match(/^week-(\d{2})$/);
+    if (!m) return null;
+    const n = parseInt(m[1], 10) + 1;
+    if (n > 22) return null;
+    return `week-${String(n).padStart(2, '0')}`;
+  }
+
+  function updateLessonNext(routeId) {
+    const bar = $('#lesson-next');
+    const link = $('#lesson-next-link');
+    const text = $('#lesson-next-text');
+    if (!bar || !link) return;
+
+    const next = nextWeekId(routeId);
+    if (!next || !ROUTES.weeks?.[next]) {
+      bar.hidden = true;
+      return;
+    }
+
+    bar.hidden = false;
+    if (text) text.textContent = `Следующий модуль: ${ROUTES.weeks[next]}`;
+    link.href = `#${next}`;
+    link.setAttribute('data-route', next);
   }
 
   async function fetchWeek(id) {
@@ -93,11 +165,26 @@
       $$('pre code', root).forEach(el => Prism.highlightElement(el));
     }
     if (typeof mermaid !== 'undefined') {
-      $$('.mermaid', root).forEach((el, i) => {
+      $$('.mermaid', root).forEach((el) => {
         if (el.dataset.processed) return;
         mermaid.run({ nodes: [el] }).catch(() => {});
       });
     }
+  }
+
+  function updateMarkDoneBtn(routeId) {
+    const markBtn = $('#mark-done-btn');
+    if (!markBtn) return;
+    const isWeek = /^week-\d{2}$/.test(routeId);
+    markBtn.hidden = !isWeek;
+    const done = !!getProgress()[routeId];
+    markBtn.innerHTML = done
+      ? `${icon('check_circle')} Неделя пройдена`
+      : `${icon('radio_button_unchecked')} Отметить неделю`;
+    markBtn.onclick = () => {
+      toggleWeekDone(routeId);
+      updateMarkDoneBtn(routeId);
+    };
   }
 
   function renderDoc(data, routeId) {
@@ -112,13 +199,8 @@
       setupTocScroll(content, routeId);
       setupDayNav(data.toc, routeId);
     }
-    const markBtn = $('#mark-done-btn');
-    if (markBtn) {
-      const isWeek = /^week-\d{2}$/.test(routeId);
-      markBtn.hidden = !isWeek;
-      markBtn.textContent = getProgress()[routeId] ? '✓ Неделя пройдена' : 'Отметить неделю';
-      markBtn.onclick = () => { toggleWeekDone(routeId); markBtn.textContent = getProgress()[routeId] ? '✓ Неделя пройдена' : 'Отметить неделю'; };
-    }
+    updateMarkDoneBtn(routeId);
+    updateLessonNext(routeId);
   }
 
   function setupTocScroll(content, routeId) {
@@ -137,6 +219,7 @@
         history.replaceState(null, '', `#${routeId}--${id}`);
         links.forEach(l => l.classList.remove('active'));
         a.classList.add('active');
+        saveLastRoute(routeId, id);
       });
     });
 
@@ -165,10 +248,10 @@
     const nav = document.createElement('div');
     nav.className = 'day-nav';
     nav.innerHTML = prev
-      ? `<a class="btn btn-ghost" href="#${routeId}--${prev.id}">← ${prev.label}</a>`
+      ? `<a class="btn btn-ghost" href="#${routeId}--${prev.id}">${icon('arrow_back')} ${prev.label}</a>`
       : '<span></span>';
     nav.innerHTML += next
-      ? `<a class="btn btn-secondary" href="#${routeId}--${next.id}">${next.label} →</a>`
+      ? `<a class="btn btn-secondary" href="#${routeId}--${next.id}">${next.label} ${icon('arrow_forward')}</a>`
       : '';
     prose.appendChild(nav);
     nav.querySelectorAll('a').forEach(a => {
@@ -189,10 +272,14 @@
       [routeId, anchor] = raw.split('--');
     }
 
+    const lessonNext = $('#lesson-next');
+    if (lessonNext) lessonNext.hidden = true;
+
     if (routeId === 'home') {
       showView('home');
       currentRoute = 'home';
       updateCards();
+      updateResumeBanner();
       return;
     }
 
@@ -207,6 +294,7 @@
         const data = isWeek ? await fetchWeek(routeId) : await fetchPage(routeId);
         renderDoc(data, routeId);
         currentRoute = routeId;
+        if (isWeek) saveLastRoute(routeId, anchor);
         if (anchor) {
           const target = $(`#${anchor}`, $('#doc-content')) || $(`[id="${anchor}"]`, $('#doc-content'));
           if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
@@ -222,6 +310,7 @@
     showView('home');
     const el = document.getElementById(routeId);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
+    updateResumeBanner();
   }
 
   function initSearch() {
@@ -297,8 +386,12 @@
     const a = e.target.closest('[data-route]');
     if (a) {
       e.preventDefault();
-      const r = a.getAttribute('data-route');
-      location.hash = r;
+      const href = a.getAttribute('href');
+      if (href && href.startsWith('#') && href.length > 1) {
+        location.hash = href.slice(1);
+      } else {
+        location.hash = a.getAttribute('data-route');
+      }
     }
   });
 
@@ -314,6 +407,7 @@
 
   updateProgressUI();
   updateCards();
+  updateResumeBanner();
   initSearch();
   initReadingMode();
   initPhaseFilters();

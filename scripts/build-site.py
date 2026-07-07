@@ -17,7 +17,7 @@ OUT_WEEKS = DOCS / "weeks"
 OUT_PAGES = DOCS / "pages"
 LOGO_SRC = ROOT / "assets" / "logo.png"
 LOGO_DOCS = DOCS / "assets" / "logo.png"
-VERSION = "1.2.1"
+VERSION = "1.2.2"
 
 PHASE_MAP = {
     "00": ("setup", "Старт"),
@@ -279,7 +279,9 @@ def write_index(search_index: list, routes: dict) -> None:
   <meta property="og:image" content="https://krwg.github.io/web-roadmap/assets/og-cover.png">
   <meta property="og:url" content="https://krwg.github.io/web-roadmap/">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+  <script data-goatcounter="https://krwg.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Перейти к содержимому</a>
@@ -293,7 +295,7 @@ def write_index(search_index: list, routes: dict) -> None:
           <img src="assets/logo.png" alt="" width="32" height="32"> web-roadmap
         </a>
         <div class="nav-right">
-          <button type="button" class="icon-btn burger" id="burger-btn" aria-label="Меню">☰</button>
+          <button type="button" class="icon-btn burger" id="burger-btn" aria-label="Меню"><span class="material-symbols-outlined">menu</span></button>
           <nav class="nav-links" id="nav-links">
             <a href="#week-00" data-route="week-00">Старт</a>
             <a href="#intro" data-route="intro">Введение</a>
@@ -301,9 +303,9 @@ def write_index(search_index: list, routes: dict) -> None:
             <a href="#projects" data-route="projects">Проекты</a>
             <a href="#cheatsheet-html" data-route="cheatsheet-html">Шпаргалки</a>
           </nav>
-          <button type="button" class="icon-btn" id="search-btn" title="Поиск (Ctrl+K)">⌕</button>
-          <button type="button" class="icon-btn" id="reading-mode-btn" title="Режим чтения">Aa</button>
-          <a class="icon-btn" href="https://github.com/krwg/web-roadmap" target="_blank" rel="noopener">GitHub</a>
+          <button type="button" class="icon-btn icon-only" id="search-btn" title="Поиск (Ctrl+K)"><span class="material-symbols-outlined">search</span></button>
+          <button type="button" class="icon-btn icon-only" id="reading-mode-btn" title="Режим чтения"><span class="material-symbols-outlined">auto_stories</span></button>
+          <a class="icon-btn" href="https://github.com/krwg/web-roadmap" target="_blank" rel="noopener"><span class="material-symbols-outlined">code</span> GitHub</a>
         </div>
       </div>
     </header>
@@ -312,10 +314,19 @@ def write_index(search_index: list, routes: dict) -> None:
       <main id="main-content">
         <header class="hero">
           <div class="hero-inner">
-            <div class="hero-badge">Full-Stack · 22 проекта · Бесплатно</div>
             <div class="hero-logo"><img src="assets/logo.png" alt="web-roadmap" width="80" height="80"></div>
             <h1>Full-Stack разработчик за 22 недели</h1>
             <p class="lead">Структурированный маршрут как в профессиональной школе: теория своими словами, практика каждый день, Git с первого <code>index.html</code>, финальный capstone в production.</p>
+            <div class="resume-banner" id="resume-banner" hidden>
+              <div class="resume-banner-inner">
+                <span class="material-symbols-outlined resume-icon">play_circle</span>
+                <div class="resume-text">
+                  <strong id="resume-title">Продолжить обучение</strong>
+                  <span id="resume-meta" class="resume-meta"></span>
+                </div>
+                <a class="btn btn-primary btn-sm" href="#" id="resume-link">Продолжить</a>
+              </div>
+            </div>
             <div class="stats">
               <div class="stat"><strong>23</strong><span>модуля</span></div>
               <div class="stat"><strong>22</strong><span>проекта</span></div>
@@ -343,15 +354,15 @@ def write_index(search_index: list, routes: dict) -> None:
             </div>
             <div class="curriculum-path">
               <div class="path-step"><span class="num">1</span> Вёрстка</div>
-              <span class="path-arrow">→</span>
+              <span class="path-arrow material-symbols-outlined">chevron_right</span>
               <div class="path-step"><span class="num">2</span> JavaScript</div>
-              <span class="path-arrow">→</span>
+              <span class="path-arrow material-symbols-outlined">chevron_right</span>
               <div class="path-step"><span class="num">3</span> React</div>
-              <span class="path-arrow">→</span>
+              <span class="path-arrow material-symbols-outlined">chevron_right</span>
               <div class="path-step"><span class="num">4</span> Python & SQL</div>
-              <span class="path-arrow">→</span>
+              <span class="path-arrow material-symbols-outlined">chevron_right</span>
               <div class="path-step"><span class="num">5</span> API</div>
-              <span class="path-arrow">→</span>
+              <span class="path-arrow material-symbols-outlined">chevron_right</span>
               <div class="path-step"><span class="num">6</span> DevOps</div>
             </div>
             <div class="tracks-row">
@@ -369,6 +380,41 @@ def write_index(search_index: list, routes: dict) -> None:
           </div>
         </section>
 
+        <section class="section" id="how-it-works">
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>Как устроено обучение</h2>
+              <p class="sub">Каждый день — структура как в профессиональной школе: теория, практика, Git, проверка</p>
+            </div>
+            <div class="steps-row">
+              <div class="step-card">
+                <div class="step-icon"><span class="material-symbols-outlined">menu_book</span></div>
+                <span class="step-num">01</span>
+                <h3>Теория</h3>
+                <p>Объяснение своими словами и ссылки на MDN, learn.javascript.ru и книги</p>
+              </div>
+              <div class="step-card">
+                <div class="step-icon"><span class="material-symbols-outlined">code</span></div>
+                <span class="step-num">02</span>
+                <h3>Практика</h3>
+                <p>Задания на день: полный трек 6–7 ч или лайт 3–4 ч — выбираете сами</p>
+              </div>
+              <div class="step-card">
+                <div class="step-icon"><span class="material-symbols-outlined">terminal</span></div>
+                <span class="step-num">03</span>
+                <h3>Git</h3>
+                <p>Каждый день — коммит в <code>learning-log</code>, к концу недели — тег <code>week-XX-done</code></p>
+              </div>
+              <div class="step-card">
+                <div class="step-icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+                <span class="step-num">04</span>
+                <h3>Проект</h3>
+                <p>Работающий артефакт в портфолио: от лендинга до DevHub capstone</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="section" id="why">
           <div class="section-inner">
             <div class="section-head">
@@ -376,12 +422,12 @@ def write_index(search_index: list, routes: dict) -> None:
               <p class="sub">Не видеокурс — пошаговый план с проверкой себя и артефактами в GitHub.</p>
             </div>
             <div class="feature-grid">
-              <div class="feature"><div class="feature-icon">📋</div><h3>Понятный порядок</h3><p>HTML → CSS → JS → React → Python → SQL → API → Docker без хаоса «что учить дальше».</p></div>
-              <div class="feature"><div class="feature-icon">📁</div><h3>22 проекта</h3><p>Каждая неделя — работающий код в <code>learning-log</code> для портфолио.</p></div>
-              <div class="feature"><div class="feature-icon">🔀</div><h3>Два трека</h3><p>Полный или лайт — выбирайте нагрузку, не пропуская фундамент.</p></div>
-              <div class="feature"><div class="feature-icon">📖</div><h3>Теория своими словами</h3><p>Не только ссылки — объяснения, «если застрял», самопроверка.</p></div>
-              <div class="feature"><div class="feature-icon">🚀</div><h3>DevHub capstone</h3><p>React + API + PostgreSQL + JWT + Docker + CI + deploy.</p></div>
-              <div class="feature"><div class="feature-icon">📝</div><h3>Шпаргалки</h3><p>HTML/CSS, JS, React, SQL, Backend — для быстрого ревью.</p></div>
+              <div class="feature"><div class="feature-icon"><span class="material-symbols-outlined">route</span></div><h3>Понятный порядок</h3><p>HTML → CSS → JS → React → Python → SQL → API → Docker без хаоса «что учить дальше».</p></div>
+              <div class="feature"><div class="feature-icon"><span class="material-symbols-outlined">folder</span></div><h3>22 проекта</h3><p>Каждая неделя — работающий код в <code>learning-log</code> для портфолио.</p></div>
+              <div class="feature"><div class="feature-icon"><span class="material-symbols-outlined">alt_route</span></div><h3>Два трека</h3><p>Полный или лайт — выбирайте нагрузку, не пропуская фундамент.</p></div>
+              <div class="feature"><div class="feature-icon"><span class="material-symbols-outlined">auto_stories</span></div><h3>Теория своими словами</h3><p>Не только ссылки — объяснения, «если застрял», самопроверка.</p></div>
+              <div class="feature"><div class="feature-icon"><span class="material-symbols-outlined">rocket_launch</span></div><h3>DevHub capstone</h3><p>React + API + PostgreSQL + JWT + Docker + CI + deploy.</p></div>
+              <div class="feature"><div class="feature-icon"><span class="material-symbols-outlined">description</span></div><h3>Шпаргалки</h3><p>HTML/CSS, JS, React, SQL, Backend — для быстрого ревью.</p></div>
             </div>
           </div>
         </section>
@@ -425,13 +471,44 @@ def write_index(search_index: list, routes: dict) -> None:
           </div>
         </section>
 
+        <section class="section section-alt" id="faq">
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>Частые вопросы</h2>
+              <p class="sub">Коротко о том, как проходить маршрут</p>
+            </div>
+            <div class="faq-list">
+              <details class="faq-item">
+                <summary><span class="material-symbols-outlined">help</span> Нужен ли опыт программирования?</summary>
+                <p>Нет. Неделя 0 готовит инструменты, неделя 1 начинается с HTML. Главное — 3–7 часов в день и дисциплина.</p>
+              </details>
+              <details class="faq-item">
+                <summary><span class="material-symbols-outlined">help</span> Чем полный трек отличается от лайт?</summary>
+                <p>В лайте обязательны теория и Git; практика в MVP-объёме. Полный трек — все задания и максимальная глубина проектов.</p>
+              </details>
+              <details class="faq-item">
+                <summary><span class="material-symbols-outlined">help</span> Зачем репозиторий learning-log?</summary>
+                <p>Это ваше портфолио: каждая неделя — папка с кодом и README. Рекрутер видит прогресс и коммиты, а не только финальный проект.</p>
+              </details>
+              <details class="faq-item">
+                <summary><span class="material-symbols-outlined">help</span> Сколько времени займёт весь маршрут?</summary>
+                <p>Полный трек: ~900–1100 часов за 22 недели. Лайт: ~500–650 часов. Можно растянуть — отмечайте прогресс на сайте.</p>
+              </details>
+              <details class="faq-item">
+                <summary><span class="material-symbols-outlined">help</span> Это замена курсу?</summary>
+                <p>Это структурированный план с материалами и проектами — без видео и менторов. Бесплатно, open source, можно учиться в своём темпе.</p>
+              </details>
+            </div>
+          </div>
+        </section>
+
         <section class="community section-alt" id="community">
           <h2>Помогите маршруту расти</h2>
           <p>Звезда на GitHub, репост или Issue с улучшением — всё помогает следующим ученикам.</p>
           <div class="cta-row">
-            <a class="btn btn-primary" href="https://github.com/krwg/web-roadmap" target="_blank" rel="noopener">★ Star</a>
-            <button type="button" class="btn btn-secondary" id="share-btn">Поделиться</button>
-            <a class="btn btn-ghost" href="https://github.com/krwg/web-roadmap/issues/new/choose" target="_blank" rel="noopener">Issue</a>
+            <a class="btn btn-primary" href="https://github.com/krwg/web-roadmap" target="_blank" rel="noopener"><span class="material-symbols-outlined">star</span> Star</a>
+            <button type="button" class="btn btn-secondary" id="share-btn"><span class="material-symbols-outlined">share</span> Поделиться</button>
+            <a class="btn btn-ghost" href="https://github.com/krwg/web-roadmap/issues/new/choose" target="_blank" rel="noopener"><span class="material-symbols-outlined">bug_report</span> Issue</a>
           </div>
         </section>
       </main>
@@ -446,7 +523,7 @@ def write_index(search_index: list, routes: dict) -> None:
     <div id="view-doc" class="view" hidden>
       <div class="page-header">
         <div class="page-header-inner">
-          <a class="back-link" href="#weeks" data-route="home">← К программе курса</a>
+          <a class="back-link" href="#weeks" data-route="home"><span class="material-symbols-outlined">arrow_back</span> К программе курса</a>
           <h1 id="doc-page-title">Загрузка…</h1>
           <div class="page-toolbar">
             <button type="button" class="btn btn-ghost" id="mark-done-btn" hidden>Отметить неделю</button>
@@ -456,6 +533,15 @@ def write_index(search_index: list, routes: dict) -> None:
       <div class="doc-layout">
         <aside class="doc-toc" id="doc-toc"></aside>
         <div class="prose-wrap" id="doc-content"><div class="loading">Загрузка…</div></div>
+      </div>
+      <div class="lesson-next" id="lesson-next" hidden>
+        <div class="lesson-next-inner">
+          <div class="lesson-next-label">
+            <span class="material-symbols-outlined">arrow_forward</span>
+            <span id="lesson-next-text">Следующий модуль</span>
+          </div>
+          <a class="btn btn-primary btn-sm" href="#" id="lesson-next-link">Перейти</a>
+        </div>
       </div>
     </div>
   </div>
