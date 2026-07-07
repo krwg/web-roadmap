@@ -278,7 +278,7 @@ Arrow functions **не имеют своего `this`** — важно для м
 **Ключевая мысль:** stack trace + breakpoint > десять `console.log`; функции — единицы отладки.
 
 **Читать:**
-- [MDN: Debugging JavaScript](https://developer.mozilla.org/ru/docs/Learn/JavaScript/Howto/Debugging_JavaScript)
+- [Chrome DevTools: JavaScript](https://developer.chrome.com/docs/devtools/javascript/)
 
 ### Практика
 1. Консольное приложение «Todo List» (массив + функции add/remove/list)

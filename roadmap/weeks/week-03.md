@@ -277,7 +277,7 @@ CSS-переходы (`transition`) анимируют **изменение** с
 
 **Читать:**
 - [MDN: position](https://developer.mozilla.org/ru/docs/Web/CSS/position)
-- [MDN: aspect-ratio](https://developer.mozilla.org/ru/docs/Web/CSS/aspect-ratio)
+- [MDN: aspect-ratio](https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio)
 
 ### Практика
 1. Собери полноценный лендинг: hero, features (grid), testimonials (flex), CTA, footer

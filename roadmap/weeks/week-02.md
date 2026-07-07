@@ -1,7 +1,7 @@
 # Неделя 2: CSS — селекторы, box model, типографика, переменные
 
 > **Цель недели:** освоить фундамент CSS — от селекторов до типографики и кастомных свойств.
-> **Литература:** Ионетт Дакетт «HTML и CSS» (гл. 10–13), [MDN Learn CSS](https://developer.mozilla.org/ru/docs/Learn/CSS), [CSS Reference](https://developer.mozilla.org/ru/docs/Web/CSS/Reference), [web.dev Learn CSS](https://web.dev/learn/css), [Every Layout](https://every-layout.dev/) — паттерны без «магических» хаков
+> **Литература:** Ионетт Дакетт «HTML и CSS» (гл. 10–13), [web.dev Learn CSS](https://web.dev/learn/css), [CSS Reference](https://developer.mozilla.org/ru/docs/Web/CSS/Reference), [Every Layout](https://every-layout.dev/) — паттерны без «магических» хаков
 
 > **Проект недели:** см. [docs/projects.md](../../docs/projects.md#неделя-2--styled-blog-post)
 > **Git:** минимум 1 осмысленный коммит каждый день в `learning-log/week-02/`

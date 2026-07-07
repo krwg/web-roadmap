@@ -24,7 +24,7 @@
 
 ```bash
 # 1. GitHub → New repository → learning-log (public, без README)
-git clone https://github.com/YOUR_USER/learning-log.git
+git clone https://github.com/krwg/learning-log.git
 cd learning-log
 
 # 2. .gitignore

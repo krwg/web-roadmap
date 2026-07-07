@@ -13,7 +13,7 @@
 | ★ [MDN Learn](https://developer.mozilla.org/ru/docs/Learn) | Документация | Эталон |
 | ★ Ионетт Дакетт «HTML и CSS» | Книга | Визуальный фундамент |
 | ★ [web.dev Learn HTML/CSS](https://web.dev/learn) | Курсы | Современные практики |
-| [HTML5 Doctor](http://html5doctor.com/) | Статьи | Семантика |
+| [HTML5 Doctor (архив)](https://web.archive.org/web/20240000000000*/http://html5doctor.com/) | Статьи | Семантика |
 | [Every Layout](https://every-layout.dev/) | Книга (online) | Flex/Grid паттерны |
 | [Flexbox Froggy](https://flexboxfroggy.com/) | Игра | Flexbox |
 | [Grid Garden](https://cssgridgarden.com/) | Игра | Grid |
@@ -56,7 +56,7 @@
 |--------|-----|
 | ★ [react.dev](https://react.dev/learn) | Официальная документация |
 | ★ [ru.react.dev](https://ru.react.dev/) | На русском |
-| [React Router](https://reactrouter.com/en/main) | Роутинг |
+| [React Router](https://reactrouter.com/home) | Роутинг |
 | Kent C. Dodds «Epic React» (платно) / блог | Паттерны |
 | [Patterns.dev](https://www.patterns.dev/) | Архитектура фронта |
 
@@ -164,5 +164,5 @@
 |--------|--------|
 | [projects.md](projects.md) | 22 проекта для портфолио |
 | GitHub Profile README | Витрина |
-| [freeCodeCamp: Portfolio](https://www.freecodecamp.org/news/how-to-create-a-great-portfolio/) | Оформление |
+| [web.dev: Learn HTML](https://web.dev/learn/html) | Оформление портфолио |
 | DevHub capstone (нед. 22) | Главное доказательство навыков |

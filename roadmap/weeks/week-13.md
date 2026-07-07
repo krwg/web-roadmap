@@ -4,7 +4,7 @@
 
 > **Цель недели:** построить многостраничное SPA с переиспользуемой логикой и глобальным состоянием.
 
-> **Литература:** [React Router](https://reactrouter.com/en/main), [react.dev — Context](https://react.dev/learn/passing-data-deeply-with-context), [react.dev — Reusing Logic](https://react.dev/learn/reusing-logic-with-custom-hooks), [React Router Tutorial](https://reactrouter.com/en/main/start/tutorial), [useDebounce patterns](https://www.developerway.com/posts/debouncing-in-react)
+> **Литература:** [React Router](https://reactrouter.com/6.28.0), [react.dev — Context](https://react.dev/learn/passing-data-deeply-with-context), [react.dev — Reusing Logic](https://react.dev/learn/reusing-logic-with-custom-hooks), [React Router Tutorial](https://reactrouter.com/6.28.0/start/tutorial), [useDebounce patterns](https://www.developerway.com/posts/debouncing-in-react)
 
 > **Проект недели:** см. [docs/projects.md](../../docs/projects.md)
 
@@ -29,10 +29,10 @@ Layout с `<Outlet />` — стандартный паттерн общей об
 
 **Читать:**
 
-- [React Router — Tutorial](https://reactrouter.com/en/main/start/tutorial)
-- [Link vs NavLink](https://reactrouter.com/en/main/components/link)
-- [useParams](https://reactrouter.com/en/main/hooks/use-params)
-- [useNavigate](https://reactrouter.com/en/main/hooks/use-navigate)
+- [React Router — Tutorial](https://reactrouter.com/6.28.0/start/tutorial)
+- [Link vs NavLink](https://reactrouter.com/6.28.0/components/link)
+- [useParams](https://reactrouter.com/6.28.0/hooks/use-params)
+- [useNavigate](https://reactrouter.com/6.28.0/hooks/use-navigate)
 
 **Ключевая мысль:** SPA-навигация — смена компонентов без перезагрузки; для внутренних ссылок — `Link`, не `<a>`.
 
@@ -113,9 +113,9 @@ Query string (`?sort=date&tab=comments`) описывает фильтры и в
 
 **Читать:**
 
-- [Nested Routes](https://reactrouter.com/en/main/start/tutorial#nested-routes)
-- [useSearchParams](https://reactrouter.com/en/main/hooks/use-search-params)
-- [useLocation](https://reactrouter.com/en/main/hooks/use-location)
+- [Nested Routes](https://reactrouter.com/6.28.0/start/tutorial#nested-routes)
+- [useSearchParams](https://reactrouter.com/6.28.0/hooks/use-search-params)
+- [useLocation](https://reactrouter.com/6.28.0/hooks/use-location)
 
 **Ключевая мысль:** путь описывает «где», query — «как показать»; параметры маршрута всегда строки.
 
@@ -362,9 +362,9 @@ Mock-авторизация без реального API — нормальна
 
 **Читать:**
 
-- [React Router — Auth pattern](https://reactrouter.com/en/main/examples/auth)
-- [Navigate](https://reactrouter.com/en/main/components/navigate)
-- [useNavigate](https://reactrouter.com/en/main/hooks/use-navigate)
+- [React Router — Tutorial (auth patterns)](https://reactrouter.com/6.28.0/start/tutorial)
+- [Navigate](https://reactrouter.com/6.28.0/components/navigate)
+- [useNavigate](https://reactrouter.com/6.28.0/hooks/use-navigate)
 
 **Ключевая мысль:** protected route проверяет сессию на уровне маршрута; persist в storage переживает перезагрузку.
 

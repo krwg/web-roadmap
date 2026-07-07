@@ -320,7 +320,7 @@ Singleton гарантирует один экземпляр (например, 
 **Читать:**
 - [patterns.dev: Observer Pattern](https://www.patterns.dev/vanilla/observer-pattern/)
 - [patterns.dev: Module Pattern](https://www.patterns.dev/vanilla/module-pattern/)
-- [patterns.dev: Strategy Pattern](https://www.patterns.dev/vanilla/strategy-pattern/)
+- [patterns.dev](https://www.patterns.dev/)
 
 **Ключевая мысль:** паттерн оправдан, когда он снижает связанность или упрощает расширение — не когда добавляет абстракцию ради абстракции.
 
@@ -458,7 +458,7 @@ ESLint ловит ошибки до runtime: неиспользуемые пер
 ADR (Architecture Decision Record) — короткий документ «почему выбрали Store + Observer, а не один монолитный файл». Code review checklist: понятные имена, нет скрытых side effects, ошибки обработаны, модули имеют чёткие границы. Подготовка к TypeScript — явные контракты функций через JSDoc или `.ts` файлы.
 
 **Читать:**
-- [MDN: JSDoc reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/JSDoc)
+- [JSDoc reference](https://jsdoc.app/)
 - [ESLint: Getting Started](https://eslint.org/docs/latest/use/getting-started)
 - [adr.github.io](https://adr.github.io/) — формат Architecture Decision Records
 

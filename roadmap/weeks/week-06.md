@@ -1,7 +1,7 @@
 # Неделя 6: JavaScript — объекты, DOM, события
 
 > **Цель недели:** освоить объекты JavaScript, манипуляции DOM и обработку пользовательских событий.
-> **Литература:** [learn.javascript.ru: Объекты](https://learn.javascript.ru/object), [learn.javascript.ru: DOM](https://learn.javascript.ru/searching-elements-dom), [MDN DOM](https://developer.mozilla.org/ru/docs/Web/API/Document_Object_Model), [DOM Enlightenment](http://domenlightenment.com/) — глубокое понимание DOM, [web.dev Learn Forms](https://web.dev/learn/forms/)
+> **Литература:** [learn.javascript.ru: Объекты](https://learn.javascript.ru/object), [learn.javascript.ru: DOM](https://learn.javascript.ru/searching-elements-dom), [MDN DOM](https://developer.mozilla.org/ru/docs/Web/API/Document_Object_Model), [DOM Enlightenment (архив)](https://web.archive.org/web/20240101000000/http://domenlightenment.com/) — глубокое понимание DOM, [web.dev Learn Forms](https://web.dev/learn/forms/)
 
 > **Проект недели:** см. [docs/projects.md](../../docs/projects.md#неделя-6--dom-todo-app)
 > **Git:** минимум 1 осмысленный коммит каждый день в `learning-log/week-06/`

@@ -1,0 +1,14 @@
+# Lychee link-check config (used by CI via lychee-action)
+verbose = "info"
+no_progress = true
+max_retries = 2
+max_concurrency = 4
+timeout = 30
+accept = ["200", "403"]
+exclude_all_private = true
+
+# Placeholder / example URLs in prose
+exclude = [
+    '^https://example\.com/',
+    '^https://github\.com/YOUR_USER/',
+]

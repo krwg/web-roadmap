@@ -2,6 +2,12 @@
 
 Формат основан на [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.2.3] — 2026-07-08
+
+### Fixed
+- CI link-check: обновлены битые URL (React Router v6, MDN, SQLBolt, DOM Enlightenment → архив)
+- `.lychee.toml` с retry и exclude для placeholder-ссылок
+
 ## [1.2.2] — 2026-07-08
 
 ### Added
@@ -56,6 +62,7 @@
 ### Added
 - Первый релиз: 22 недели full-stack маршрута
 
+[1.2.3]: https://github.com/krwg/web-roadmap/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/krwg/web-roadmap/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/krwg/web-roadmap/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/krwg/web-roadmap/compare/v1.1.0...v1.2.0

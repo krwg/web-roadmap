@@ -268,7 +268,7 @@ Full flow: register → login → create note → logout → login → note visi
 **Читать:**
 
 - [OWASP Session Management](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
-- [React Router — protected routes](https://reactrouter.com/en/main/examples/auth)
+- [React Router — Tutorial](https://reactrouter.com/6.28.0/start/tutorial)
 - [MDN — HTTP Authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)
 
 **Ключевая мысль:** auth flow end-to-end — контракт между Context, api wrapper и protected routes.

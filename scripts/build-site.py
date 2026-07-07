@@ -17,7 +17,7 @@ OUT_WEEKS = DOCS / "weeks"
 OUT_PAGES = DOCS / "pages"
 LOGO_SRC = ROOT / "assets" / "logo.png"
 LOGO_DOCS = DOCS / "assets" / "logo.png"
-VERSION = "1.2.2"
+VERSION = "1.2.3"
 
 PHASE_MAP = {
     "00": ("setup", "Старт"),
