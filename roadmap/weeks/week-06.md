@@ -9,15 +9,17 @@
 ## День 1 (Mon): Объекты — основы
 
 ### Теория
+
+Объект в JavaScript — коллекция пар **ключ–значение**. Литерал `{ name: 'Анна', age: 25 }` — самый частый способ создания. Доступ: точечная нотация `user.name` и скобочная `user['name']` — вторая нужна для динамических ключей `user[fieldName]`. Методы — функции как свойства; внутри метода `this` ссылается на сам объект.
+
+Объекты хранятся **по ссылке**: `const b = a` копирует ссылку, не содержимое. Shallow copy через `{...obj}` или `Object.assign` — вложенные объекты остаются общими. `Object.keys`, `values`, `entries` — обход свойств; `entries` удобен для рендеринга пар в DOM.
+
+`for...in` перебирает и унаследованные свойства — для собственных используй `Object.keys` или `hasOwnProperty`. Модель `task = { id, title, done }` с методом `toggle()` — мост к Todo App.
+
+**Ключевая мысль:** объект — словарь по ссылке; spread копирует поверхностно, не глубоко.
+
+**Читать:**
 - [learn.javascript.ru: Объекты](https://learn.javascript.ru/object) — литералы, свойства, методы
-- Точечная и скобочная нотация: `obj.key`, `obj['key']`
-- `delete`, `in`, `for...in` vs `for...of` для объектов
-- Копирование: shallow copy `{...obj}`, `Object.assign`
-- `Object.keys`, `Object.values`, `Object.entries`
-- Объекты хранятся по ссылке — присвоение копирует ссылку, не объект
-- Методы — функции как свойства; `this` внутри метода ссылается на объект
-- Скобочная нотация нужна для динамических ключей: `obj[variable]`
-- `Object.entries` удобен для рендеринга пар ключ-значение в DOM
 
 ### Практика
 1. Объект `user` с полями name, email, age — чтение и изменение
@@ -39,15 +41,17 @@
 ## День 2 (Tue): Деструктуризация и spread для объектов
 
 ### Теория
+
+**Деструктуризация** извлекает поля из объекта или элементы из массива в переменные: `const { name, age } = user`. Переименование: `{ name: userName }`. Значения по умолчанию: `{ role = 'user' }` — если поля нет. В параметрах функции `printUser({ name, email })` сигнатура самодокументируется.
+
+**Spread** в объектах объединяет и переопределяет: `const config = { ...defaults, ...userConfig }` — поля из `userConfig` побеждают. Порядок важен: правый объект перекрывает левый. **Rest** собирает остаток: `const { id, ...rest } = product` — `rest` без `id`, удобно перед логированием без пароля.
+
+Иммутабельное обновление: `{ ...task, done: true }` — новый объект, оригинал не тронут. Паттерн для state management и React-подготовки. Swap переменных: `[a, b] = [b, a]` — элегантно через деструктуризацию массива.
+
+**Ключевая мысль:** spread для merge и иммутабельного update; rest для «всё кроме».
+
+**Читать:**
 - [learn.javascript.ru: Деструктурирующее присваивание](https://learn.javascript.ru/destructuring-assignment)
-- `const {name, age} = user`; переименование `{name: userName}`
-- Значения по умолчанию при деструктуризации
-- Spread в объектах: `{...defaults, ...overrides}`
-- Rest в объектах: `const {id, ...rest} = product`
-- Деструктуризация параметров делает сигнатуру функции самодокументируемой
-- Spread для иммутабельного update: `{...task, done: true}` — не мутируй оригинал
-- Rest исключает поля: `const {password, ...safeUser} = user` перед логированием
-- Порядок spread важен: `{...defaults, ...overrides}` — overrides побеждают
 
 ### Практика
 1. Функция `printUser({name, email, role = 'user'})` — деструктуризация параметров
@@ -74,16 +78,18 @@
 ## День 3 (Wed): DOM — поиск и изменение элементов
 
 ### Теория
+
+DOM (Document Object Model) — программный интерфейс к HTML-дереву. Браузер парсит разметку и строит дерево узлов; JavaScript может **читать и изменять** это дерево — текст обновляется на экране мгновенно. Поиск элементов: `document.querySelector('.card')` — первый; `querySelectorAll` — NodeList всех совпадений; `getElementById` — по id.
+
+`textContent` устанавливает **текст** и экранирует HTML — безопасно для пользовательского ввода. `innerHTML` парсит HTML-строку — XSS-уязвимость, если вставляешь данные пользователя. Создавай элементы через `createElement`, `append`, `remove` — чистый DOM API.
+
+`classList.add/remove/toggle/contains` управляет классами без перезаписи всего `className`. `dataset` маппит `data-*`: `el.dataset.price` ↔ `data-price`. Кэшируй частые `querySelector` в объект `elements` — меньше обходов дерева.
+
+**Ключевая мысль:** DOM — живое дерево; `textContent` для текста, `createElement` вместо `innerHTML` с user input.
+
+**Читать:**
 - [learn.javascript.ru: DOM-дерево](https://learn.javascript.ru/dom-nodes)
-- `document.querySelector`, `querySelectorAll`, `getElementById`
-- Свойства: `textContent` vs `innerHTML` (безопасность!)
-- `classList.add/remove/toggle/contains`
-- Атрибуты: `getAttribute`, `setAttribute`, `dataset`
-- DOM — живое дерево: изменения в JS сразу видны на странице
-- `textContent` экранирует HTML — безопасно для пользовательского ввода
-- `innerHTML` с user input — XSS-уязвимость; используй `createElement`
-- `dataset` маппит `data-*` атрибуты: `el.dataset.price` ↔ `data-price`
-- Кэшируй частые `querySelector` в переменные — меньше обходов DOM
+- [MDN DOM](https://developer.mozilla.org/ru/docs/Web/API/Document_Object_Model)
 
 ### Практика
 1. Подключи JS к лендингу, выбери заголовок и измени `textContent`
@@ -105,15 +111,17 @@
 ## День 4 (Thu): События — основы
 
 ### Теория
+
+События — способ браузера сообщить JS: «пользователь что-то сделал». `addEventListener('click', handler)` — современный стандарт; inline `onclick` в HTML — устарел и смешивает разметку с логикой. На один элемент можно повесить **несколько** обработчиков; `onclick` перезаписывает предыдущий.
+
+Объект события (`event`) несёт контекст: `target` — элемент, на котором **сработало** событие; `currentTarget` — элемент, на котором **висит** listener. `preventDefault()` отменяет действие браузера (submit формы, переход по ссылке), но **не останавливает всплытие**. `stopPropagation()` останавливает bubbling.
+
+**Всплытие (bubbling)**: клик по кнопке внутри `li` внутри `ul` сначала срабатывает на кнопке, затем всплывает к `li`, `ul`, `body`, `document`. **Делегирование**: один listener на `ul` ловит клики по всем `li` — эффективно для динамических списков. Для снятия обработчика нужна **именованная** функция — анонимную `removeEventListener` не найдёт.
+
+**Ключевая мысль:** bubbling — основа делегирования; `preventDefault` ≠ `stopPropagation`.
+
+**Читать:**
 - [learn.javascript.ru: Введение в события](https://learn.javascript.ru/introduction-browser-events)
-- `addEventListener('click', handler)` vs inline `onclick`
-- Event object: `target`, `currentTarget`, `preventDefault`, `stopPropagation`
-- Фазы: capturing, target, bubbling
-- `{ once: true }`, `{ passive: true }` — опции
-- Bubbling: событие всплывает от target к document — основа делегирования
-- `preventDefault()` отменяет действие браузера (submit, ссылка), не останавливает всплытие
-- `addEventListener` позволяет несколько обработчиков; `onclick` перезаписывает
-- Именованная функция нужна для `removeEventListener` — анонимную не снять
 
 ### Практика
 1. Кнопка «Наверх» — плавный скролл (пока `window.scrollTo`, событие click)
@@ -135,15 +143,17 @@
 ## День 5 (Fri): Интерактивный UI
 
 ### Теория
+
+Интерактивный UI строится на переключении **состояний**: открыт/закрыт, активен/неактивен. Скрытие: атрибут `hidden`, класс `.is-open`, `aria-hidden="true"` для скринридеров — лучше в комбинации. Таб-интерфейс: одна панель видима, остальные скрыты; активный таб помечается классом и `aria-selected`.
+
+Модальное окно — фокус внутри диалога (**focus trap**): Tab не уходит за пределы. Закрытие по Escape, клику на overlay, кнопке «×». `body { overflow: hidden }` при открытой модалке блокирует скролл фона. `event.target.closest('.card')` поднимается от точки клика к ближайшему предку с классом — паттерн делегирования для карточек.
+
+Аккордеон: `aria-expanded` на кнопке отражает состояние секции — обязательно для доступности. Всё это achievable без React — чистый DOM + классы + события.
+
+**Ключевая мысль:** UI = состояние + DOM; ARIA синхронизирует визуал со скринридером.
+
+**Читать:**
 - [learn.javascript.ru: Действия браузера](https://learn.javascript.ru/default-browser-action)
-- Toggle visibility: `hidden`, `aria-hidden`, класс `.is-open`
-- Tab-интерфейс: переключение активного таба
-- Модальное окно: focus trap (базово), закрытие по overlay
-- `event.target.closest('.card')` — паттерн делегирования
-- `hidden` и `aria-hidden` вместе — скрытие и для скринридеров
-- Focus trap в модалке: Tab не уходит за пределы диалога
-- `closest` поднимается по DOM от клика — удобно для карточек и строк списка
-- Блокировка `body { overflow: hidden }` при открытой модалке — нет скролла фона
 
 ### Практика
 1. Аккордеон: 3 секции, открыта одна; клик переключает
@@ -165,15 +175,17 @@
 ## День 6 (Sat): Формы и валидация на JS
 
 ### Теория
+
+HTML5-валидация — первый рубеж; JavaScript добавляет **кастомную** логику и UX. `form.elements` — коллекция полей формы; `FormData` собирает пары name–value; `input.value`, `checkbox.checked` — чтение состояния. Событие `input` срабатывает на **каждый символ**; `change` — при потере фокуса или выборе из select.
+
+Constraint Validation API: `field.validity` (флаги ошибок), `field.validationMessage`, `setCustomValidity('текст')` — переопределяет сообщение браузера. `form.checkValidity()` — программная проверка перед submit. Показывай ошибки в `<span class="error">` под полем с `aria-describedby` — лучше одного `alert()`.
+
+Disable кнопку submit, пока форма невалидна — предотвращает лишние попытки. HTML5 + JS вместе: нативные `required`/`pattern` + кастом «пароли совпадают» через `setCustomValidity`.
+
+**Ключевая мысль:** `input` для live-валидации; ошибки у поля, не в alert; `setCustomValidity` для своих правил.
+
+**Читать:**
 - [learn.javascript.ru: Формы, элементы управления](https://learn.javascript.ru/forms-controls)
-- `form.elements`, `FormData`, `input.value`, `checkbox.checked`
-- События: `input`, `change`, `submit`
-- Constraint Validation API: `validity`, `setCustomValidity`
-- Показ ошибок рядом с полями
-- `input` срабатывает на каждый символ; `change` — при потере фокуса или выборе
-- `setCustomValidity('текст')` переопределяет сообщение браузера
-- `form.checkValidity()` программная проверка перед submit
-- Ошибки рядом с полем (`aria-describedby`) — лучше, чем один alert
 
 ### Практика
 1. Валидация формы регистрации перед отправкой
@@ -195,14 +207,17 @@
 ## День 7 (Sun): DOM-проект — интерактивный лендинг
 
 ### Теория
-- Разделение: data / logic / DOM (базовый MVC)
-- `DocumentFragment` для batch insert
-- `requestAnimationFrame` — обзор для анимаций
-- Производительность: минимизируй reflow, кэшируй DOM-ссылки
-- Data layer не знает о DOM — массив задач отдельно от `renderTasks()`
-- `DocumentFragment` — один reflow вместо N при вставке списка
-- Частые чтения layout + записи style вызывают thrashing — группируй операции
-- `render*` функции принимают data и обновляют DOM — единая точка отрисовки
+
+Зрелое DOM-приложение разделяет **слои**. Data layer — массив задач, чистые функции `addTask`, `toggleTask`; не знает о HTML. DOM layer — `renderTasks(tasks)`, `renderFilters()`; читает data, обновляет дерево. App layer — связывает события с изменением data и вызовом render. Базовый MVC без фреймворка.
+
+`DocumentFragment` — контейнер в памяти: наполни список элементами, один `append` fragment — **один reflow** вместо N. Производительность: кэшируй DOM-ссылки; не читай `offsetHeight` и не пиши `style` вперемешку (layout thrashing). `requestAnimationFrame` — обзор для плавных анимаций чисел и скролла.
+
+Функции `render*` — единая точка отрисовки: изменил data → вызвал `renderTasks()` → DOM синхронизирован. Todo App недели — CRUD через DOM, delegation на списке, фильтры, без `innerHTML` для user input.
+
+**Ключевая мысль:** data отдельно от DOM; `render*` — мост; fragment — batch insert без лишних reflow.
+
+**Читать:**
+- [MDN: DocumentFragment](https://developer.mozilla.org/ru/docs/Web/API/DocumentFragment)
 
 ### Практика
 1. Оживи лендинг: тёмная тема, мобильное меню, плавный скролл к секциям

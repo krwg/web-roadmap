@@ -8,12 +8,20 @@
 ## День 127 (Пн): Node.js — среда и модули
 
 ### Теория
-- [Node.js Introduction](https://nodejs.org/en/learn/getting-started/introduction-to-nodejs): нет DOM/BOM, есть `process`, `global`, модули
-- CommonJS (`require`) vs [ES Modules](https://nodejs.org/api/esm.html) (`import`) — `"type": "module"` в package.json
-- npm: `package.json`, semver, `node_modules`, scripts — стандарт экосистемы JS backend
-- Встроенные модули: [fs](https://nodejs.org/api/fs.html), [path](https://nodejs.org/api/path.html), [http](https://nodejs.org/api/http.html)
-- `process.argv`, `process.env` — CLI и конфигурация
-- `import.meta.url` + `fileURLToPath` — ESM-эквивалент `__dirname`
+
+Node.js — среда выполнения JavaScript вне браузера. Нет DOM и `window`, зато есть `process`, встроенные модули и npm-экосистема. Backend на Node разделяет язык с фронтендом — один TypeScript/JavaScript на обе стороны, но runtime другой: event loop libuv, не браузерный.
+
+CommonJS (`require`) vs ES Modules (`import`) — выбери `"type": "module"` в `package.json` для современного стиля. `import.meta.url` + `fileURLToPath` заменяют `__dirname` в ESM. Встроенные модули: `fs`, `path`, `http`. `process.argv` — аргументы CLI, `process.env` — переменные окружения.
+
+npm управляет зависимостями: `package.json`, semver, `node_modules`. npm scripts (`"greet": "node scripts/greet.js"`) — стандартный способ запуска задач. `.gitignore`: `node_modules`, `.env`. `fs.promises` вместо callback — async/await без callback hell.
+
+**Читать:**
+
+- [Node.js Introduction](https://nodejs.org/en/learn/getting-started/introduction-to-nodejs)
+- [ES Modules](https://nodejs.org/api/esm.html)
+- [fs.promises](https://nodejs.org/api/fs.html#promises-api)
+
+**Ключевая мысль:** Node — JS без браузера; ESM + fs.promises — современный baseline.
 
 ### Практика
 1. `mkdir notes-api && npm init -y`, добавь `"type": "module"`
@@ -40,12 +48,20 @@
 ## День 128 (Вт): Асинхронность в Node
 
 ### Теория
-- Callback → Promise → async/await — эволюция асинхронного Node-кода
-- [Event Loop в Node](https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick) — libuv, phases, не блокируй main thread
-- [EventEmitter](https://nodejs.org/api/events.html) — `on`, `emit`, `once` — основа многих Node API
-- `fs.watch` / `chokidar` — реакция на изменения файлов
-- `process.on('unhandledRejection')` — лови необработанные Promise rejections
-- `promisify` из `util` — обёртка callback API в Promise
+
+Асинхронность — сердце Node. Эволюция: callback → Promise → async/await. Event loop libuv обрабатывает I/O неблокирующе, но синхронный `fs.readFileSync` в сервере заморозит все запросы — используй async API. `await` без `try/catch` — необработанный rejection.
+
+EventEmitter (`on`, `emit`, `once`) — основа многих Node API и паттерн pub/sub. `process.on('unhandledRejection')` ловит забытые rejections — настрой в entry point. `util.promisify` оборачивает legacy callback API в Promise — для понимания, не для нового кода.
+
+File watcher на `notes.json` учит реагировать на изменения; SIGINT корректно останавливает watcher. `Promise.all` читает три файла параллельно. Замер sync vs async на 10 файлах — наглядная демонстрация блокировки main thread.
+
+**Читать:**
+
+- [Event Loop](https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick)
+- [EventEmitter](https://nodejs.org/api/events.html)
+- [async/await (MDN)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
+
+**Ключевая мысль:** не блокируй event loop; await + try/catch на каждом I/O.
 
 ### Практика
 1. Перепиши file I/O на async/await с try/catch
@@ -72,12 +88,20 @@
 ## День 129 (Ср): Express — REST API основы
 
 ### Теория
-- [Express Hello World](https://expressjs.com/en/starter/hello-world.html) — минимальный HTTP-сервер
-- Routes: `app.get/post/put/delete`, `req.params`, `req.query`, `req.body`
-- [express.json()](https://expressjs.com/en/api.html#express.json) middleware — парсинг JSON body
-- HTTP status codes: 200, 201, 204, 400, 404, 500 — семантика ответа
-- Разделение `app.js` (конфигурация) и `server.js` (listen) — тестируемость
-- `nodemon` — автоперезапуск в dev
+
+Express — минималистичный HTTP-фреймворк поверх Node `http`. `app.get/post/put/delete` маппят метод + путь на handler. `req.params` — path params, `req.query` — query string, `req.body` — JSON после `express.json()` middleware. Без body parser `req.body` будет `undefined` — классическая ловушка.
+
+HTTP semantics: 200 OK, 201 Created, 204 No Content (DELETE без body), 400 Bad Request, 404 Not Found. Раздели `app.js` (конфигурация, middleware, routes) и `server.js` (`listen`) — app экспортируется для тестов. `nodemon` автоперезапускает в dev.
+
+CRUD `/api/notes` с хранением в JSON-файле — мост к PostgreSQL завтра. Единый формат ответа `{ data }` или `{ error: { message } }` упрощает фронтенд. RESTful URLs: существительные, не глаголы.
+
+**Читать:**
+
+- [Express Hello World](https://expressjs.com/en/starter/hello-world.html)
+- [express.json()](https://expressjs.com/en/api.html#express.json)
+- [Express Routing](https://expressjs.com/en/guide/routing.html)
+
+**Ключевая мысль:** express.json() обязателен; app отдельно от server — тестируемость.
 
 ### Практика
 1. `npm install express`, `src/app.js`, `src/server.js`
@@ -104,12 +128,20 @@
 ## День 130 (Чт): Middleware, валидация, ошибки
 
 ### Теория
-- [Writing middleware](https://expressjs.com/en/guide/using-middleware.html): `(req, res, next)` — цепочка обработки
-- Error middleware: 4 аргумента `(err, req, res, next)` — централизованные ошибки
-- [Zod](https://zod.dev/) — schema validation с TypeScript inference
-- [morgan](https://github.com/expressjs/morgan) — HTTP request logging
-- Порядок middleware важен: logger → parser → routes → error handler
-- `next(err)` передаёт управление error middleware
+
+Middleware в Express — функции `(req, res, next)` в цепочке. Порядок критичен: logger → `express.json()` → routes → 404 handler → error middleware (4 аргумента: `err, req, res, next`). `next()` передаёт управление дальше; `next(err)` — в error handler.
+
+Zod валидирует body с TypeScript inference: `title` min 1 символ, `body` optional. При ошибке — 400 с `zodError.flatten()`. Centralized error handler возвращает JSON `{ error: { code, message } }` — единый контракт для клиента. morgan логирует HTTP-запросы в dev.
+
+404 handler для неизвестных routes — последний middleware перед error handler. Custom logger с duration (Date.now до/после) дополняет morgan. Error middleware без 4 параметров Express не распознает — не вызовется.
+
+**Читать:**
+
+- [Writing middleware](https://expressjs.com/en/guide/using-middleware.html)
+- [Zod](https://zod.dev/)
+- [morgan](https://github.com/expressjs/morgan)
+
+**Ключевая мысль:** порядок middleware; Zod на входе, error handler на выходе цепочки.
 
 ### Практика
 1. Logger middleware: method, url, duration (Date.now до/после)
@@ -136,12 +168,20 @@
 ## День 131 (Пт): Express + PostgreSQL
 
 ### Теория
-- [node-postgres](https://node-postgres.com/): `Pool`, `pool.query(text, params)`
-- Connection string: `DATABASE_URL=postgresql://user:pass@host:5432/db`
-- Prepared statements: `$1, $2` placeholders — защита от SQL injection
-- [Prisma](https://www.prisma.io/) — ORM-альтернатива (обзор, на этой неделе raw pg)
-- Pool vs Client — pool переиспользует соединения под нагрузкой
-- Graceful shutdown: `pool.end()` на SIGTERM
+
+`node-postgres` (`pg`) — драйвер PostgreSQL для Node. `Pool` переиспользует соединения под нагрузкой; `new Client()` на каждый запрос — антипаттерн. `pool.query('SELECT * FROM notes WHERE id = $1', [id])` — placeholders `$1, $2` защищают от SQL injection.
+
+`DATABASE_URL=postgresql://user:pass@host:5432/db` из `.env` через dotenv. Prisma — ORM-альтернатива (обзор); на этой неделе raw `pg` учит SQL и placeholders. Graceful shutdown: `pool.end()` на SIGTERM.
+
+Перепиши notes API с JSON-файла на таблицу `notes(id, title, body, created_at)`. `schema.sql` + migrate script. Все запросы только через `pool.query` с массивом параметров — template strings в SQL запрещены.
+
+**Читать:**
+
+- [node-postgres](https://node-postgres.com/)
+- [Connection Pooling](https://node-postgres.com/features/pooling)
+- [dotenv](https://github.com/motdotla/dotenv)
+
+**Ключевая мысль:** Pool, не Client; `$1` placeholders — единственный безопасный способ.
 
 ### Практика
 1. `npm install pg dotenv`
@@ -168,12 +208,20 @@
 ## День 132 (Сб): Структура проекта и роутеры
 
 ### Теория
-- [Express Router](https://expressjs.com/en/guide/routing.html#express-router) — модульные маршруты
-- Layered architecture: routes → controllers → services → db — разделение ответственности
-- [dotenv](https://github.com/motdotla/dotenv) — secrets из `.env`, не из кода
-- Environment: `NODE_ENV=development|production` — разное поведение
-- Health check pattern — `/api/health` для мониторинга и Docker
-- `package-lock.json` в git — воспроизводимые сборки
+
+Express Router модульно группирует маршруты: `notes.routes.js` монтируется с prefix `/api/notes`. Layered architecture: routes (тонкие) → controllers (HTTP) → services (бизнес-логика) → db (SQL). Бизнес-логика в route handler не тестируется — вынеси в service.
+
+`dotenv` загружает secrets из `.env`; `NODE_ENV=development|production` меняет поведение (morgan 'dev' vs 'combined'). Health check `GET /api/health` возвращает `{ status, db: 'ok'|'down', uptime }` — нужен для Docker и мониторинга. 503 если БД недоступна.
+
+Graceful shutdown: SIGTERM → `server.close()` → `pool.end()`. `package-lock.json` в git — воспроизводимые сборки. README описывает слои папок — onboarding нового разработчика.
+
+**Читать:**
+
+- [Express Router](https://expressjs.com/en/guide/routing.html#express-router)
+- [dotenv](https://github.com/motdotla/dotenv)
+- [Graceful Shutdown](https://expressjs.com/en/advanced/healthcheck-graceful-shutdown.html)
+
+**Ключевая мысль:** routes тонкие, logic в services; health check — контракт с инфраструктурой.
 
 ### Практика
 1. Структура: `src/routes/`, `controllers/`, `services/`, `db/pool.js`
@@ -200,11 +248,20 @@
 ## День 133 (Вс): Ревью Node.js и сравнение с FastAPI
 
 ### Теория
-- Node vs Python backend: I/O-bound → оба хороши; CPU-bound → Python часто проще
-- [npm scripts](https://docs.npmjs.com/cli/v10/using-npm/scripts) best practices: `start`, `dev`, `test`, `db:migrate`
-- Package lock в git — обязательно для командной работы
-- Express vs Fastify vs Nest — обзор (Express — минимализм и экосистема)
-- Подготовка к неделе 20: skeleton auth routes
+
+Ревью недели — сравнение двух backend-стеков, которые ты теперь знаешь. FastAPI: автодоки, Pydantic, async, Python ecosystem. Express: минимализм, npm, один язык с React. Для I/O-bound оба отличны; CPU-bound тяжёлая работа чаще уходит в Python или отдельный worker.
+
+npm scripts best practices: `start` (production), `dev` (nodemon), `test`, `db:migrate`. Postman collection — демо и ручное QA. Skeleton `auth.routes.js` — мост к неделе 20. `npm audit` показывает уязвимости в зависимостях.
+
+Сравнительная таблица FastAPI vs Express по 10 критериям учит аргументировать выбор стека. Express Notes API — parity с Library REST API недели 18: те же статусы, формат ошибок, layered structure. Тег `week-19-done`.
+
+**Читать:**
+
+- [npm scripts](https://docs.npmjs.com/cli/v10/using-npm/scripts)
+- [Express vs Fastify (обзор)](https://expressjs.com/)
+- [npm audit](https://docs.npmjs.com/cli/v10/commands/npm-audit)
+
+**Ключевая мысль:** Express и FastAPI решают одну задачу разными инструментами — выбор по команде и экосистеме.
 
 ### Практика
 1. Сравнительная таблица: FastAPI (нед.18) vs Express — 10 критериев в `docs/compare.md`

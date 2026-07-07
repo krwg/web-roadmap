@@ -10,11 +10,18 @@
 ## День 1 (Mon): Git — ревизия основ + `git log` как инструмент
 
 ### Теория
-- Повтори [Pro Git: Основы](https://git-scm.com/book/ru/v2/Начало-Основы-Git) — три состояния, SHA коммитов
-- `git log --oneline --graph --all` — читать историю как историю решений
-- `git show <hash>` — что именно изменилось в коммите
-- `git diff` vs `git diff --staged` — незакоммиченное vs в staging
-- [Conventional Commits](https://www.conventionalcommits.org/ru/): `feat:`, `fix:`, `docs:`, `chore:`
+
+Перед углублением в ветки стоит закрепить фундамент: Git отслеживает три **состояния** каждого файла — изменён (modified), проиндексирован (staged), зафиксирован (committed). Каждый коммит получает уникальный SHA-хеш — «отпечаток» снимка. `git log --oneline --graph --all` показывает историю как дерево решений, а не список сохранений.
+
+`git show <hash>` раскрывает конкретный коммит: автор, дата, diff. `git diff` — разница между working directory и staging; `git diff --staged` — что войдёт в следующий коммит. Это инструменты **расследования**: «что я наменял и зачем?».
+
+**Conventional Commits** — соглашение об именовании: `feat:`, `fix:`, `docs:`, `chore:`. Префикс сразу говорит тип изменения; в будущем из таких сообщений автогенерируется CHANGELOG. Хорошее сообщение отвечает на вопрос «зачем», а не «что нажал».
+
+**Ключевая мысль:** `git log` — дневник решений; осмысленные сообщения коммитов = документация для будущего себя.
+
+**Читать:**
+- [Pro Git: Основы](https://git-scm.com/book/ru/v2/Начало-Основы-Git) — три состояния, SHA коммитов
+- [Conventional Commits](https://www.conventionalcommits.org/ru/)
 
 ### Практика
 1. В `learning-log` выполни `git log --oneline -15` — опиши в `week-04/REFLECTION.md` паттерн своих сообщений
@@ -34,15 +41,17 @@
 ## День 2 (Tue): Ветки, слияние и конфликты
 
 ### Теория
+
+Ветка в Git — просто **указатель** на коммит. Создать ветку дёшево: `git switch -c feature/header` ответвляет от текущего состояния, и ты работаешь изолированно, не ломая `main`. Когда фича готова — **слияние** (merge) переносит изменения обратно.
+
+**Fast-forward merge** возможен, если `main` не получил новых коммитов с момента ответвления: указатель `main` просто «перепрыгнет» на конец feature-ветки. Иначе Git создаёт **merge commit** — коммит с двумя родителями. `git merge --no-ff` принудительно создаёт merge commit даже при возможности ff — сохраняет видимость ветки в истории.
+
+**Конфликт** возникает, когда одна и та же строка изменена в обеих ветках. Git вставляет маркеры `<<<<<<<`, `=======`, `>>>>>>>` — ты вручную выбираешь итог, `git add`, `git commit`. Конфликт — не катастрофа, а диалог между версиями. `git stash` временно прячет незакоммиченные правки, если нужно срочно переключить ветку.
+
+**Ключевая мысль:** ветка — дешёвый черновик; merge — слияние черновика с основной линией.
+
+**Читать:**
 - [Pro Git: Ветвление](https://git-scm.com/book/ru/v2/Ветвление-в-Git-Основы-ветвления-и-слияния)
-- `git branch`, `git checkout -b feature/header`, `git switch` (современная альтернатива)
-- Fast-forward vs merge commit; `git merge --no-ff`
-- Конфликты: маркеры `<<<<<<<`, ручное разрешение, `git add`, `git commit`
-- `git stash` — временно спрятать изменения
-- Ветка — указатель на коммит; дешёвое ветвление — основа feature-workflow
-- Fast-forward возможен, если `main` не ушёл вперёд — иначе merge commit
-- Конфликт — не катастрофа: Git показывает обе версии, ты выбираешь итог
-- `git stash` спасает незакоммиченные правки при срочном переключении ветки
 
 ### Практика
 1. Создай ветку `feature/dark-theme`, добавь тёмную тему
@@ -69,15 +78,17 @@
 ## День 3 (Wed): GitHub и удалённый workflow
 
 ### Теория
+
+Локальный Git — половина workflow. **Remote** (обычно `origin` на GitHub) — копия репозитория на сервере. `git push` публикует коммиты; `git pull` забирает чужие и сливает с твоими. Флаг `-u` при первом push связывает локальную ветку с удалённой — дальше достаточно `git push`.
+
+**Pull Request** — запрос на слияние ветки с описанием изменений. Даже в solo-проекте PR учит дисциплине review: ты смотришь diff глазами «чужого» разработчика до merge. Стратегии merge на GitHub: обычный merge, squash (все коммиты ветки → один), rebase. Squash даёт чистую линейную историю `main`.
+
+**Issues** — трекер задач: баг, улучшение, идея. Коммит с `fix #12` в сообщении автоматически закрывает issue №12. Fork + upstream — паттерн open source: форкаешь чужой репозиторий, вносишь правки, открываешь PR в оригинал.
+
+**Ключевая мысль:** GitHub = remote + социальный слой; PR — разговор о коде до попадания в main.
+
+**Читать:**
 - [GitHub: Hello World](https://docs.github.com/ru/get-started/start-your-journey/hello-world)
-- `git remote add origin`, `git push -u origin main`, `git pull`
-- Pull Request: описание, review, merge strategies
-- Fork, clone, upstream — open source workflow
-- GitHub Issues, Projects — трекинг задач
-- Remote — копия репозитория на сервере; `push` публикует, `pull` синхронизирует
-- PR — обсуждение изменений до merge; даже solo-проект учит дисциплине review
-- Squash merge сжимает коммиты ветки в один — чистая история `main`
-- Issue + `fix #12` в коммите автоматически закрывает задачу
 
 ### Практика
 1. Создай репозиторий на GitHub (public), подключи remote
@@ -99,15 +110,17 @@
 ## День 4 (Thu): DevTools — Elements и Console
 
 ### Теория
+
+Chrome DevTools — рентген твоей страницы. Панель **Elements** показывает живое DOM-дерево: кликни на узел — увидишь применённые стили, box model, flex/grid overlay. Вкладка **Styles** перечисляет все CSS-правила с указанием файла и строки; перечёркнутое свойство проиграло в каскаде — ищи победителя выше. **Computed** — итоговые вычисленные значения после каскада, наследования и браузерных дефолтов.
+
+Live-редактирование CSS в DevTools — быстрый эксперимент: подобрал отступ — перенеси в файл. Flex/Grid overlay рисует треки и gap поверх страницы — не гадай, смотри. В **Console** `$0` — ссылка на элемент, выбранный в Elements; мост между визуальным и программным исследованием.
+
+`console.log` — базовый вывод; `console.table` — таблица для массивов объектов; `console.group` — группировка связанных логов. Уровни `warn` и `error` выделяются визуально и фильтруются.
+
+**Ключевая мысль:** Styles — «кто перебил?», Computed — «что в итоге?»; overlay — «как устроена сетка?».
+
+**Читать:**
 - [Chrome DevTools: Overview](https://developer.chrome.com/docs/devtools/overview)
-- Elements: DOM-дерево, Styles, Computed, Layout (flex/grid overlay)
-- Редактирование CSS live, breakpoints в CSS (click on property)
-- Console: `console.log`, `console.table`, `console.group`, уровни log/warn/error
-- `$0` — выбранный элемент, `copy()`, `inspect()`
-- Styles показывает все правила и их источник — быстрый поиск «кто перебил стиль»
-- Computed — итоговые вычисленные значения после каскада
-- Flex/Grid overlay визуализирует треки и gap — не гадай, смотри
-- `$0` в Console — мост между Elements и JS без querySelector
 
 ### Практика
 1. Открой лендинг, исследуй box model каждой секции в Elements
@@ -129,15 +142,18 @@
 ## День 5 (Fri): DevTools — Network, Sources, Performance
 
 ### Теория
-- Network: фильтры, waterfall, статусы HTTP, размеры, Disable cache
-- Sources: breakpoints в JS, step over/into, watch expressions
-- Performance: запись профиля, FPS, long tasks
-- Lighthouse в DevTools — аудит страницы
-- Application: Local Storage, Cookies, Service Workers (обзор)
-- Waterfall показывает порядок и время загрузки — найди bottleneck
-- Disable cache при разработке — иначе видишь устаревшие файлы
-- Breakpoint останавливает выполнение — inspect переменных в момент бага
-- Lighthouse даёт actionable рекомендации: контраст, размеры, best practices
+
+Панель **Network** показывает каждый HTTP-запрос при загрузке страницы: URL, статус, размер, время. **Waterfall** — диаграмма «кто за кем»: видно, что блокирует рендер (тяжёлые картинки, синхронные скрипты). Статусы: **200** OK, **304** Not Modified (из кэша), **404** Not Found. При разработке включай **Disable cache**, иначе видишь устаревшие файлы.
+
+**Sources** — отладка JavaScript: breakpoint останавливает выполнение в точке; step over/into проходят по строкам; watch expressions следят за переменными. **Performance** записывает профиль: FPS, long tasks, jank при скролле. **Lighthouse** в DevTools — аудит Performance, Accessibility, Best Practices с конкретными рекомендациями.
+
+Вкладка **Application** — хранилища браузера: Local Storage, Cookies, Service Workers (обзор на будущее). Тяжёлый ресурс в Network — первый кандидат на оптимизацию: сжатие, WebP, lazy loading.
+
+**Ключевая мысль:** Network waterfall — карта загрузки; Lighthouse — чеклист перед сдачей.
+
+**Читать:**
+- [Chrome DevTools: Network](https://developer.chrome.com/docs/devtools/network)
+- [Chrome DevTools: Performance](https://developer.chrome.com/docs/devtools/performance)
 
 ### Практика
 1. Перезагрузи страницу с Network open — проанализируй waterfall
@@ -159,15 +175,18 @@
 ## День 6 (Sat): Workflow разработчика
 
 ### Теория
-- Git Flow vs GitHub Flow vs Trunk-Based — когда что
-- Conventional Commits: `feat:`, `fix:`, `docs:`, `chore:`
-- Pre-commit checklist: lint, test, build
-- VS Code: Git panel, diff view, extensions (GitLens, Prettier, ESLint)
-- Парное программирование и code review — культура
-- GitHub Flow: main + feature branches + PR — достаточно для большинства проектов
-- Conventional Commits позволяют автогенерировать CHANGELOG
-- Prettier убирает споры о форматировании — один стиль в команде
-- Self-review перед push: открой diff глазами ревьюера
+
+Workflow — это привычки, которые масштабируются от solo до команды. **GitHub Flow** — простейший: `main` всегда deployable, каждая фича в ветке → PR → merge. Git Flow сложнее (develop, release) — избыточен для учебных проектов. **Trunk-Based** — короткоживущие ветки, частые merge в main — для зрелых команд с CI.
+
+**Conventional Commits** (`feat:`, `fix:`, `docs:`) — единый язык сообщений; из них генерируется CHANGELOG. **Pre-commit checklist**: `git diff` глазами ревьюера, нет ли `.env` в staging, страница открывается, Lighthouse не упал. Prettier убирает споры о форматировании — один `.prettierrc` на проект.
+
+VS Code Git panel, diff view, GitLens — ускоряют ежедневную работу. Code review — не придирка, а передача знаний: даже self-review перед push ловит опечатки и лишние файлы.
+
+**Ключевая мысль:** GitHub Flow + Conventional Commits + self-review = профессиональный минимум.
+
+**Читать:**
+- [Conventional Commits](https://www.conventionalcommits.org/ru/)
+- [GitHub Flow](https://docs.github.com/ru/get-started/using-github/github-flow)
 
 ### Практика
 1. Переименуй последние коммиты сообщениями в стиле Conventional Commits (если нужно — `git rebase` осторожно или новые коммиты)
@@ -189,14 +208,18 @@
 ## День 7 (Sun): Интеграция и практика
 
 ### Теория
-- `git log`, `git diff`, `git show`, `git blame` — расследование истории
-- `git revert` vs `git reset` — безопасность shared branches
-- GitHub Pages — деплой статики (обзор)
-- Резервное клонирование: `git clone`, работа offline
-- `git blame` показывает, кто и когда изменил строку — расследование регрессий
-- `git revert` создаёт новый коммит-отмену — безопасно для shared `main`
-- `git reset --hard` переписывает историю — только на локальных ветках
-- GitHub Pages публикует статику из `gh-pages` или Actions — live demo бесплатно
+
+Инструменты **расследования истории**: `git log` — хронология; `git diff` — разница между состояниями; `git show` — один коммит целиком; `git blame` — кто и когда изменил каждую строку файла. Blame не для поиска виноватых, а для понимания контекста: «зачем эта строка появилась?».
+
+Отмена изменений — два разных инструмента. `git revert <hash>` создаёт **новый** коммит, отменяющий старый — безопасно для shared `main`, история не переписывается. `git reset --hard` откатывает указатель ветки — **переписывает** историю; только на локальных ветках, никогда на запушенном main без согласования.
+
+**GitHub Pages** публикует статику из ветки `gh-pages` или через Actions — бесплатный live demo для портфолио. `git clone` в новую папку — тест: «смогу ли я развернуть проект с нуля?» — must-have перед сдачей.
+
+**Ключевая мысль:** `revert` — безопасная отмена; `reset --hard` — только локально; clone — финальный тест переносимости.
+
+**Читать:**
+- [Pro Git: Отмена изменений](https://git-scm.com/book/ru/v2/Приложение-C%3A-Команды-Git-Отмена-изменений)
+- [GitHub Pages](https://docs.github.com/ru/pages)
 
 ### Практика
 1. Клонируй свой репозиторий в новую папку — проверь, что всё работает

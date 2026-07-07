@@ -8,12 +8,20 @@
 ## День 141 (Пн): Связка Frontend + Backend
 
 ### Теория
-- [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS): браузер блокирует cross-origin без заголовков сервера
-- [cors package](https://expressjs.com/en/resources/middleware/cors.html) в Express; FastAPI `CORSMiddleware`
-- Env vars: `VITE_API_URL` (frontend, build-time), `DATABASE_URL` (backend, runtime)
-- [Vite proxy](https://vitejs.dev/config/server-options.html#server-proxy) — обход CORS в dev через same-origin
-- Same-origin policy — почему `localhost:5173` ≠ `localhost:3000`
-- Preflight OPTIONS request — когда браузер спрашивает разрешение
+
+Full-stack начинается там, где фронтенд и бэкенд встречаются в браузере. Same-origin policy: `localhost:5173` (Vite) и `localhost:3000` (API) — разные origins. Браузер блокирует cross-origin fetch без заголовков CORS от сервера. Preflight OPTIONS запрос отправляется для «непростых» запросов.
+
+`cors` middleware в Express или `CORSMiddleware` в FastAPI с whitelist `http://localhost:5173`. `VITE_API_URL` — build-time переменная для фронтенда; `DATABASE_URL` — runtime для бэкенда. Vite proxy в dev обходит CORS, направляя `/api` на backend — same-origin для браузера.
+
+Замени localStorage tasks/notes на API CRUD — это суть недели. Проверь Network tab: нет CORS errors. `.env.example` для обоих проектов. Hardcoded localhost в production build — сломает deploy.
+
+**Читать:**
+
+- [CORS (MDN)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+- [cors (Express)](https://expressjs.com/en/resources/middleware/cors.html)
+- [Vite proxy](https://vitejs.dev/config/server-options.html#server-proxy)
+
+**Ключевая мысль:** CORS — согласие сервера; `VITE_` prefix обязателен для клиентских env.
 
 ### Практика
 1. React Dashboard (нед.14) или Secure Notes (нед.20) → fetch к Express/FastAPI API
@@ -40,12 +48,20 @@
 ## День 142 (Вт): Единый API-контракт и обработка ошибок
 
 ### Теория
-- API contract: OpenAPI/Swagger — source of truth для frontend и backend
-- Consistent error format: `{ error: { code, message, details? } }`
-- Loading states, error states, empty states — три обязательных UI-состояния
-- Optimistic updates (обзор) — UI обновляется до ответа сервера
-- [React Query](https://tanstack.com/query/latest) / SWR — кеширование и retry (опционально)
-- TypeScript types для API responses — меньше runtime-сюрпризов
+
+API contract — общий язык фронтенда и бэкенда. OpenAPI/Swagger — source of truth: типы, статусы, примеры. Единый формат ошибок `{ error: { code, message, details? } }` упрощает парсинг на клиенте. 4xx — «ты сделал что-то не так», 5xx — «попробуй позже».
+
+Три UI-состояния на каждой data-fetching странице: loading (spinner), error (message + retry), empty (подсказка действия). `services/api.ts` — единый fetch wrapper с auth header и error parsing; не дублируй fetch в 10 компонентах. TypeScript types `Task`, `ApiError` в `types/api.ts`.
+
+Проверяй `res.ok` перед `json()` — иначе парсишь HTML error page как JSON. React Query/SWR — опционально для кеша и retry. Сверь frontend types с OpenAPI вручную или через openapi-typescript.
+
+**Читать:**
+
+- [OpenAPI](https://swagger.io/specification/)
+- [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+- [TanStack Query](https://tanstack.com/query/latest)
+
+**Ключевая мысль:** один api module; loading/error/empty — не опциональный UX.
 
 ### Практика
 1. `services/api.ts` — единый fetch wrapper с error parsing и auth header
@@ -72,12 +88,20 @@
 ## День 143 (Ср): Docker — основы
 
 ### Теория
-- [Docker Overview](https://docs.docker.com/get-started/overview/): image (шаблон) vs container (экземпляр)
-- [Dockerfile reference](https://docs.docker.com/reference/dockerfile/): FROM, WORKDIR, COPY, RUN, CMD, EXPOSE
-- [.dockerignore](https://docs.docker.com/build/building/context/#dockerignore-files) — не копируй node_modules в context
-- Layer caching: COPY package*.json → npm ci → COPY . — быстрее rebuild
-- Multi-stage builds — build stage + slim runtime (обзор)
-- `docker build -t name .` и `docker run -p host:container`
+
+Docker упаковывает приложение с зависимостями в воспроизводимый образ. Image — неизменяемый шаблон (слои); container — запущенный экземпляр. Dockerfile: `FROM node:20-alpine`, `WORKDIR`, `COPY package*.json`, `RUN npm ci`, `COPY .`, `EXPOSE`, `CMD`. Layer caching: сначала зависимости, потом код — быстрее rebuild.
+
+`.dockerignore` исключает `node_modules`, `.git`, `.env` из build context. `docker build -t task-api .` и `docker run -p 3000:3000 --env-file .env task-api`. Multi-stage builds (обзор): build stage + slim runtime. `curl localhost:3000/api/health` с хоста проверяет container.
+
+Не копируй весь проект до `npm ci` — инвалидируешь cache. Root user в container — для prod consider non-root (обзор). Документируй docker commands в README.
+
+**Читать:**
+
+- [Docker Overview](https://docs.docker.com/get-started/overview/)
+- [Dockerfile reference](https://docs.docker.com/reference/dockerfile/)
+- [.dockerignore](https://docs.docker.com/build/building/context/#dockerignore-files)
+
+**Ключевая мысль:** image = шаблон, container = процесс; слои Dockerfile — про скорость сборки.
 
 ### Практика
 1. Dockerfile для backend: `node:20-alpine` или `python:3.12-slim`
@@ -104,12 +128,20 @@
 ## День 144 (Чт): Docker для frontend и PostgreSQL
 
 ### Теория
-- Multi-stage frontend: Node build → nginx serve `dist/` — production pattern
-- `vite build` создаёт static assets; nginx отдаёт с gzip
-- [Official postgres image](https://hub.docker.com/_/postgres): env `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`
-- Named volumes — данные PG переживают `docker rm container`
-- `localhost` внутри container ≠ host machine — используй service names в compose network
-- `VITE_API_URL` — build-time arg, пересобирай image при смене API URL
+
+Production frontend в Docker — multi-stage: stage 1 `npm run build` (Node), stage 2 `nginx:alpine` копирует `dist/`. nginx отдаёт static assets с gzip; `try_files $uri /index.html` — SPA fallback для client-side routes. `VITE_API_URL` — build-time: пересобирай image при смене API URL.
+
+Official `postgres:16` image: env `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`. Named volume `pgdata:/var/lib/postgresql/data` — данные переживают `docker rm`. `localhost` внутри container — сам container, не host machine; в compose network используй имя service `db`.
+
+Подними три container вручную перед compose: frontend :80, API :3000, PG :5432. Backend подключается к postgres по hostname `db` в docker network. Проверь полный flow до `docker compose`.
+
+**Читать:**
+
+- [nginx docker](https://hub.docker.com/_/nginx)
+- [postgres docker](https://hub.docker.com/_/postgres)
+- [Multi-stage builds](https://docs.docker.com/build/building/multi-stage/)
+
+**Ключевая мысль:** в docker network хост БД — имя service, не localhost.
 
 ### Практика
 1. Frontend Dockerfile: stage 1 `npm run build`, stage 2 `nginx:alpine` + COPY dist
@@ -136,12 +168,20 @@
 ## День 145 (Пт): docker-compose — multi-service
 
 ### Теория
-- [Compose file reference](https://docs.docker.com/compose/compose-file/): services, networks, volumes
-- `depends_on` — порядок старта (не гарантирует готовность БД!)
-- Healthchecks: `healthcheck: test: ["CMD-SHELL", "pg_isready ..."]`
-- `docker compose up --build`, `docker compose down`, `docker compose down -v` (удаляет volumes!)
-- Environment через `env_file:` или `environment:` в compose
-- Default network — все services видят друг друга по имени service
+
+docker-compose оркестрирует multi-service приложение одним файлом. Services: `db`, `backend`, `frontend`; networks связывают их; volumes persist data. `depends_on` задаёт порядок старта, но не готовность БД — добавь healthcheck `pg_isready` и `condition: service_healthy`.
+
+`DATABASE_URL=postgresql://user:pass@db:5432/tasks` — hostname `db` из имени service. `docker compose up --build` — одна команда для всего стека. `docker compose down -v` удаляет volumes — осторожно, потеряешь данные. Seed в entrypoint или init service.
+
+Smoke test: open frontend → login → create task → refresh → persists. Healthchecks на db и `/api/health` на backend — обязательны для надёжного старта. Эта структура monorepo — прямой задел для DevHub capstone.
+
+**Читать:**
+
+- [Compose file reference](https://docs.docker.com/compose/compose-file/)
+- [depends_on with healthcheck](https://docs.docker.com/compose/how-tos/startup-order/)
+- [docker compose CLI](https://docs.docker.com/compose/reference/)
+
+**Ключевая мысль:** compose + healthcheck + volumes = воспроизводимый full-stack локально.
 
 ### Практика
 1. `docker-compose.yml`:
@@ -170,12 +210,20 @@
 ## День 146 (Сб): Dev vs Prod конфигурация
 
 ### Теория
-- [12 Factor App](https://12factor.net/): config, logs, disposability, dev/prod parity
-- `docker-compose.override.yml` — автоматически мержится в dev
-- `docker-compose.prod.yml` — explicit `-f` для production-like local
-- Логирование: `docker compose logs -f backend`
-- Secrets в prod: Docker secrets, cloud provider env (не в compose file plain text)
-- Hot reload в dev: volume mount source + nodemon/uvicorn --reload
+
+12 Factor App: config в environment, dev/prod parity, disposability (containers стартуют быстро). `docker-compose.override.yml` автоматически мержится в dev; `docker-compose.prod.yml` — explicit `-f` для production-like local. Dev: volume mount source + nodemon/uvicorn --reload; prod: optimized image без mounts.
+
+Логи: `docker compose logs -f backend`. Secrets в prod — Docker secrets или cloud env, не plain text в compose file. Entrypoint script: wait-for-db → migrate → seed → start server — решает race condition при старте.
+
+Документируй порты и команды: dev `docker compose up` vs prod `docker compose -f docker-compose.prod.yml up`. Dev volume mount может перезаписать `node_modules` в container — используй named volume для node_modules (обзор). Default passwords только для local.
+
+**Читать:**
+
+- [12 Factor App](https://12factor.net/)
+- [Compose override](https://docs.docker.com/compose/how-tos/multiple-compose-files/merge/)
+- [Docker secrets](https://docs.docker.com/engine/swarm/secrets/)
+
+**Ключевая мысль:** dev/prod compose — разные файлы, одна документация в README.
 
 ### Практика
 1. `docker-compose.dev.yml` — mount source, hot reload, exposed debug ports
@@ -202,11 +250,20 @@
 ## День 147 (Вс): E2E smoke test и ревью архитектуры
 
 ### Теория
-- Smoke test — минимальный путь пользователя, не полный E2E suite
-- Health endpoints для orchestration (Kubernetes, Render, compose)
-- Architecture diagram — слои: client → API → DB
-- Cold start time — документируй для free tier deploy
-- Подготовка к неделе 22: DevHub Capstone объединит всё + deploy
+
+Smoke test — минимальный путь пользователя, не полный E2E suite. `SMOKE_TEST.md`: compose up → open app → login → CRUD task → refresh → data persists. Health endpoints нужны orchestration (Kubernetes, Render, compose healthcheck). Architecture diagram (Mermaid): client → API → DB → volumes.
+
+Замерь cold start `docker compose up --build` — free tier deploy может иметь 30–60 сек warm-up; документируй в README. Сравни week-21 с требованиями DevHub capstone — список gaps в `notes/capstone-prep.md`. Все env vars в `.env.example`.
+
+Неделя 21 — мост к финалу: та же структура `frontend/` + `backend/` + `docker-compose.yml`. Тег `week-21-done`. Если smoke test проходит — ты готов к DevHub.
+
+**Читать:**
+
+- [DevHub Capstone spec](../../docs/projects.md#неделя-22--devhub-capstone-финальный)
+- [Mermaid](https://mermaid.js.org/)
+- [Health check pattern](https://docs.docker.com/compose/how-tos/startup-order/)
+
+**Ключевая мысль:** smoke test + architecture diagram — входной билет в capstone неделю.
 
 ### Практика
 1. Smoke checklist в `SMOKE_TEST.md`: compose up → open app → login → CRUD task → refresh → persists

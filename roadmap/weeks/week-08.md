@@ -9,15 +9,20 @@
 ## День 1 (Mon): Асинхронность и Event Loop
 
 ### Теория
-- [learn.javascript.ru: Введение: колбэки](https://learn.javascript.ru/intro) — проблема callback hell
-- Call stack, Web APIs, callback queue, microtask queue
-- `setTimeout(fn, 0)` — не «сразу», а «после текущего кода»
-- [Loupe](http://latentflip.com/loupe/) — визуализация Event Loop
-- Синхронный vs асинхронный код — порядок вывода
-- Main thread один — долгий синхронный код замораживает UI
-- Microtasks (Promise.then) выполняются перед macrotasks (setTimeout)
-- Web APIs (timer, fetch) выполняются вне main thread, колбэки возвращаются в очередь
-- Понимание порядка вывода — основа отладки async-багов
+
+JavaScript однопоточен: в каждый момент времени выполняется только один фрагмент кода на main thread. Синхронные операции (циклы, тяжёлые вычисления) блокируют интерфейс — кнопки не реагируют, анимации замирают. Асинхронность решает это: долгие задачи (таймеры, сетевые запросы, чтение файлов) делегируются Web APIs браузера, а результат возвращается через колбэки, когда main thread освободится.
+
+Event Loop — механизм, который координирует выполнение. Call stack выполняет текущий синхронный код. Когда стек пуст, Loop проверяет очереди задач. Сначала выполняются **microtasks** (колбэки Promise: `.then`, `.catch`, `queueMicrotask`), и только потом **macrotasks** (`setTimeout`, `setInterval`, I/O). Поэтому `Promise.resolve().then(...)` всегда выполнится раньше `setTimeout(fn, 0)` — даже с нулевой задержкой.
+
+Классическая ловушка — думать, что `setTimeout(fn, 0)` выполнится «сразу». На самом деле он попадёт в macrotask queue и дождётся завершения всего синхронного кода и всех microtasks. Понимание этого порядка — основа отладки «почему console.log выводится не в том порядке, который я ожидал». Визуализатор [Loupe](http://latentflip.com/loupe/) помогает увидеть движение задач по очередям.
+
+**Читать:**
+- [learn.javascript.ru: Введение: колбэки](https://learn.javascript.ru/intro)
+- [javascript.info: Event loop](https://javascript.info/event-loop)
+- [MDN: Event Loop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop)
+- [Loupe — визуализация Event Loop](http://latentflip.com/loupe/)
+
+**Ключевая мысль:** microtasks (Promise) всегда опережают macrotasks (setTimeout) — запомни это правило, и половина async-багов исчезнет.
 
 ### Практика
 1. Предскажи порядок вывода 5 задач с `console.log`, `setTimeout`, `Promise.resolve().then`
@@ -44,15 +49,19 @@
 ## День 2 (Tue): Promises — основы
 
 ### Теория
+
+Promise — объект-обёртка над результатом асинхронной операции, который ещё неизвестен. У Promise три состояния: `pending` (ожидание), `fulfilled` (успех) и `rejected` (ошибка). Переход из pending возможен только один раз — после resolve или reject состояние не меняется. Это делает Promise предсказуемым контрактом: либо данные, либо ошибка.
+
+Создание: `new Promise((resolve, reject) => { ... })`. Потребление: `.then(onFulfilled)` для успеха, `.catch(onRejected)` для ошибок, `.finally(onFinally)` для cleanup в любом случае (скрыть loader, сбросить флаг загрузки). Каждый `.then` возвращает **новый** Promise — поэтому цепочки `.then().then().catch()` читаются сверху вниз без «callback hell» вложенных функций.
+
+Если `.then`-колбэк возвращает значение, следующий `.then` получит его. Если возвращает Promise, следующий `.then` дождётся его разрешения. Один `.catch` в конце цепочки перехватит reject из любого предыдущего звена. `Promise.all([p1, p2])` запускает несколько Promise параллельно и ждёт все — но один reject роняет весь результат.
+
+**Читать:**
 - [learn.javascript.ru: Промисы](https://learn.javascript.ru/promise-basics)
-- Состояния: pending → fulfilled / rejected
-- `new Promise((resolve, reject) => {})`, `.then`, `.catch`, `.finally`
-- Возврат значения из `.then` — следующий then получает его
-- Promise chaining vs nested callbacks
-- Promise — объект-обёртка над будущим значением; состояние меняется один раз
-- `.then` возвращает новый Promise — цепочки без вложенности
-- `.catch` ловит reject в цепочке — один catch на всю цепочку
-- `.finally` выполняется всегда — cleanup (скрыть loader)
+- [learn.javascript.ru: Цепочка промисов](https://learn.javascript.ru/promise-chaining)
+- [MDN: Promise](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+
+**Ключевая мысль:** Promise — это цепочка, а не вложенность; `.then` возвращает новый Promise, и один `.catch` обслуживает всю цепочку.
 
 ### Практика
 1. Оберни `setTimeout` в функцию `delay(ms)` → Promise
@@ -74,15 +83,27 @@
 ## День 3 (Wed): async/await
 
 ### Теория
+
+`async/await` — синтаксический сахар над Promise, делающий асинхронный код похожим на синхронный. Функция с ключевым словом `async` всегда возвращает Promise: даже `return 42` превратится в `Promise.resolve(42)`. Ключевое слово `await` можно использовать только внутри `async`-функции — оно приостанавливает выполнение **только этой функции**, отдавая управление Event Loop. Main thread при этом не блокируется.
+
+Вместо `.catch` в цепочке используй `try/catch` вокруг `await`:
+
+```js
+try {
+  const data = await fetchJson(url);
+} catch (err) {
+  showError(err.message);
+}
+```
+
+Главная ловушка — последовательный `await` в цикле: `for (const id of ids) { await fetch(id) }` выполнит N запросов по очереди. Если запросы независимы, собери массив Promise и дождись всех: `await Promise.all(ids.map(id => fetch(id)))`. В ES-модулях доступен top-level `await` — можно писать `const config = await fetch('/config.json')` прямо в `main.js` без обёртки.
+
+**Читать:**
 - [learn.javascript.ru: Async/await](https://learn.javascript.ru/async-await)
-- `async function` всегда возвращает Promise
-- `await` приостанавливает только async-функцию, не main thread
-- try/catch вместо `.catch` для async/await
-- Параллельность: `await Promise.all([a, b])` vs последовательный await
-- `await` — синтаксический сахар над Promise; читается как синхронный код
-- Последовательный await в цикле медленный — собери Promise.all для параллели
-- async-функция без await всё равно возвращает Promise
-- Top-level await доступен в ES modules — не нужен IIFE
+- [MDN: async function](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Statements/async_function)
+- [javascript.info: Async/await](https://javascript.info/async-await)
+
+**Ключевая мысль:** `await` не блокирует браузер — он лишь ставит на паузу текущую async-функцию, пока Promise не разрешится.
 
 ### Практика
 1. Рефакторинг fetch-функций на async/await
@@ -104,15 +125,19 @@
 ## День 4 (Thu): HTTP углублённо
 
 ### Теория
+
+HTTP — протокол обмена сообщениями между клиентом и сервером. Каждый запрос состоит из метода, URL, заголовков и опционального тела. Ответ содержит статус-код, заголовки и тело. Методы несут семантику: GET читает ресурс (идемпотентен, кэшируем), POST создаёт новый, PUT/PATCH обновляют, DELETE удаляет. Понимание семантики помогает проектировать API и правильно обрабатывать ответы.
+
+Статус-коды сгруппированы: 1xx — информация, 2xx — успех (200 OK, 201 Created, 204 No Content), 3xx — перенаправление, 4xx — ошибка клиента (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found), 5xx — ошибка сервера. Для UI важно различать 401 («войдите в систему») и 403 («у вас нет прав») — пользователю нужны разные сообщения.
+
+Заголовки передают метаданные: `Content-Type` описывает формат тела, `Authorization` — токен доступа, `Cache-Control` и `ETag` управляют кэшированием. CORS настраивается **на сервере** через заголовки вроде `Access-Control-Allow-Origin`. «Непростые» запросы (нестандартные заголовки, методы кроме GET/POST) вызывают preflight — браузер сначала отправит OPTIONS и спросит разрешение.
+
+**Читать:**
 - [MDN: HTTP Overview](https://developer.mozilla.org/ru/docs/Web/HTTP/Overview)
-- Методы: GET, POST, PUT, PATCH, DELETE — идемпотентность
-- Статусы: 1xx–5xx; 200 OK, 201 Created, 204 No Content, 401, 403, 404, 500
-- Заголовки: Content-Type, Authorization, Cache-Control, ETag
-- [MDN: CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/CORS) — preflight OPTIONS
-- GET идемпотентен и кэшируем; POST создаёт ресурс — разные семантики
-- 401 — не авторизован; 403 — нет прав; разные сообщения для UI
-- CORS настраивает сервер (`Access-Control-Allow-Origin`), не клиент
-- Preflight OPTIONS — браузер проверяет разрешение до «непростого» запроса
+- [MDN: CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/CORS)
+- [MDN: HTTP response status codes](https://developer.mozilla.org/ru/docs/Web/HTTP/Status)
+
+**Ключевая мысль:** HTTP-метод + статус-код + заголовки — это язык, на котором клиент и сервер договариваются о результате операции.
 
 ### Практика
 1. В Network изучи headers реального запроса к API
@@ -134,15 +159,19 @@
 ## День 5 (Fri): Паттерны работы с API
 
 ### Теория
-- Pagination: offset/limit vs cursor
-- Retry с exponential backoff
-- Request deduplication — один запрос на один ключ
-- Stale-while-revalidate: покажи кэш, обнови фоном
-- [JSON:API](https://jsonapi.org/) / REST conventions — обзор
-- Exponential backoff: 1s, 2s, 4s — не перегружай упавший сервер
-- Race condition: старый ответ приходит после нового — AbortController или request id
-- Cursor pagination стабильнее offset при частых вставках данных
-- Skeleton UI резервирует место — меньше CLS при загрузке
+
+Работа с API в production выходит за рамки простого `fetch(url)`. Пагинация делит большие наборы данных на страницы: offset/limit (`?page=2&limit=20`) прост в реализации, но нестабилен при вставках новых записей; cursor-based пагинация (`?after=lastId`) надёжнее для лент и поиска. Retry с exponential backoff повторяет упавший запрос с растущей задержкой (1с, 2с, 4с), не перегружая сервер при временных сбоях.
+
+Race condition возникает, когда быстрый новый запрос завершается раньше старого, но старый ответ приходит последним и перезаписывает актуальные данные. Решения: `AbortController` (отменить предыдущий fetch) или счётчик/request id (игнорировать устаревший ответ). Request deduplication не запускает второй идентичный запрос, пока первый ещё в полёте — полезно для кэширования в памяти.
+
+Паттерн stale-while-revalidate: сначала покажи кэшированные данные (мгновенный отклик), затем обнови фоном. Skeleton UI резервирует место под контент во время загрузки, снижая layout shift (CLS). Эти приёмы превращают «голый fetch» в устойчивый клиентский слой данных.
+
+**Читать:**
+- [JSON:API — Pagination](https://jsonapi.org/format/#fetching-pagination)
+- [web.dev: Optimize LCP](https://web.dev/articles/optimize-lcp) — skeleton и perceived performance
+- [MDN: AbortController](https://developer.mozilla.org/ru/docs/Web/API/AbortController)
+
+**Ключевая мысль:** надёжный API-клиент обрабатывает не только успех, но и повторы, гонки запросов, пагинацию и кэширование.
 
 ### Практика
 1. Пагинация постов: кнопка «Загрузить ещё» с cursor (id последнего)
@@ -164,15 +193,19 @@
 ## День 6 (Sat): Promise utilities
 
 ### Теория
-- `Promise.all`, `Promise.allSettled`, `Promise.race`, `Promise.any`
-- `Promise.allSettled` — когда нужны все результаты, даже с ошибками
-- Promisify callback-based API (обзор)
-- Async iterators `for await...of` — базовое знакомство
-- Unhandled rejection — всегда catch
-- `Promise.all` fail-fast — один reject роняет всё
-- `Promise.allSettled` — дашборд из нескольких API, часть может упасть
-- `Promise.race` — timeout wrapper: кто первый, тот и результат
-- `unhandledrejection` в window — ловушка для забытых catch в production
+
+Помимо базового `Promise.all`, в JavaScript есть набор утилит для разных сценариев. `Promise.allSettled` ждёт завершения **всех** Promise и возвращает массив `{ status, value/reason }` — идеально, когда нужны результаты нескольких независимых API, даже если часть упала. `Promise.race` отдаёт результат первого завершившегося Promise — удобно для timeout-обёртки. `Promise.any` возвращает первый успешный, игнорируя reject (если все упали — `AggregateError`).
+
+`Promise.all` работает по принципу fail-fast: один reject ломает весь результат. Используй его, когда все данные обязательны (загрузка профиля + настроек одновременно). `Promise.allSettled` — когда частичный успех допустим (дашборд с виджетами от разных сервисов). Timeout через race: `Promise.race([fetch(url), delay(5000).then(() => Promise.reject('timeout'))])`.
+
+Необработанный reject (`unhandledrejection`) — сигнал, что где-то забыли `.catch` или `try/catch`. В production повесь глобальный listener `window.addEventListener('unhandledrejection', ...)` для логирования. `for await...of` позволяет последовательно обрабатывать асинхронные итерируемые источники без гонки параллельных запросов.
+
+**Читать:**
+- [MDN: Promise.allSettled()](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled)
+- [MDN: Promise.race()](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise/race)
+- [learn.javascript.ru: Promise API](https://learn.javascript.ru/promise-api)
+
+**Ключевая мысль:** выбирай Promise-утилиту по сценарию — all для «всё или ничего», allSettled для «что получилось», race для таймаутов.
 
 ### Практика
 1. Загрузи 5 URL через `Promise.allSettled`, покажи успешные и failed
@@ -194,15 +227,19 @@
 ## День 7 (Sun): Асинхронная архитектура
 
 ### Теория
-- YDKJS: async generators, observables — обзор (не обязательно глубоко)
-- State machine для loading/data/error/empty
-- Separation: api layer не знает о DOM
-- Тестирование async: моки fetch (обзор)
-- Подготовка к TypeScript — типизация Promise<T>
-- Явные состояния UI: idle | loading | success | error — нет «зависшего» экрана
-- api layer возвращает данные или бросает ApiError — ui решает, как показать
-- `createAsyncState` — простой pub/sub для реактивного UI без фреймворка
-- Promise<T> в TypeScript (неделя 10) документирует, что вернёт async-функция
+
+Асинхронная архитектура приложения определяет, как слои общаются между собой. API-слой возвращает данные или бросает типизированную ошибку (`ApiError` со статусом) — он не знает о DOM и не решает, показать спиннер или toast. UI-слой подписывается на состояние и рендерит соответствующий экран. Между ними — слой состояния с явными фазами: `idle | loading | success | error | empty`.
+
+Явная state machine убирает «зависшие» экраны: в каждый момент UI находится ровно в одном состоянии, и переходы предсказуемы (loading → success или loading → error). Простой pub/sub (`createAsyncState` с `subscribe`/`setState`) даёт реактивность без фреймворка — задел на React hooks. При тестировании async-кода fetch можно подменить mock-функцией, возвращающей фиксированный Promise.
+
+На следующих неделях TypeScript добавит `Promise<T>` как контракт: async-функция документирует, какой тип данных вернётся. Сейчас зафиксируй принцип: асинхронность — это не только синтаксис, а разделение ответственности между запросом, состоянием и отображением.
+
+**Читать:**
+- [javascript.info: Промисы](https://javascript.info/promise-basics)
+- [patterns.dev: Observer Pattern](https://www.patterns.dev/vanilla/observer-pattern/)
+- [TypeScript Handbook: Generics](https://www.typescriptlang.org/docs/handbook/2/generics.html) — подготовка к неделе 10
+
+**Ключевая мысль:** async-архитектура — это явные состояния UI и чёткие границы между api, state и render.
 
 ### Практика
 1. Реализуй хук-подобный паттерн `createAsyncState()` — subscribe на изменения

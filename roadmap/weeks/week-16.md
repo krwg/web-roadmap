@@ -8,12 +8,20 @@
 ## День 106 (Пн): Классы и объекты
 
 ### Теория
-- [Classes](https://docs.python.org/3/tutorial/classes.html): `class`, `__init__`, `self` — объект = данные + поведение в одной сущности
-- Атрибуты экземпляра (`self.balance`) vs атрибуты класса (`BankAccount.currency`) — общие настройки vs состояние объекта
-- Методы экземпляра (`self`), `@classmethod` (фабрики, альтернативные конструкторы), `@staticmethod` (утилиты без доступа к `self`)
-- `__str__` — для пользователя (`print`), `__repr__` — для отладки (`repr(obj)` в REPL)
-- Инкапсуляция: соглашение `_private` и `@property` вместо прямой мутации полей снаружи
-- Type hints на методах улучшают читаемость и ловят ошибки в IDE до запуска
+
+Объектно-ориентированное программирование в Python объединяет данные и поведение в одной сущности — классе. `class BankAccount:` с методом `__init__(self, ...)` инициализирует экземпляр; `self` — ссылка на конкретный объект. Атрибуты экземпляра (`self.balance`) хранят состояние; атрибуты класса (`currency = 'RUB'`) — общие настройки для всех счетов.
+
+Три вида методов: обычные (работают с `self`), `@classmethod` (альтернативные конструкторы, фабрики), `@staticmethod` (утилиты без доступа к экземпляру). `__str__` — для пользователя (`print(account)`), `__repr__` — для отладки в REPL, должен однозначно идентифицировать объект.
+
+Инкапсуляция в Python — соглашение: префикс `_balance` сигнализирует «не трогай снаружи», `@property` даёт контролируемое чтение без прямой мутации. Type hints на методах помогают IDE ловить ошибки до запуска. Баланс меняется только через `deposit` и `withdraw` — это и есть защита инвариантов.
+
+**Читать:**
+
+- [Classes](https://docs.python.org/3/tutorial/classes.html)
+- [@property](https://docs.python.org/3/library/functions.html#property)
+- [Real Python — OOP](https://realpython.com/python3-object-oriented-programming/)
+
+**Ключевая мысль:** класс = данные + поведение; `self` обязателен; инкапсуляция через методы, не публичные поля.
 
 ### Практика
 1. Класс `BankAccount`: `deposit`, `withdraw`, `balance`, защита от отрицательного баланса
@@ -40,12 +48,20 @@
 ## День 107 (Вт): Наследование, композиция, dataclasses
 
 ### Теория
-- Наследование: `class Savings(BankAccount)` расширяет базовый контракт; `super().__init__()` вызывает родительский конструктор
-- [Композиция vs наследование](https://realpython.com/inheritance-composition-python/) — «has-a» (Portfolio содержит счета) предпочтительнее «is-a» при сложной логике
-- [@dataclass](https://docs.python.org/3/library/dataclasses.html) — автогенерация `__init__`, `__repr__`, `__eq__` для DTO без поведения
-- `__post_init__` — валидация после создания dataclass (сумма > 0, непустой title)
-- `frozen=True` — immutable dataclass, безопасен как ключ dict/set
-- ABC (`ABC`, `@abstractmethod`) — контракт для подклассов, полезен для `TaskRepository` интерфейса
+
+Наследование (`class Savings(BankAccount)`) расширяет базовый класс: дочерний получает методы родителя и добавляет свои. `super().__init__(...)` вызывает конструктор родителя — забудешь, и поля родителя не инициализируются. Но глубокие иерархии хрупки: предпочитай композицию («has-a»), когда объект содержит другие объекты, а не наследует их («is-a»).
+
+`Portfolio` с `list[Account]` — композиция: портфель не «является» счётом, он их «содержит». Это гибче, чем `class Portfolio(Account)`. `@dataclass` автогенерирует `__init__`, `__repr__`, `__eq__` для DTO без сложного поведения — идеально для `Expense` или `Task`.
+
+`__post_init__` валидирует поля после создания dataclass (сумма > 0). `frozen=True` делает объект immutable — безопасен как ключ dict. ABC (`ABC`, `@abstractmethod`) задаёт контракт для `TaskRepository` — подкласс обязан реализовать методы.
+
+**Читать:**
+
+- [Inheritance](https://docs.python.org/3/tutorial/classes.html#inheritance)
+- [Композиция vs наследование](https://realpython.com/inheritance-composition-python/)
+- [@dataclass](https://docs.python.org/3/library/dataclasses.html)
+
+**Ключевая мысль:** композиция чаще наследования; dataclass — для данных, class — для поведения.
 
 ### Практика
 1. `SavingsAccount` с `interest_rate`, метод `apply_interest()` через `super()`
@@ -72,12 +88,20 @@
 ## День 108 (Ср): Магические методы и итераторы
 
 ### Теория
-- Dunder methods делают объекты «питоничными»: `__len__`, `__getitem__`, `__contains__`, `__eq__`, `__lt__`
-- [Emulating container types](https://docs.python.org/3/reference/datamodel.html#emulating-container-types) — свой класс ведёт себя как list/dict
-- Итератор-протокол: `__iter__` возвращает self, `__next__` даёт элемент или `StopIteration`
-- Generator functions (`yield`) — ленивые последовательности без хранения всего в RAM
-- `__eq__` и `__hash__`: если переопределяешь равенство — продумай hashability для `set`/`dict`
-- Сравнение объектов: `__lt__` позволяет `sorted(transactions)` без key-функции
+
+Магические методы (dunder) делают объекты «питоничными»: `__len__` для `len(obj)`, `__getitem__` для `obj[i]`, `__contains__` для `x in obj`. Класс `Playlist` с этими методами ведёт себя как встроенная коллекция — пользователь API не знает о внутреннем `list`.
+
+Итератор-протокол: `__iter__` возвращает объект с `__next__`, который выдаёт элементы или бросает `StopIteration`. Generator function с `yield` — ленивая последовательность: `fibonacci(n)` не хранит весь ряд в RAM. Generator `read_log_lines(path)` читает файл построчно — O(1) память на строку.
+
+`__eq__` определяет равенство; если переопределяешь его и хочешь использовать объекты в `set`/`dict`, продумай `__hash__` (или используй `frozen dataclass`). `__lt__` позволяет `sorted(transactions)` без key-функции.
+
+**Читать:**
+
+- [Emulating container types](https://docs.python.org/3/reference/datamodel.html#emulating-container-types)
+- [Iterator Types](https://docs.python.org/3/library/stdtypes.html#iterator-types)
+- [Generators](https://docs.python.org/3/tutorial/classes.html#generators)
+
+**Ключевая мысль:** dunder-методы — контракт с Python; generators — ленивость и экономия памяти.
 
 ### Практика
 1. Класс `Playlist` с `__len__`, `__getitem__`, итерацией по трекам
@@ -104,12 +128,20 @@
 ## День 109 (Чт): Алгоритмы и Big O
 
 ### Теория
-- [Big O notation](https://www.bigocheatsheet.com/): O(1), O(log n), O(n), O(n log n), O(n²) — рост времени при увеличении входа
-- list lookup O(n) vs dict/set lookup O(1) — выбор структуры данных важнее микрооптимизаций
-- Сортировки: bubble O(n²) vs built-in Timsort O(n log n) — не изобретай wheel
-- Space complexity — дополнительная память (hash map для Two Sum)
-- [VisuAlgo](https://visualgo.net/) — визуализация: смотри, как растёт число операций
-- Amortized analysis: `list.append` в среднем O(1), но иногда O(n) при resize
+
+Big O описывает, как растёт время или память при увеличении входа, а не абсолютные миллисекунды. O(1) — константа, O(log n) — бинарный поиск, O(n) — один проход, O(n log n) — эффективная сортировка, O(n²) — вложенные циклы. Выбор структуры данных важнее микрооптимизаций: dict lookup O(1) в среднем vs list O(n).
+
+Linear search перебирает все элементы; binary search требует отсортированный массив и делит пополам — O(log n). На 10⁶ элементов разница колоссальна. Two Sum: brute force O(n²) vs hash map O(n) — классический пример, когда дополнительная память покупает скорость.
+
+Встроенная сортировка Python (Timsort) — O(n log n); bubble sort O(n²) — учебный, не production. `list.append` амортизированно O(1), но иногда O(n) при resize. VisuAlgo помогает увидеть рост операций. Замеры через `time.perf_counter()` убеждают лучше теории.
+
+**Читать:**
+
+- [Big O Cheat Sheet](https://www.bigocheatsheet.com/)
+- [VisuAlgo](https://visualgo.net/)
+- [Python TimeComplexity (wiki)](https://wiki.python.org/moin/TimeComplexity)
+
+**Ключевая мысль:** сначала правильная структура данных и алгоритм, потом микрооптимизации.
 
 ### Практика
 1. Реализуй linear search и binary search (sorted list)
@@ -136,12 +168,20 @@
 ## День 110 (Пт): pathlib и работа с файловой системой
 
 ### Теория
-- [pathlib](https://docs.python.org/3/library/pathlib.html): `Path` — объектный API вместо строковых путей
-- Оператор `/`: `Path("data") / "tasks.db"` — кроссплатформенная склейка
-- `read_text()`, `write_text()`, `exists()`, `glob()`, `rglob()` — типичные операции
-- `shutil.copy`, `move`, `rmtree` — операции над деревом файлов
-- `Path(__file__).parent` — надёжный путь относительно скрипта, не cwd
-- Context managers `with path.open()` — гарантированное закрытие файла
+
+`pathlib.Path` — объектный API для путей вместо конкатенации строк и `os.path.join`. Оператор `/` склеивает кроссплатформенно: `Path('data') / 'tasks.db'`. `read_text()`, `write_text()`, `exists()`, `glob('*.py')`, `rglob('**/*.py')` покрывают 90% задач с файловой системой.
+
+`Path(__file__).parent` даёт каталог скрипта — надёжнее относительных путей от cwd, который меняется при запуске из другой папки. `shutil.copy`, `move`, `rmtree` — операции над деревом. Context manager `with path.open()` гарантирует закрытие файла.
+
+Скрипт `organize.py` сортирует файлы по расширению — практика обхода директорий. `--dry-run` показывает план без изменений — хорошая привычка для деструктивных операций. `PermissionError` на системных файлах логируй, не падай целиком.
+
+**Читать:**
+
+- [pathlib](https://docs.python.org/3/library/pathlib.html)
+- [shutil](https://docs.python.org/3/library/shutil.html)
+- [argparse](https://docs.python.org/3/library/argparse.html)
+
+**Ключевая мысль:** `Path(__file__).parent` — якорь для путей; pathlib вместо строк.
 
 ### Практика
 1. Скрипт `organize.py` — сортирует файлы по расширению в подпапки
@@ -168,12 +208,20 @@
 ## День 111 (Сб): regex и обработка текстовых логов
 
 ### Теория
-- [re module](https://docs.python.org/3/library/re.html): `match` (с начала), `search` (везде), `findall`, `sub`
-- Паттерны: `\d+`, `\w+`, группы `()`, named groups `(?P<name>...)` — извлечение полей
-- Raw strings `r"..."` — backslash не экранируется Python
-- Построчное чтение — O(1) память на строку, не загружай 1 GB файл целиком
-- [regex101.com](https://regex101.com/) — тестируй паттерн до вставки в код
-- `re.compile` — переиспользование паттерна в цикле быстрее
+
+Регулярные выражения — мини-язык поиска по тексту. Модуль `re`: `match` — с начала строки, `search` — везде, `findall` — все совпадения, `sub` — замена. Raw-строки `r"\d+"` — backslash не экранируется Python. Группы `()` и именованные `(?P<name>...)` извлекают поля из лога.
+
+Построчное чтение большого файла — O(1) память на строку; не загружай гигабайтный лог в `read()`. `re.compile(pattern)` переиспользуй в цикле — быстрее, чем компилировать каждый раз. regex101.com — тестируй паттерн до вставки в код.
+
+Парсер server.log с named groups для timestamp, level, message — типичная задача DevOps/junior backend. Топ ERROR по часам — агрегация в dict. Замена IP на `[REDACTED]` — `re.sub`. Жадный `.*` может «съесть» лишнее — будь осторожен с квантификаторами.
+
+**Читать:**
+
+- [re module](https://docs.python.org/3/library/re.html)
+- [regex101](https://regex101.com/)
+- [Regular Expression HOWTO](https://docs.python.org/3/howto/regex.html)
+
+**Ключевая мысль:** для поиска везде — `search`, не `match`; большие файлы — построчно.
 
 ### Практика
 1. Генератор mock `server.log` (1000 строк: timestamp, level, message)
@@ -200,11 +248,20 @@
 ## День 112 (Вс): Ревью ООП и алгоритмов
 
 ### Теория
-- SOLID на junior-уровне: SRP (один класс — одна ответственность), OCP (расширяй через композицию)
-- Когда ООП, когда функции + dataclasses — не усложняй простые скрипты
-- [LeetCode Easy](https://leetcode.com/problemset/) — Python тег для закрепления структур данных
-- Рефакторинг: «code smells» — god class, дублирование, magic numbers
-- Подготовка к неделе 17: venv с `psycopg2-binary` для PostgreSQL
+
+Ревью ООП и алгоритмов готовит к SQLite-проекту недели. SOLID на junior-уровне: Single Responsibility — один класс, одна причина для изменения; Open/Closed — расширяй через композицию, не правь базовый класс везде. Не усложняй: простой скрипт — функции + dataclasses, сложный домен — классы с поведением.
+
+Code smells: god class на 500 строк, дублирование, magic numbers без констант. LeetCode Easy (Two Sum, Valid Parentheses) закрепляет структуры данных вне pet-проекта. Рефакторинг Expense Tracker на `Expense` + `ExpenseStore` — мост к `TaskRepository`.
+
+Подготовь venv для недели 17 с `psycopg2-binary` и `python-dotenv`. Конспект Big O на одну страницу — пригодится при EXPLAIN и выборе индексов. Тег `week-16-done` на финальном коммите.
+
+**Читать:**
+
+- [LeetCode Easy](https://leetcode.com/problemset/)
+- [SOLID (обзор)](https://realpython.com/solid-principles-python/)
+- [sqlite3](https://docs.python.org/3/library/sqlite3.html)
+
+**Ключевая мысль:** ООП — инструмент, не цель; простые данные — dataclass, сложная логика — классы.
 
 ### Практика
 1. Реши 3 задачи LeetCode Easy: Two Sum, Valid Parentheses, Merge Sorted Array

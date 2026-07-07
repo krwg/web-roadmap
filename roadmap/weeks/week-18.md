@@ -8,12 +8,20 @@
 ## День 120 (Пн): SQLAlchemy — модели и сессии
 
 ### Теория
-- [SQLAlchemy Quickstart](https://docs.sqlalchemy.org/en/20/orm/quickstart.html): DeclarativeBase, `Mapped`, `mapped_column` — SQLAlchemy 2.0 style
-- Engine — подключение к БД; SessionLocal — фабрика сессий; сессия = unit of work
-- `session.add()`, `commit()`, `refresh()` — жизненный цикл объекта в БД
-- `relationship()` + `back_populates` — двусторонняя связь без ручных JOIN в каждом запросе
-- [Alembic](https://alembic.sqlalchemy.org/) — версионирование схемы (обзор, полная настройка позже)
-- Отличие ORM model от Pydantic schema — внутреннее представление vs API-контракт
+
+SQLAlchemy 2.0 — современный ORM для Python. DeclarativeBase, `Mapped[type]` и `mapped_column()` задают модели типобезопасно. Engine — подключение к PostgreSQL; SessionLocal — фабрика сессий. Сессия — unit of work: `session.add(obj)`, `commit()`, `refresh(obj)` для актуализации из БД.
+
+`relationship()` с `back_populates` связывает `Author` и `Book` двусторонне без ручных JOIN в каждом запросе. ORM model (`Author` в `models/`) — внутреннее представление; Pydantic schema (`AuthorRead`) — контракт API. Не смешивай их: утечёт `password_hash` в JSON.
+
+`get_db()` generator с `yield` и `finally: session.close()` — паттерн для FastAPI. Alembic версионирует схему (обзор); на этой неделе достаточно `create_all` + seed. Забытый `commit()` — данные «исчезают» после перезапуска.
+
+**Читать:**
+
+- [SQLAlchemy 2.0 Quickstart](https://docs.sqlalchemy.org/en/20/orm/quickstart.html)
+- [Relationship Configuration](https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html)
+- [Alembic](https://alembic.sqlalchemy.org/)
+
+**Ключевая мысль:** ORM model ≠ API schema; сессия — граница транзакции.
 
 ### Практика
 1. Проект `library-api`, venv, `pip install sqlalchemy psycopg2-binary python-dotenv`
@@ -40,12 +48,20 @@
 ## День 121 (Вт): CRUD через ORM и запросы
 
 ### Теория
-- `session.get(Model, id)` — primary key lookup O(1) с кешем identity map
-- [SQLAlchemy Select](https://docs.sqlalchemy.org/en/20/orm/queryguide/select.html): `select()`, `where()`, `join()`, `order_by()`
-- `session.scalars(select(...)).all()` — список ORM-объектов
-- Eager loading: `selectinload()`, `joinedload()` — решение N+1 problem
-- `session.delete(obj)` + commit — удаление с учётом cascade
-- Пагинация: `limit` + `offset` — для API endpoints
+
+CRUD через ORM использует SQLAlchemy 2.0 style `select()`, не legacy `session.query()`. `session.get(Model, id)` — lookup по primary key с identity map cache. `session.scalars(select(Book).where(...)).all()` возвращает список ORM-объектов. Фильтры: `.where()`, `.join()`, `.order_by()`, `.limit()`, `.offset()` для пагинации.
+
+N+1 problem: цикл по авторам + `author.books` внутри генерирует запрос на каждую итерацию. Решение — eager loading: `selectinload(Author.books)` или `joinedload`. Замерь количество SQL-запросов до и после — наглядный урок.
+
+`session.delete(obj)` + `commit()` удаляет с учётом cascade rules. Пагинация `page=1, size=20` — обязательна для API endpoints. Вынеси CRUD в `crud/authors.py` — routes остаются тонкими. `title.ilike('%python%')` — case-insensitive поиск в PostgreSQL.
+
+**Читать:**
+
+- [SQLAlchemy Select](https://docs.sqlalchemy.org/en/20/orm/queryguide/select.html)
+- [Loading Relationships](https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html)
+- [N+1 problem (обзор)](https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html#selectin-loading)
+
+**Ключевая мысль:** N+1 лечится eager loading; `select()` API — стандарт SQLAlchemy 2.0.
 
 ### Практика
 1. CRUD: `create_author`, `get_authors`, `update_book`, `delete_book`
@@ -72,12 +88,20 @@
 ## День 122 (Ср): FastAPI — первый API
 
 ### Теория
-- [FastAPI First Steps](https://fastapi.tiangolo.com/tutorial/first-steps/) — ASGI, автоматическая валидация
-- Path params, query params, request body — три способа входных данных
-- [Pydantic models](https://fastapi.tiangolo.com/tutorial/body/) — runtime validation + OpenAPI schema
-- Auto docs: `/docs` (Swagger UI), `/redoc` — бесплатная документация API
-- `uvicorn main:app --reload` — hot reload в dev
-- Response model отделяет внутренние поля ORM от публичного JSON
+
+FastAPI — ASGI-фреймворк с автоматической валидацией из type hints. Path params (`/notes/{id}`), query params (`?skip=0`), request body (Pydantic model) — три входа данных. Pydantic проверяет типы в runtime и генерирует OpenAPI schema для Swagger.
+
+`uvicorn main:app --reload` — dev-сервер с hot reload. `/docs` (Swagger UI) и `/redoc` — бесплатная интерактивная документация. `response_model=NoteRead` отсекает внутренние поля ORM от публичного JSON. Невалидный body → 422 Unprocessable Entity с деталями ошибок.
+
+Начни с in-memory CRUD для `Note` — отдели изучение FastAPI от SQLAlchemy. `NoteCreate`, `NoteRead`, `NoteUpdate` (optional fields) — три схемы для разных операций. Mutable default в Pydantic: `Field(default_factory=list)`, не `tags=[]`.
+
+**Читать:**
+
+- [FastAPI First Steps](https://fastapi.tiangolo.com/tutorial/first-steps/)
+- [Path Parameters](https://fastapi.tiangolo.com/tutorial/path-params/)
+- [Pydantic Models](https://fastapi.tiangolo.com/tutorial/body/)
+
+**Ключевая мысль:** type hints + Pydantic = валидация и docs из коробки; response_model защищает API.
 
 ### Практика
 1. `main.py`: FastAPI app, `GET /health` → `{"status": "ok"}`
@@ -104,12 +128,20 @@
 ## День 123 (Чт): Dependency Injection и подключение БД
 
 ### Теория
-- [FastAPI Dependencies](https://fastapi.tiangolo.com/tutorial/dependencies/) — переиспользуемая логика через `Depends`
-- `Depends(get_db)` — сессия на один request; yield + finally close
-- `HTTPException(status_code=404, detail="...")` — контролируемые ошибки
-- Status codes: 200 OK, 201 Created, 204 No Content, 404, 409 Conflict, 422
-- Dependency можно вкладывать — `get_current_user` позже на нед. 20
-- Lifespan events — startup/shutdown hooks (обзор)
+
+Dependency Injection в FastAPI — через `Depends`. `get_db()` с `yield` создаёт сессию на один request и закрывает в `finally` — не используй глобальную session (race conditions). `Depends(get_db)` в параметрах endpoint автоматически резолвит зависимость.
+
+`HTTPException(status_code=404, detail="Author not found")` — контролируемые ошибки вместо 500. Семантика статусов: 200 OK, 201 Created, 204 No Content, 404 Not Found, 409 Conflict, 422 Validation Error. Вложенные dependencies (`get_current_user` на нед. 20) строят цепочку проверок.
+
+Pydantic schemas `AuthorCreate` / `AuthorRead` отделяют вход и выход. Nested resource `GET /authors/{id}/books` — RESTful вложенность. Lifespan events (startup/shutdown) — для инициализации пула и закрытия соединений (обзор).
+
+**Читать:**
+
+- [FastAPI Dependencies](https://fastapi.tiangolo.com/tutorial/dependencies/)
+- [HTTPException](https://fastapi.tiangolo.com/tutorial/handling-errors/)
+- [Status Codes](https://fastapi.tiangolo.com/tutorial/response-status-code/)
+
+**Ключевая мысль:** одна DB session на request через Depends; HTTPException — явные ошибки API.
 
 ### Практика
 1. Подключи SQLAlchemy к FastAPI через `Depends(get_db)`
@@ -136,12 +168,20 @@
 ## День 124 (Пт): Полный REST API «Библиотека»
 
 ### Теория
-- REST conventions: существительные в URL, HTTP verbs, идемпотентность GET/PUT/DELETE
-- [FastAPI Bigger Applications](https://fastapi.tiangolo.com/tutorial/bigger-applications/) — APIRouter, модульность
-- Pagination response: `{ items, total, page, size }` — единый формат
-- Filtering: query params `?status=active&search=python`
-- Версионирование: `/api/v1/...` — задел на будущие breaking changes
-- 409 Conflict — бизнес-правило нарушено (книга уже выдана)
+
+REST — соглашения, не протокол. URL — существительные (`/books`), HTTP verbs — действия (GET читать, POST создать, PUT/PATCH обновить, DELETE удалить). GET, PUT, DELETE идемпотентны: повторный запрос даёт тот же эффект. POST — нет (каждый создаёт новый ресурс).
+
+`APIRouter` модульно группирует endpoints: `routers/authors.py`, prefix `/api/v1`, tags для Swagger. Пагинация в едином формате: `{ items, total, page, size }`. Фильтрация через query: `?status=active&search=python`. Версионирование `/api/v1` защищает фронтенд от breaking changes.
+
+Бизнес-правила в API: нельзя выдать уже выданную книгу → 409 Conflict, не 500. Глаголы в URL (`/getAuthors`) — антипаттерн. Отсутствие валидации FK — 500 вместо понятного 404.
+
+**Читать:**
+
+- [FastAPI Bigger Applications](https://fastapi.tiangolo.com/tutorial/bigger-applications/)
+- [REST API Tutorial](https://restfulapi.net/)
+- [HTTP Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
+
+**Ключевая мысль:** REST = ресурсы + HTTP semantics; 409 для нарушения бизнес-правил.
 
 ### Практика
 1. Роутеры: `routers/authors.py`, `books.py`, `loans.py`
@@ -168,12 +208,20 @@
 ## День 125 (Сб): Тестирование API и обработка ошибок
 
 ### Теория
-- [FastAPI Testing](https://fastapi.tiangolo.com/tutorial/testing/): `TestClient`, pytest fixtures
-- Test database — SQLite in-memory или отдельная PG schema
-- `conftest.py` — shared fixtures: client, db session, sample data
-- Global exception handlers — `IntegrityError` → 409, generic → 500 без stack trace
-- CORS middleware (обзор) — понадобится на нед. 21
-- `pytest -v --tb=short` — читаемый вывод
+
+Тестирование API — страховка от регрессий. FastAPI `TestClient` (на базе httpx) шлёт запросы без реального сетевого сервера. pytest fixtures в `conftest.py`: client, db session, sample data. Test DB — отдельная schema или SQLite in-memory; никогда production.
+
+Arrange-Act-Assert: подготовь данные, выполни запрос, проверь status и body. Тесты: create author 201, get missing 404, loan conflict 409. `pytest -v --tb=short` — читаемый вывод. Rollback после каждого теста — иначе flaky tests.
+
+Global exception handlers: `IntegrityError` → 409, generic → 500 без stack trace в production. CORS middleware понадобится на нед. 21. Coverage `pytest --cov=app` показывает пробелы. ≥ 8 тестов — минимум для уверенности в CRUD и ошибках.
+
+**Читать:**
+
+- [FastAPI Testing](https://fastapi.tiangolo.com/tutorial/testing/)
+- [pytest](https://docs.pytest.org/en/stable/getting-started.html)
+- [httpx](https://www.python-httpx.org/)
+
+**Ключевая мысль:** изолированная test DB; тесты на auth, 404, 409 — не только happy path.
 
 ### Практика
 1. `pip install pytest httpx`
@@ -200,11 +248,20 @@
 ## День 126 (Вс): Ревью и документация API
 
 ### Теория
-- OpenAPI schema — FastAPI генерирует из type hints и Pydantic
-- Versioning API: `/api/v1` — стабильный контракт для фронтенда
-- [12 Factor App](https://12factor.net/config) — config через env, не hardcode
-- Postman / Insomnia — коллекции для ручного тестирования
-- Логирование: `logging` module, уровни INFO/DEBUG
+
+OpenAPI schema FastAPI генерирует из type hints и Pydantic — docs всегда синхронны с кодом, если ты дисциплинирован. README capstone-уровня: архитектура слоёв (routes → crud → models → db), env vars, curl-примеры, запуск postgres через docker. Postman collection — ручное тестирование для демо.
+
+12 Factor App: config через environment, не hardcode. `.env.example` без секретов. Mermaid-диаграмма слоёв в README помогает объяснить проект за 2 минуты. Логирование через `logging` module: INFO в production, DEBUG в dev.
+
+Финальный прогон: `pytest`, `uvicorn`, ручная проверка Swagger. Library REST API — шаблон для Express на нед. 19 и DevHub на нед. 22. Тег `week-18-done` завершает первый production-like Python backend.
+
+**Читать:**
+
+- [OpenAPI](https://fastapi.tiangolo.com/features/#automatic-docs)
+- [12 Factor App](https://12factor.net/config)
+- [Mermaid](https://mermaid.js.org/)
+
+**Ключевая мысль:** документация API — часть deliverable; OpenAPI из кода, не из Word.
 
 ### Практика
 1. README: архитектура, запуск, env vars, примеры curl

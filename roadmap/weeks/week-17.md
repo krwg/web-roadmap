@@ -8,12 +8,20 @@
 ## День 113 (Пн): SQL основы — SELECT, фильтрация, сортировка
 
 ### Теория
-- [SQLBolt Lessons 1–6](https://sqlbolt.com/lesson/select_queries_introduction): SQL — декларативный язык, описываешь *что* нужно, не *как*
-- `SELECT`, `WHERE`, `ORDER BY`, `LIMIT`, `DISTINCT` — базовый pipeline запроса
-- Операторы: `=`, `<>`, `IN`, `BETWEEN`, `LIKE`, `IS NULL` / `IS NOT NULL`
-- Агрегаты: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX` — свёртка множества строк в одно значение
-- `GROUP BY` группирует строки; `HAVING` фильтрует *после* агрегации (аналог WHERE для групп)
-- Порядок выполнения: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT
+
+SQL — декларативный язык: ты описываешь, *какие* данные нужны, а СУБД решает, *как* их достать. Базовый pipeline: `SELECT` колонки `FROM` таблицы `WHERE` условие `ORDER BY` сортировка `LIMIT` ограничение. `DISTINCT` убирает дубликаты строк в результате.
+
+Операторы фильтрации: `=`, `<>`, `IN (...)`, `BETWEEN`, `LIKE 'Py%'` (префикс), `IS NULL` / `IS NOT NULL`. Агрегаты `COUNT`, `SUM`, `AVG`, `MIN`, `MAX` сворачивают множество строк. `GROUP BY` группирует перед агрегацией; `HAVING` фильтрует группы *после* агрегации — не путай с `WHERE`, который фильтрует строки *до*.
+
+Порядок выполнения SQL: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT. Понимание этого порядка объясняет, почему нельзя использовать алиас SELECT в WHERE той же фазы. `SELECT *` удобно в учебе, в production выбирай нужные колонки.
+
+**Читать:**
+
+- [SQLBolt Lessons 1–6](https://sqlbolt.com/lesson/select_queries_introduction)
+- [PostgreSQL SELECT](https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-select/)
+- [SQL Style Guide](https://www.sqlstyle.guide/)
+
+**Ключевая мысль:** WHERE фильтрует строки, HAVING — группы; SQL описывает результат, не алгоритм.
 
 ### Практика
 1. Установи [DB Browser for SQLite](https://sqlitebrowser.org/) или `sqlite3` CLI для быстрых экспериментов
@@ -40,12 +48,20 @@
 ## День 114 (Вт): JOIN, INSERT, UPDATE, DELETE
 
 ### Теория
-- [SQLBolt — JOINs](https://sqlbolt.com/lesson/table_joins): связь таблиц через ключи
-- INNER JOIN — только совпадающие строки; LEFT JOIN — все из левой + совпадения справа (NULL если нет)
-- INSERT, UPDATE, DELETE всегда с осмысленным WHERE — иначе затронешь всю таблицу
-- FOREIGN KEY, REFERENCES — целостность на уровне БД, не только приложения
-- ON DELETE CASCADE / SET NULL — поведение при удалении родителя
-- Транзакции BEGIN → COMMIT / ROLLBACK — атомарность нескольких операций
+
+Реляционная модель связывает таблицы ключами. `INNER JOIN` возвращает только строки с совпадением в обеих таблицах. `LEFT JOIN` сохраняет все строки «слева» и подставляет NULL справа, если совпадения нет — идеально для «клиенты без заказов» (`WHERE orders.id IS NULL`).
+
+DML — изменение данных: `INSERT`, `UPDATE`, `DELETE`. Золотое правило: UPDATE и DELETE всегда с осмысленным `WHERE`. Без WHERE ты изменишь или удалишь всю таблицу — катастрофа, даже в учебной БД. `FOREIGN KEY` и `REFERENCES` обеспечивают целостность на уровне СУБД, не только приложения.
+
+`ON DELETE CASCADE` удаляет дочерние записи вместе с родителем; `SET NULL` обнуляет FK. Транзакция `BEGIN` → операции → `COMMIT` или `ROLLBACK` — атомарность: либо всё, либо ничего. Забытый `ON` в JOIN даёт декартово произведение — взрыв числа строк.
+
+**Читать:**
+
+- [SQLBolt — JOINs](https://sqlbolt.com/lesson/table_joins)
+- [PostgreSQL JOINs](https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-joins/)
+- [Transactions](https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-transaction/)
+
+**Ключевая мысль:** JOIN связывает таблицы; DELETE/UPDATE без WHERE — инцидент.
 
 ### Практика
 1. Расширь shop: `customers`, `order_items` с FK
@@ -72,12 +88,20 @@
 ## День 115 (Ср): Нормализация и проектирование схемы
 
 ### Теория
-- 1NF — атомарные значения; 2NF — нет частичных зависимостей от составного ключа; 3NF — нет транзитивных зависимостей
-- One-to-many: FK в «многих»; many-to-many: junction table с двумя FK
-- [Database Design](https://www.postgresqltutorial.com/postgresql-get-started/postgresql-sample-database/) — учись на готовых схемах
-- Именование: `snake_case`, plural tables (`authors`, `books`) — выбери и держись конвенции
-- CHECK constraints — валидация на уровне БД (`price > 0`, `status IN (...)`)
-- Денормализация — осознанный trade-off ради скорости чтения (позже)
+
+Нормализация убирает избыточность и аномалии обновления. 1NF — атомарные значения в ячейке (не CSV списка id). 2NF — нет частичных зависимостей от составного ключа. 3NF — нет транзитивных зависимостей (город заёмщика не должен дублироваться в каждой записи loan, если borrower уже хранит город).
+
+One-to-many: FK в таблице «многих» (`books.author_id → authors.id`). Many-to-many: junction table (`task_tags` с двумя FK). Именование: `snake_case`, plural tables (`authors`, `books`) — выбери конвенцию и держись её. `CHECK (price > 0)` и `NOT NULL` валидируют на уровне БД.
+
+Денормализация — осознанный trade-off ради скорости чтения, не лень проектировать. ER-диаграмма на dbdiagram.io или Mermaid фиксирует связи до написания SQL. Антипаттерн: хранить список id в одной TEXT-колонке.
+
+**Читать:**
+
+- [Database Design](https://www.postgresqltutorial.com/postgresql-get-started/postgresql-sample-database/)
+- [Normalization (обзор)](https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-foreign-key/)
+- [dbdiagram.io](https://dbdiagram.io/)
+
+**Ключевая мысль:** нормализация защищает от дублирования; many-to-many — всегда junction table.
 
 ### Практика
 1. Спроектируй БД «Библиотека»: `authors`, `books`, `borrowers`, `loans`
@@ -104,12 +128,20 @@
 ## День 116 (Чт): PostgreSQL — установка и отличия от SQLite
 
 ### Теория
-- [PostgreSQL Downloads](https://www.postgresql.org/download/) — серверная СУБД с concurrent access
-- Docker: `docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=pass postgres:16` — изолированный инстанс
-- Типы: `SERIAL`, `VARCHAR`, `TEXT`, `TIMESTAMP`, `TIMESTAMPTZ`, `JSONB`, `UUID` — богаче SQLite
-- [psql](https://www.postgresql.org/docs/current/app-psql.html), pgAdmin, DBeaver — клиенты
-- SQLite — файл, zero-config; PostgreSQL — сеть, роли, extensions, production-ready
-- Диалекты: `AUTOINCREMENT` (SQLite) vs `SERIAL` / `GENERATED` (PG)
+
+PostgreSQL — серверная СУБД для production: concurrent access, роли, extensions, богатые типы (`JSONB`, `UUID`, `TIMESTAMPTZ`). SQLite — один файл, zero-config, идеален для прототипов и встроенных приложений. На этой неделе ты переносишь схему «Библиотека» из SQLite в PG.
+
+Docker: `docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=pass postgres:16` поднимает изолированный инстанс за секунды. Клиенты: `psql`, pgAdmin, DBeaver. Диалектные отличия: `AUTOINCREMENT` (SQLite) vs `SERIAL` / `GENERATED ALWAYS AS IDENTITY` (PostgreSQL).
+
+`DATABASE_URL=postgresql://user:pass@localhost:5432/library` — стандартная строка подключения для приложений. Документируй пароль в `.env.example` без реальных значений. Сравни SQLite vs PG письменно: когда файл достаточен, когда нужен сервер.
+
+**Читать:**
+
+- [PostgreSQL Downloads](https://www.postgresql.org/download/)
+- [psql](https://www.postgresql.org/docs/current/app-psql.html)
+- [Docker — postgres image](https://hub.docker.com/_/postgres)
+
+**Ключевая мысль:** PostgreSQL — для multi-user и production; миграция учит диалектные различия.
 
 ### Практика
 1. Подними PostgreSQL (Docker или локально)
@@ -136,12 +168,20 @@
 ## День 117 (Пт): Индексы и EXPLAIN ANALYZE
 
 ### Теория
-- [PostgreSQL Indexes](https://www.postgresql.org/docs/current/indexes.html) — ускоряют чтение, замедляют запись
-- B-tree index (default) — эффективен для `=`, `<`, `>`, `LIKE 'prefix%'`, ORDER BY
-- [EXPLAIN ANALYZE](https://www.postgresql.org/docs/current/sql-explain.html) — реальный план и время выполнения
-- Seq Scan — полный перебор; Index Scan — поиск по дереву
-- [Use The Index, Luke](https://use-the-index-luke.com/) — когда индекс помогает, когда нет
-- Composite index `(author_id, title)` — порядок колонок важен для составных запросов
+
+Индекс — структура данных (обычно B-tree), ускоряющая поиск по колонке ценой замедления INSERT/UPDATE. `CREATE INDEX idx_books_title ON books(title)` помогает `WHERE title = '...'` и `LIKE 'Python%'` (префикс), но не `LIKE '%python'` (leading wildcard).
+
+`EXPLAIN ANALYZE` показывает реальный план выполнения: Seq Scan (полный перебор) vs Index Scan (по дереву). Сравни `cost`, `rows`, `actual time` до и после индекса на таблице с 10 000+ строк. Составной индекс `(author_id, title)` — порядок колонок важен для составных запросов.
+
+Use The Index, Luke объясняет, когда индекс помогает, а когда оптимизатор его игнорирует. Индекс на каждую колонку — перебор: каждая запись обновляет все индексы. Документируй замеры в `notes/indexes.md` — это навык для собеседований.
+
+**Читать:**
+
+- [PostgreSQL Indexes](https://www.postgresql.org/docs/current/indexes.html)
+- [EXPLAIN ANALYZE](https://www.postgresql.org/docs/current/sql-explain.html)
+- [Use The Index, Luke](https://use-the-index-luke.com/)
+
+**Ключевая мысль:** индекс — trade-off read vs write; EXPLAIN — единственный честный ответ «почему медленно».
 
 ### Практика
 1. Таблица `books` с 10 000+ строк (скрипт `scripts/generate_books.sql`)
@@ -168,12 +208,20 @@
 ## День 118 (Сб): SQLite/PostgreSQL из Python
 
 ### Теория
-- [sqlite3 module](https://docs.python.org/3/library/sqlite3.html) — встроенный, `?` placeholders
-- [psycopg2](https://www.psycopg.org/docs/) / psycopg3 — `%s` placeholders для PostgreSQL
-- Connection pool (обзор) — переиспользование соединений в веб-приложении
-- Context managers: `with conn:` — commit/rollback автоматически
-- `DATABASE_URL` из `.env` — 12-factor config
-- Единый интерфейс репозитория — абстракция над разными драйверами (упрощённо)
+
+Приложение общается с БД через драйвер. Встроенный `sqlite3` использует placeholders `?`; `psycopg2` / `psycopg3` для PostgreSQL — `%s`. Никогда не вставляй пользовательский ввод в SQL через f-string — это SQL injection. Только параметризованные запросы: `cursor.execute('SELECT * FROM books WHERE id = %s', (book_id,))`.
+
+Context manager `with conn:` коммитит при успехе и откатывает при исключении. `DATABASE_URL` из `.env` через `python-dotenv` — 12-factor config. Connection pool (в веб-приложении) переиспользует соединения под нагрузкой; в CLI достаточно одного подключения на операцию.
+
+Абстракция репозитория с методами `fetch_all`, `execute` позволяет переключать SQLite и PostgreSQL флагом `--db`. Скрипт миграции sqlite → postgres учит переносу данных между СУБД. Забытый `conn.commit()` — изменения не сохранятся.
+
+**Читать:**
+
+- [sqlite3](https://docs.python.org/3/library/sqlite3.html)
+- [psycopg2](https://www.psycopg.org/docs/)
+- [python-dotenv](https://pypi.org/project/python-dotenv/)
+
+**Ключевая мысль:** placeholders — не опция, а требование безопасности; commit явный или через context manager.
 
 ### Практика
 1. Расширь CLI Task Manager (нед.16): опция `--db postgres` vs sqlite
@@ -200,11 +248,20 @@
 ## День 119 (Вс): Ревью SQL и подготовка к ORM
 
 ### Теория
-- Views — сохранённые запросы; stored procedures — логика в БД (обзор)
-- ACID: Atomicity, Consistency, Isolation, Durability — зачем транзакции
-- Isolation levels — read committed vs serializable (обзор)
-- [SQL Style Guide](https://www.sqlstyle.guide/) — читаемые запросы
-- ORM (неделя 18) — маппинг таблиц на классы Python; плюсы и минусы
+
+Ревью SQL закрепляет фундамент перед ORM на неделе 18. ACID: Atomicity (всё или ничего), Consistency (инварианты БД), Isolation (параллельные транзакции не мешают), Durability (commit переживает сбой). Транзакции — не абстракция, а гарантия при переводе денег или выдаче книги.
+
+Views — сохранённые запросы; stored procedures — логика внутри БД (обзор). Isolation levels (read committed, serializable) влияют на фантомные чтения — на junior достаточно знать, что они существуют. SQL Style Guide делает запросы читаемыми для команды.
+
+ORM (SQLAlchemy) маппит таблицы на классы Python: меньше boilerplate SQL, но риск N+1 и «магических» запросов. Понимание raw SQL остаётся обязательным для отладки и оптимизации. Установи `sqlalchemy fastapi uvicorn` в venv — старт недели 18.
+
+**Читать:**
+
+- [SQLBolt](https://sqlbolt.com/)
+- [ACID (PostgreSQL)](https://www.postgresql.org/docs/current/tutorial-transactions.html)
+- [SQL Style Guide](https://www.sqlstyle.guide/)
+
+**Ключевая мысль:** SQL — база; ORM — удобство поверх, не замена понимания JOIN и индексов.
 
 ### Практика
 1. Пройди 15 уроков SQLBolt без подсказок — отметь слабые темы

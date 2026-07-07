@@ -9,14 +9,17 @@
 ## День 1 (Mon): Flexbox — основы
 
 ### Теория
+
+Flexbox (Flexible Box Layout) решает задачу **одномерного** выравнивания: элементы в ряд или в колонку. Контейнер с `display: flex` становится flex-контейнером; прямые дети — flex-элементами. `flex-direction` задаёт главную ось: `row` (горизонталь, по умолчанию) или `column` (вертикаль). `justify-content` выравнивает по главной оси (`space-between`, `center`); `align-items` — по поперечной. Свойство `gap` заменяет margin-хаки между элементами — чище и предсказуемее.
+
+У flex-элементов три рычага размера: `flex-grow` (как делить свободное место), `flex-shrink` (как сжиматься) и `flex-basis` (начальный размер). Сокращение `flex: 1` означает `flex: 1 1 0%` — элемент жадно забирает доступное пространство. По умолчанию `align-items: stretch` растягивает детей по поперечной оси — карточки в ряду получают одинаковую высоту без фиксированного `height`.
+
+Flexbox — не замена Grid: он идеален для навигации, тулбаров, центрирования, рядов карточек. Двумерные макеты — задача Grid.
+
+**Ключевая мысль:** Flexbox — одна ось, три свойства выравнивания; `gap` вместо margin между элементами.
+
+**Читать:**
 - [MDN: Flexbox](https://developer.mozilla.org/ru/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox)
-- Контейнер: `display: flex`, `flex-direction`, `flex-wrap`, `gap`
-- Выравнивание: `justify-content`, `align-items`, `align-content`
-- Элементы: `flex-grow`, `flex-shrink`, `flex-basis`, сокращение `flex: 1`
-- Flexbox — одномерный layout: выравнивает элементы вдоль главной оси (row или column)
-- `gap` заменяет margin-хаки между элементами — чище и предсказуемее
-- `align-items: stretch` (по умолчанию) растягивает детей по поперечной оси — карточки одной высоты
-- `flex: 1` = `flex: 1 1 0%` — элемент занимает свободное пространство пропорционально
 
 ### Практика
 1. Сверстай шапку сайта: логотип слева, навигация справа (`justify-content: space-between`)
@@ -38,14 +41,17 @@
 ## День 2 (Tue): Flexbox — практические паттерны
 
 ### Теория
-- `order`, `align-self` — когда уместны (редко)
-- Паттерн «Holy Grail» layout на flex
-- `flex: 1 1 auto` vs `flex: 1 1 0` — разница в поведении
-- Навигация, card footer с кнопкой внизу (`margin-top: auto`)
-- `margin-top: auto` на последнем элементе карточки прижимает его к низу — без фиксированной высоты
-- Holy Grail: `body { min-height: 100vh; display: flex; flex-direction: column }` + `main { flex: 1 }`
-- `min-width: 0` на flex-ребёнке позволяет сжимать контент — иначе длинный текст ломает ряд
-- `order` меняет визуальный порядок, но не tab-order — осторожно с a11y
+
+На практике Flexbox решает повторяющиеся паттерны. **Sticky footer**: `body { min-height: 100vh; display: flex; flex-direction: column }` и `main { flex: 1 }` — основной контент растягивается, подвал прижат к низу viewport даже на короткой странице. **Кнопка внизу карточки**: flex-column на карточке + `margin-top: auto` на кнопке — она уезжает вниз, текст выше занимает сколько нужно.
+
+Разница `flex: 1 1 auto` и `flex: 1 1 0`: первый стартует с естественного размера контента, второй — с нуля и делит место поровну. Ловушка: flex-элемент с длинным текстом не сжимается без `min-width: 0` — браузер считает минимальный размер по контенту и ломает ряд.
+
+`order` и `align-self` меняют визуальный порядок и выравнивание отдельного элемента — используй редко. `order` **не меняет** tab-order для клавиатуры — риск для доступности.
+
+**Ключевая мысль:** `margin-top: auto` — flex-паттерн «прижать к краю»; `min-width: 0` — страховка от переполнения.
+
+**Читать:**
+- [CSS Tricks: Flexbox Guide](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
 
 ### Практика
 1. Карточка товара: изображение, заголовок, описание, цена, кнопка прижата к низу
@@ -72,15 +78,17 @@
 ## День 3 (Wed): CSS Grid — основы
 
 ### Теория
+
+CSS Grid — **двумерная** сетка: строки и колонки одновременно. `display: grid` на контейнере; `grid-template-columns` и `grid-template-rows` задают треки. Единица `fr` (fraction) делит свободное пространство пропорционально: `1fr 2fr` — вторая колонка вдвое шире. `repeat(3, 1fr)` — три равные колонки; `minmax(200px, 1fr)` — колонка не уже 200px, но растёт.
+
+Элементы позиционируются через `grid-column`, `grid-row` или именованные зоны `grid-template-areas`. Areas превращают CSS в карту макета: `header header / sidebar main / footer footer` — читаемо без подсчёта линий. `grid-column: span 2` растягивает элемент на две ячейки.
+
+Grid vs Flex: grid для страничных макетов, галерей, дашбордов; flex для навигации, рядов кнопок, выравнивания внутри ячейки grid. Часто они работают вместе: grid — скелет страницы, flex — внутри карточки.
+
+**Ключевая мысль:** Grid — две оси и именованные зоны; `fr` делит пространство, а не проценты от неизвестной ширины.
+
+**Читать:**
 - [MDN: Grid Layout](https://developer.mozilla.org/ru/docs/Web/CSS/CSS_grid_layout)
-- `display: grid`, `grid-template-columns`, `grid-template-rows`, `gap`
-- Единица `fr`, `repeat()`, `minmax()`
-- `grid-column`, `grid-row`, `grid-area`
-- `grid-template-areas` — именованные зоны
-- Grid — двумерный layout: одновременно строки и колонки
-- `1fr` распределяет свободное пространство пропорционально — удобнее процентов
-- `grid-template-areas` делает макет читаемым: имена зон в CSS = карта страницы
-- `span 2` растягивает элемент на несколько ячеек без лишней разметки
 
 ### Практика
 1. Сетка 3×2 карточек через `grid-template-columns: repeat(3, 1fr)`
@@ -102,14 +110,17 @@
 ## День 4 (Thu): Grid — продвинутые макеты
 
 ### Теория
-- `auto-fill` vs `auto-fit` с `minmax(250px, 1fr)` — responsive без media queries
-- `subgrid` (базовое знакомство) — выравнивание вложенных сеток
-- Наложение элементов через совпадающие grid-ячейки
-- Когда grid, когда flex: grid для 2D, flex для 1D
-- `auto-fill` оставляет пустые треки, `auto-fit` схлопывает их — визуальная разница на широком экране
-- Grid stack: два элемента в одной ячейке — overlay-текст на изображении
-- Вложенный grid внутри `main` — sidebar фиксирован, контент адаптивен
-- Flex для навигации и кнопок, grid для карточных сеток — правило большинства макетов
+
+Продвинутый Grid убирает необходимость в десятках media queries. `repeat(auto-fill, minmax(250px, 1fr))` создаёт **responsive-сетку**: браузер сам считает, сколько колонок влезет. `auto-fill` оставляет пустые треки, `auto-fit` схлопывает их — на широком экране карточки растягиваются, а не остаётся пустая колонка.
+
+**Grid stacking** — два элемента в одной ячейке: наложи текст на изображение, задав обоим `grid-row: 1; grid-column: 1`. Subgrid (где поддерживается) выравнивает вложенные сетки с родительской — карточки в ряду получают согласованные строки заголовков.
+
+Правило выбора: **1D → flex, 2D → grid**. Навигация и кнопки — flex; pricing table, features grid, dashboard — grid. Вложенный grid внутри `main` — sidebar фиксированной ширины, контент на `1fr`.
+
+**Ключевая мысль:** `auto-fill`/`auto-fit` + `minmax()` — адаптивная сетка без ручных breakpoints.
+
+**Читать:**
+- [CSS Tricks: Grid Guide](https://css-tricks.com/snippets/css/complete-guide-grid/)
 
 ### Практика
 1. Галерея с `grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))`
@@ -131,15 +142,17 @@
 ## День 5 (Fri): Адаптивный дизайн
 
 ### Теория
+
+Адаптивный дизайн — не «версия для мобильного», а **один** интерфейс, плавно подстраивающийся под экран. Подход **mobile-first**: базовые стили пишутся для узкого экрана (375px), затем `@media (min-width: 768px)` **добавляют** возможности для планшета и десктопа. Расширять проще, чем «отрезать» лишнее с десктопной версии.
+
+Breakpoints (480, 768, 1024, 1280px) — не догма, а ориентиры. Breakpoint выбирай там, где **ломается контент**: навигация не влезает, карточки сжимаются нечитаемо. `meta viewport` в `<head>` обязателен: без него мобильный браузер покажет «уменьшенный десктоп».
+
+Относительные единицы (`rem`, `%`, `vw`) и `max-width: 100%` на изображениях предотвращают горизонтальный скролл. Touch targets на мобильном — минимум **44×44px**: пальцу нужна площадь больше, чем точке курсора. Container queries (`@container`) — следующий уровень: стили от размера **контейнера**, а не viewport.
+
+**Ключевая мысль:** mobile-first + breakpoint по поломке контента, не по модели телефона.
+
+**Читать:**
 - [MDN: Responsive design](https://developer.mozilla.org/ru/docs/Learn/CSS/CSS_layout/Responsive_Design)
-- Mobile-first: базовые стили для мобильного, `@media (min-width: ...)` 
-- Breakpoints: 480px, 768px, 1024px, 1280px — не догма, а контент
-- `meta viewport`, относительные единицы, fluid images `max-width: 100%`
-- Container queries: `@container` (ознакомительно)
-- Mobile-first проще расширять, чем «отрезать» лишнее с десктопа
-- Breakpoint выбирай по тому, где ломается контент, а не по модели телефона
-- `max-width: 100%` на изображениях предотвращает горизонтальный скролл
-- Touch targets ≥ 44×44px — пальцу нужно больше места, чем курсору мыши
 
 ### Практика
 1. Перепиши стили mobile-first: база 375px, затем 768px, 1024px
@@ -161,15 +174,18 @@
 ## День 6 (Sat): Переходы и анимации
 
 ### Теория
+
+CSS-переходы (`transition`) анимируют **изменение** свойства от значения A к B: `transition: transform 0.2s ease`. Указываешь свойство, длительность, функцию времени (`ease`, `ease-in-out`, `cubic-bezier`). Для hover-эффектов и смены состояний — идеальный инструмент.
+
+`@keyframes` + `animation` — для **многошаговых** анимаций: появление модалки, пульсация skeleton loader, бесконечный спиннер. Переход срабатывает при смене класса; keyframes идут по расписанию независимо.
+
+Производительность: анимируй только `transform` и `opacity` — они обрабатываются на GPU и не вызывают reflow всей страницы. Анимация `width`, `height`, `margin` — дорого. Длительность UI-переходов: **150–300ms**; дольше кажется тормозным. Обязательно учитывай `prefers-reduced-motion: reduce` — у пользователей с вестибулярными нарушениями анимации могут вызывать тошноту.
+
+**Ключевая мысль:** `transition` для состояний, `@keyframes` для сцен; только `transform` и `opacity` на проде.
+
+**Читать:**
 - [MDN: CSS transitions](https://developer.mozilla.org/ru/docs/Web/CSS/CSS_transitions/Using_CSS_transitions)
-- `transition: property duration timing-function delay`
 - [MDN: CSS animations](https://developer.mozilla.org/ru/docs/Web/CSS/CSS_animations/Using_CSS_animations)
-- `@keyframes`, `animation-name`, `animation-iteration-count`
-- `prefers-reduced-motion` — уважение к настройкам пользователя
-- Анимируй только `transform` и `opacity` — они не вызывают reflow/repaint всей страницы
-- `transition` — простые A→B состояния; `@keyframes` — сложные многошаговые анимации
-- `prefers-reduced-motion: reduce` отключает анимации для людей с вестибулярными нарушениями
-- Длительность UI-переходов 150–300ms — дольше кажется «тормозным»
 
 ### Практика
 1. Плавные hover-эффекты на кнопках и карточках (`transition: 0.2s ease`)
@@ -191,14 +207,18 @@
 ## День 7 (Sun): Сборка адаптивного лендинга
 
 ### Теория
-- Паттерн mobile navigation (CSS-only: checkbox hack или `:target`)
-- `position: sticky` для шапки при скролле
-- `aspect-ratio` для медиа-блоков
-- Чеклист перед сдачей: Lighthouse, разные браузеры, реальное устройство
-- `position: sticky` держит элемент в viewport при скролле — без JS
-- `aspect-ratio: 16/9` резервирует место под медиа — меньше layout shift
-- Checkbox hack для меню — доступность спорна; на неделе 6 заменишь на JS
-- Перед сдачей: 375px, 768px, 1280px + Lighthouse ≥ 85
+
+Финальная сборка лендинга объединяет паттерны недели. `position: sticky` на шапке удерживает навигацию в viewport при скролле — без JavaScript. Работает, пока родитель не обрезает overflow. `aspect-ratio: 16/9` резервирует место под медиа до загрузки — меньше **layout shift** (CLS), когда картинка «прыгает» и сдвигает текст.
+
+Мобильное меню без JS — CSS-only через checkbox hack или `:target`, но доступность спорна (на неделе 6 заменишь на JS с клавиатурой). Перед сдачей — чеклист: 375px, 768px, 1280px в DevTools; Lighthouse ≥ 85; реальное устройство если есть.
+
+Архитектура CSS: variables → layout → components → utilities. Комментируй breakpoints и grid-решения в файле — через месяц сам забудешь, почему `minmax(280px, 1fr)`.
+
+**Ключевая мысль:** sticky + aspect-ratio — два CSS-приёма, которые заменяют килобайты JS.
+
+**Читать:**
+- [MDN: position](https://developer.mozilla.org/ru/docs/Web/CSS/position)
+- [MDN: aspect-ratio](https://developer.mozilla.org/ru/docs/Web/CSS/aspect-ratio)
 
 ### Практика
 1. Собери полноценный лендинг: hero, features (grid), testimonials (flex), CTA, footer

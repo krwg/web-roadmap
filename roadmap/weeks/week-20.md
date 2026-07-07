@@ -8,12 +8,20 @@
 ## День 134 (Пн): Аутентификация и хеширование паролей
 
 ### Теория
-- **Authentication** (кто ты) vs **Authorization** (что тебе можно) — разные слои безопасности
-- [bcrypt](https://github.com/kelektiv/node.bcrypt.js) / [passlib](https://passlib.readthedocs.io/) — adaptive hashing, встроенный salt
-- Никогда не храни plain-text пароли — даже в dev/test БД
-- Salt rounds 10–12 для bcrypt — баланс безопасность/скорость
-- Registration flow: validate email → hash password → store user → (опционально) auto-login
-- Generic error messages на login — не раскрывай «email не найден» vs «неверный пароль»
+
+Authentication отвечает на вопрос «кто ты?» — проверка личности (логин/пароль). Authorization — «что тебе можно?» — права на ресурсы. Не путай: успешный login не означает доступ ко всем endpoints. Пароли никогда не хранятся в plain text, даже в dev-базе.
+
+bcrypt (Node) и passlib с bcrypt (Python) — adaptive hashing с встроенным salt. Salt rounds 10–12 — баланс безопасность/скорость. При register: validate email → `hash(password, 12)` → store `password_hash`. При login: `compare(plain, hash)`. SHA256 без salt уязвим к rainbow tables.
+
+Registration flow: дубликат email → 409 Conflict. Login: неверный пароль → 401 Unauthorized с generic message «Invalid credentials» — не раскрывай, существует ли email. Пароль не логируй и не возвращай в JSON response.
+
+**Читать:**
+
+- [bcrypt (Node)](https://github.com/kelektiv/node.bcrypt.js)
+- [passlib](https://passlib.readthedocs.io/)
+- [OWASP Password Storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
+
+**Ключевая мысль:** hash + salt через bcrypt; одинаковые сообщения об ошибке login — против enumeration.
 
 ### Практика
 1. Таблица `users(id, email UNIQUE, password_hash, created_at)`
@@ -40,12 +48,20 @@
 ## День 135 (Вт): JWT — выдача и проверка токенов
 
 ### Теория
-- [JWT structure](https://jwt.io/introduction): header.payload.signature — подпись, не шифрование
-- [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) (Node) / [python-jose](https://python-jose.readthedocs.io/) (FastAPI)
-- Access token TTL: 15min–1h; refresh token — отдельный долгоживущий токен (обзор)
-- Header: `Authorization: Bearer <token>` — стандарт передачи
-- `JWT_SECRET` в `.env` — минимум 32 случайных байта, rotate при утечке
-- Payload: только `sub` (user id), `exp`, `iat` — не клади пароли и PII
+
+JWT (JSON Web Token) — компактный способ передавать claims между клиентом и сервером. Структура: header.payload.signature. Подпись (HMAC SHA256) гарантирует целостность; payload base64-decodable — не клади пароли и PII. Стандарт передачи: `Authorization: Bearer <token>`.
+
+Access token TTL 15min–1h; refresh token — отдельный долгоживущий механизм (обзор). `JWT_SECRET` в `.env` — минимум 32 случайных байта; при утечке — rotate немедленно. Payload: `sub` (user id), `exp`, `iat`. Явно указывай `algorithm: 'HS256'` — алгоритм `none` — уязвимость.
+
+Middleware `authenticateToken` verify JWT и кладёт `req.user = { id, email }`. Protected routes читают `user_id` из token, не из body/query — иначе IDOR. Expired token → 401. Тест с TTL 1 секунда проверяет expiration.
+
+**Читать:**
+
+- [JWT Introduction](https://jwt.io/introduction)
+- [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)
+- [python-jose](https://python-jose.readthedocs.io/)
+
+**Ключевая мысль:** JWT — подписанный контракт, не шифрование; user_id только из verified token.
 
 ### Практика
 1. Login возвращает `{ access_token, token_type: "bearer", expires_in }`
@@ -72,12 +88,20 @@
 ## День 136 (Ср): OWASP Top 10 — практическая защита
 
 ### Теория
-- [OWASP Top 10 (2021)](https://owasp.org/Top10/): injection, broken auth, XSS, SSRF и др.
-- SQL injection — parameterized queries (уже знаешь с нед. 17–19)
-- XSS: escape output, [DOMPurify](https://github.com/cure53/DOMPurify) для user-generated HTML
-- [Helmet.js](https://helmetjs.github.io/) — X-Content-Type-Options, X-Frame-Options и др.
-- [express-rate-limit](https://github.com/express-rate-limit/express-rate-limit) — brute-force protection
-- CORS: явный whitelist origins, не `*` с credentials
+
+OWASP Top 10 — карта самых частых уязвимостей веб-приложений. Ты уже закрываешь injection parameterized queries (нед. 17–19). Broken authentication — слабые пароли, утечка session. XSS — неэкранированный user-generated HTML; escape output, DOMPurify для rich text.
+
+Helmet.js выставляет security headers: `X-Content-Type-Options`, `X-Frame-Options`, CSP basics. `express-rate-limit` на `/auth/login`: 5 попыток / 15 мин per IP → 429 Too Many Requests — защита от brute-force. CORS: явный whitelist origins; `origin: '*'` с credentials — небезопасно.
+
+Аудит: `.env` в `.gitignore`, `.env.example` без секретов, проверь `git log` на утечки. `security-audit.md` с чеклистом 10 пунктов — deliverable недели. CORS в dev: allow только `http://localhost:5173`.
+
+**Читать:**
+
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- [Helmet.js](https://helmetjs.github.io/)
+- [express-rate-limit](https://github.com/express-rate-limit/express-rate-limit)
+
+**Ключевая мысль:** безопасность — слои: hash, JWT, rate limit, headers, CORS, audit.
 
 ### Практика
 1. Rate limit на `/auth/login`: 5 попыток / 15 мин per IP
@@ -104,12 +128,20 @@
 ## День 137 (Чт): Тестирование backend — pytest
 
 ### Теория
-- [pytest](https://docs.pytest.org/en/stable/getting-started.html): fixtures, parametrize, assert
-- [FastAPI TestClient](https://fastapi.tiangolo.com/tutorial/testing/) — синхронные HTTP-тесты без реального сервера
-- Test DB isolation — отдельная schema или transaction rollback per test
-- Factory fixtures: `create_user()`, `auth_headers(token)`
-- Coverage: `pytest --cov=app` — что не покрыто тестами
-- Arrange-Act-Assert — структура каждого теста
+
+Backend-тесты ловят регрессии в auth и authorization. pytest + FastAPI TestClient или supertest для Express — HTTP без реального порта. Fixtures: `create_user()`, `auth_headers(token)`. Test DB изолирована: отдельная schema или rollback per test — никогда production.
+
+Arrange-Act-Assert в каждом тесте. Покрой: register success, duplicate 409, wrong password 401, protected 401 без token, 200 с token, user A не видит notes user B. `conftest.py` — shared setup. `pytest --cov=app` показывает пробелы.
+
+Тесты не должны зависеть от порядка выполнения. Hardcoded JWT secret в тестах должен совпадать с app config. ≥ 10 тестов — минимум для Secure Notes. Flaky tests из shared DB без cleanup — исправь до merge.
+
+**Читать:**
+
+- [pytest](https://docs.pytest.org/en/stable/getting-started.html)
+- [FastAPI Testing](https://fastapi.tiangolo.com/tutorial/testing/)
+- [supertest](https://github.com/ladjs/supertest)
+
+**Ключевая мысль:** тестируй auth, 403 cross-user и 401 без token — не только happy path.
 
 ### Практика
 1. Тесты auth: register success, duplicate email 409, login, wrong password 401
@@ -136,12 +168,20 @@
 ## День 138 (Пт): Тестирование frontend — Vitest
 
 ### Теория
-- [Vitest](https://vitest.dev/guide/): Vite-native, совместим с Jest API
-- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) — тестируй поведение, не implementation
-- `render`, `screen.getByRole`, `userEvent` — доступные селекторы
-- Mock fetch: `vi.fn()`, `global.fetch = vi.fn().mockResolvedValue(...)`
-- `vi.mock()` — изоляция модулей
-- Тестируй то, что видит пользователь: кнопки, формы, сообщения об ошибках
+
+Vitest — test runner, нативный для Vite-проектов, API совместим с Jest. React Testing Library (RTL) тестирует поведение с точки зрения пользователя: `getByRole`, `getByLabelText`, не `getByClassName`. `userEvent` симулирует реальные клики и ввод с клавиатуры.
+
+Mock `fetch` через `vi.fn()` или `global.fetch = vi.fn().mockResolvedValue(...)` изолирует компоненты от API. Тестируй: Login submit шлёт credentials, ProtectedRoute редиректит без token, NotesList рендерит mock data, login 401 показывает ошибку. `vi.mock()` для модулей.
+
+≥ 8 component tests. `vitest run` в CI. Тестирование internal state вместо visible behavior — хрупкие тесты. Cleanup mocks в `afterEach` — иначе тесты влияют друг на друга.
+
+**Читать:**
+
+- [Vitest](https://vitest.dev/guide/)
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+- [userEvent](https://testing-library.com/docs/user-event/intro/)
+
+**Ключевая мысль:** RTL — «как пользователь видит»; mock fetch, не implementation details.
 
 ### Практика
 1. `npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom @testing-library/user-event`
@@ -168,12 +208,20 @@
 ## День 139 (Сб): Интеграция auth frontend + backend
 
 ### Теория
-- Token storage: localStorage (просто, уязвим к XSS) vs httpOnly cookie (безопаснее, сложнее CORS)
+
+Full-stack auth связывает JWT backend с React frontend. Token storage: localStorage прост, но уязвим к XSS; httpOnly cookie безопаснее, сложнее с CORS. Для учебного проекта localStorage + CSP + sanitize input — приемлемо; задокументируй trade-off в README.
+
+`AuthContext`: `user`, `token`, `login`, `logout`, `isLoading`. `api.ts` wrapper подставляет `Authorization: Bearer` и на 401 очищает token + redirect `/login`. React Router `<ProtectedRoute>` оборачивает private pages. Token не в URL query string — утечёт в logs и history.
+
+Full flow: register → login → create note → logout → login → note visible. User A не видит notes User B — проверь вручную и тестами. Axios interceptors или fetch wrapper — один вход для всех API calls.
+
+**Читать:**
+
 - [OWASP Session Management](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
-- Axios interceptors или fetch wrapper — автоматический `Authorization` header
-- Auto logout on 401 — очистка token и redirect
-- React Router protected routes — `<ProtectedRoute>` wrapper
-- AuthContext: `user`, `token`, `login`, `logout`, `isLoading`
+- [React Router — protected routes](https://reactrouter.com/en/main/examples/auth)
+- [MDN — HTTP Authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)
+
+**Ключевая мысль:** auth flow end-to-end — контракт между Context, api wrapper и protected routes.
 
 ### Практика
 1. React (Vite + TS): Login/Register pages с валидацией форм
@@ -200,11 +248,20 @@
 ## День 140 (Вс): Ревью безопасности и CI
 
 ### Теория
-- GitHub Actions: matrix jobs для backend + frontend tests
-- `npm audit`, `pip audit` — known vulnerabilities
-- [Semgrep](https://semgrep.dev/) — static analysis (обзор)
-- CI на каждый push — раннее обнаружение регрессий
-- Branch protection: require CI green before merge (обзор)
+
+CI автоматизирует проверку качества на каждый push. GitHub Actions: matrix jobs для backend (`pytest`) и frontend (`vitest run`). Зелёный CI — сигнал, что main mergeable. Branch protection с require CI — best practice для команд (обзор).
+
+`npm audit` и `pip audit` сканируют known vulnerabilities в зависимостях. Critical без комментария или плана фикса — красный флаг для портфолио. Semgrep — static analysis (обзор). Sequence diagram auth flow в README объясняет архитектуру ревьюеру.
+
+Финальный security review по OWASP чеклисту. Обнови `.env.example` для backend и frontend. Smoke test checklist в README. Тег `week-20-done` — Secure Notes готов как шаблон для недель 21–22.
+
+**Читать:**
+
+- [GitHub Actions](https://docs.github.com/en/actions)
+- [npm audit](https://docs.npmjs.com/cli/v10/commands/npm-audit)
+- [pip-audit](https://pypi.org/project/pip-audit/)
+
+**Ключевая мысль:** CI + security audit — часть Definition of Done, не «после деплоя».
 
 ### Практика
 1. `.github/workflows/ci.yml`: `pytest` + `vitest run` на push
