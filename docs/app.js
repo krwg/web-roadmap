@@ -35,7 +35,7 @@
     const el = $('#progress-fill');
     const label = $('#progress-label');
     if (el) el.style.width = `${(done / WEEK_IDS.length) * 100}%`;
-    if (label) label.textContent = `Прогресс: ${done} / ${WEEK_IDS.length} недель`;
+    if (label) label.textContent = `Ваш прогресс: ${done} / ${WEEK_IDS.length}`;
   }
 
   function updateCards() {
@@ -74,8 +74,7 @@
 
   async function fetchPage(id) {
     if (weekCache[id]) return weekCache[id];
-    const file = ROUTES.pages[id];
-    const res = await fetch(`pages/${file}`);
+    const res = await fetch(`pages/${id}.json`);
     if (!res.ok) throw new Error('Page not found');
     const data = await res.json();
     weekCache[id] = data;
@@ -124,6 +123,11 @@
 
   function setupTocScroll(content, routeId) {
     const links = $$('#doc-toc a[data-anchor]');
+    const headings = links.map(a => {
+      const id = a.getAttribute('data-anchor');
+      return content.querySelector(`#${id}`) || content.querySelector(`[id="${id}"]`);
+    }).filter(Boolean);
+
     links.forEach(a => {
       a.addEventListener('click', e => {
         e.preventDefault();
@@ -131,8 +135,20 @@
         const target = content.querySelector(`#${id}`) || content.querySelector(`[id="${id}"]`);
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         history.replaceState(null, '', `#${routeId}--${id}`);
+        links.forEach(l => l.classList.remove('active'));
+        a.classList.add('active');
       });
     });
+
+    if (!headings.length) return;
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('data-anchor') === id));
+      });
+    }, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+    headings.forEach(h => observer.observe(h));
   }
 
   function setupDayNav(toc, routeId) {
@@ -255,6 +271,22 @@
     });
   }
 
+  function initPhaseFilters() {
+    const chips = $$('#phase-filters .phase-chip');
+    const cards = $$('#weeks-grid .card');
+    if (!chips.length) return;
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const filter = chip.getAttribute('data-filter');
+        chips.forEach(c => c.classList.toggle('active', c === chip));
+        cards.forEach(card => {
+          const phase = card.getAttribute('data-phase');
+          card.style.display = filter === 'all' || phase === filter ? '' : 'none';
+        });
+      });
+    });
+  }
+
   function initBurger() {
     const burger = $('#burger-btn');
     const links = $('#nav-links');
@@ -284,6 +316,7 @@
   updateCards();
   initSearch();
   initReadingMode();
+  initPhaseFilters();
   initBurger();
   route();
 

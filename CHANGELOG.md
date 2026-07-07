@@ -2,6 +2,20 @@
 
 Формат основан на [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.2.1] — 2026-07-07
+
+### Added
+- Визуальный редизайн в стиле профессиональной школы: жёлтый акцент, Inter, карточки модулей с фазами
+- Секции «Путь обучения», треки полный/лайт, фильтр по фазам на главной
+- Scroll-spy в оглавлении урока
+
+### Fixed
+- Загрузка статических страниц (`intro`, `start`, `projects`, шпаргалки)
+- Кэш service worker для обновлённых стилей
+
+### Removed
+- GoatCounter (требует ручной регистрации аккаунта)
+
 ## [1.2.0] — 2026-07-07
 
 ### Added
@@ -29,6 +43,7 @@
 ### Added
 - Первый релиз: 22 недели full-stack маршрута
 
+[1.2.1]: https://github.com/krwg/web-roadmap/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/krwg/web-roadmap/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/krwg/web-roadmap/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/krwg/web-roadmap/releases/tag/v1.0.0

@@ -14,10 +14,10 @@
   <meta property="og:url" content="https://krwg.github.io/web-roadmap/">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
-  <script defer src="https://gc.zgo.at/count.js" data-goatcounter="https://web-roadmap.goatcounter.com/count"></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Перейти к содержимому</a>
+  <div class="hero-glow" aria-hidden="true"></div>
   <canvas id="code-canvas" aria-hidden="true"></canvas>
   <div class="scanlines" aria-hidden="true"></div>
   <div class="app">
@@ -46,86 +46,142 @@
       <main id="main-content">
         <header class="hero">
           <div class="hero-inner">
-            <div class="hero-logo"><img src="assets/logo.png" alt="web-roadmap" width="88" height="88"></div>
-            <h1>Стать full-stack разработчиком — по плану, не по хаосу</h1>
-            <p class="lead">22 недели: от первого <code>index.html</code> до DevHub capstone с Docker и deploy. Теория своими словами, практика каждый день, Git с недели 1.</p>
+            <div class="hero-badge">Full-Stack · 22 проекта · Бесплатно</div>
+            <div class="hero-logo"><img src="assets/logo.png" alt="web-roadmap" width="80" height="80"></div>
+            <h1>Full-Stack разработчик за 22 недели</h1>
+            <p class="lead">Структурированный маршрут как в профессиональной школе: теория своими словами, практика каждый день, Git с первого <code>index.html</code>, финальный capstone в production.</p>
             <div class="stats">
-              <div class="stat"><strong>22</strong><span>недели</span></div>
+              <div class="stat"><strong>23</strong><span>модуля</span></div>
               <div class="stat"><strong>22</strong><span>проекта</span></div>
               <div class="stat"><strong>2</strong><span>трека</span></div>
               <div class="stat"><strong>154</strong><span>дня</span></div>
             </div>
-            <div class="progress-bar-wrap">
-              <div class="label" id="progress-label">Прогресс: 0 / 23 недель</div>
+            <div class="progress-panel">
+              <div class="label" id="progress-label">Ваш прогресс: 0 / 23</div>
               <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+              <div class="hint">Отмечайте недели на карточках или внутри урока</div>
             </div>
             <div class="cta-row">
-              <a class="btn btn-primary" href="#week-00" data-route="week-00">Неделя 0: подготовка</a>
-              <a class="btn btn-secondary" href="#week-01" data-route="week-01">Неделя 1: HTML</a>
+              <a class="btn btn-primary" href="#week-00" data-route="week-00">Начать обучение</a>
+              <a class="btn btn-secondary" href="#intro" data-route="intro">О маршруте</a>
               <a class="btn btn-ghost" href="#start" data-route="start">Как учиться</a>
             </div>
           </div>
         </header>
 
-        <section class="section section-alt" id="why">
+        <section class="section section-alt" id="path">
           <div class="section-inner">
-            <h2>Что вы получите</h2>
-            <p class="sub">Реалистичный путь к junior full-stack с доказуемыми проектами в GitHub.</p>
+            <div class="section-head">
+              <h2>Путь обучения</h2>
+              <p class="sub">Шесть блоков — от вёрстки до деплоя. Каждый блок заканчивается проектом в портфолио.</p>
+            </div>
+            <div class="curriculum-path">
+              <div class="path-step"><span class="num">1</span> Вёрстка</div>
+              <span class="path-arrow">→</span>
+              <div class="path-step"><span class="num">2</span> JavaScript</div>
+              <span class="path-arrow">→</span>
+              <div class="path-step"><span class="num">3</span> React</div>
+              <span class="path-arrow">→</span>
+              <div class="path-step"><span class="num">4</span> Python & SQL</div>
+              <span class="path-arrow">→</span>
+              <div class="path-step"><span class="num">5</span> API</div>
+              <span class="path-arrow">→</span>
+              <div class="path-step"><span class="num">6</span> DevOps</div>
+            </div>
+            <div class="tracks-row">
+              <div class="track-card featured">
+                <h3>Полный трек</h3>
+                <div class="hours">6–7 часов / день</div>
+                <p>Все задания, все проекты, максимальная глубина. Рекомендуется для цели junior full-stack.</p>
+              </div>
+              <div class="track-card">
+                <h3>Лайт-трек</h3>
+                <div class="hours">3–4 часа / день</div>
+                <p>Теория + Git обязательны. Практика в MVP-объёме. Проект недели — в урезанном виде.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="why">
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>Что вы получите</h2>
+              <p class="sub">Не видеокурс — пошаговый план с проверкой себя и артефактами в GitHub.</p>
+            </div>
             <div class="feature-grid">
-              <div class="feature"><h3>Порядок тем</h3><p>HTML → CSS → JS → React → Python → SQL → API → Docker без скачков.</p></div>
-              <div class="feature"><h3>22 проекта</h3><p>Каждая неделя — артефакт в <code>learning-log</code>.</p></div>
-              <div class="feature"><h3>Два трека</h3><p>Полный 6–7 ч/день или лайт 3–4 ч с MVP-практикой.</p></div>
-              <div class="feature"><h3>Теория + практика</h3><p>Проза, не только ссылки. «Если застрял» и «Проверь себя».</p></div>
-              <div class="feature"><h3>DevHub capstone</h3><p>React + API + PostgreSQL + JWT + Docker + deploy.</p></div>
-              <div class="feature"><h3>Шпаргалки</h3><p>HTML/CSS, JS, React, SQL, Backend — для ревью.</p></div>
+              <div class="feature"><div class="feature-icon">📋</div><h3>Понятный порядок</h3><p>HTML → CSS → JS → React → Python → SQL → API → Docker без хаоса «что учить дальше».</p></div>
+              <div class="feature"><div class="feature-icon">📁</div><h3>22 проекта</h3><p>Каждая неделя — работающий код в <code>learning-log</code> для портфолио.</p></div>
+              <div class="feature"><div class="feature-icon">🔀</div><h3>Два трека</h3><p>Полный или лайт — выбирайте нагрузку, не пропуская фундамент.</p></div>
+              <div class="feature"><div class="feature-icon">📖</div><h3>Теория своими словами</h3><p>Не только ссылки — объяснения, «если застрял», самопроверка.</p></div>
+              <div class="feature"><div class="feature-icon">🚀</div><h3>DevHub capstone</h3><p>React + API + PostgreSQL + JWT + Docker + CI + deploy.</p></div>
+              <div class="feature"><div class="feature-icon">📝</div><h3>Шпаргалки</h3><p>HTML/CSS, JS, React, SQL, Backend — для быстрого ревью.</p></div>
             </div>
           </div>
         </section>
 
-        <section class="section" id="examples">
+        <section class="section section-alt" id="examples">
           <div class="section-inner">
-            <h2>Примеры из learning-log</h2>
-            <p class="sub">Автор проходит маршрут параллельно — скоро здесь появятся скрины недель.</p>
+            <div class="section-head">
+              <h2>Портфолио learning-log</h2>
+              <p class="sub">Автор проходит маршрут параллельно — здесь будут реальные проекты.</p>
+            </div>
             <div class="examples-grid">
-              <div class="example-card">week-01 · Portfolio<br><small>скоро</small></div>
-              <div class="example-card">week-14 · Dashboard<br><small>скоро</small></div>
-              <div class="example-card">week-22 · DevHub<br><small>скоро</small></div>
+              <a class="example-card" href="https://github.com/krwg/learning-log" target="_blank" rel="noopener">
+                <div class="tag">week-01</div><h4>Portfolio Landing</h4><small>скоро</small>
+              </a>
+              <a class="example-card" href="https://github.com/krwg/learning-log" target="_blank" rel="noopener">
+                <div class="tag">week-14</div><h4>React Dashboard</h4><small>скоро</small>
+              </a>
+              <a class="example-card" href="https://github.com/krwg/learning-log" target="_blank" rel="noopener">
+                <div class="tag">week-22</div><h4>DevHub Capstone</h4><small>скоро</small>
+              </a>
             </div>
-            <p style="text-align:center;margin-top:20px"><a href="https://github.com/krwg/learning-log">github.com/krwg/learning-log</a></p>
           </div>
         </section>
 
-        <section class="section section-alt" id="weeks">
+        <section class="section" id="weeks">
           <div class="section-inner">
-            <h2>23 недели (0 + 22)</h2>
-            <p class="sub">Клик — план недели с оглавлением по дням. Отмечайте прогресс галочкой на карточке.</p>
-            <div class="grid"><a class="card" href="#week-00" data-route="week-00"><div class="week">Неделя 00</div><h3>Онбординг</h3><p>Инструменты, GitHub, как учиться</p></a>
-<a class="card" href="#week-01" data-route="week-01"><div class="week">Неделя 01</div><h3>HTML</h3><p>Семантика, формы, a11y · Git с дня 1</p></a>
-<a class="card" href="#week-02" data-route="week-02"><div class="week">Неделя 02</div><h3>CSS основы</h3><p>Селекторы, box model, типографика</p></a>
-<a class="card" href="#week-03" data-route="week-03"><div class="week">Неделя 03</div><h3>CSS layouts</h3><p>Flexbox, Grid, адаптив</p></a>
-<a class="card" href="#week-04" data-route="week-04"><div class="week">Неделя 04</div><h3>Git advanced</h3><p>Ветки, PR, DevTools, CI</p></a>
-<a class="card" href="#week-05" data-route="week-05"><div class="week">Неделя 05</div><h3>JavaScript</h3><p>Типы, функции, массивы</p></a>
-<a class="card" href="#week-06" data-route="week-06"><div class="week">Неделя 06</div><h3>DOM</h3><p>События, делегирование</p></a>
-<a class="card" href="#week-07" data-route="week-07"><div class="week">Неделя 07</div><h3>Modules &amp; API</h3><p>Fetch, storage, ES modules</p></a>
-<a class="card" href="#week-08" data-route="week-08"><div class="week">Неделя 08</div><h3>Async &amp; HTTP</h3><p>Event loop, REST</p></a>
-<a class="card" href="#week-09" data-route="week-09"><div class="week">Неделя 09</div><h3>JS advanced</h3><p>Closures, ООП, паттерны</p></a>
-<a class="card" href="#week-10" data-route="week-10"><div class="week">Неделя 10</div><h3>TypeScript</h3><p>Типы, generics, strict</p></a>
-<a class="card" href="#week-11" data-route="week-11"><div class="week">Неделя 11</div><h3>React basics</h3><p>JSX, компоненты, props</p></a>
-<a class="card" href="#week-12" data-route="week-12"><div class="week">Неделя 12</div><h3>React state</h3><p>Hooks, effects, формы</p></a>
-<a class="card" href="#week-13" data-route="week-13"><div class="week">Неделя 13</div><h3>Router &amp; Context</h3><p>SPA, custom hooks</p></a>
-<a class="card" href="#week-14" data-route="week-14"><div class="week">Неделя 14</div><h3>Frontend SPA</h3><p>Dashboard — проект #14</p></a>
-<a class="card" href="#week-15" data-route="week-15"><div class="week">Неделя 15</div><h3>Python</h3><p>Синтаксис, venv, CLI</p></a>
-<a class="card" href="#week-16" data-route="week-16"><div class="week">Неделя 16</div><h3>Python OOP</h3><p>SQLite, алгоритмы</p></a>
-<a class="card" href="#week-17" data-route="week-17"><div class="week">Неделя 17</div><h3>SQL</h3><p>PostgreSQL, индексы</p></a>
-<a class="card" href="#week-18" data-route="week-18"><div class="week">Неделя 18</div><h3>FastAPI</h3><p>REST, SQLAlchemy</p></a>
-<a class="card" href="#week-19" data-route="week-19"><div class="week">Неделя 19</div><h3>Node.js</h3><p>Express, layered API</p></a>
-<a class="card" href="#week-20" data-route="week-20"><div class="week">Неделя 20</div><h3>Auth &amp; tests</h3><p>JWT, OWASP, pytest</p></a>
-<a class="card" href="#week-21" data-route="week-21"><div class="week">Неделя 21</div><h3>Docker</h3><p>Full-stack compose</p></a>
-<a class="card" href="#week-22" data-route="week-22"><div class="week">Неделя 22</div><h3>Capstone</h3><p>DevHub — финальный проект</p></a></div>
+            <div class="section-head">
+              <h2>Программа курса</h2>
+              <p class="sub">23 модуля · нажмите на карточку — откроется урок с оглавлением по дням</p>
+            </div>
+            <div class="phase-filters" id="phase-filters">
+              <button type="button" class="phase-chip active" data-filter="all">Все</button>
+              <button type="button" class="phase-chip" data-filter="setup">Старт</button>
+              <button type="button" class="phase-chip" data-filter="markup">Вёрстка</button>
+              <button type="button" class="phase-chip" data-filter="js">JavaScript</button>
+              <button type="button" class="phase-chip" data-filter="fe">Frontend</button>
+              <button type="button" class="phase-chip" data-filter="be">Backend</button>
+              <button type="button" class="phase-chip" data-filter="ship">Продакшен</button>
+            </div>
+            <div class="grid" id="weeks-grid"><a class="card" href="#week-00" data-route="week-00" data-phase="setup"><div class="card-top"><span class="card-num">00</span><span class="card-phase phase-setup">Старт</span></div><div class="card-body"><h3>Онбординг</h3><p>Инструменты, GitHub, как учиться</p></div><div class="card-footer"><span class="card-duration">3 дня</span></div></a>
+<a class="card" href="#week-01" data-route="week-01" data-phase="markup"><div class="card-top"><span class="card-num">01</span><span class="card-phase phase-markup">Вёрстка</span></div><div class="card-body"><h3>HTML</h3><p>Семантика, формы, a11y · Git с дня 1</p></div><div class="card-footer"><span class="card-project">Portfolio Landing</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-02" data-route="week-02" data-phase="markup"><div class="card-top"><span class="card-num">02</span><span class="card-phase phase-markup">Вёрстка</span></div><div class="card-body"><h3>CSS основы</h3><p>Селекторы, box model, типографика</p></div><div class="card-footer"><span class="card-project">Styled Blog Post</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-03" data-route="week-03" data-phase="markup"><div class="card-top"><span class="card-num">03</span><span class="card-phase phase-markup">Вёрстка</span></div><div class="card-body"><h3>CSS layouts</h3><p>Flexbox, Grid, адаптив</p></div><div class="card-footer"><span class="card-project">SaaS Landing</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-04" data-route="week-04" data-phase="setup"><div class="card-top"><span class="card-num">04</span><span class="card-phase phase-setup">Git &amp; Tools</span></div><div class="card-body"><h3>Git advanced</h3><p>Ветки, PR, DevTools, CI</p></div><div class="card-footer"><span class="card-project">OSS Workflow Kit</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-05" data-route="week-05" data-phase="js"><div class="card-top"><span class="card-num">05</span><span class="card-phase phase-js">JavaScript</span></div><div class="card-body"><h3>JavaScript</h3><p>Типы, функции, массивы</p></div><div class="card-footer"><span class="card-project">Console Task Manager</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-06" data-route="week-06" data-phase="js"><div class="card-top"><span class="card-num">06</span><span class="card-phase phase-js">JavaScript</span></div><div class="card-body"><h3>DOM</h3><p>События, делегирование</p></div><div class="card-footer"><span class="card-project">DOM Todo App</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-07" data-route="week-07" data-phase="js"><div class="card-top"><span class="card-num">07</span><span class="card-phase phase-js">JavaScript</span></div><div class="card-body"><h3>Modules &amp; API</h3><p>Fetch, storage, ES modules</p></div><div class="card-footer"><span class="card-project">Notes Dashboard</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-08" data-route="week-08" data-phase="js"><div class="card-top"><span class="card-num">08</span><span class="card-phase phase-js">JavaScript</span></div><div class="card-body"><h3>Async &amp; HTTP</h3><p>Event loop, REST</p></div><div class="card-footer"><span class="card-project">Movie Catalog</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-09" data-route="week-09" data-phase="js"><div class="card-top"><span class="card-num">09</span><span class="card-phase phase-js">JavaScript</span></div><div class="card-body"><h3>JS advanced</h3><p>Closures, ООП, паттерны</p></div><div class="card-footer"><span class="card-project">Library System</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-10" data-route="week-10" data-phase="js"><div class="card-top"><span class="card-num">10</span><span class="card-phase phase-js">JavaScript</span></div><div class="card-body"><h3>TypeScript</h3><p>Типы, generics, strict</p></div><div class="card-footer"><span class="card-project">Typed API Client</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-11" data-route="week-11" data-phase="fe"><div class="card-top"><span class="card-num">11</span><span class="card-phase phase-fe">Frontend</span></div><div class="card-body"><h3>React basics</h3><p>JSX, компоненты, props</p></div><div class="card-footer"><span class="card-project">React Todo</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-12" data-route="week-12" data-phase="fe"><div class="card-top"><span class="card-num">12</span><span class="card-phase phase-fe">Frontend</span></div><div class="card-body"><h3>React state</h3><p>Hooks, effects, формы</p></div><div class="card-footer"><span class="card-project">React Todo Pro</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-13" data-route="week-13" data-phase="fe"><div class="card-top"><span class="card-num">13</span><span class="card-phase phase-fe">Frontend</span></div><div class="card-body"><h3>Router &amp; Context</h3><p>SPA, custom hooks</p></div><div class="card-footer"><span class="card-project">Portfolio SPA</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-14" data-route="week-14" data-phase="fe"><div class="card-top"><span class="card-num">14</span><span class="card-phase phase-fe">Frontend</span></div><div class="card-body"><h3>Frontend SPA</h3><p>Dashboard — проект #14</p></div><div class="card-footer"><span class="card-project">React Dashboard</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-15" data-route="week-15" data-phase="be"><div class="card-top"><span class="card-num">15</span><span class="card-phase phase-be">Backend</span></div><div class="card-body"><h3>Python</h3><p>Синтаксис, venv, CLI</p></div><div class="card-footer"><span class="card-project">CLI Expense Tracker</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-16" data-route="week-16" data-phase="be"><div class="card-top"><span class="card-num">16</span><span class="card-phase phase-be">Backend</span></div><div class="card-body"><h3>Python OOP</h3><p>SQLite, алгоритмы</p></div><div class="card-footer"><span class="card-project">CLI Task Manager</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-17" data-route="week-17" data-phase="be"><div class="card-top"><span class="card-num">17</span><span class="card-phase phase-be">Backend</span></div><div class="card-body"><h3>SQL</h3><p>PostgreSQL, индексы</p></div><div class="card-footer"><span class="card-project">Library Database</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-18" data-route="week-18" data-phase="be"><div class="card-top"><span class="card-num">18</span><span class="card-phase phase-be">Backend</span></div><div class="card-body"><h3>FastAPI</h3><p>REST, SQLAlchemy</p></div><div class="card-footer"><span class="card-project">Library REST API</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-19" data-route="week-19" data-phase="be"><div class="card-top"><span class="card-num">19</span><span class="card-phase phase-be">Backend</span></div><div class="card-body"><h3>Node.js</h3><p>Express, layered API</p></div><div class="card-footer"><span class="card-project">Express Notes API</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-20" data-route="week-20" data-phase="ship"><div class="card-top"><span class="card-num">20</span><span class="card-phase phase-ship">Продакшен</span></div><div class="card-body"><h3>Auth &amp; tests</h3><p>JWT, OWASP, pytest</p></div><div class="card-footer"><span class="card-project">Secure Notes</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-21" data-route="week-21" data-phase="ship"><div class="card-top"><span class="card-num">21</span><span class="card-phase phase-ship">Продакшен</span></div><div class="card-body"><h3>Docker</h3><p>Full-stack compose</p></div><div class="card-footer"><span class="card-project">Task Manager Docker</span><span class="card-duration">7 дней</span></div></a>
+<a class="card" href="#week-22" data-route="week-22" data-phase="ship"><div class="card-top"><span class="card-num">22</span><span class="card-phase phase-ship">Продакшен</span></div><div class="card-body"><h3>Capstone</h3><p>DevHub — финальный проект</p></div><div class="card-footer"><span class="card-project">DevHub Capstone</span><span class="card-duration">7 дней</span></div></a></div>
           </div>
         </section>
 
-        <section class="community" id="community">
+        <section class="community section-alt" id="community">
           <h2>Помогите маршруту расти</h2>
           <p>Звезда на GitHub, репост или Issue с улучшением — всё помогает следующим ученикам.</p>
           <div class="cta-row">
@@ -137,7 +193,7 @@
       </main>
       <footer class="footer-bar">
         <div class="footer-inner">
-          <p>web-roadmap v1.2.0 · <a href="https://github.com/krwg/web-roadmap/blob/main/CHANGELOG.md">Changelog</a></p>
+          <p>web-roadmap v1.2.1 · <a href="https://github.com/krwg/web-roadmap/blob/main/CHANGELOG.md">Changelog</a></p>
           <p><a href="https://github.com/krwg/web-roadmap">GitHub</a> · <a href="#start" data-route="start">Старт</a> · <a href="#projects" data-route="projects">Проекты</a></p>
         </div>
       </footer>
@@ -146,7 +202,7 @@
     <div id="view-doc" class="view" hidden>
       <div class="page-header">
         <div class="page-header-inner">
-          <a class="back-link" href="#weeks" data-route="home">← Назад</a>
+          <a class="back-link" href="#weeks" data-route="home">← К программе курса</a>
           <h1 id="doc-page-title">Загрузка…</h1>
           <div class="page-toolbar">
             <button type="button" class="btn btn-ghost" id="mark-done-btn" hidden>Отметить неделю</button>
