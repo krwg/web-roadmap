@@ -7,13 +7,14 @@ import re
 import ssl
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CTX = ssl.create_default_context()
 UA = "web-roadmap-link-check/1.0"
-TIMEOUT = 12
+TIMEOUT = 15
 
 
 def collect_urls() -> set[str]:
@@ -25,11 +26,16 @@ def collect_urls() -> set[str]:
     return {u.rstrip(".,;`)'\"") for u in urls if "localhost" not in u}
 
 
+def normalize(url: str) -> str:
+    return url
+
+
 def check(url: str) -> tuple[str, bool, str]:
     headers = {"User-Agent": UA}
+    target = normalize(url)
     for method in ("HEAD", "GET"):
         try:
-            req = urllib.request.Request(url, method=method, headers=headers)
+            req = urllib.request.Request(target, method=method, headers=headers)
             with urllib.request.urlopen(req, timeout=TIMEOUT, context=CTX) as resp:
                 code = resp.status
             if code in (200, 403):

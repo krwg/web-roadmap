@@ -6,6 +6,8 @@ max_concurrency = 4
 timeout = 30
 accept = ["200", "403"]
 exclude_all_private = true
+include_verbatim = false
+method = ["head", "get"]
 
 # Placeholder / example URLs in prose
 exclude = [

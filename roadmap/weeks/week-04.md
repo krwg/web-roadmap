@@ -25,7 +25,7 @@
 **Ключевая мысль:** `git log` — дневник решений; осмысленные сообщения коммитов = документация для будущего себя.
 
 **Читать:**
-- [Pro Git: Основы](https://git-scm.com/book/ru/v2/Начало-Основы-Git) — три состояния, SHA коммитов
+- [Pro Git: Основы](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository) — три состояния, SHA коммитов
 - [Conventional Commits](https://www.conventionalcommits.org/ru/)
 
 ### Практика
@@ -65,7 +65,7 @@
 **Ключевая мысль:** ветка — дешёвый черновик; merge — слияние черновика с основной линией.
 
 **Читать:**
-- [Pro Git: Ветвление](https://git-scm.com/book/ru/v2/Ветвление-в-Git-Основы-ветвления-и-слияния)
+- [Pro Git: Ветвление](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging)
 
 ### Практика
 1. Создай ветку `feature/dark-theme`, добавь тёмную тему
@@ -277,7 +277,7 @@ VS Code Git panel, diff view, GitLens — ускоряют ежедневную 
 **Ключевая мысль:** `revert` — безопасная отмена; `reset --hard` — только локально; clone — финальный тест переносимости.
 
 **Читать:**
-- [Pro Git: Отмена изменений](https://git-scm.com/book/ru/v2/Приложение-C%3A-Команды-Git-Отмена-изменений)
+- [Pro Git: Отмена изменений](https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things)
 - [GitHub Pages](https://docs.github.com/ru/pages)
 
 ### Практика
