@@ -6,7 +6,8 @@
 
 ### Fixed
 - CI link-check: обновлены битые URL (React Router v6, MDN, SQLBolt, DOM Enlightenment → архив)
-- `.lychee.toml` с retry и exclude для placeholder-ссылок
+- Исправлены локальные ссылки в `week-00.md` (`weeks/week-01.md` → `week-01.md`)
+- CI: `scripts/check-links.py` вместо lychee (стабильнее, без 7-минутных таймаутов)
 
 ## [1.2.2] — 2026-07-08
 

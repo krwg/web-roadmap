@@ -31,9 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check markdown links
-        uses: lycheeverse/lychee-action@v2
+      - uses: actions/setup-python@v5
         with:
-          args: --config .lychee.toml roadmap/weeks/*.md docs/*.md docs/cheatsheets/*.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          python-version: '3.12'
+      - name: Check markdown links
+        run: python scripts/check-links.py
