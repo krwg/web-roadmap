@@ -12,6 +12,7 @@
 
 | # | Тема | Дни | Файл |
 |---|------|-----|------|
+| 0 | Онбординг | — | [week-00.md](weeks/week-00.md) |
 | 1 | HTML | 1–7 | [week-01.md](weeks/week-01.md) |
 | 2 | CSS основы | 8–14 | [week-02.md](weeks/week-02.md) |
 | 3 | CSS layouts | 15–21 | [week-03.md](weeks/week-03.md) |

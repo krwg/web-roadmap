@@ -7,15 +7,33 @@ on:
     branches: [main]
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install markdown pillow
+      - run: python scripts/build-site.py
+      - name: Verify outputs
+        shell: bash
+        run: |
+          test -f docs/index.html
+          test -f docs/app.js
+          test -f docs/styles.css
+          test -f docs/weeks/01.json
+          test -f docs/weeks/22.json
+          test -f docs/pages/projects.json
+          ls docs/weeks/*.json | wc -l | grep -q 23
+
   links:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check roadmap files exist
-        shell: bash
-        run: |
-          test -f README.md
-          test -f roadmap/weeks/week-01.md
-          test -f docs/index.html
-          test -f docs/projects.md
-          ls roadmap/weeks/*.md | wc -l | grep -q 22
+      - name: Check markdown links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --max-concurrency 4 --exclude-all-private --accept 200,403 roadmap/weeks/*.md docs/*.md docs/cheatsheets/*.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

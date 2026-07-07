@@ -117,8 +117,7 @@ Pomodoro: **50 мин работа / 10 мин отдых**.
 
 ## Следующий шаг
 
-1. Создай `learning-log` на GitHub (день 0)
-2. [roadmap/introduction.md](../roadmap/introduction.md)
-3. [roadmap/weeks/week-01.md](../roadmap/weeks/week-01.md)
+1. [Неделя 0: онбординг](../roadmap/weeks/week-00.md) — инструменты и `learning-log`
+2. [roadmap/weeks/week-01.md](../roadmap/weeks/week-01.md)
 
-Сайт маршрута: [krwg.github.io/web-roadmap](https://krwg.github.io/web-roadmap/)
+Сайт: [krwg.github.io/web-roadmap](https://krwg.github.io/web-roadmap/) — оглавление по дням, поиск, прогресс, шпаргалки.

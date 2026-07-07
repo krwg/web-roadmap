@@ -1,0 +1,30 @@
+{
+  "version": "1.2.0",
+  "projects": {
+    "01": "Portfolio Landing",
+    "02": "Styled Blog Post",
+    "03": "SaaS Landing",
+    "04": "OSS Workflow Kit",
+    "05": "Console Task Manager",
+    "06": "DOM Todo App",
+    "07": "Notes Dashboard",
+    "08": "Movie Catalog",
+    "09": "Library System",
+    "10": "Typed API Client",
+    "11": "React Todo",
+    "12": "React Todo Pro",
+    "13": "Portfolio SPA",
+    "14": "React Dashboard",
+    "15": "CLI Expense Tracker",
+    "16": "CLI Task Manager",
+    "17": "Library Database",
+    "18": "Library REST API",
+    "19": "Express Notes API",
+    "20": "Secure Notes",
+    "21": "Task Manager Docker",
+    "22": "DevHub Capstone"
+  },
+  "time_full": "~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью",
+  "time_light": "~45м теория · ~1.5ч практика (MVP) · ~15м Git",
+  "stuck_default": "Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода."
+}

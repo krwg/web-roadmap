@@ -1,0 +1,12 @@
+{
+  "name": "web-roadmap",
+  "short_name": "roadmap",
+  "description": "Full-stack веб за 22 недели",
+  "start_url": "/web-roadmap/",
+  "display": "standalone",
+  "background_color": "#050508",
+  "theme_color": "#050508",
+  "icons": [
+    { "src": "assets/logo.png", "sizes": "192x192", "type": "image/png" }
+  ]
+}
