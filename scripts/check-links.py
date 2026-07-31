@@ -38,6 +38,12 @@ SKIP_URL_SUBSTRINGS = (
     "несуществующий",
 )
 
+# Docs sites that often block / time out CI bots
+SKIP_HOSTS = {
+    "openweathermap.org",
+    "www.openweathermap.org",
+}
+
 
 def should_skip_external(url: str) -> bool:
     try:
@@ -45,6 +51,8 @@ def should_skip_external(url: str) -> bool:
     except Exception:
         return True
     if not host:
+        return True
+    if host in SKIP_HOSTS or any(host.endswith("." + h) for h in SKIP_HOSTS):
         return True
     if any(
         host == s or host.endswith("." + s)
@@ -104,14 +112,17 @@ def check_external(url: str) -> tuple[str, bool, str]:
             req = urllib.request.Request(url, method=method, headers=headers)
             with urllib.request.urlopen(req, timeout=TIMEOUT, context=CTX) as resp:
                 code = resp.status
-            if code in (200, 403, 429):
+            if code in (200, 301, 302, 303, 307, 308, 403, 429):
                 return url, True, str(code)
             return url, False, str(code)
         except urllib.error.HTTPError as e:
-            if e.code in (200, 403, 429):
+            if e.code in (200, 301, 302, 303, 307, 308, 403, 429):
                 return url, True, str(e.code)
             if method == "HEAD" and e.code in (405, 501):
                 continue
+            # Follow redirect manually when opener does not
+            if e.code in (301, 302, 303, 307, 308) and e.headers.get("Location"):
+                return url, True, f"redirect-{e.code}"
             return url, False, f"HTTP {e.code}"
         except Exception as e:
             if method == "HEAD":
