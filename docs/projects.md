@@ -114,7 +114,30 @@
 
 ## Неделя 6 — DOM Todo App
 
-**Цель:** интерактивный Todo с event delegation, без `innerHTML` для user input.
+**Цель:** интерактивный Todo на ванильном JS с **event delegation**, без `innerHTML` для пользовательского текста.
+
+**Стек:** HTML + CSS + один (или модульный) JS, без фреймворков.
+
+### Функции (полный)
+- Список задач: добавить / отметить done / удалить / редактировать (inline или modal)
+- Фильтры: All / Active / Completed; счётчик оставшихся
+- Persist в `localStorage`; восстановление после reload
+- Клавиатура: Enter — добавить, Escape — отменить edit
+- Event delegation на контейнере списка (не listener на каждую кнопку)
+- Текст задачи через `textContent` / `createElement`, не конкатенация HTML
+
+### Лайт / MVP
+- Add + toggle done + delete
+- Persist в localStorage
+- Delegation на списке
+
+### DoD
+- [ ] Нет XSS через ввод названия задачи
+- [ ] После F5 список тот же
+- [ ] README: скрин + как открыть (Live Server)
+- [ ] Тег `week-06-done`
+
+**Reference stub:** [`docs/reference-stubs/week-06/`](reference-stubs/week-06/README.md)
 
 → [week-06.md](../roadmap/weeks/week-06.md)
 
@@ -132,7 +155,28 @@
 
 ## Неделя 8 — Movie Catalog
 
-**Цель:** async-каталог с OMDb API, избранное, loading/error/empty states.
+**Цель:** async-каталог фильмов (OMDb или аналог) с поиском, избранным и явными UI-состояниями.
+
+**Стек:** ES modules, `fetch` + `async/await`, CSS на ваш вкус.
+
+### Функции (полный)
+- Поиск по названию; debounce ≥ 300 мс
+- Карточки: постер (placeholder если нет), название, год
+- Детали фильма (модалка или отдельный view): plot, rating, runtime
+- Избранное в `localStorage`
+- Состояния: loading / empty / error (сеть, 401 ключа, 0 результатов)
+- Ключ API только в конфиге, который в `.gitignore` (или demo-режим с mock JSON)
+
+### Лайт / MVP
+- Поиск + список карточек + loading/error
+- Без избранного и без детальной модалки
+
+### DoD
+- [ ] Нет необработанных Promise rejection в Console
+- [ ] README: как получить API key / как включить mock
+- [ ] Тег `week-08-done`
+
+**Reference stub:** [`docs/reference-stubs/week-08/`](reference-stubs/week-08/README.md)
 
 → [week-08.md](../roadmap/weeks/week-08.md)
 
@@ -180,9 +224,32 @@
 
 ## Неделя 14 — React Dashboard (Frontend milestone)
 
-**Цель:** SPA с 4 маршрутами: stats, tasks CRUD, weather API, settings.
+**Цель:** SPA на React + TypeScript с 4 маршрутами — крупнейший фронтенд до бэкенда.
 
-**Это крупнейший фронтенд-проект до бэкенда** — deploy preview на Vercel.
+**Стек:** Vite, React 18+, React Router, Context (или лёгкий store), CSS Modules / обычный CSS.
+
+### Маршруты (полный)
+1. `/` — Dashboard: 2–3 виджета статистики (задачи, mock metrics)
+2. `/tasks` — CRUD задач (клиентский state + persist)
+3. `/weather` или `/github` — данные с внешнего API + loading/error
+4. `/settings` — тема, имя пользователя, reset данных
+
+### Дополнительно (полный)
+- Protected mock-route или feature-flag секция
+- Responsive layout, пустые состояния
+- Deploy preview (Vercel/Netlify) + URL в README
+
+### Лайт / MVP
+- 3 маршрута: home stats, tasks CRUD, settings
+- Без внешнего API; persist localStorage
+
+### DoD
+- [ ] TypeScript strict, нет `any` в своих файлах
+- [ ] Роутинг работает по прямому URL (refresh на `/tasks`)
+- [ ] Live demo или screenshots
+- [ ] Тег `week-14-done`
+
+**Reference stub:** [`docs/reference-stubs/week-14/`](reference-stubs/week-14/README.md)
 
 → [week-14.md](../roadmap/weeks/week-14.md)
 
@@ -214,7 +281,29 @@
 
 ## Неделя 18 — Library REST API
 
-**Цель:** FastAPI + SQLAlchemy, full CRUD, pytest ≥ 8, Swagger.
+**Цель:** REST API «Библиотека» на FastAPI + SQLAlchemy (или SQLModel) поверх схемы недели 17.
+
+**Стек:** Python 3.12+, FastAPI, PostgreSQL, Alembic (или SQL-миграции), pytest, uvicorn.
+
+### Эндпоинты (полный)
+- CRUD авторов и книг; связь many-to-one / many-to-many по вашей схеме
+- Пагинация списка (`limit`/`offset` или cursor)
+- Фильтры (автор, год, наличие)
+- Валидация Pydantic; единый error envelope
+- OpenAPI/Swagger из коробки; healthcheck `/health`
+- ≥ 8 pytest: happy path + 404 + валидация
+
+### Лайт / MVP
+- CRUD книг + список авторов
+- 4 pytest
+- Swagger открывается
+
+### DoD
+- [ ] `README` с `docker compose` **или** локальным Postgres + `.env.example`
+- [ ] Нет секретов в git
+- [ ] Тег `week-18-done`
+
+**Reference stub:** [`docs/reference-stubs/week-18/`](reference-stubs/week-18/README.md)
 
 → [week-18.md](../roadmap/weeks/week-18.md)
 
@@ -276,12 +365,21 @@
 8. **Tests:** auth flow, CRUD tasks, 401 без токена
 9. **Docs:** architecture diagram, setup за 5 команд, live demo URLs
 
-### Nice-to-have (после MVP)
+### Лайт / MVP (capstone)
 
-- WebSocket уведомления
-- Drag-and-drop kanban
-- Dark/light theme persist
-- E2E Playwright smoke test
+Если времени мало — сузьте scope, но не ломайте «сквозной» путь:
+
+- Auth + Tasks CRUD + один Dashboard-виджет
+- Один backend на выбор (FastAPI **или** Express)
+- Deploy хотя бы frontend; API можно на Render free / туннель
+- Тесты: ≥ 5 backend + ≥ 5 frontend
+- `FINAL_REVIEW.md` обязателен
+
+Полный MVP (9 пунктов выше) — для сильного портфолио.
+
+### Reference stub
+
+Каркас монорепо: [`docs/reference-stubs/week-22/`](reference-stubs/week-22/README.md)
 
 ### Структура репозитория
 

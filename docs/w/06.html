@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Неделя 6: JavaScript — объекты, DOM, события · web-roadmap</title>
+  <meta name="description" content="DOM — неделя 06 маршрута web-roadmap.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-06">
+  <meta property="og:title" content="Неделя 6: JavaScript — объекты, DOM, события">
+  <meta property="og:url" content="https://krwg.github.io/web-roadmap/w/06.html">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-06">Открыть в приложении маршрута</a> · <a href="../">На главную</a></p>
+    <article class="prose"><h1>Неделя 6: JavaScript — объекты, DOM, события</h1>
+<blockquote>
+<p><strong>Цель недели:</strong> освоить объекты JavaScript, манипуляции DOM и обработку пользовательских событий.
+<strong>Литература:</strong> <a href="https://learn.javascript.ru/object">learn.javascript.ru: Объекты</a>, <a href="https://learn.javascript.ru/searching-elements-dom">learn.javascript.ru: DOM</a>, <a href="https://developer.mozilla.org/ru/docs/Web/API/Document_Object_Model">MDN DOM</a>, <a href="https://web.archive.org/web/20240101000000/http://domenlightenment.com/">DOM Enlightenment (архив)</a> — глубокое понимание DOM, <a href="https://web.dev/learn/forms/">web.dev Learn Forms</a></p>
+<p><strong>Проект недели:</strong> см. <a href="#projects--projects-неделя-6-dom-todo-app">docs/projects.md</a>
+<strong>Git:</strong> минимум 1 осмысленный коммит каждый день в <code>learning-log/week-06/</code></p>
+</blockquote>
+<h2 id="week-06-day-1">День 1 (Mon): Объекты — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~50м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~20м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Объект в JavaScript — коллекция пар <strong>ключ–значение</strong>. Литерал <code>{ name: 'Анна', age: 25 }</code> — самый частый способ создания. Доступ: точечная нотация <code>user.name</code> и скобочная <code>user['name']</code> — вторая нужна для динамических ключей <code>user[fieldName]</code>. Методы — функции как свойства; внутри метода <code>this</code> ссылается на сам объект.</p>
+<p>Объекты хранятся <strong>по ссылке</strong>: <code>const b = a</code> копирует ссылку, не содержимое. Shallow copy через <code>{...obj}</code> или <code>Object.assign</code> — вложенные объекты остаются общими. <code>Object.keys</code>, <code>values</code>, <code>entries</code> — обход свойств; <code>entries</code> удобен для рендеринга пар в DOM.</p>
+<p><code>for...in</code> перебирает и унаследованные свойства — для собственных используй <code>Object.keys</code> или <code>hasOwnProperty</code>. Модель <code>task = { id, title, done }</code> с методом <code>toggle()</code> — мост к Todo App.</p>
+<p><strong>Ключевая мысль:</strong> объект — словарь по ссылке; spread копирует поверхностно, не глубоко.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/object">learn.javascript.ru: Объекты</a> — литералы, свойства, методы</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Объект <code>user</code> с полями name, email, age — чтение и изменение</li>
+<li>Метод <code>user.greet()</code> — function внутри объекта</li>
+<li>Перебери свойства через <code>Object.entries</code> и выведи пары ключ-значение</li>
+<li>Shallow copy: измени копию, убедись что вложенный объект общий</li>
+<li>Массив пользователей — 3+ объекта в массиве</li>
+<li>Создай объект <code>task</code> с <code>{id, title, done}</code> — модель для Todo</li>
+<li>Добавь метод <code>task.toggle()</code> — переключает <code>done</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Объект с минимум одним методом
+- [ ] Использованы keys/values/entries
+- [ ] Понимаю shallow vs deep copy (на уровне концепции)</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Объект <code>user</code> с полями name, email, age — чтение и изменение</li>
+<li>Метод <code>user.greet()</code> — function внутри объекта</li>
+<li>Перебери свойства через <code>Object.entries</code> и выведи пары ключ-значение</li>
+<li>Shallow copy: измени копию, убедись что вложенный объект общий</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 1: objects basics"</code></li>
+</ul>
+<h2 id="week-06-day-2">День 2 (Tue): Деструктуризация и spread для объектов</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~50м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~20м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p><strong>Деструктуризация</strong> извлекает поля из объекта или элементы из массива в переменные: <code>const { name, age } = user</code>. Переименование: <code>{ name: userName }</code>. Значения по умолчанию: <code>{ role = 'user' }</code> — если поля нет. В параметрах функции <code>printUser({ name, email })</code> сигнатура самодокументируется.</p>
+<p><strong>Spread</strong> в объектах объединяет и переопределяет: <code>const config = { ...defaults, ...userConfig }</code> — поля из <code>userConfig</code> побеждают. Порядок важен: правый объект перекрывает левый. <strong>Rest</strong> собирает остаток: <code>const { id, ...rest } = product</code> — <code>rest</code> без <code>id</code>, удобно перед логированием без пароля.</p>
+<p>Иммутабельное обновление: <code>{ ...task, done: true }</code> — новый объект, оригинал не тронут. Паттерн для state management и React-подготовки. Swap переменных: <code>[a, b] = [b, a]</code> — элегантно через деструктуризацию массива.</p>
+<p><strong>Ключевая мысль:</strong> spread для merge и иммутабельного update; rest для «всё кроме».</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/destructuring-assignment">learn.javascript.ru: Деструктурирующее присваивание</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Функция <code>printUser({name, email, role = 'user'})</code> — деструктуризация параметров</li>
+<li>Объедини настройки: <code>const config = {...defaults, ...userConfig}</code></li>
+<li>Исключи поле <code>password</code> из объекта перед логированием (rest)</li>
+<li>Swap двух переменных через деструктуризацию массива <code>[a, b] = [b, a]</code></li>
+<li>Рефакторинг Todo из недели 5 с деструктуризацией</li>
+<li>Иммутабельное обновление задачи: <code>updateTask(tasks, id, {done: true})</code></li>
+<li>Деструктурируй массив: <code>const [first, ...rest] = tasks</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Деструктуризация в параметрах функций
+- [ ] Spread для иммутабельного обновления объекта
+- [ ] Rest для исключения полей</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Функция <code>printUser({name, email, role = 'user'})</code> — деструктуризация параметров</li>
+<li>Объедини настройки: <code>const config = {...defaults, ...userConfig}</code></li>
+<li>Исключи поле <code>password</code> из объекта перед логированием (rest)</li>
+<li>Swap двух переменных через деструктуризацию массива <code>[a, b] = [b, a]</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 2: destructuring spread"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li><code>for...in</code> перебирает унаследованные свойства — используй <code>hasOwnProperty</code> или <code>Object.keys</code></li>
+<li>Shallow copy не клонирует вложенные объекты</li>
+<li>Мутация объекта, переданного в функцию — ожидаемое поведение</li>
+</ul>
+<h2 id="week-06-day-3">День 3 (Wed): DOM — поиск и изменение элементов</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>DOM (Document Object Model) — программный интерфейс к HTML-дереву. Браузер парсит разметку и строит дерево узлов; JavaScript может <strong>читать и изменять</strong> это дерево — текст обновляется на экране мгновенно. Поиск элементов: <code>document.querySelector('.card')</code> — первый; <code>querySelectorAll</code> — NodeList всех совпадений; <code>getElementById</code> — по id.</p>
+<p><code>textContent</code> устанавливает <strong>текст</strong> и экранирует HTML — безопасно для пользовательского ввода. <code>innerHTML</code> парсит HTML-строку — XSS-уязвимость, если вставляешь данные пользователя. Создавай элементы через <code>createElement</code>, <code>append</code>, <code>remove</code> — чистый DOM API.</p>
+<p><code>classList.add/remove/toggle/contains</code> управляет классами без перезаписи всего <code>className</code>. <code>dataset</code> маппит <code>data-*</code>: <code>el.dataset.price</code> ↔ <code>data-price</code>. Кэшируй частые <code>querySelector</code> в объект <code>elements</code> — меньше обходов дерева.</p>
+<p><strong>Ключевая мысль:</strong> DOM — живое дерево; <code>textContent</code> для текста, <code>createElement</code> вместо <code>innerHTML</code> с user input.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/dom-nodes">learn.javascript.ru: DOM-дерево</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/API/Document_Object_Model">MDN DOM</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Подключи JS к лендингу, выбери заголовок и измени <code>textContent</code></li>
+<li>По клику на кнопку меняй класс <code>theme-dark</code> на <code>document.documentElement</code></li>
+<li>Динамически создай 5 элементов списка через <code>createElement</code> + <code>append</code></li>
+<li>Удали элемент через <code>remove()</code></li>
+<li>Читай data-атрибуты: <code>data-price</code> на карточках товаров</li>
+<li>Создай <code>week-06/index.html</code> — заготовка Todo App</li>
+<li>Вынеси DOM-ссылки в объект <code>elements = { form, list, input }</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Используется <code>querySelector</code>, не устаревшие методы без причины
+- [ ] <code>textContent</code> для текста, не <code>innerHTML</code> с пользовательскими данными
+- [ ] Элементы создаются через DOM API, не строками HTML</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Подключи JS к лендингу, выбери заголовок и измени <code>textContent</code></li>
+<li>По клику на кнопку меняй класс <code>theme-dark</code> на <code>document.documentElement</code></li>
+<li>Динамически создай 5 элементов списка через <code>createElement</code> + <code>append</code></li>
+<li>Удали элемент через <code>remove()</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 3: dom manipulation"</code></li>
+</ul>
+<h2 id="week-06-day-4">День 4 (Thu): События — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>События — способ браузера сообщить JS: «пользователь что-то сделал». <code>addEventListener('click', handler)</code> — современный стандарт; inline <code>onclick</code> в HTML — устарел и смешивает разметку с логикой. На один элемент можно повесить <strong>несколько</strong> обработчиков; <code>onclick</code> перезаписывает предыдущий.</p>
+<p>Объект события (<code>event</code>) несёт контекст: <code>target</code> — элемент, на котором <strong>сработало</strong> событие; <code>currentTarget</code> — элемент, на котором <strong>висит</strong> listener. <code>preventDefault()</code> отменяет действие браузера (submit формы, переход по ссылке), но <strong>не останавливает всплытие</strong>. <code>stopPropagation()</code> останавливает bubbling.</p>
+<p><strong>Всплытие (bubbling)</strong>: клик по кнопке внутри <code>li</code> внутри <code>ul</code> сначала срабатывает на кнопке, затем всплывает к <code>li</code>, <code>ul</code>, <code>body</code>, <code>document</code>. <strong>Делегирование</strong>: один listener на <code>ul</code> ловит клики по всем <code>li</code> — эффективно для динамических списков. Для снятия обработчика нужна <strong>именованная</strong> функция — анонимную <code>removeEventListener</code> не найдёт.</p>
+<p><strong>Ключевая мысль:</strong> bubbling — основа делегирования; <code>preventDefault</code> ≠ <code>stopPropagation</code>.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/introduction-browser-events">learn.javascript.ru: Введение в события</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Кнопка «Наверх» — плавный скролл (пока <code>window.scrollTo</code>, событие click)</li>
+<li>Форма: <code>submit</code> → <code>preventDefault()</code>, вывод данных в Console</li>
+<li>Делегирование: один listener на <code>ul</code>, обработка кликов по <code>li</code></li>
+<li>Клавиатура: <code>keydown</code> — закрытие модалки по Escape</li>
+<li>Удали listener через <code>removeEventListener</code> (именованная функция)</li>
+<li>Добавь <code>stopPropagation</code> на вложенной кнопке — наблюдай разницу</li>
+<li>Подключи <code>{ passive: true }</code> на scroll listener (если добавишь)</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] <code>preventDefault</code> на форме предотвращает перезагрузку
+- [ ] Event delegation на списке
+- [ ] Именованные handler-функции для removeEventListener</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Кнопка «Наверх» — плавный скролл (пока <code>window.scrollTo</code>, событие click)</li>
+<li>Форма: <code>submit</code> → <code>preventDefault()</code>, вывод данных в Console</li>
+<li>Делегирование: один listener на <code>ul</code>, обработка кликов по <code>li</code></li>
+<li>Клавиатура: <code>keydown</code> — закрытие модалки по Escape</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 4: events delegation"</code></li>
+</ul>
+<h2 id="week-06-day-5">День 5 (Fri): Интерактивный UI</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~50м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~20м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Интерактивный UI строится на переключении <strong>состояний</strong>: открыт/закрыт, активен/неактивен. Скрытие: атрибут <code>hidden</code>, класс <code>.is-open</code>, <code>aria-hidden="true"</code> для скринридеров — лучше в комбинации. Таб-интерфейс: одна панель видима, остальные скрыты; активный таб помечается классом и <code>aria-selected</code>.</p>
+<p>Модальное окно — фокус внутри диалога (<strong>focus trap</strong>): Tab не уходит за пределы. Закрытие по Escape, клику на overlay, кнопке «×». <code>body { overflow: hidden }</code> при открытой модалке блокирует скролл фона. <code>event.target.closest('.card')</code> поднимается от точки клика к ближайшему предку с классом — паттерн делегирования для карточек.</p>
+<p>Аккордеон: <code>aria-expanded</code> на кнопке отражает состояние секции — обязательно для доступности. Всё это achievable без React — чистый DOM + классы + события.</p>
+<p><strong>Ключевая мысль:</strong> UI = состояние + DOM; ARIA синхронизирует визуал со скринридером.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/default-browser-action">learn.javascript.ru: Действия браузера</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Аккордеон: 3 секции, открыта одна; клик переключает</li>
+<li>Табы: панели контента показываются по активному табу</li>
+<li>Модалка «Подписаться» — открытие/закрытие, блокировка скролла body</li>
+<li>Счётчик лайков на карточках с делегированием</li>
+<li>Добавь <code>aria-expanded</code> на кнопки аккордеона</li>
+<li>Закрой модалку по клику на overlay и по Escape</li>
+<li>Переключи таб с клавиатуры (стрелки или Tab)</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Аккордеон и табы работают без библиотек
+- [ ] Модалка закрывается по Escape и клику вне
+- [ ] ARIA-атрибуты на интерактивных элементах</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Аккордеон: 3 секции, открыта одна; клик переключает</li>
+<li>Табы: панели контента показываются по активному табу</li>
+<li>Модалка «Подписаться» — открытие/закрытие, блокировка скролла body</li>
+<li>Счётчик лайков на карточках с делегированием</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 5: accordion tabs modal"</code></li>
+</ul>
+<h2 id="week-06-day-6">День 6 (Sat): Формы и валидация на JS</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~50м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~20м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>HTML5-валидация — первый рубеж; JavaScript добавляет <strong>кастомную</strong> логику и UX. <code>form.elements</code> — коллекция полей формы; <code>FormData</code> собирает пары name–value; <code>input.value</code>, <code>checkbox.checked</code> — чтение состояния. Событие <code>input</code> срабатывает на <strong>каждый символ</strong>; <code>change</code> — при потере фокуса или выборе из select.</p>
+<p>Constraint Validation API: <code>field.validity</code> (флаги ошибок), <code>field.validationMessage</code>, <code>setCustomValidity('текст')</code> — переопределяет сообщение браузера. <code>form.checkValidity()</code> — программная проверка перед submit. Показывай ошибки в <code>&lt;span class="error"&gt;</code> под полем с <code>aria-describedby</code> — лучше одного <code>alert()</code>.</p>
+<p>Disable кнопку submit, пока форма невалидна — предотвращает лишние попытки. HTML5 + JS вместе: нативные <code>required</code>/<code>pattern</code> + кастом «пароли совпадают» через <code>setCustomValidity</code>.</p>
+<p><strong>Ключевая мысль:</strong> <code>input</code> для live-валидации; ошибки у поля, не в alert; <code>setCustomValidity</code> для своих правил.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/forms-controls">learn.javascript.ru: Формы, элементы управления</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Валидация формы регистрации перед отправкой</li>
+<li>Live-валидация email при <code>input</code></li>
+<li>Пароли должны совпадать — <code>setCustomValidity</code> при несовпадении</li>
+<li>Вывод ошибок в <code>&lt;span class="error"&gt;</code> под полями</li>
+<li>При успехе — сообщение «Регистрация успешна» без перезагрузки</li>
+<li>Свяжи ошибки с полями через <code>aria-describedby</code></li>
+<li>Disable кнопку submit, пока форма невалидна</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] HTML5 + JS валидация работают вместе
+- [ ] Ошибки понятны и привязаны к полям
+- [ ] Форма не сабмитится при невалидных данных</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Валидация формы регистрации перед отправкой</li>
+<li>Live-валидация email при <code>input</code></li>
+<li>Пароли должны совпадать — <code>setCustomValidity</code> при несовпадении</li>
+<li>Вывод ошибок в <code>&lt;span class="error"&gt;</code> под полями</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 6: form validation"</code></li>
+</ul>
+<h2 id="week-06-day-7">День 7 (Sun): DOM-проект — интерактивный лендинг</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~50м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Зрелое DOM-приложение разделяет <strong>слои</strong>. Data layer — массив задач, чистые функции <code>addTask</code>, <code>toggleTask</code>; не знает о HTML. DOM layer — <code>renderTasks(tasks)</code>, <code>renderFilters()</code>; читает data, обновляет дерево. App layer — связывает события с изменением data и вызовом render. Базовый MVC без фреймворка.</p>
+<p><code>DocumentFragment</code> — контейнер в памяти: наполни список элементами, один <code>append</code> fragment — <strong>один reflow</strong> вместо N. Производительность: кэшируй DOM-ссылки; не читай <code>offsetHeight</code> и не пиши <code>style</code> вперемешку (layout thrashing). <code>requestAnimationFrame</code> — обзор для плавных анимаций чисел и скролла.</p>
+<p>Функции <code>render*</code> — единая точка отрисовки: изменил data → вызвал <code>renderTasks()</code> → DOM синхронизирован. Todo App недели — CRUD через DOM, delegation на списке, фильтры, без <code>innerHTML</code> для user input.</p>
+<p><strong>Ключевая мысль:</strong> data отдельно от DOM; <code>render*</code> — мост; fragment — batch insert без лишних reflow.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/API/DocumentFragment">MDN: DocumentFragment</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Оживи лендинг: тёмная тема, мобильное меню, плавный скролл к секциям</li>
+<li>Фильтр портфолио: кнопки категорий скрывают/показывают карточки</li>
+<li>Счётчик «осталось мест» с анимацией числа</li>
+<li>Рефакторинг: вынеси DOM-операции в функции <code>render*</code></li>
+<li>Протестируй весь UI с клавиатуры</li>
+<li>Собери Todo App: add, delete, toggle, filter — без innerHTML для input</li>
+<li>Финальный коммит и тег <code>week-06-done</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Минимум 5 интерактивных фич
+- [ ] Код структурирован: utils, dom, app
+- [ ] Нет ошибок в Console при типичном сценарии</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Оживи лендинг: тёмная тема, мобильное меню, плавный скролл к секциям</li>
+<li>Фильтр портфолио: кнопки категорий скрывают/показывают карточки</li>
+<li>Счётчик «осталось мест» с анимацией числа</li>
+<li>Рефакторинг: вынеси DOM-операции в функции <code>render*</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 7: dom todo app final"</code></li>
+</ul>
+<h2 id="week-06-project">Проект недели</h2>
+<p><strong>Интерактивный Todo App</strong> — одностраничное приложение с DOM.</p>
+<p>Подробное описание: <a href="#projects--projects-неделя-6-dom-todo-app">docs/projects.md — Неделя 6</a></p>
+<p>Функции: добавление, удаление, toggle done, фильтр (all/active/done), счётчик, localStorage (заготовка на след. неделю).</p>
+<p><strong>Критерии проекта:</strong>
+- [ ] CRUD задач через DOM, не innerHTML с user input
+- [ ] Event delegation на списке задач
+- [ ] Фильтры и счётчик активных
+- [ ] Доступность: labels, keyboard, aria на toggle
+- [ ] Папка <code>week-06/</code> с README и скриншотом
+- [ ] Форма добавления с валидацией пустого ввода
+- [ ] Кнопка «Очистить выполненные» через filter + re-render
+- [ ] Код разделён: <code>app.js</code>, <code>dom.js</code>, <code>tasks.js</code> (или аналог)
+- [ ] Тег <code>week-06-done</code> на финальном коммите</p>
+<h2 id="week-06-review">Ревью-чеклист</h2>
+<ul>
+<li>Разница <code>textContent</code> и <code>innerHTML</code>? Когда опасен innerHTML?</li>
+<li>Что такое event bubbling и зачем делегирование?</li>
+<li>Как предотвратить перезагрузку страницы при submit?</li>
+<li>Как скопировать объект без мутации оригинала (shallow)?</li>
+<li>Могу ли я создать элемент и добавить его в DOM с нуля?</li>
+</ul>
+<h2 id="week-06-review">Проверь себя</h2>
+<details>
+<summary>Что должно получиться к концу недели?</summary>
+
+Работающий проект **DOM Todo App** в `learning-log/week-06/`, осмысленная Git-история, тег `week-06-done`.
+
+</details>
+
+<details>
+<summary>Главный навык недели одной фразой?</summary>
+
+DOM, события, интерактивный UI без фреймворков
+
+</details>
+
+<details>
+<summary>Можно ли пропустить день?</summary>
+
+Нет — дни связаны. В **лайт-режиме** сократи практику до MVP, но теорию и Git-коммит не пропускай.
+
+</details></article>
+  </main>
+  <script>if (location.hash) location.replace('../' + location.hash);</script>
+</body>
+</html>

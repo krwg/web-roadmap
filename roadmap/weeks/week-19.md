@@ -8,8 +8,8 @@
 ## День 127 (Пн): Node.js — среда и модули
 <a id="week-19-day-127"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Express Notes API**
 
 ### Теория
@@ -28,7 +28,7 @@ npm управляет зависимостями: `package.json`, semver, `node
 
 **Ключевая мысль:** Node — JS без браузера; ESM + fs.promises — современный baseline.
 
-### Практика
+### Практика (полный трек)
 1. `mkdir notes-api && npm init -y`, добавь `"type": "module"`
 2. CLI: `node scripts/greet.js --name=Alex` (parse `process.argv`)
 3. Чтение/запись `notes.json` через `fs.promises`
@@ -41,9 +41,17 @@ npm управляет зависимостями: `package.json`, semver, `node
 - [ ] fs.promises, не callback fs.readFile
 - [ ] npm script `"greet"` работает
 
+### Практика (лайт / MVP)
+1. `mkdir notes-api && npm init -y`, добавь `"type": "module"`
+2. CLI: `node scripts/greet.js --name=Alex` (parse `process.argv`)
+3. Чтение/запись `notes.json` через `fs.promises`
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.
 
 ### Git
 - Закоммить изменения дня: `git add week-19/` → `git commit -m "week 19 day 127: Node ESM setup and file CLI"`
@@ -57,8 +65,8 @@ npm управляет зависимостями: `package.json`, semver, `node
 ## День 128 (Вт): Асинхронность в Node
 <a id="week-19-day-128"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Express Notes API**
 
 ### Теория
@@ -77,7 +85,7 @@ File watcher на `notes.json` учит реагировать на измене
 
 **Ключевая мысль:** не блокируй event loop; await + try/catch на каждом I/O.
 
-### Практика
+### Практика (полный трек)
 1. Перепиши file I/O на async/await с try/catch
 2. File watcher: логирует изменения `notes.json`, останавливается на SIGINT
 3. Промисификация: `const readFile = promisify(fs.readFile)` — для понимания legacy
@@ -90,9 +98,17 @@ File watcher на `notes.json` учит реагировать на измене
 - [ ] Watcher корректно останавливается (SIGINT)
 - [ ] try/catch вокруг await
 
+### Практика (лайт / MVP)
+1. Перепиши file I/O на async/await с try/catch
+2. File watcher: логирует изменения `notes.json`, останавливается на SIGINT
+3. Промисификация: `const readFile = promisify(fs.readFile)` — для понимания legacy
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.
 
 ### Git
 - Закоммить изменения дня: `git add week-19/` → `git commit -m "week 19 day 128: async file watcher and error handling"`
@@ -106,8 +122,8 @@ File watcher на `notes.json` учит реагировать на измене
 ## День 129 (Ср): Express — REST API основы
 <a id="week-19-day-129"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Express Notes API**
 
 ### Теория
@@ -126,7 +142,7 @@ CRUD `/api/notes` с хранением в JSON-файле — мост к Postg
 
 **Ключевая мысль:** express.json() обязателен; app отдельно от server — тестируемость.
 
-### Практика
+### Практика (полный трек)
 1. `npm install express`, `src/app.js`, `src/server.js`
 2. CRUD `/api/notes` — хранение в JSON-файле через fs
 3. `GET /api/notes/:id` — 404 если нет (`res.status(404).json(...)`)
@@ -139,9 +155,17 @@ CRUD `/api/notes` с хранением в JSON-файле — мост к Postg
 - [ ] RESTful URLs и методы
 - [ ] 201 на POST, 204 на DELETE
 
+### Практика (лайт / MVP)
+1. `npm install express`, `src/app.js`, `src/server.js`
+2. CRUD `/api/notes` — хранение в JSON-файле через fs
+3. `GET /api/notes/:id` — 404 если нет (`res.status(404).json(...)`)
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-19/` → `git commit -m "week 19 day 129: Express CRUD notes in-memory JSON"`
@@ -155,8 +179,8 @@ CRUD `/api/notes` с хранением в JSON-файле — мост к Postg
 ## День 130 (Чт): Middleware, валидация, ошибки
 <a id="week-19-day-130"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Express Notes API**
 
 ### Теория
@@ -175,7 +199,7 @@ Zod валидирует body с TypeScript inference: `title` min 1 симво�
 
 **Ключевая мысль:** порядок middleware; Zod на входе, error handler на выходе цепочки.
 
-### Практика
+### Практика (полный трек)
 1. Logger middleware: method, url, duration (Date.now до/после)
 2. Zod schema для Note: `title` min 1, `body` optional string
 3. Centralized error handler — JSON `{ error: { code, message } }`
@@ -188,9 +212,17 @@ Zod валидирует body с TypeScript inference: `title` min 1 симво�
 - [ ] Zod на POST и PUT
 - [ ] morgan или custom logger
 
+### Практика (лайт / MVP)
+1. Logger middleware: method, url, duration (Date.now до/после)
+2. Zod schema для Note: `title` min 1, `body` optional string
+3. Centralized error handler — JSON `{ error: { code, message } }`
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-19/` → `git commit -m "week 19 day 130: Zod validation and error middleware"`
@@ -204,8 +236,8 @@ Zod валидирует body с TypeScript inference: `title` min 1 симво�
 ## День 131 (Пт): Express + PostgreSQL
 <a id="week-19-day-131"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~50м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~20м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Express Notes API**
 
 ### Теория
@@ -224,7 +256,7 @@ Zod валидирует body с TypeScript inference: `title` min 1 симво�
 
 **Ключевая мысль:** Pool, не Client; `$1` placeholders — единственный безопасный способ.
 
-### Практика
+### Практика (полный трек)
 1. `npm install pg dotenv`
 2. `src/db/pool.js` — Pool из `DATABASE_URL`, тест `SELECT NOW()`
 3. Перепиши notes API на таблицу `notes(id, title, body, created_at)`
@@ -237,9 +269,17 @@ Zod валидирует body с TypeScript inference: `title` min 1 симво�
 - [ ] Параметризованные запросы ($1, $2)
 - [ ] dotenv, `.env.example`
 
+### Практика (лайт / MVP)
+1. `npm install pg dotenv`
+2. `src/db/pool.js` — Pool из `DATABASE_URL`, тест `SELECT NOW()`
+3. Перепиши notes API на таблицу `notes(id, title, body, created_at)`
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-19/` → `git commit -m "week 19 day 131: Express notes with PostgreSQL pool"`
@@ -253,8 +293,8 @@ Zod валидирует body с TypeScript inference: `title` min 1 симво�
 ## День 132 (Сб): Структура проекта и роутеры
 <a id="week-19-day-132"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~50м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Express Notes API**
 
 ### Теория
@@ -273,7 +313,7 @@ Graceful shutdown: SIGTERM → `server.close()` → `pool.end()`. `package-lock.
 
 **Ключевая мысль:** routes тонкие, logic в services; health check — контракт с инфраструктурой.
 
-### Практика
+### Практика (полный трек)
 1. Структура: `src/routes/`, `controllers/`, `services/`, `db/pool.js`
 2. Вынеси логику из routes в controller/service
 3. `GET /api/health` — `{ status, db: 'ok'|'down', uptime }`
@@ -286,9 +326,17 @@ Graceful shutdown: SIGTERM → `server.close()` → `pool.end()`. `package-lock.
 - [ ] Service переиспользуется из controller
 - [ ] health check возвращает 503 если DB down
 
+### Практика (лайт / MVP)
+1. Структура: `src/routes/`, `controllers/`, `services/`, `db/pool.js`
+2. Вынеси логику из routes в controller/service
+3. `GET /api/health` — `{ status, db: 'ok'|'down', uptime }`
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-19/` → `git commit -m "week 19 day 132: layered architecture and health check"`
@@ -302,8 +350,8 @@ Graceful shutdown: SIGTERM → `server.close()` → `pool.end()`. `package-lock.
 ## День 133 (Вс): Ревью Node.js и сравнение с FastAPI
 <a id="week-19-day-133"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Express Notes API**
 
 ### Теория
@@ -322,7 +370,7 @@ npm scripts best practices: `start` (production), `dev` (nodemon), `test`, `db:m
 
 **Ключевая мысль:** Express и FastAPI решают одну задачу разными инструментами — выбор по команде и экосистеме.
 
-### Практика
+### Практика (полный трек)
 1. Сравнительная таблица: FastAPI (нед.18) vs Express — 10 критериев в `docs/compare.md`
 2. Postman collection для Express API — export JSON
 3. README с curl примерами для всех endpoints
@@ -335,9 +383,17 @@ npm scripts best practices: `start` (production), `dev` (nodemon), `test`, `db:m
 - [ ] Сравнительная таблица в docs
 - [ ] `npm start` и `npm run dev` работают
 
+### Практика (лайт / MVP)
+1. Сравнительная таблица: FastAPI (нед.18) vs Express — 10 критериев в `docs/compare.md`
+2. Postman collection для Express API — export JSON
+3. README с curl примерами для всех endpoints
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-19/` → `git commit -m "week 19 day 133: docs, Postman, auth skeleton"`
