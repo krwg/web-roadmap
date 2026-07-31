@@ -22,14 +22,17 @@
 </blockquote>
 <h2 id="week-19-day-127">День 127 (Пн): Node.js — среда и модули</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Node.js — среда выполнения JavaScript вне браузера. Нет DOM и <code>window</code>, зато есть <code>process</code>, встроенные модули и npm-экосистема. Backend на Node разделяет язык с фронтендом — один TypeScript/JavaScript на обе стороны, но runtime другой: event loop libuv, не браузерный.</p>
 <p>CommonJS (<code>require</code>) vs ES Modules (<code>import</code>) — выбери <code>"type": "module"</code> в <code>package.json</code> для современного стиля. <code>import.meta.url</code> + <code>fileURLToPath</code> заменяют <code>__dirname</code> в ESM. Встроенные модули: <code>fs</code>, <code>path</code>, <code>http</code>. <code>process.argv</code> — аргументы CLI, <code>process.env</code> — переменные окружения.</p>
 <p>npm управляет зависимостями: <code>package.json</code>, semver, <code>node_modules</code>. npm scripts (<code>"greet": "node scripts/greet.js"</code>) — стандартный способ запуска задач. <code>.gitignore</code>: <code>node_modules</code>, <code>.env</code>. <code>fs.promises</code> вместо callback — async/await без callback hell.</p>
+<p>Ментальная модель: Node.js — это тот же JavaScript, что и в браузере, но перенесённый в другую «комнату». Нет <code>window</code>, <code>document</code>, DOM — вместо них файловая система, сеть, процессы операционной системы. Синтаксис языка (переменные, функции, промисы) идентичен тому, что ты писал во фронтенд-частях курса, а вот доступное окружение и стандартная библиотека — совершенно другие, ориентированные на серверные задачи.</p>
+<p>Это разделение окружения — не просто теория для сегодняшнего дня: весь Express-сервер, который ты соберёшь на этой неделе, работает по тем же базовым принципам Node — <code>process.env</code> для конфигурации, <code>fs.promises</code> для чтения файлов, событийная модель без блокировки. А общий язык с фронтендом — одно из главных практических преимуществ Node-стека в реальных командах: один разработчик может писать и клиент, и сервер.</p>
+<p>Частое заблуждение — свободно мешать <code>require()</code> (CommonJS) и <code>import</code> (ES Modules) в одном проекте, ожидая, что Node сам разберётся. На практике <code>"type": "module"</code> в <code>package.json</code> — это переключатель на весь пакет: если он выставлен, <code>require()</code> в <code>.js</code>-файлах перестаёт работать и нужно использовать <code>import</code>/<code>export</code>, а <code>__dirname</code> из CommonJS придётся заменить на <code>fileURLToPath(import.meta.url)</code>. Смешение стилей — частый источник непонятных <code>SyntaxError</code> у новичков, и именно поэтому практика дня явно требует единый ESM-стиль во всём проекте. Ещё одна важная привычка — <code>fs.promises</code> вместо колбэков: старый стиль <code>fs.readFile(path, (err, data) =&gt; {...})</code> легко превращается в «пирамиду проклятия» (callback hell) при вложенных операциях, тогда как <code>await fs.promises.readFile(path)</code> читается линейно, сверху вниз, как синхронный код, оставаясь при этом неблокирующим.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://nodejs.org/en/learn/getting-started/introduction-to-nodejs">Node.js Introduction</a></li>
@@ -73,14 +76,17 @@
 <hr>
 <h2 id="week-19-day-128">День 128 (Вт): Асинхронность в Node</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Асинхронность — сердце Node. Эволюция: callback → Promise → async/await. Event loop libuv обрабатывает I/O неблокирующе, но синхронный <code>fs.readFileSync</code> в сервере заморозит все запросы — используй async API. <code>await</code> без <code>try/catch</code> — необработанный rejection.</p>
 <p>EventEmitter (<code>on</code>, <code>emit</code>, <code>once</code>) — основа многих Node API и паттерн pub/sub. <code>process.on('unhandledRejection')</code> ловит забытые rejections — настрой в entry point. <code>util.promisify</code> оборачивает legacy callback API в Promise — для понимания, не для нового кода.</p>
 <p>File watcher на <code>notes.json</code> учит реагировать на изменения; SIGINT корректно останавливает watcher. <code>Promise.all</code> читает три файла параллельно. Замер sync vs async на 10 файлах — наглядная демонстрация блокировки main thread.</p>
+<p>Ментальная модель event loop — один официант на много столиков. Официант (главный поток Node) не готовит блюдо сам: он передаёт заказ на кухню (файловую систему, сеть, таймер через libuv) и тут же идёт принимать заказ у следующего столика, а не стоит и ждёт готовности. Когда блюдо готово, официант возвращается и подаёт его — это и есть callback/promise resolution. Именно эта модель позволяет Node одним потоком обслуживать тысячи одновременных соединений.</p>
+<p>Это критично для всего, что будет построено дальше: каждый route-обработчик в Express на этой неделе — асинхронная функция, и если внутри неё случайно окажется синхронный блокирующий вызов (<code>fs.readFileSync</code> на большом файле, тяжёлые вычисления в цикле), это заморозит обработку <em>всех</em> остальных пользователей сервера одновременно, а не только текущий запрос — потому что официант всего один. <code>EventEmitter</code> с методами <code>on</code>, <code>emit</code>, <code>once</code> — ещё один слой этой же модели: множество встроенных Node API (потоки, HTTP-сервер) построены на событиях, и понимание паттерна pub/sub здесь напрямую объясняет, как работают, например, обработчики <code>req.on('data', ...)</code> при чтении тела запроса вручную.</p>
+<p>Частое заблуждение — думать, что <code>async/await</code> сам по себе даёт параллелизм. <code>await</code> внутри функции лишь приостанавливает выполнение <em>этой</em> функции до готовности промиса, но следующая строка кода не начнёт выполняться, пока не завершится текущая — если нужно выполнить три независимые операции одновременно, необходим явный <code>Promise.all([p1, p2, p3])</code>, а последовательные <code>await</code> одна за другой выполнятся строго по очереди, теряя выгоду от параллельного I/O. Вторая типичная ошибка — забыть <code>try/catch</code> вокруг <code>await</code>: непойманный rejected promise превращается в <code>unhandledRejection</code>, который в новых версиях Node может привести к аварийному завершению процесса. Настройка <code>process.on('unhandledRejection', ...)</code> в точке входа приложения — не избыточная предосторожность, а страховка от того, что один забытый <code>catch</code> где-то в глубине кода уронит весь сервер целиком.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick">Event Loop</a></li>
@@ -111,7 +117,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 128: async file watcher and error handling"</code></li>
@@ -124,14 +130,17 @@
 <hr>
 <h2 id="week-19-day-129">День 129 (Ср): Express — REST API основы</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Express — минималистичный HTTP-фреймворк поверх Node <code>http</code>. <code>app.get/post/put/delete</code> маппят метод + путь на handler. <code>req.params</code> — path params, <code>req.query</code> — query string, <code>req.body</code> — JSON после <code>express.json()</code> middleware. Без body parser <code>req.body</code> будет <code>undefined</code> — классическая ловушка.</p>
 <p>HTTP semantics: 200 OK, 201 Created, 204 No Content (DELETE без body), 400 Bad Request, 404 Not Found. Раздели <code>app.js</code> (конфигурация, middleware, routes) и <code>server.js</code> (<code>listen</code>) — app экспортируется для тестов. <code>nodemon</code> автоперезапускает в dev.</p>
 <p>CRUD <code>/api/notes</code> с хранением в JSON-файле — мост к PostgreSQL завтра. Единый формат ответа <code>{ data }</code> или <code>{ error: { message } }</code> упрощает фронтенд. RESTful URLs: существительные, не глаголы.</p>
+<p>Ментальная модель Express — конвейер middleware. Каждый входящий запрос проходит по цепочке функций-станций (<code>logger</code> → <code>express.json()</code> → маршруты → обработка 404 → обработчик ошибок), и каждая станция может прочитать/изменить запрос, ответить сразу или передать управление дальше через <code>next()</code>. Порядок подключения middleware в коде буквально определяет порядок их выполнения — это не декларативная конфигурация, а императивная последовательность.</p>
+<p>Разделение <code>app.js</code> (конфигурация приложения) и <code>server.js</code> (запуск через <code>listen</code>) — не формальность: это тот же принцип тестируемости, что и <code>TestClient</code> в FastAPI на предыдущей неделе — <code>app</code> можно импортировать в тесты и слать в него запросы напрямую, без реального сетевого порта, что делает автотесты (день 133 и практика проекта) быстрыми и надёжными.</p>
+<p>Частое заблуждение новичков — писать <code>POST</code>-обработчик, обращаться к <code>req.body</code> и получать <code>undefined</code>, не понимая почему: без подключённого <code>express.json()</code> middleware Express не парсит тело запроса автоматически — это осознанное архитектурное решение фреймворка, а не баг. Вторая распространённая ошибка — сваливать все маршруты в один растущий <code>app.js</code> на сотни строк вместо разделения по ресурсам (<code>routes/notes.js</code>, <code>routes/authors.js</code>), что уже на следующей неделе (после появления PostgreSQL) станет неуправляемым. Единый формат ответа (<code>{ data }</code> для успеха, <code>{ error: { message } }</code> для ошибки) — небольшая деталь с большим эффектом: фронтенд может написать один универсальный обработчик ответов вместо разбора уникальной формы JSON для каждого отдельного endpoint. HTTP-семантика статусов из практики дня — тоже часть этого контракта: 201 Created сообщает фронтенду «ресурс появился, можно обновить список», а 204 No Content на DELETE явно говорит «операция прошла успешно, но отвечать нечем» — разница, которая имеет значение для клиентского кода, реагирующего на статус, а не только на тело ответа.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://expressjs.com/en/starter/hello-world.html">Express Hello World</a></li>
@@ -162,7 +171,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 129: Express CRUD notes in-memory JSON"</code></li>
@@ -175,14 +184,17 @@
 <hr>
 <h2 id="week-19-day-130">День 130 (Чт): Middleware, валидация, ошибки</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Middleware в Express — функции <code>(req, res, next)</code> в цепочке. Порядок критичен: logger → <code>express.json()</code> → routes → 404 handler → error middleware (4 аргумента: <code>err, req, res, next</code>). <code>next()</code> передаёт управление дальше; <code>next(err)</code> — в error handler.</p>
 <p>Zod валидирует body с TypeScript inference: <code>title</code> min 1 символ, <code>body</code> optional. При ошибке — 400 с <code>zodError.flatten()</code>. Centralized error handler возвращает JSON <code>{ error: { code, message } }</code> — единый контракт для клиента. morgan логирует HTTP-запросы в dev.</p>
 <p>404 handler для неизвестных routes — последний middleware перед error handler. Custom logger с duration (Date.now до/после) дополняет morgan. Error middleware без 4 параметров Express не распознает — не вызовется.</p>
+<p>Ментальная модель порядка middleware — фильтры кофемашины: если поставить фильтр валидации до того, как вода (тело запроса) прошла через парсер (<code>express.json()</code>), фильтр получит пустоту вместо данных и либо пропустит мусор, либо сломается непредсказуемо. Порядок регистрации middleware в Express — это не стилистическое предпочтение, а часть логики приложения: <code>express.json()</code> обязан идти раньше любого middleware, читающего <code>req.body</code>.</p>
+<p>Формат централизованной ошибки <code>{ error: { code, message } }</code>, который ты вводишь сегодня, — не изобретение с нуля: это прямая параллель <code>HTTPException</code> + <code>response_model</code> из FastAPI на прошлой неделе. Оба стека решают одну и ту же задачу — дать фронтенду предсказуемый, единообразный контракт ошибок независимо от того, какой именно endpoint и какая причина сбоя. Сравнение этих двух подходов в конце недели наглядно покажет, что архитектурная идея важнее конкретного синтаксиса фреймворка.</p>
+<p>Частое и коварное заблуждение — думать, что любую функцию с <code>(req, res, next)</code> можно превратить в обработчик ошибок, если просто вызвать её после остальных. Express распознаёт error-middleware исключительно по количеству аргументов — ровно четыре: <code>(err, req, res, next)</code>. Функция с тремя параметрами, даже поставленная в конце цепочки, никогда не будет вызвана как error handler — это тихая, трудноуловимая ошибка, потому что сам код не падает, просто ошибки остаются необработанными. Вторая ошибка — забыть вызвать <code>next(err)</code> в обычном middleware при перехвате исключения, из-за чего запрос «зависает» без ответа клиенту. <code>morgan</code> в режиме <code>'dev'</code> дополняет ручной логгер: он выводит метод, путь, статус-код и время ответа компактной цветной строкой, что удобно при локальной разработке, тогда как <code>'combined'</code>-формат ближе к тому, что нужно собирать в продакшен-логах.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://expressjs.com/en/guide/using-middleware.html">Writing middleware</a></li>
@@ -213,7 +225,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 130: Zod validation and error middleware"</code></li>
@@ -226,14 +238,17 @@
 <hr>
 <h2 id="week-19-day-131">День 131 (Пт): Express + PostgreSQL</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~50м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~20м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p><code>node-postgres</code> (<code>pg</code>) — драйвер PostgreSQL для Node. <code>Pool</code> переиспользует соединения под нагрузкой; <code>new Client()</code> на каждый запрос — антипаттерн. <code>pool.query('SELECT * FROM notes WHERE id = $1', [id])</code> — placeholders <code>$1, $2</code> защищают от SQL injection.</p>
 <p><code>DATABASE_URL=postgresql://user:pass@host:5432/db</code> из <code>.env</code> через dotenv. Prisma — ORM-альтернатива (обзор); на этой неделе raw <code>pg</code> учит SQL и placeholders. Graceful shutdown: <code>pool.end()</code> на SIGTERM.</p>
 <p>Перепиши notes API с JSON-файла на таблицу <code>notes(id, title, body, created_at)</code>. <code>schema.sql</code> + migrate script. Все запросы только через <code>pool.query</code> с массивом параметров — template strings в SQL запрещены.</p>
+<p>Ментальная модель <code>Pool</code> — парковка с несколькими свободными местами вместо строительства нового гаража под каждую машину. <code>new Client()</code> на каждый запрос означает установление нового TCP-соединения к PostgreSQL при каждом HTTP-запросе — дорого и не масштабируется под нагрузкой. <code>Pool</code> заранее держит несколько открытых соединений, выдаёт свободное на время запроса и возвращает обратно, а не закрывает — ровно тот же принцип переиспользования ресурсов, что и session-per-request в SQLAlchemy на прошлой неделе.</p>
+<p>Плейсхолдеры <code>$1, $2</code> в node-postgres — это тот же самый принцип безопасности, который ты уже видел как <code>?</code> в sqlite3 (неделя 16) и <code>%s</code> в psycopg2 (неделя 17): разный синтаксис, одна и та же идея — данные передаются драйверу отдельно от текста запроса, и СУБД никогда не путает пользовательский ввод с кодом SQL. Три экосистемы, три синтаксиса, один принцип — это стоит запомнить как универсальное правило, а не деталь конкретной библиотеки.</p>
+<p>Частое заблуждение — считать, что «ручная» экранизация кавычек в строке перед вставкой в SQL через шаблонный литерал (<code>`WHERE name = '${escaped}'`</code>) достаточно безопасна. Единственный надёжный способ защититься от SQL injection — параметризованные запросы; любая самодельная санитизация рано или поздно пропустит edge case (Unicode-трюки, вложенные кавычки, null-байты). Вторая ошибка — не закрывать <code>Pool</code> при остановке приложения (<code>pool.end()</code> на <code>SIGTERM</code>), из-за чего процесс может зависать при попытке штатной остановки, а открытые соединения — накапливаться на стороне PostgreSQL. Перенос notes API с JSON-файла на настоящую таблицу — не просто смена хранилища: он заставляет явно продумать схему (<code>id</code>, <code>title</code>, <code>body</code>, <code>created_at</code>) и написать <code>schema.sql</code> вместо неявной структуры JS-объекта, что дисциплинирует так же, как проектирование схемы «Библиотека» на прошлой неделе.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://node-postgres.com/">node-postgres</a></li>
@@ -277,14 +292,17 @@
 <hr>
 <h2 id="week-19-day-132">День 132 (Сб): Структура проекта и роутеры</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~50м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Express Router модульно группирует маршруты: <code>notes.routes.js</code> монтируется с prefix <code>/api/notes</code>. Layered architecture: routes (тонкие) → controllers (HTTP) → services (бизнес-логика) → db (SQL). Бизнес-логика в route handler не тестируется — вынеси в service.</p>
 <p><code>dotenv</code> загружает secrets из <code>.env</code>; <code>NODE_ENV=development|production</code> меняет поведение (morgan 'dev' vs 'combined'). Health check <code>GET /api/health</code> возвращает <code>{ status, db: 'ok'|'down', uptime }</code> — нужен для Docker и мониторинга. 503 если БД недоступна.</p>
 <p>Graceful shutdown: SIGTERM → <code>server.close()</code> → <code>pool.end()</code>. <code>package-lock.json</code> в git — воспроизводимые сборки. README описывает слои папок — onboarding нового разработчика.</p>
+<p>Ментальная модель layered-архитектуры — песочные часы: HTTP-специфичные детали (заголовки, статусы, парсинг запроса) сужаются к чистой бизнес-логике в узком горлышке (service), а затем снова расширяются к деталям хранения данных (db). Каждый слой знает только о соседнем: controller не знает, как устроен SQL-запрос внутри service, а service не знает, что вызвавший его код — это HTTP-запрос, а не, например, cron-задача или CLI-команда.</p>
+<p>Это разделение — не Node-специфичная причуда: это буквально та же архитектура <code>routers → crud → models → db</code>, которую ты собрал в FastAPI на прошлой неделе, только с другими именами слоёв. Узнавание одного и того же архитектурного паттерна в двух разных языках и фреймворках — куда более ценный навык, чем запоминание синтаксиса одного конкретного стека, и именно это делает тебя способным быстро освоить третий, четвёртый фреймворк в будущем.</p>
+<p>Частое заблуждение — писать бизнес-логику прямо внутри route-обработчика «раз уж всё равно там нужен доступ к <code>req</code> и <code>res</code>». Логика, зашитая в controller, не может быть протестирована без поднятия HTTP-сервера и не может быть переиспользована, если та же операция понадобится, например, из cron-задачи. Вторая ошибка — делать health check, который слепо возвращает <code>200 OK</code>, не проверяя реальную доступность БД: оркестраторы вроде Docker или Kubernetes используют health check, чтобы решить, направлять ли трафик на этот инстанс, и «фальшиво здоровый» сервис без реального подключения к БД будет продолжать получать запросы, которые обречены на ошибку. Graceful shutdown (<code>SIGTERM</code> → <code>server.close()</code> → <code>pool.end()</code>) — финальный штрих той же дисциплины: сервер должен успеть корректно завершить уже начатые запросы и закрыть соединения с БД перед остановкой, а не обрубать их резко, теряя данные в процессе.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://expressjs.com/en/guide/routing.html#express-router">Express Router</a></li>
@@ -315,7 +333,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 132: layered architecture and health check"</code></li>
@@ -328,14 +346,17 @@
 <hr>
 <h2 id="week-19-day-133">День 133 (Вс): Ревью Node.js и сравнение с FastAPI</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Ревью недели — сравнение двух backend-стеков, которые ты теперь знаешь. FastAPI: автодоки, Pydantic, async, Python ecosystem. Express: минимализм, npm, один язык с React. Для I/O-bound оба отличны; CPU-bound тяжёлая работа чаще уходит в Python или отдельный worker.</p>
 <p>npm scripts best practices: <code>start</code> (production), <code>dev</code> (nodemon), <code>test</code>, <code>db:migrate</code>. Postman collection — демо и ручное QA. Skeleton <code>auth.routes.js</code> — мост к неделе 20. <code>npm audit</code> показывает уязвимости в зависимостях.</p>
 <p>Сравнительная таблица FastAPI vs Express по 10 критериям учит аргументировать выбор стека. Express Notes API — parity с Library REST API недели 18: те же статусы, формат ошибок, layered structure. Тег <code>week-19-done</code>.</p>
+<p>Ментальная модель для сравнения стеков — две разные клавиатуры, подключённые к одному и тому же роялю. FastAPI и Express предлагают разную эргономику (типизация из коробки против гибкости без неё, автогенерация Swagger против ручной настройки, async Python против нативно-асинхронного JS), но производят одну и ту же «музыку» — REST-ресурсы, HTTP-статусы, JSON-контракты. Разработчик, освоивший оба, видит сквозь синтаксис общую архитектуру.</p>
+<p>Умение аргументированно сравнить два стека по конкретным критериям (типизация, экосистема библиотек, производительность под нагрузкой, порог входа для команды, зрелость инструментов) — это именно тот навык, который проверяют на технических интервью вопросом «почему вы выбрали X, а не Y», и именно поэтому сравнительная таблица — не формальность, а тренировка аргументации, которая пригодится за пределами учебного проекта.</p>
+<p>Частое заблуждение — искать единственно «правильный» стек и считать все остальные хуже. На практике выбор между FastAPI и Express в реальной команде почти никогда не решается голым сравнением фреймворков: он зависит от опыта команды, существующего кода, экосистемы (например, ML/data-задачи почти всегда тянут к Python), требований к производительности и скорости найма разработчиков. Skeleton <code>auth.routes.js</code> с заглушками — не проходной пункт практики, а прямой мост к теме аутентификации, которую ты будешь реализовывать уже на следующей неделе, причём в обоих стеках параллельно. <code>npm audit</code> в практике дня — ещё одна привычка, которая пригодится за пределами курса: открытый исходный код зависимостей означает и открытые уязвимости, и регулярная проверка (а не разовая на старте проекта) — часть базовой гигиены production-приложения.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://docs.npmjs.com/cli/v10/using-npm/scripts">npm scripts</a></li>
@@ -366,7 +387,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 133: docs, Postman, auth skeleton"</code></li>
