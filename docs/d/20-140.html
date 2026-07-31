@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 140 (Вс): Ревью безопасности и CI · Auth &amp; tests · web-roadmap</title>
+  <meta name="description" content="День 140 (Вс): Ревью безопасности и CI — неделя 20.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-20--week-20-day-140">
+  <meta http-equiv="refresh" content="0;url=../#week-20--week-20-day-140">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-20--week-20-day-140">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-20-day-140">День 140 (Вс): Ревью безопасности и CI</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Secure Notes</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>CI автоматизирует проверку качества на каждый push. GitHub Actions: matrix jobs для backend (<code>pytest</code>) и frontend (<code>vitest run</code>). Зелёный CI — сигнал, что main mergeable. Branch protection с require CI — best practice для команд (обзор).</p>
+<p><code>npm audit</code> и <code>pip audit</code> сканируют known vulnerabilities в зависимостях. Critical без комментария или плана фикса — красный флаг для портфолио. Semgrep — static analysis (обзор). Sequence diagram auth flow в README объясняет архитектуру ревьюеру.</p>
+<p>Финальный security review по OWASP чеклисту. Обнови <code>.env.example</code> для backend и frontend. Smoke test checklist в README. Тег <code>week-20-done</code> — Secure Notes готов как шаблон для недель 21–22.</p>
+<p>Ментальная модель: CI — это автоматический привратник качества, который проверяет код за тебя каждый раз, когда ты забываешь. Зелёный чек на GitHub — не формальность для галочки, а сигнал команде (или ревьюеру портфолио), что код прошёл минимальную планку: тесты, линтер, security-скан. Для junior-кандидата наличие рабочего CI pipeline в pet-проекте на GitHub — заметный плюс: рекрутеры и техлиды буквально открывают вкладку Actions, чтобы увидеть зелёную галочку до того, как откроют код.</p>
+<p>Конкретный пример пользы: <code>npm audit</code> может найти критическую уязвимость в транзитивной зависимости, о существовании которой ты даже не знал — типичный кейс cascading vulnerability в node_modules. Частое заблуждение — «раз мой код написан безопасно, зависимости не важны» — но большая часть реальных production-инцидентов происходит именно через уязвимые библиотеки третьих сторон, а не собственный код. Workflow <code>ci.yml</code>, который ты пишешь сегодня, — это шаблон, который в неделе 21 расширится healthcheck-ами для Docker, а в неделе 22 (день 153) вырастет до полноценного pipeline с postgres service и двумя параллельными job — тег <code>week-20-done</code> фиксирует рабочую точку отсчёта для этого пути.</p>
+<p>Для продакшена архитектурные решения без документации быстро забываются: через месяц ты сам не вспомнишь, почему выбран именно такой TTL токена или почему rate limit настроен на 5, а не на 10 попыток. Sequence diagram auth flow в README — не украшение, а инструмент передачи знаний будущему тебе или коллеге, который придёт поддерживать проект и не должен реверс-инжинирить логику по коду построчно.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.github.com/en/actions">GitHub Actions</a></li>
+<li><a href="https://docs.npmjs.com/cli/v10/commands/npm-audit">npm audit</a></li>
+<li><a href="https://pypi.org/project/pip-audit/">pip-audit</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> CI + security audit — часть Definition of Done, не «после деплоя».</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>.github/workflows/ci.yml</code>: <code>pytest</code> + <code>vitest run</code> на push</li>
+<li><code>npm audit</code> и <code>pip audit</code> — отчёт в <code>security-audit.md</code></li>
+<li>Документируй auth flow: sequence diagram в README</li>
+<li>Финальный security review по OWASP чеклисту</li>
+<li>Обнови <code>.env.example</code> для backend и frontend</li>
+<li>Smoke test checklist в README</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] CI workflow файл в <code>.github/workflows/</code>
+- [ ] npm audit — нет critical без комментария
+- [ ] Auth flow задокументирован</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>.github/workflows/ci.yml</code>: <code>pytest</code> + <code>vitest run</code> на push</li>
+<li><code>npm audit</code> и <code>pip audit</code> — отчёт в <code>security-audit.md</code></li>
+<li>Документируй auth flow: sequence diagram в README</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-20/</code> → <code>git commit -m "week 20 day 140: CI workflow and security docs"</code></li>
+<li>Поставь тег: <code>git tag week-20-done</code></li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-20--week-20-day-140');</script>
+</body>
+</html>

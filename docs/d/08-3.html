@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 3 (Wed): async/await · Async &amp; HTTP · web-roadmap</title>
+  <meta name="description" content="День 3 (Wed): async/await — неделя 08.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-08--week-08-day-3">
+  <meta http-equiv="refresh" content="0;url=../#week-08--week-08-day-3">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-08--week-08-day-3">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-08-day-3">День 3 (Wed): async/await</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p><code>async/await</code> — синтаксический сахар над Promise, делающий асинхронный код похожим на синхронный. Функция с ключевым словом <code>async</code> всегда возвращает Promise: даже <code>return 42</code> превратится в <code>Promise.resolve(42)</code>. Ключевое слово <code>await</code> можно использовать только внутри <code>async</code>-функции — оно приостанавливает выполнение <strong>только этой функции</strong>, отдавая управление Event Loop. Main thread при этом не блокируется.</p>
+<p>Вместо <code>.catch</code> в цепочке используй <code>try/catch</code> вокруг <code>await</code>:</p>
+<pre><code class="language-js">try {
+  const data = await fetchJson(url);
+} catch (err) {
+  showError(err.message);
+}
+</code></pre>
+<p>Главная ловушка — последовательный <code>await</code> в цикле: <code>for (const id of ids) { await fetch(id) }</code> выполнит N запросов по очереди. Если запросы независимы, собери массив Promise и дождись всех: <code>await Promise.all(ids.map(id =&gt; fetch(id)))</code>. В ES-модулях доступен top-level <code>await</code> — можно писать <code>const config = await fetch('/config.json')</code> прямо в <code>main.js</code> без обёртки.</p>
+<p>Мысленно <code>async/await</code> — это «закладка» в книге: <code>await</code> не останавливает всю программу, а лишь запоминает место в текущей функции и отдаёт управление дальше, чтобы вернуться сюда, когда результат будет готов. Другие функции, таймеры и обработчики событий продолжают работать как ни в чём не бывало — блокируется только логика внутри конкретной <code>async</code>-функции.</p>
+<p>Этот паттерн станет основным способом работы с данными на неделях 10–11: типизированные API-функции (<code>Promise&lt;T&gt;</code> в TypeScript) и хуки React (<code>useEffect</code> с async-логикой внутри) опираются именно на async/await, а не на явные цепочки <code>.then</code>. Частое заблуждение — думать, что <code>await</code> можно использовать где угодно: без <code>async</code> на функции или на верхнем уровне обычного скрипта (не ES-модуля) движок выбросит SyntaxError.</p>
+<p>Пример цены последовательного await: 10 запросов по 200мс каждый в цикле <code>for...of</code> с <code>await</code> дадут итог около 2 секунд, потому что каждый следующий запрос стартует только после ответа предыдущего. Заменив на <code>await Promise.all(ids.map(id =&gt; fetch(id)))</code>, все запросы уйдут параллельно, и итог сократится примерно до 200мс. Именно это сравнение — шаг 6 практики дня (<code>console.time</code>) — наглядно покажет цену необдуманной последовательности и станет личным аргументом в пользу параллельных await, когда данные независимы.</p>
+<p>Важно помнить и обратный случай: если второй запрос логически зависит от результата первого (например, сначала получить <code>userId</code>, потом по нему загрузить посты), последовательный <code>await</code> — не ошибка, а единственно верный вариант. Параллелить стоит только независимые операции — умение отличить одно от другого и есть суть архитектурного мышления, а не просто «await — плохо, Promise.all — хорошо».</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/async-await">learn.javascript.ru: Async/await</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Statements/async_function">MDN: async function</a>
+- <a href="https://javascript.info/async-await">javascript.info: Async/await</a></p>
+<p><strong>Ключевая мысль:</strong> <code>await</code> не блокирует браузер — он лишь ставит на паузу текущую async-функцию, пока Promise не разрешится.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Рефакторинг fetch-функций на async/await</li>
+<li>Функция <code>loadUserWithPosts(userId)</code> — user, затем его posts</li>
+<li>Параллельная загрузка 3 endpoints через <code>Promise.all</code> + await</li>
+<li>try/catch с понятным сообщением для пользователя</li>
+<li>Async IIFE для top-level await в модуле</li>
+<li>Сравни время: последовательный vs параллельный await (console.time)</li>
+<li>Оберни api-слой недели 7 в async/await</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Весь API-слой на async/await
+- [ ] Параллельные запросы не последовательные без причины
+- [ ] try/catch на каждом публичном API-вызове</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Рефакторинг fetch-функций на async/await</li>
+<li>Функция <code>loadUserWithPosts(userId)</code> — user, затем его posts</li>
+<li>Параллельная загрузка 3 endpoints через <code>Promise.all</code> + await</li>
+<li>try/catch с понятным сообщением для пользователя</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 3: async await refactor"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-08--week-08-day-3');</script>
+</body>
+</html>

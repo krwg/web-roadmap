@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 5 (Fri): Функции, utility types, enums · TypeScript · web-roadmap</title>
+  <meta name="description" content="День 5 (Fri): Функции, utility types, enums — неделя 10.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-10--week-10-day-5">
+  <meta http-equiv="refresh" content="0;url=../#week-10--week-10-day-5">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-10--week-10-day-5">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-10-day-5">День 5 (Fri): Функции, utility types, enums</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Типизация функций в TypeScript охватывает параметры, возвращаемое значение и перегрузки. Optional параметры (<code>name?: string</code>), значения по умолчанию (<code>size = 'md'</code>) и rest (<code>...args: number[]</code>) типизируются явно. Return type можно вывести (inference), но явный return полезен для публичного API — компилятор проверит, что все ветки возвращают заявленный тип.</p>
+<p>Utility types трансформируют существующие типы: <code>Partial&lt;T&gt;</code> делает все поля опциональными (удобно для update DTO), <code>Pick&lt;T, 'title' | 'done'&gt;</code> выбирает подмножество полей, <code>Omit&lt;T, 'id'&gt;</code> исключает поля, <code>Record&lt;Keys, Type&gt;</code> строит объект с заданными ключами. Пример: <code>type UpdateTodo = Partial&lt;Pick&lt;Todo, 'title' | 'done'&gt;&gt;</code> — обновление только разрешённых полей.</p>
+<p><code>enum</code> в modern TypeScript уступает union of literals: <code>const STATUS = { LOADING: 'loading', SUCCESS: 'success' } as const; type Status = typeof STATUS[keyof typeof STATUS]</code>. Такой подход лучше tree-shaking и не генерирует лишний JS. Function overloads задают несколько сигнатур для одной реализации. <code>Parameters&lt;T&gt;</code> и <code>ReturnType&lt;T&gt;</code> извлекают типы из существующих функций. Оператор <code>satisfies</code> (TS 4.9+) проверяет тип, сохраняя literal inference.</p>
+<p>Мысленная модель utility types — конструктор Lego, где из готовых кубиков (существующих типов) собираются новые формы без ручной лепки с нуля: <code>Partial&lt;Todo&gt;</code> берёт тип <code>Todo</code> и говорит «все поля теперь опциональны», <code>Pick&lt;Todo, 'title'&gt;</code> — «оставь только эту деталь», <code>Omit&lt;Todo, 'id'&gt;</code> — «убери эту деталь, остальное оставь». Это избавляет от ручного дублирования почти идентичных интерфейсов для create/update/read версий одной и той же сущности.</p>
+<p>Эти приёмы напрямую переносятся в API-слои React-приложений: типичный паттерн <code>type CreateTodoDto = Omit&lt;Todo, 'id' | 'createdAt'&gt;</code> (сервер сам генерирует id и дату) встречается в подавляющем большинстве реальных проектов, и понимание его сегодня избавит от копипасты интерфейсов позже. Замена <code>enum</code> на <code>as const</code> объект — тоже не просто вкусовщина: <code>enum</code> исторически генерирует дополнительный JS-код при компиляции, тогда как <code>as const</code> полностью стирается, что мельче бандл и лучше tree-shaking для production-сборки на Vite (день 6 этой недели).</p>
+<p>Частое заблуждение — думать, что <code>Partial&lt;T&gt;</code> делает объект необязательным целиком, а не каждое поле по отдельности: <code>Partial&lt;Todo&gt;</code> всё ещё требует объект (не <code>undefined</code>), просто каждое его свойство (<code>title</code>, <code>done</code>) можно опустить. Конкретный пример из практики: <code>type UpdateTodo = Partial&lt;Pick&lt;Todo, 'title' | 'done'&gt;&gt;</code> описывает ровно то, что можно менять при PATCH-запросе — не весь Todo целиком и не произвольные поля, а только title и done, оба опционально.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.typescriptlang.org/docs/handbook/utility-types.html">Handbook: Utility Types</a>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/functions.html">Handbook: More on Functions</a>
+- <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator">TypeScript 4.9: satisfies</a></p>
+<p><strong>Ключевая мысль:</strong> utility types — конструктор из существующих типов; <code>Partial</code>/<code>Pick</code>/<code>Omit</code> заменяют ручное дублирование DTO.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>UpdateTodo = Partial&lt;Pick&lt;Todo, 'title' | 'done'&gt;&gt;</code></li>
+<li><code>Record&lt;Theme, string&gt;</code> для CSS-переменных по темам</li>
+<li>Замени enum статусов на <code>as const</code> объект + union type</li>
+<li>Overload: <code>createElement(tag: 'div'): HTMLDivElement</code> (упрощённо)</li>
+<li>Типизируй EventEmitter из недели 9 generics <code>&lt;T&gt;</code></li>
+<li><code>Required&lt;Pick&lt;Todo, 'title'&gt;&gt;</code> для create DTO</li>
+<li>Используй <code>ReturnType&lt;typeof fetchJson&gt;</code> в обёртке</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Partial/Pick/Omit в рефакторинге</p>
+</li>
+<li>
+<p>[ ] const assertion вместо enum</p>
+</li>
+<li>
+<p>[ ] EventEmitter типизирован</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>UpdateTodo = Partial&lt;Pick&lt;Todo, 'title' | 'done'&gt;&gt;</code></li>
+<li><code>Record&lt;Theme, string&gt;</code> для CSS-переменных по темам</li>
+<li>Замени enum статусов на <code>as const</code> объект + union type</li>
+<li>Overload: <code>createElement(tag: 'div'): HTMLDivElement</code> (упрощённо)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add src/lib/event-emitter.ts
+
+git commit -m &quot;week-10 day-05: utility types и типизированный EventEmitter&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-10--week-10-day-5');</script>
+</body>
+</html>

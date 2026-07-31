@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 122 (Ср): FastAPI — первый API · FastAPI · web-roadmap</title>
+  <meta name="description" content="День 122 (Ср): FastAPI — первый API — неделя 18.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-18--week-18-day-122">
+  <meta http-equiv="refresh" content="0;url=../#week-18--week-18-day-122">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-18--week-18-day-122">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-18-day-122">День 122 (Ср): FastAPI — первый API</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library REST API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>FastAPI — ASGI-фреймворк с автоматической валидацией из type hints. Path params (<code>/notes/{id}</code>), query params (<code>?skip=0</code>), request body (Pydantic model) — три входа данных. Pydantic проверяет типы в runtime и генерирует OpenAPI schema для Swagger.</p>
+<p><code>uvicorn main:app --reload</code> — dev-сервер с hot reload. <code>/docs</code> (Swagger UI) и <code>/redoc</code> — бесплатная интерактивная документация. <code>response_model=NoteRead</code> отсекает внутренние поля ORM от публичного JSON. Невалидный body → 422 Unprocessable Entity с деталями ошибок.</p>
+<p>Начни с in-memory CRUD для <code>Note</code> — отдели изучение FastAPI от SQLAlchemy. <code>NoteCreate</code>, <code>NoteRead</code>, <code>NoteUpdate</code> (optional fields) — три схемы для разных операций. Mutable default в Pydantic: <code>Field(default_factory=list)</code>, не <code>tags=[]</code>.</p>
+<p>Ментальная модель FastAPI — «contract-first без отдельного контракта»: обычно документацию API пишут отдельно от кода, и она рассинхронизируется через месяц. Здесь type hints и Pydantic-модель — это <em>и есть</em> контракт: FastAPI читает их один раз при старте и генерирует из них одновременно валидацию, сериализацию и Swagger-документацию. Написал <code>title: str</code> — и невалидный запрос без title автоматически получит 422 с понятным объяснением, без единой строчки ручной проверки.</p>
+<p>Почему это выходит за рамки одного дня: дисциплина <code>response_model</code>, которую ты закладываешь здесь на игрушечном <code>Note</code>, — это тот самый механизм, который через два дня не даст утечь внутренним полям ORM-модели (<code>password_hash</code>, <code>internal_id</code>) в публичный JSON API «Библиотеки». А привычка объявлять отдельные схемы для создания, чтения и обновления (<code>NoteCreate</code> без id, <code>NoteRead</code> с id, <code>NoteUpdate</code> с опциональными полями) — стандартный паттерн, который ты повторишь для <code>Author</code>, <code>Book</code>, <code>Loan</code> уже завтра.</p>
+<p>Частое заблуждение — думать, что раз Pydantic валидирует типы, значит любые дефолтные значения безопасны, включая <code>tags: list[str] = []</code>. В чистом Python mutable default-аргумент функции действительно опасен — он создаётся один раз и разделяется между вызовами; Pydantic обрабатывает этот случай корректно сам, но <code>Field(default_factory=list)</code> — явный, самодокументируемый способ показать намерение и защититься от этой более общей проблемы Python, если она встретится вне Pydantic. Вторая ошибка новичков — возвращать ORM- или dict-объект напрямую без <code>response_model</code>, из-за чего в ответе оказываются лишние или чувствительные поля, которые никто не собирался показывать наружу. <code>/docs</code> и <code>/redoc</code> при этом не два независимых артефакта, а два разных представления одной и той же OpenAPI-схемы — Swagger удобен для ручного тестирования прямо из браузера, ReDoc — для чтения документации как справочника.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://fastapi.tiangolo.com/tutorial/first-steps/">FastAPI First Steps</a></li>
+<li><a href="https://fastapi.tiangolo.com/tutorial/path-params/">Path Parameters</a></li>
+<li><a href="https://fastapi.tiangolo.com/tutorial/body/">Pydantic Models</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> type hints + Pydantic = валидация и docs из коробки; response_model защищает API.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>main.py</code>: FastAPI app, <code>GET /health</code> → <code>{"status": "ok"}</code></li>
+<li>In-memory CRUD для <code>Note</code> (id, title, body) — без БД пока</li>
+<li>Pydantic: <code>NoteCreate</code>, <code>NoteRead</code>, <code>NoteUpdate</code> (все поля optional)</li>
+<li>Проверь Swagger UI — все endpoints с примерами</li>
+<li>Отправь невалидный body — убедись в 422 Unprocessable Entity</li>
+<li>Настрой <code>pyproject.toml</code> или <code>requirements.txt</code> с версиями</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] 422 при невалидном body
+- [ ] Response model отделён от create model
+- [ ] <code>uvicorn --reload</code> работает</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>main.py</code>: FastAPI app, <code>GET /health</code> → <code>{"status": "ok"}</code></li>
+<li>In-memory CRUD для <code>Note</code> (id, title, body) — без БД пока</li>
+<li>Pydantic: <code>NoteCreate</code>, <code>NoteRead</code>, <code>NoteUpdate</code> (все поля optional)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-18/</code> → <code>git commit -m "week 18 day 122: FastAPI in-memory notes API"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Mutable default list в Pydantic — <code>Field(default_factory=list)</code></li>
+<li>Возврат ORM object без <code>response_model</code> — утечка внутренних полей</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-18--week-18-day-122');</script>
+</body>
+</html>

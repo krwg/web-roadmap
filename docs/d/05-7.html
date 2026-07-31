@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 7 (Sun): Мини-проект и закрепление · JavaScript · web-roadmap</title>
+  <meta name="description" content="День 7 (Sun): Мини-проект и закрепление — неделя 05.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-05--week-05-day-7">
+  <meta http-equiv="refresh" content="0;url=../#week-05--week-05-day-7">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-05--week-05-day-7">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-05-day-7">День 7 (Sun): Мини-проект и закрепление</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Console Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Отладка — навык не менее важный, чем написание кода. <strong>Stack trace</strong> в Console показывает цепочку вызовов: читается <strong>снизу вверх</strong> — последний вызов (где упало) наверху. <code>debugger</code> в коде останавливает выполнение, если DevTools открыты — альтернатива ручному breakpoint в Sources.</p>
+<p>Разбиение на функции (<code>addTask</code>, <code>removeTask</code>, <code>listTasks</code>) и файлы упрощает отладку: сломалось удаление — смотришь одну функцию, не весь скрипт. <strong>JSDoc</strong> (<code>@param</code>, <code>@returns</code>) документирует сигнатуру — IDE подсказывает типы до перехода на TypeScript.</p>
+<p>Консольное Todo без DOM — чистая тренировка data layer: массив + функции. На неделе 6 тот же массив «оживят» через <code>renderTasks()</code>.</p>
+<p><strong>Ментальная модель:</strong> отладка — это не «случайно наткнуться на исправление», а систематическое сужение области поиска, как игра в «горячо-холодно». Stack trace сразу указывает точное место падения и весь путь вызовов, которые к нему привели — это гораздо быстрее, чем расставлять <code>console.log</code> наугад по всему файлу и гадать, докуда код вообще дошёл.</p>
+<p><strong>Почему это важно дальше:</strong> сегодняшний Console Task Manager без DOM — намеренно упрощённая версия завтрашнего (уже на неделе 6) реального приложения: тот же массив задач и те же функции <code>addTask</code>/<code>removeTask</code> останутся, просто добавится слой отрисовки <code>renderTasks()</code>. Умение отлаживать чистую логику отдельно от визуального слоя — ключевой навык: баг проще искать, когда переменных, которые могут быть виноваты, вдвое меньше.</p>
+<p><strong>Пример:</strong> ошибка <code>TypeError: Cannot read properties of undefined (reading 'title')</code> в stack trace показывает точную строку и цепочку вызовов сверху вниз — читая её снизу вверх, видно: сначала вызвали <code>listTasks()</code>, та вызвала <code>formatTask(task)</code>, и именно в <code>formatTask</code> <code>task</code> оказался <code>undefined</code>. Дальше остаётся понять, почему в массив попал пустой элемент — а не искать вслепую по всему файлу.</p>
+<p><strong>Частое заблуждение:</strong> новички читают текст ошибки только в первой строке и паникуют, не долистав до места в <strong>своём</strong> коде — часто первая строка указывает на встроенную функцию браузера, а причина в твоём коде находится на пару строк ниже в stack trace. Ещё одна ошибка новичков — удалять <code>console.log</code> сразу после того, как баг найден, вместо того чтобы оставить структурные логи или, ещё лучше, покрыть находку осмысленным именем переменной. Умение читать trace целиком, а не только заголовок, — то, что отрабатывается в сегодняшней практике с breakpoint.</p>
+<p><strong>Ключевая мысль:</strong> stack trace + breakpoint &gt; десять <code>console.log</code>; функции — единицы отладки.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.chrome.com/docs/devtools/javascript/">Chrome DevTools: JavaScript</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Консольное приложение «Todo List» (массив + функции add/remove/list)</li>
+<li>Поиск по задачам через <code>filter</code></li>
+<li>Статистика: всего, выполнено, в процессе через <code>reduce</code></li>
+<li>Отладь с breakpoint в DevTools Sources</li>
+<li>Напиши JSDoc для 3 ключевых функций</li>
+<li>Добавь фильтр по статусу <code>done</code> / <code>active</code></li>
+<li>Финальный коммит <code>feat: todo manager core</code> и тег <code>week-05-done</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Todo list работает в Console без DOM
+- [ ] Код разбит на логические функции
+- [ ] Отладка через breakpoint, не только console.log</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Консольное приложение «Todo List» (массив + функции add/remove/list)</li>
+<li>Поиск по задачам через <code>filter</code></li>
+<li>Статистика: всего, выполнено, в процессе через <code>reduce</code></li>
+<li>Отладь с breakpoint в DevTools Sources</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 05 day 7: console todo project"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-05--week-05-day-7');</script>
+</body>
+</html>

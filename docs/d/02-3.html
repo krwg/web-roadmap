@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 3 (Wed): Box Model · CSS основы · web-roadmap</title>
+  <meta name="description" content="День 3 (Wed): Box Model — неделя 02.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-02--week-02-day-3">
+  <meta http-equiv="refresh" content="0;url=../#week-02--week-02-day-3">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-02--week-02-day-3">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-02-day-3">День 3 (Wed): Box Model</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Styled Blog Post</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Каждый HTML-элемент в CSS — прямоугольная <strong>коробка</strong>. Боксовая модель описывает её слои, изнутри наружу: <strong>content</strong> (текст и картинки) → <strong>padding</strong> (внутренний отступ) → <strong>border</strong> (рамка) → <strong>margin</strong> (внешний отступ до соседей). Представь подарочную коробку: содержимое, мягкая подложка, обёртка и расстояние до других коробок на полке.</p>
+<p>По умолчанию <code>box-sizing: content-box</code>: свойства <code>width</code> и <code>height</code> задают только content, а padding и border <strong>добавляются сверху</strong>. Карточка <code>width: 300px</code> с <code>padding: 20px</code> и <code>border: 2px</code> займёт 344px — сюрприз для сетки. Глобальный сброс <code>box-sizing: border-box</code> включает padding и border в заявленную ширину — предсказуемая вёрстка.</p>
+<p><strong>Margin collapse</strong> — особенность блочной вёрстки: вертикальные margin соседних блоков схлопываются в один (больший), а не складываются. Два блока с <code>margin-bottom: 30px</code> и <code>margin-top: 20px</code> разойдутся на 30px, не на 50. Горизонтальные margin не схлопываются. <code>display: inline</code> элементы игнорируют <code>width</code>/<code>height</code>; для кнопок и бейджей чаще нужен <code>inline-block</code>.</p>
+<p>Абсолютно каждый элемент на странице — прямоугольник, даже если визуально выглядит круглым или невидимым; это стоит держать в голове как базовый факт CSS-мышления. Умение «включить» в голове границы коробок вокруг любого элемента страницы — по сути, главный навык отладки вёрстки, который пригодится до конца обучения: в DevTools эта модель визуализируется буквально теми же четырьмя слоями.</p>
+<p>Почему это критично дальше: на неделе 3 Flexbox и Grid распределяют именно эти коробки по осям — без понимания, где заканчивается content и начинается margin, предсказать поведение сетки невозможно. Разработчики годами спорят о <code>content-box</code> vs <code>border-box</code> именно потому, что путаница в размерах — причина большинства «съехавших» макетов.</p>
+<p>Конкретный пример: три карточки в ряд по <code>width: 33.33%</code> с <code>content-box</code> и <code>padding: 20px</code> каждая окажутся шире контейнера в сумме и перенесутся на новую строку — визуально «сетка сломалась» без единой ошибки в разметке. С <code>border-box</code> та же конструкция работает как ожидается, потому что padding вычитается из заявленных 33.33%, а не добавляется поверх.</p>
+<p>Частое заблуждение новичков — путать margin collapse с багом браузера, когда два блока с суммарными отступами 50px визуально расходятся только на 30px. Это ожидаемое поведение спецификации CSS для смежных <strong>вертикальных</strong> margin блочных элементов — оно не работает для <code>padding</code>, <code>border</code>, горизонтальных margin или элементов с <code>display: flex</code>/<code>grid</code> в качестве родителя.</p>
+<p><strong>Ключевая мысль:</strong> <code>border-box</code> + понимание margin collapse = контроль над размерами без магии, а не жонглирование случайными пикселями до тех пор, пока «не встанет на место».</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/CSS/Building_blocks/The_box_model">MDN: Box model</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Нарисуй на бумаге box model для карточки, затем сверстай её</li>
+<li>Примени <code>box-sizing: border-box</code> глобально через <code>*, *::before, *::after</code></li>
+<li>Создай три карточки с одинаковой шириной, разным padding — проверь выравнивание</li>
+<li>Продемонстрируй margin collapse двумя блоками с вертикальными отступами</li>
+<li>В DevTools включи overlay box model для визуализации</li>
+<li>Исправь «ломающийся» блок с <code>overflow</code> — сравни <code>hidden</code> vs <code>auto</code></li>
+<li>Сверстай горизонтальный ряд <code>inline-block</code> элементов с <code>vertical-align</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] <code>border-box</code> подключён глобально
+- [ ] Карточки визуально одинаковой ширины при разном padding
+- [ ] Понимаю разницу <code>inline</code> vs <code>inline-block</code></p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Нарисуй на бумаге box model для карточки, затем сверстай её</li>
+<li>Примени <code>box-sizing: border-box</code> глобально через <code>*, *::before, *::after</code></li>
+<li>Создай три карточки с одинаковой шириной, разным padding — проверь выравнивание</li>
+<li>Продемонстрируй margin collapse двумя блоками с вертикальными отступами</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 02 day 3: box model and cards"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-02--week-02-day-3');</script>
+</body>
+</html>

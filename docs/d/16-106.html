@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 106 (Пн): Классы и объекты · Python OOP · web-roadmap</title>
+  <meta name="description" content="День 106 (Пн): Классы и объекты — неделя 16.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-16--week-16-day-106">
+  <meta http-equiv="refresh" content="0;url=../#week-16--week-16-day-106">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-16--week-16-day-106">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-16-day-106">День 106 (Пн): Классы и объекты</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Объектно-ориентированное программирование в Python объединяет данные и поведение в одной сущности — классе. <code>class BankAccount:</code> с методом <code>__init__(self, ...)</code> инициализирует экземпляр; <code>self</code> — ссылка на конкретный объект. Атрибуты экземпляра (<code>self.balance</code>) хранят состояние; атрибуты класса (<code>currency = 'RUB'</code>) — общие настройки для всех счетов.</p>
+<p>Три вида методов: обычные (работают с <code>self</code>), <code>@classmethod</code> (альтернативные конструкторы, фабрики), <code>@staticmethod</code> (утилиты без доступа к экземпляру). <code>__str__</code> — для пользователя (<code>print(account)</code>), <code>__repr__</code> — для отладки в REPL, должен однозначно идентифицировать объект.</p>
+<p>Инкапсуляция в Python — соглашение: префикс <code>_balance</code> сигнализирует «не трогай снаружи», <code>@property</code> даёт контролируемое чтение без прямой мутации. Type hints на методах помогают IDE ловить ошибки до запуска. Баланс меняется только через <code>deposit</code> и <code>withdraw</code> — это и есть защита инвариантов.</p>
+<p>Полезная ментальная модель: класс — это чертёж, а объект — конкретное здание, построенное по этому чертежу. Чертёж один, зданий может быть тысячи, и каждое хранит собственное состояние в <code>self.__dict__</code>, не разделяя его с соседями. Атрибуты класса (<code>currency = 'RUB'</code>) — это табличка на воротах всего микрорайона: изменишь её через класс — увидят все объекты сразу. Именно поэтому mutable атрибут класса (список, словарь по умолчанию) — частая причина неожиданных багов: все экземпляры незаметно «делят» одну и ту же коллекцию, если её не создать в <code>__init__</code>.</p>
+<p>Эта конструкция не абстрактное упражнение ради экзамена: ровно тот же синтаксис <code>class</code> + <code>__init__</code> + <code>self</code> появится в моделях SQLAlchemy на неделе 18 (<code>class Book(Base): id: Mapped[int]</code>) и в Pydantic-схемах FastAPI — ООП станет языком, на котором описана вся архитектура backend. На примере <code>BankAccount</code>: вызов <code>acc.deposit(100)</code> под капотом эквивалентен <code>BankAccount.deposit(acc, 100)</code> — <code>self</code> это просто первый позиционный аргумент, который Python автоматически подставляет при обращении через точку.</p>
+<p>Частое заблуждение новичков — считать <code>@staticmethod</code> и <code>@classmethod</code> взаимозаменяемыми. <code>staticmethod</code> не получает ни <code>self</code>, ни <code>cls</code> и годится для чистых утилит (<code>BankAccount.validate_amount(100)</code>); <code>classmethod</code> получает <code>cls</code> и чаще служит альтернативным конструктором (<code>Account.from_dict(data)</code>), который должен корректно работать и для наследников. Ещё одна ловушка — путать <code>__str__</code> и <code>__repr__</code>: если определить только <code>__repr__</code>, <code>print(obj)</code> использует именно его, но для логов и REPL желательно, чтобы <code>repr</code> можно было почти дословно вставить обратно в код как валидное выражение. В практике дня это проверяется напрямую: <code>__repr__</code> для <code>Transaction</code> должен однозначно показывать id, сумму и тип — иначе баг по логу не найти.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.python.org/3/tutorial/classes.html">Classes</a></li>
+<li><a href="https://docs.python.org/3/library/functions.html#property">@property</a></li>
+<li><a href="https://realpython.com/python3-object-oriented-programming/">Real Python — OOP</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> класс = данные + поведение; <code>self</code> обязателен; инкапсуляция через методы, не публичные поля.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Класс <code>BankAccount</code>: <code>deposit</code>, <code>withdraw</code>, <code>balance</code>, защита от отрицательного баланса</li>
+<li>Класс <code>Transaction</code> с датой, суммой, типом (<code>deposit</code> / <code>withdraw</code>)</li>
+<li>Список счетов, перевод между счетами с записью двух транзакций</li>
+<li><code>print(account)</code> использует <code>__str__</code>, в отладке — <code>repr(account)</code></li>
+<li>Добавь <code>@property balance</code> — чтение без setter, изменение только через методы</li>
+<li>Напиши 3 unit-подобных assert-теста в <code>if __name__ == "__main__"</code> для happy path и ошибок</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Инкапсуляция: баланс не меняется напрямую снаружи
+- [ ] <code>__repr__</code> однозначно идентифицирует объект
+- [ ] Type hints на аргументах и return всех публичных методов</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Класс <code>BankAccount</code>: <code>deposit</code>, <code>withdraw</code>, <code>balance</code>, защита от отрицательного баланса</li>
+<li>Класс <code>Transaction</code> с датой, суммой, типом (<code>deposit</code> / <code>withdraw</code>)</li>
+<li>Список счетов, перевод между счетами с записью двух транзакций</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-16/</code> → <code>git commit -m "week 16 day 106: BankAccount and Transaction classes"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Забытый <code>self</code> в методах — TypeError</li>
+<li>Публичные атрибуты вместо свойств — нарушение инкапсуляции</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-16--week-16-day-106');</script>
+</body>
+</html>

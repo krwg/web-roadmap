@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 146 (Сб): Dev vs Prod конфигурация · Docker · web-roadmap</title>
+  <meta name="description" content="День 146 (Сб): Dev vs Prod конфигурация — неделя 21.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-21--week-21-day-146">
+  <meta http-equiv="refresh" content="0;url=../#week-21--week-21-day-146">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-21--week-21-day-146">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-21-day-146">День 146 (Сб): Dev vs Prod конфигурация</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>12 Factor App: config в environment, dev/prod parity, disposability (containers стартуют быстро). <code>docker-compose.override.yml</code> автоматически мержится в dev; <code>docker-compose.prod.yml</code> — explicit <code>-f</code> для production-like local. Dev: volume mount source + nodemon/uvicorn --reload; prod: optimized image без mounts.</p>
+<p>Логи: <code>docker compose logs -f backend</code>. Secrets в prod — Docker secrets или cloud env, не plain text в compose file. Entrypoint script: wait-for-db → migrate → seed → start server — решает race condition при старте.</p>
+<p>Документируй порты и команды: dev <code>docker compose up</code> vs prod <code>docker compose -f docker-compose.prod.yml up</code>. Dev volume mount может перезаписать <code>node_modules</code> в container — используй named volume для node_modules (обзор). Default passwords только для local.</p>
+<p>Ментальная модель 12 Factor App: конфигурация должна жить в environment variables, а не в коде — тот же image должен уметь запускаться и в dev, и в staging, и в проде, отличаясь только переменными окружения снаружи. Dev/prod parity — принцип, по которому окружения должны быть максимально похожи, чтобы баг «работает у меня, не работает в проде» случался как можно реже. Для junior-разработчика эта дисциплина — то, что отличает pet-проект от продакшен-готового кода: собеседующие часто спрашивают именно про разделение dev/prod конфигурации.</p>
+<p>Конкретный пример проблемы: volume mount исходников в dev-режиме (<code>-v ./backend:/app</code>) может незаметно перезаписать <code>node_modules</code> внутри контейнера локальной версией с хоста, если не выделить отдельный named volume под <code>node_modules</code> — итог: контейнер падает с «module not found», хотя на хосте всё установлено. Частое заблуждение — «дефолтные пароли postgres в compose-файле не проблема, это же локально» — но такие compose-файлы часто копируют в staging без изменений, и default password утекает в реальную инфраструктуру. Entrypoint-скрипт wait-for-db → migrate → seed, который ты пишешь сегодня, решает ту же race condition, что встретится в проде DevHub capstone при первом деплое (неделя 22, день 154) — паттерн одинаков в любом окружении.</p>
+<p>Для продакшена явное разделение dev/prod compose файлов вместо одного «универсального» с кучей <code>if</code>-подобных условий — это разница между конфигурацией, которую можно быстро прочитать и понять, и конфигурацией, требующей мысленно эмулировать все возможные комбинации флагов. Команды, где такое разделение принято с самого начала, тратят заметно меньше времени на «почему в проде включился dev-режим» — классический класс инцидентов из-за спутанной конфигурации.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://12factor.net/">12 Factor App</a></li>
+<li><a href="https://docs.docker.com/compose/how-tos/multiple-compose-files/merge/">Compose override</a></li>
+<li><a href="https://docs.docker.com/engine/swarm/secrets/">Docker secrets</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> dev/prod compose — разные файлы, одна документация в README.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>docker-compose.dev.yml</code> — mount source, hot reload, exposed debug ports</li>
+<li><code>docker-compose.prod.yml</code> — optimized builds, no volume mounts</li>
+<li>README: <code>docker compose up</code> (dev) vs <code>docker compose -f docker-compose.prod.yml up</code></li>
+<li>Entrypoint script: wait-for-db → migrate → seed → start server</li>
+<li><code>.env.example</code> со всеми переменными для compose</li>
+<li>Документируй порты: frontend 8080, api 3000, db 5432</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Dev и prod compose файлы документированы
+- [ ] Seed data появляется после первого <code>up</code>
+- [ ] Логи доступны через compose logs</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>docker-compose.dev.yml</code> — mount source, hot reload, exposed debug ports</li>
+<li><code>docker-compose.prod.yml</code> — optimized builds, no volume mounts</li>
+<li>README: <code>docker compose up</code> (dev) vs <code>docker compose -f docker-compose.prod.yml up</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-21/</code> → <code>git commit -m "week 21 day 146: dev prod compose configs"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Dev volume mount перезаписывает node_modules в container</li>
+<li>Production compose с default passwords — только для local</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-21--week-21-day-146');</script>
+</body>
+</html>

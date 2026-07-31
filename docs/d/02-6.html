@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 6 (Sat): CSS-переменные (Custom Properties) · CSS основы · web-roadmap</title>
+  <meta name="description" content="День 6 (Sat): CSS-переменные (Custom Properties) — неделя 02.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-02--week-02-day-6">
+  <meta http-equiv="refresh" content="0;url=../#week-02--week-02-day-6">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-02--week-02-day-6">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-02-day-6">День 6 (Sat): CSS-переменные (Custom Properties)</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Styled Blog Post</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>CSS Custom Properties (переменные) — нативный механизм темизации без препроцессоров. Объявляются с двойным дефисом: <code>--color-primary: #3366cc</code>, обычно в <code>:root</code> (псевдокласс корня документа). Используются через <code>var(--color-primary, #000)</code> — второй аргумент fallback на случай отсутствия переменной.</p>
+<p>Главное отличие от Sass <code>$variables</code>: CSS-переменные живут в <strong>runtime</strong>. Их можно менять через JavaScript (<code>element.style.setProperty</code>), media queries и классы на <code>html</code>. Переменные <strong>наследуются</strong> по DOM: задай токены в <code>:root</code>, переопредели в <code>.theme-dark</code> — все дочерние элементы подхватят новые значения. Тёмная тема через переопределение токенов чище, чем дублирование сотен правил.</p>
+<p><strong>Design tokens</strong> — именованные константы дизайн-системы: <code>--spacing-md</code>, <code>--radius-lg</code>, <code>--color-text</code>. Один источник правды: дизайнер меняет токен — обновляется весь интерфейс. Это мост между дизайном в Figma и кодом.</p>
+<p>Мысленная модель: CSS-переменные — это розетки в доме, а не проводка внутри стен. Sass-переменная (<code>$primary</code>) — это провод, впаянный намертво при компиляции: изменить его после сборки нельзя, не пересобрав весь дом заново. CSS custom property — это розетка: воткнул другую «вилку» значения через класс или JS в любой момент, и всё, что подключено к этой розетке, сразу получает новое напряжение — без пересборки.</p>
+<p>Почему это критично дальше: тема с переключением light/dark, персонализация интерфейса, адаптация под системные настройки пользователя (<code>prefers-color-scheme</code>) — всё это опирается именно на runtime-природу custom properties. На неделях с React/Vue дизайн-токены станут ещё важнее: компонентные библиотеки (MUI, Chakra) построены вокруг похожей идеи именованных токенов, а не разбросанных значений.</p>
+<p>Конкретный пример: без переменных тёмная тема потребовала бы продублировать каждое правило с цветом (<code>.card { background: white }</code> → <code>.dark .card { background: #222 }</code> для каждого компонента). С токенами достаточно переопределить <code>--bg-surface</code> и <code>--text-primary</code> один раз в <code>.theme-dark</code>, и все компоненты, которые уже используют <code>var(--bg-surface)</code>, автоматически подхватят новые значения.</p>
+<p>Частое заблуждение — путать CSS custom properties с препроцессорными переменными и ожидать, что <code>var()</code> можно использовать в местах, где нужно значение на этапе компиляции (например, в имени media query или в селекторе) — CSS-переменные работают только там, где ожидается <strong>значение свойства</strong>, и не подставляются в структуру самого правила.</p>
+<p><strong>Ключевая мысль:</strong> CSS-переменные — живые токены, которые наследуются и меняются в runtime, и именно поэтому они, а не hex-коды в каждом правиле, — правильный фундамент дизайн-системы.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/CSS/Using_CSS_custom_properties">MDN: Using CSS custom properties</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Вынеси палитру в <code>:root</code>: primary, secondary, text, bg, border</li>
+<li>Переведи все цвета страницы на <code>var(--...)</code> </li>
+<li>Создай класс <code>.theme-dark</code> с переопределением переменных в <code>html</code> или <code>body</code></li>
+<li>Добавь кнопку переключения темы (пока через класс на <code>html</code>, без JS — второй HTML-файл)</li>
+<li>Задай <code>--spacing-sm/md/lg</code> и используй для отступов</li>
+<li>Добавь токены <code>--radius-sm/md/lg</code> и примени к карточкам и кнопкам</li>
+<li>Проверь, что при удалении одной переменной fallback срабатывает корректно</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Нет «магических» hex-значений вне <code>:root</code>
+- [ ] Тёмная тема работает через переопределение переменных
+- [ ] Есть fallback у критичных <code>var()</code></p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Вынеси палитру в <code>:root</code>: primary, secondary, text, bg, border</li>
+<li>Переведи все цвета страницы на <code>var(--...)</code> </li>
+<li>Создай класс <code>.theme-dark</code> с переопределением переменных в <code>html</code> или <code>body</code></li>
+<li>Добавь кнопку переключения темы (пока через класс на <code>html</code>, без JS — второй HTML-файл)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 02 day 6: css custom properties"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-02--week-02-day-6');</script>
+</body>
+</html>

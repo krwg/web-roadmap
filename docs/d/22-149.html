@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 149 (Вт): Backend DevHub · Capstone · web-roadmap</title>
+  <meta name="description" content="День 149 (Вт): Backend DevHub — неделя 22.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-22--week-22-day-149">
+  <meta http-equiv="refresh" content="0;url=../#week-22--week-22-day-149">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-22--week-22-day-149">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-22-day-149">День 149 (Вт): Backend DevHub</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Backend DevHub — layered API: routers → services → repositories → PostgreSQL. Переиспользуй паттерны Library REST API (нед. 18) или Express Notes (нед. 19): APIRouter/Express Router, Pydantic/Zod validation, пагинация <code>{ items, total, page, size }</code>, OpenAPI/Swagger.</p>
+<p>Схема БД: <code>users</code>, <code>tasks</code>, <code>notes</code>, <code>tags</code>, <code>note_tags</code> — минимум 5 сущностей со связями. CRUD tasks с <code>user_id</code> FK; notes с markdown body и тегами many-to-many. <code>GET /api/v1/dashboard/stats</code> — агрегаты для виджетов. Пока без auth — заглушка <code>user_id</code>, auth на день 151.</p>
+<p>Миграции: Alembic (FastAPI) или SQL scripts (Express). Seed: demo user + sample data для демо и тестов. <code>.env.example</code>: <code>DATABASE_URL</code>, <code>JWT_SECRET</code>, <code>APP_ENV</code>. God router на 500 строк — разбей по доменам. Пагинация с первого дня — иначе сломается на реальных данных.</p>
+<p>Ментальная модель: layered architecture (routers → services → repositories) — это как конвейер: каждый слой отвечает за одну зону ответственности, и изменение в одной зоне (например, смена ORM) не требует переписывать HTTP-обработчики. Для junior backend-разработчика способность структурировать API не «одним файлом на 2000 строк», а по доменам — прямой признак, который ревьюер видит за первые пять минут просмотра репозитория на собеседовании или в портфолио.</p>
+<p>Конкретный пример: <code>GET /api/v1/dashboard/stats</code> выглядит как простой endpoint, но требует агрегации из нескольких таблиц (count tasks by status, recent notes) — если логику агрегации не вынести в отдельный service, она расползётся дублированием в разных местах роутера при добавлении новых виджетов. Частое заблуждение — «auth — это скучная обвязка, сделаю CRUD, а потом уже security» — на самом деле откладывание auth на день 151 осознанно: это позволяет сосредоточиться на форме данных сегодня, но заглушка <code>user_id</code> должна быть явной и задокументированной, а не забытой лазейкой. Сегодняшняя схема БД (users, tasks, notes, tags, note_tags) — это тот самый набор ≥5 сущностей, который прямо проверяется в критериях сдачи capstone, поэтому качество миграций и seed данных сейчас определяет, насколько гладко пройдёт остаток недели.</p>
+<p>Для продакшена OpenAPI/Swagger документация, которую генерирует FastAPI автоматически (или которую нужно написать вручную для Express), — это не просто «красивая страница», а контракт, на который будет опираться frontend-разработчик (день 150) при написании типов; расхождение между реальным API и документацией — источник багов интеграции, которые сложно диагностировать без явного сравнения запроса и ответа.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="#projects--projects-неделя-18-library-rest-api">Library REST API (нед. 18)</a></li>
+<li><a href="#projects--projects-неделя-19-express-notes-api">Express Notes (нед. 19)</a></li>
+<li><a href="https://fastapi.tiangolo.com/tutorial/bigger-applications/">FastAPI Bigger Applications</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> backend capstone = CRUD + schema + seed + OpenAPI до auth layer.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Инициализируй <code>backend/</code> — FastAPI или Express по выбору из дня 148</li>
+<li>Модели/таблицы: <code>users</code>, <code>tasks</code>, <code>notes</code>, <code>tags</code>, <code>note_tags</code> (many-to-many)</li>
+<li>CRUD <code>/api/v1/tasks</code>: title, priority, status, deadline, <code>user_id</code> FK</li>
+<li>CRUD <code>/api/v1/notes</code>: title, body (markdown), tags, search query param</li>
+<li><code>GET /api/v1/dashboard/stats</code> — count tasks by status, recent notes</li>
+<li>Swagger <code>/docs</code> (FastAPI) или OpenAPI export; пагинация <code>{ items, total, page, size }</code></li>
+<li><code>schema.sql</code> / Alembic migration + <code>seed.sql</code> с demo данными</li>
+<li><code>.env.example</code>: <code>DATABASE_URL</code>, <code>JWT_SECRET</code>, <code>APP_ENV</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] ≥ 5 сущностей в БД со связями (см. <a href="#projects--projects-критерии-сдачи-capstone">критерии сдачи</a>)
+- [ ] Tasks и Notes CRUD работают (пока без auth — заглушка user_id)
+- [ ] OpenAPI/Swagger актуален
+- [ ] Seed выполняется одной командой</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Инициализируй <code>backend/</code> — FastAPI или Express по выбору из дня 148</li>
+<li>Модели/таблицы: <code>users</code>, <code>tasks</code>, <code>notes</code>, <code>tags</code>, <code>note_tags</code> (many-to-many)</li>
+<li>CRUD <code>/api/v1/tasks</code>: title, priority, status, deadline, <code>user_id</code> FK</li>
+<li>CRUD <code>/api/v1/notes</code>: title, body (markdown), tags, search query param</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-22-capstone/backend/</code> → <code>git commit -m "week 22 day 149: DevHub backend models and CRUD API"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>God router на 500 строк — разбей по доменам</li>
+<li>Нет пагинации — сломается на реальных данных</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-22--week-22-day-149');</script>
+</body>
+</html>

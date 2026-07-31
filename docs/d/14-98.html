@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 98 (Вс): Тестирование вручную и документация · Frontend SPA · web-roadmap</title>
+  <meta name="description" content="День 98 (Вс): Тестирование вручную и документация — неделя 14.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-14--week-14-day-98">
+  <meta http-equiv="refresh" content="0;url=../#week-14--week-14-day-98">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-14--week-14-day-98">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-14-day-98">День 98 (Вс): Тестирование вручную и документация</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>React Dashboard — крупнейший фронтенд-проект до бэкенда; день ревью фиксирует качество, а не добавляет фичи. Пройди user flow глазами новичка: первый визит → настройки → задачи → погода → смена темы → F5. Каждый шаг должен работать без инструкции в README.</p>
+<p>Production build (<code>npm run build</code>) часто выявляет warnings, которые dev-сервер скрывает: неиспользуемые импорты, env без fallback. Deploy на Vercel/Netlify требует настройки SPA fallback для client-side routes. README с GIF или скриншотами — визитная карточка для портфолио.</p>
+<p>Conventional Commits за неделю показывают зрелость: <code>feat:</code>, <code>fix:</code>, <code>docs:</code> в сообщениях. <code>ARCHITECTURE.md</code> обнови финальной схемой state. Этот проект станет основой для full-stack интеграции на неделях 21–22 — чистая структура сейчас сэкономит часы потом.</p>
+<p>Мысленная модель дня ревью: посмотри на свой проект глазами человека, который видит его первый раз и не читал твой код — именно так его увидит рекрутер, тимлид на код-ревью или случайный посетитель портфолио. User flow «первый визит → настройки → задачи → погода → смена темы → F5» — это ручной аналог QA-сценария (test case), который проверяет не отдельные функции, а связность всего приложения как единого продукта.</p>
+<p>Привычка проверять <code>npm run build</code> перед тем, как считать день/неделю законченными, — то, что отличает учебный проект от production-ready: dev-сервер Vite нередко прощает вещи, которые ломаются в собранном бандле — например, переменную окружения без fallback-значения, которая в dev была подставлена из <code>.env</code>, а в проде на Vercel забыли настроить, и приложение падает в рантайме с непонятной ошибкой вместо явного сообщения при сборке.</p>
+<p>Конкретный пример скрытой проблемы: неиспользуемый импорт компонента, случайно оставленный после рефакторинга, в dev-режиме никак не мешает работе, но при <code>npm run build</code> в strict-конфигурации может всплыть предупреждением, а в некоторых сетапах — и ошибкой, останавливающей деплой; лучше поймать это самому за 5 минут локально, чем через уведомление о падении билда на хостинге.</p>
+<p>Частое заблуждение — недооценивать README, считая его формальностью «для галочки». На практике именно README — первое, что видит любой человек, открывший репозиторий (рекрутер за 30 секунд решает, смотреть ли код дальше), и единственный способ показать масштаб проделанной работы без необходимости запускать проект локально. GIF или три скриншота стоят десятков строк текстового описания фичей. Это же качество документации станет частью финального full-stack проекта на неделях 21–22, где React Dashboard, разработанный на этой неделе, получит настоящий backend — и осмысленная git-история с Conventional Commits, начатая уже сейчас, сделает эту интеграцию прослеживаемой, а не хаотичной.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://www.conventionalcommits.org/">Conventional Commits</a></li>
+<li><a href="https://vercel.com/docs/frameworks/vite">Vercel — Vite</a></li>
+<li><a href="https://vitest.dev/">Vitest (обзор для нед. 20)</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> capstone-качество начинается с README, deploy preview и осмысленной git-истории.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Пройди user flow: первый визит → настройки → задачи → погода → смена темы → F5</li>
+<li>Напиши README с GIF или 3 скриншотами</li>
+<li><code>npm run build</code> — исправь warnings</li>
+<li>Deploy preview на <a href="https://vercel.com/docs/frameworks/vite">Vercel</a></li>
+<li>Обнови <code>ARCHITECTURE.md</code> — финальная схема state</li>
+<li>Self-review по ревью-чеклисту недели</li>
+<li>Тег <code>week-14-done</code></li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Production build без ошибок</p>
+</li>
+<li>
+<p>[ ] README понятен новичку</p>
+</li>
+<li>
+<p>[ ] Preview URL в README</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Пройди user flow: первый визит → настройки → задачи → погода → смена темы → F5</li>
+<li>Напиши README с GIF или 3 скриншотами</li>
+<li><code>npm run build</code> — исправь warnings</li>
+<li>Deploy preview на <a href="https://vercel.com/docs/frameworks/vite">Vercel</a></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-14
+
+git add README.md ARCHITECTURE.md
+
+git commit -m &quot;week-14 day-98: README, deploy и React Dashboard capstone&quot;
+
+</code></pre>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-14--week-14-day-98');</script>
+</body>
+</html>

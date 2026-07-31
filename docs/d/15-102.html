@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 102 (Чт): Структуры данных — list, tuple, dict, set · Python · web-roadmap</title>
+  <meta name="description" content="День 102 (Чт): Структуры данных — list, tuple, dict, set — неделя 15.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-15--week-15-day-102">
+  <meta http-equiv="refresh" content="0;url=../#week-15--week-15-day-102">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-15--week-15-day-102">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-15-day-102">День 102 (Чт): Структуры данных — list, tuple, dict, set</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Expense Tracker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Выбор структуры данных определяет скорость и читаемость кода. <code>list</code> — упорядоченная изменяемая коллекция: <code>append</code>, <code>extend</code>, срезы <code>lst[1:3]</code>, сортировка in-place (<code>sort</code>) или новый список (<code>sorted</code>). <code>dict</code> — словарь по hashable-ключам: lookup в среднем O(1) против O(n) у списка. <code>.get(key, default)</code> безопаснее прямого <code>dict[key]</code>.</p>
+<p><code>set</code> хранит уникальные элементы и поддерживает union, intersection, difference — удобно для удаления дубликатов. <code>tuple</code> неизменяем: подходит для координат, записей из БД, ключей словаря. <code>collections.Counter</code> ускоряет подсчёт частот. Копирование: <code>copy.copy</code> — shallow, <code>copy.deepcopy</code> — вложенные структуры.</p>
+<p>Телефонная книга на <code>dict[name] = phone</code> — классический CRUD. Список нельзя использовать как ключ dict (unhashable). Для сортировки списка словарей: <code>sorted(items, key=lambda x: x['score'])</code>.</p>
+<p>Мысленная модель выбора структуры данных: это выбор алгоритмической сложности заранее, а не после того, как программа начнёт тормозить. <code>dict</code> — это hash map: поиск по ключу в среднем O(1) независимо от размера словаря, потому что Python вычисляет хеш ключа и сразу переходит к нужной ячейке памяти. <code>list</code> — это последовательность: поиск конкретного элемента требует в среднем прохода по половине элементов, то есть O(n) — при 10 записях разница незаметна, при 100 000 — принципиальна.</p>
+<p>Эта интуиция станет фундаментом для куда более серьёзных решений в будущем: при работе с базами данных (позже в курсе) индекс на колонке — это буквально то же самое hash map/B-tree ускорение, что и <code>dict</code> здесь, только на уровне СУБД, а не языка. Понимание, почему <code>dict.get(key)</code> быстрее <code>[x for x in list if x.name == key]</code>, напрямую переносится на понимание, зачем в SQL вообще нужны индексы.</p>
+<p>Конкретный пример: телефонная книга на 10 000 контактов, реализованная как <code>list[dict]</code>, требует перебора в среднем 5000 записей на каждый поиск по имени. Та же книга как <code>dict[name] = phone</code> находит контакт за одну операцию хеширования, вне зависимости от того, 10 там записей или миллион — разница становится ощутимой на практике уже при тысячах контактов, а не только в теории алгоритмов.</p>
+<p>Частое заблуждение — переносить из JS привычку использовать массивы (<code>list</code>) для всего подряд просто потому, что это самая знакомая структура, не задумываясь о паттерне доступа к данным. Другая тонкость: <code>dict</code> в CPython 3.7+ гарантированно сохраняет порядок вставки ключей, а вот <code>set</code> — нет, это неупорядоченная коллекция, и полагаться на «естественный» порядок при переборе <code>set</code> — источник трудноуловимых различий в поведении между запусками. Именно поэтому реализация телефонной книги в практике дня выбирает <code>dict[name] = phone</code>, а не список словарей — это не произвольная стилистика, а прямое следствие паттерна доступа «найти контакт по точному имени».</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.python.org/3/tutorial/datastructures.html">Data structures</a></li>
+<li><a href="https://docs.python.org/3/library/stdtypes.html#mapping-types-dict">dict</a></li>
+<li><a href="https://docs.python.org/3/library/collections.html#collections.Counter">collections.Counter</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> dict для поиска по ключу, list для порядка; выбор структуры — это Big-O.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Телефонная книга: <code>dict[name] = phone</code>, CRUD через меню</li>
+<li>Подсчёт частоты слов в тексте через <code>dict</code></li>
+<li>Удаление дубликатов из списка через <code>set</code>, сохраняя порядок (bonus)</li>
+<li>Сортировка списка словарей по ключу <code>score</code></li>
+<li><code>phonebook.py</code> — функции add, remove, search, list_all</li>
+<li>Поиск по частичному совпадению имени</li>
+<li>Валидация формата телефона (простой regex или len)</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Телефонная книга persist в JSON-файл</p>
+</li>
+<li>
+<p>[ ] <code>.get()</code> вместо KeyError для отсутствующих ключей</p>
+</li>
+<li>
+<p>[ ] Понимаешь O(1) lookup в dict vs O(n) в list</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Телефонная книга: <code>dict[name] = phone</code>, CRUD через меню</li>
+<li>Подсчёт частоты слов в тексте через <code>dict</code></li>
+<li>Удаление дубликатов из списка через <code>set</code>, сохраняя порядок (bonus)</li>
+<li>Сортировка списка словарей по ключу <code>score</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-15
+
+git add phonebook.py
+
+git commit -m &quot;week-15 day-102: телефонная книга и структуры данных&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Использование list как ключа dict — TypeError (unhashable)</p>
+</li>
+<li>
+<p><code>list.sort()</code> vs <code>sorted(list)</code> — in-place vs новый список</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-15--week-15-day-102');</script>
+</body>
+</html>

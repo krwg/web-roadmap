@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 101 (Ср): Функции и type hints · Python · web-roadmap</title>
+  <meta name="description" content="День 101 (Ср): Функции и type hints — неделя 15.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-15--week-15-day-101">
+  <meta http-equiv="refresh" content="0;url=../#week-15--week-15-day-101">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-15--week-15-day-101">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-15-day-101">День 101 (Ср): Функции и type hints</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Expense Tracker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Функции в Python — первый уровень абстракции. <code>def name(args) -&gt; return_type:</code> с type hints документирует контракт для IDE и будущего <code>mypy</code>. Docstring в тройных кавычках (PEP 257) объясняет назначение, аргументы и возвращаемое значение. <code>if __name__ == "__main__":</code> отделяет точку входа от импортируемого модуля.</p>
+<p>Аргументы по умолчанию должны быть immutable: <code>def f(x=[])</code> — антипаттерн, один список на все вызовы. Используй <code>None</code> и создавай список внутри. <code>*args</code> собирает позиционные аргументы, <code>**kwargs</code> — именованные. После <code>*</code> в сигнатуре — только keyword-only аргументы.</p>
+<p>Чистые функции (без side effects) проще тестировать: <code>celsius_to_fahrenheit(0)</code> всегда даёт 32.0. Функция без <code>return</code> неявно возвращает <code>None</code> — частая ловушка. Scope: избегай <code>global</code>, передавай данные аргументами.</p>
+<p>Мысленная модель функции с type hints: сигнатура — это контракт, который читают не только люди, но и инструменты. <code>def celsius_to_fahrenheit(c: float) -&gt; float:</code> сообщает IDE, что автодополнение и подсказки типов работают для параметра и результата, а <code>mypy</code> может статически проверить, что функция нигде не вызывается с неверным типом — задолго до того, как ошибка проявится в рантайме. Docstring в тройных кавычках — та же идея для смысла: не «что делает код», а «что обещает функция», включая крайние случаи.</p>
+<p>Эта дисциплина станет строго необходимой позже: любой современный Python backend-фреймворк (FastAPI, с которым познакомишься в конце курса) строит валидацию запросов и автогенерацию документации API прямо на type hints — то есть привычка, выработанная сегодня на простых функциях вроде <code>format_currency</code>, напрямую превратится в рабочий навык для реальных веб-сервисов.</p>
+<p>Конкретный пример mutable default argument: <code>def add_item(item, bag=[]):  bag.append(item);  return bag</code>. Кажется, что каждый вызов получает свежий пустой список, но список <code>[]</code> в сигнатуре создаётся один раз, в момент определения функции, а не при каждом вызове — поэтому второй вызов <code>add_item('apple')</code> без явного <code>bag</code> вернёт список, в котором уже лежит результат первого вызова, что выглядит как необъяснимая утечка состояния между полностью независимыми вызовами функции.</p>
+<p>Частое заблуждение — переносить в Python интуицию из языков, где значение по умолчанию действительно вычисляется заново при каждом вызове функции; в Python дефолтное значение — это выражение, вычисленное ровно один раз при объявлении <code>def</code>, и если это изменяемый объект (список, словарь, множество), он становится общим для всех вызовов, где аргумент не передан явно. Правильный паттерн — <code>def add_item(item, bag=None): bag = bag if bag is not None else []</code> — обсуждается прямо в «Ловушках» дня и должен быть применён при реализации <code>utils.py</code> и CLI-конвертера валют, где список курсов или история конвертаций легко могли бы попасть в эту же ловушку.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.python.org/3/tutorial/controlflow.html#defining-functions">Defining Functions</a></li>
+<li><a href="https://docs.python.org/3/library/typing.html">Type hints</a></li>
+<li><a href="https://peps.python.org/pep-0257/">PEP 257 — Docstring Conventions</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> mutable default argument — баг; type hints и docstrings — часть API функции.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Модуль <code>utils.py</code>: <code>celsius_to_fahrenheit</code>, <code>format_currency</code>, <code>truncate_text</code></li>
+<li>CLI-конвертер валют (фиксированные курсы в dict)</li>
+<li>Добавь type hints и docstrings ко всем функциям</li>
+<li><code>if __name__ == "__main__":</code> — точка входа</li>
+<li>Функция <code>parse_positive_float(s: str) -&gt; float</code> с валидацией</li>
+<li><code>*args</code> demo: <code>sum_all(*numbers)</code> </li>
+<li>Импорт utils из другого файла — проверь, main не запускается</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Функции чистые где возможно (без side effects)</p>
+</li>
+<li>
+<p>[ ] Type hints на аргументах и return</p>
+</li>
+<li>
+<p>[ ] Модуль импортируется без запуска main-логики</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Модуль <code>utils.py</code>: <code>celsius_to_fahrenheit</code>, <code>format_currency</code>, <code>truncate_text</code></li>
+<li>CLI-конвертер валют (фиксированные курсы в dict)</li>
+<li>Добавь type hints и docstrings ко всем функциям</li>
+<li><code>if __name__ == "__main__":</code> — точка входа</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-15
+
+git add utils.py currency_converter.py
+
+git commit -m &quot;week-15 day-101: функции, type hints и utils&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Mutable default argument <code>def f(x=[])</code> — общий список на все вызовы</p>
+</li>
+<li>
+<p>Функция без return → <code>None</code> неожиданно</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-15--week-15-day-101');</script>
+</body>
+</html>

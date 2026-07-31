@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 6 (Sat): Формы и валидация на JS · DOM · web-roadmap</title>
+  <meta name="description" content="День 6 (Sat): Формы и валидация на JS — неделя 06.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-06--week-06-day-6">
+  <meta http-equiv="refresh" content="0;url=../#week-06--week-06-day-6">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-06--week-06-day-6">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-06-day-6">День 6 (Sat): Формы и валидация на JS</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~45м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>HTML5-валидация — первый рубеж; JavaScript добавляет <strong>кастомную</strong> логику и UX. <code>form.elements</code> — коллекция полей формы; <code>FormData</code> собирает пары name–value; <code>input.value</code>, <code>checkbox.checked</code> — чтение состояния. Событие <code>input</code> срабатывает на <strong>каждый символ</strong>; <code>change</code> — при потере фокуса или выборе из select.</p>
+<p>Constraint Validation API: <code>field.validity</code> (флаги ошибок), <code>field.validationMessage</code>, <code>setCustomValidity('текст')</code> — переопределяет сообщение браузера. <code>form.checkValidity()</code> — программная проверка перед submit. Показывай ошибки в <code>&lt;span class="error"&gt;</code> под полем с <code>aria-describedby</code> — лучше одного <code>alert()</code>.</p>
+<p>Disable кнопку submit, пока форма невалидна — предотвращает лишние попытки. HTML5 + JS вместе: нативные <code>required</code>/<code>pattern</code> + кастом «пароли совпадают» через <code>setCustomValidity</code>.</p>
+<p><strong>Ментальная модель:</strong> валидацию удобно представлять как два рубежа обороны. Первый — HTML5-атрибуты (<code>required</code>, <code>pattern</code>, <code>type="email"</code>) — быстрый и бесплатный, браузер сам показывает стандартное сообщение. Второй — JS-логика для правил, которые HTML5 не умеет выразить (совпадение паролей, проверка на сервере, кастомные форматы) — здесь ты сам решаешь, когда показать ошибку и как её сформулировать.</p>
+<p><strong>Почему это важно дальше:</strong> формы — точка входа пользовательских данных в любое приложение, и на неделе 7 та же форма отправит данные через <code>fetch</code> на сервер. Уже сейчас важно приучиться не доверять вводу вслепую: проверка на клиенте улучшает UX (мгновенная обратная связь), но не заменяет проверку на сервере — клиентский JS всегда можно отключить или обойти.</p>
+<p><strong>Пример:</strong> живая проверка email при каждом вводе символа — <code>emailInput.addEventListener('input', () =&gt; { errorSpan.textContent = emailInput.validity.valid ? '' : 'Введите корректный email' })</code>. Пользователь видит ошибку сразу после того, как начал печатать неправильный адрес, а не только после попытки отправить форму.</p>
+<p><strong>Частое заблуждение:</strong> новички показывают ошибки валидации через <code>alert()</code>, что прерывает работу пользователя навязчивым модальным окном и не указывает конкретное проблемное поле. Правильный паттерн — вывод текста ошибки рядом с полем через <code>&lt;span class="error"&gt;</code>, связанный с input через <code>aria-describedby</code> — так ошибка видна в контексте и доступна для скринридеров. Ещё одна частая недоработка — валидировать только при <code>submit</code>, из-за чего пользователь узнаёт об ошибке в пароле лишь после заполнения всей формы; событие <code>input</code> решает это, показывая проблему сразу. Это — основа сегодняшней практики.</p>
+<p><strong>Ключевая мысль:</strong> <code>input</code> для live-валидации; ошибки у поля, не в alert; <code>setCustomValidity</code> для своих правил.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/forms-controls">learn.javascript.ru: Формы, элементы управления</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Валидация формы регистрации перед отправкой</li>
+<li>Live-валидация email при <code>input</code></li>
+<li>Пароли должны совпадать — <code>setCustomValidity</code> при несовпадении</li>
+<li>Вывод ошибок в <code>&lt;span class="error"&gt;</code> под полями</li>
+<li>При успехе — сообщение «Регистрация успешна» без перезагрузки</li>
+<li>Свяжи ошибки с полями через <code>aria-describedby</code></li>
+<li>Disable кнопку submit, пока форма невалидна</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] HTML5 + JS валидация работают вместе
+- [ ] Ошибки понятны и привязаны к полям
+- [ ] Форма не сабмитится при невалидных данных</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Валидация формы регистрации перед отправкой</li>
+<li>Live-валидация email при <code>input</code></li>
+<li>Пароли должны совпадать — <code>setCustomValidity</code> при несовпадении</li>
+<li>Вывод ошибок в <code>&lt;span class="error"&gt;</code> под полями</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 6: form validation"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-06--week-06-day-6');</script>
+</body>
+</html>

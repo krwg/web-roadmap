@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 97 (Сб): Полировка UX и адаптив · Frontend SPA · web-roadmap</title>
+  <meta name="description" content="День 97 (Сб): Полировка UX и адаптив — неделя 14.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-14--week-14-day-97">
+  <meta http-equiv="refresh" content="0;url=../#week-14--week-14-day-97">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-14--week-14-day-97">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-14-day-97">День 97 (Сб): Полировка UX и адаптив</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Полировка UX отличает «работает» от «приятно пользоваться». Адаптив — не опция: начни с 320px ширины, убедись, что нет horizontal scroll. Hamburger-меню на мобиле превращает sidebar в drawer; на desktop — постоянная навигация. Touch targets ≥ 44px снижают mis-tap на телефоне.</p>
+<p>Доступность: <code>:focus-visible</code> вместо <code>outline: none</code>, tab-навигация по всем интерактивным элементам, контраст текста ≥ WCAG AA (проверь в DevTools). <code>prefers-reduced-motion</code> уважает настройки ОС — отключи лишние анимации для пользователей с вестибулярными расстройствами.</p>
+<p>Toast-уведомления — лёгкий паттерн feedback при CRUD. Empty states («Нет задач — добавьте первую») лучше пустой таблицы. Lighthouse audit: цель Performance ≥ 80, Accessibility ≥ 90. Микро-анимации через CSS transitions добавляют «живости» без тяжёлых библиотек.</p>
+<p>Мысленная модель этого дня: «Definition of Done» для интерфейса включает доступность и мобильную адаптацию по умолчанию, а не как опциональный бонус «если останется время». Полезная привычка — проектировать от 320px вверх (mobile-first), а не тестировать desktop-версию и потом «сжимать» её медиа-запросами: вторая стратегия почти всегда приводит к горизонтальному скроллу и мелкому тексту на реальных телефонах.</p>
+<p>Это напрямую влияет на оценку проекта в реальном мире: Lighthouse Accessibility и Performance — метрики, которые смотрят рекрутеры и тимлиды при код-ревью портфолио, а в некоторых юрисдикциях доступность интерфейса — не пожелание, а юридическое требование (WCAG). Мобильный трафик во многих продуктах составляет больше половины пользователей, так что «доделать адаптив потом» на практике означает «сломанный опыт для большинства».</p>
+<p>Конкретный пример: <code>outline: none</code> на кнопке без замены полностью убирает визуальную индикацию фокуса — пользователь, управляющий сайтом только клавиатурой (Tab), физически не видит, на каком элементе находится. <code>:focus-visible</code> — правильная замена: она показывает обводку при навигации с клавиатуры, но не мешает эстетике при клике мышью, где фокус менее важен визуально.</p>
+<p>Частое заблуждение — тестировать интерфейс только на своём ноутбуке с мышью и считать «выглядит нормально» достаточным критерием готовности. Это никак не проверяет tab-навигацию, touch-target размеры (кнопка 24×24px удобна для курсора, но промахивается пальцем), контраст текста при ярком солнечном свете или вестибулярную нагрузку от резких анимаций у части пользователей — отсюда обязательность <code>prefers-reduced-motion</code>. Практика дня требует явной проверки на 320px и через Lighthouse именно потому, что визуальная проверка «на глаз» систематически пропускает эти категории проблем — это касается и мобильного меню (hamburger → drawer), которое должно быть доступно и с клавиатуры, не только тапом по иконке.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design">MDN — Responsive design</a></li>
+<li><a href="https://web.dev/vitals/">Web Vitals</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion">prefers-reduced-motion (MDN)</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> a11y и mobile-first — часть Definition of Done, не «потом».</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Мобильное меню (hamburger → drawer)</li>
+<li>Toast-уведомления: задача добавлена, ошибка API</li>
+<li>Empty state: «Нет задач — добавьте первую»</li>
+<li>Lighthouse audit — цель Performance ≥ 80, Accessibility ≥ 90</li>
+<li>Focus styles на всех интерактивных элементах</li>
+<li>Проверка на 320px ширине — нет horizontal scroll</li>
+<li>CSS transitions на hover/focus (с reduced-motion fallback)</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Tab-навигация по всем интерактивным элементам</p>
+</li>
+<li>
+<p>[ ] Нет горизонтального скролла на 320px</p>
+</li>
+<li>
+<p>[ ] Lighthouse Accessibility ≥ 90</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Мобильное меню (hamburger → drawer)</li>
+<li>Toast-уведомления: задача добавлена, ошибка API</li>
+<li>Empty state: «Нет задач — добавьте первую»</li>
+<li>Lighthouse audit — цель Performance ≥ 80, Accessibility ≥ 90</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-14
+
+git add src/components/
+
+git commit -m &quot;week-14 day-97: mobile nav, toast и a11y polish&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p><code>outline: none</code> без замены — ломает a11y</p>
+</li>
+<li>
+<p>Фиксированная sidebar на мобиле закрывает контент</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-14--week-14-day-97');</script>
+</body>
+</html>

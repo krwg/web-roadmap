@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 7 (Sun): Таблицы, метаданные, проект недели · HTML · web-roadmap</title>
+  <meta name="description" content="День 7 (Sun): Таблицы, метаданные, проект недели — неделя 01.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-01--week-01-day-7">
+  <meta http-equiv="refresh" content="0;url=../#week-01--week-01-day-7">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-01--week-01-day-7">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-01-day-7">День 7 (Sun): Таблицы, метаданные, проект недели</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>HTML-таблицы предназначены для <strong>табличных данных</strong> — расписания, сравнения, статистики. В 1990-х ими верстали макеты целых сайтов; сегодня для layout есть CSS Grid и Flexbox, а таблица для вёрстки — антипаттерн: скринридер зачитывает «строка 3, столбец 2» там, где пользователь ждёт заголовок статьи. Правильная таблица: <code>caption</code> (заголовок), <code>thead</code> с <code>th scope="col"</code>, <code>tbody</code> с <code>td</code>. Атрибут <code>scope</code> связывает заголовок с колонкой или строкой.</p>
+<p>Метаданные в <code>&lt;head&gt;</code> влияют на то, как страницу видят извне. <code>title</code> — заголовок вкладки и сниппет в поиске. <code>meta name="description"</code> — краткое описание для Google. Open Graph-теги (<code>og:title</code>, <code>og:image</code>) управляют превью при шаринге в Telegram или LinkedIn: без них мессенджер подставит случайный текст. Favicon — иконка вкладки: <code>link rel="icon"</code> с PNG 32×32 или SVG для чёткости на Retina.</p>
+<p>Мысленная модель: <code>&lt;table&gt;</code> — это таблица в Excel, где каждая ячейка осмысленно связана со своей строкой и колонкой; если убрать эту связь (например, свёрстать «таблицу» через <code>div</code>), теряется не визуальный вид, а именно смысл — какое число к какой строке относится. Метаданные же — это витрина страницы: их не видно на самой странице, но именно по ним решают, кликать ли на ссылку в поиске или в мессенджере.</p>
+<p>Почему это важно дальше: сегодня — последний день недели, и именно метаданные (title, description, OG-теги) часто оказываются той мелочью, которая отличает «просто сайт» от «сайта, готового к реальному использованию» — в портфолио на неделе 22 это будет заметно сразу при шаринге ссылки в чат. Таблицы вернутся при работе с данными на бэкенде (недели 11+), где то же правило «заголовок связан со значением через <code>scope</code> или <code>id</code>/<code>headers</code>» останется актуальным.</p>
+<p>Конкретный пример: репост ссылки на твой <code>learning-log</code> в Telegram без OG-тегов покажет случайный кусок текста и, возможно, неподходящую картинку; с <code>og:title</code>, <code>og:description</code> и <code>og:image</code> — аккуратную карточку с твоим именем проекта и превью.</p>
+<p>Частое заблуждение — тянуть в <code>&lt;table&gt;</code> данные, у которых на самом деле нет двух осей сравнения, просто потому что «так аккуратнее выглядит визуально». Список из одной колонки — это <code>ul</code>, а не таблица из одного столбца; таблица оправдана, когда данные реально пересекаются по строке и столбцу (неделя × статус, товар × цена).</p>
+<p><strong>Ключевая мысль:</strong> таблица = данные с заголовками; для сетки страницы — CSS, не <code>&lt;table&gt;</code>, а для видимости в поиске и мессенджерах — метаданные, а не только красивый дизайн.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/HTML/Tables">MDN: Tables</a> — <code>th scope="col|row"</code>, <code>caption</code></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Таблица «План обучения» (неделя, тема, статус) на <code>index.html</code></li>
+<li>Уникальные <code>title</code> и <code>description</code> на каждой странице</li>
+<li>OG-теги на главной, favicon</li>
+<li>Финальный прогон W3C + Lighthouse на всех HTML</li>
+<li><strong>Собери проект недели</strong> — чеклист ниже</li>
+<li><code>notes.md</code> в <code>week-01/</code>: 5 правил хорошего HTML своими словами</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Таблица с <code>thead</code>/<code>tbody</code>/<code>th</code>
+- [ ] Все страницы валидны
+- [ ] Проект недели выполнен</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Таблица «План обучения» (неделя, тема, статус) на <code>index.html</code></li>
+<li>Уникальные <code>title</code> и <code>description</code> на каждой странице</li>
+<li>OG-теги на главной, favicon</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">git add week-01/
+git commit -m &quot;week 01 day 7: tables, meta, favicon, week project complete&quot;
+git tag -a week-01-done -m &quot;Portfolio Landing complete&quot;
+git push &amp;&amp; git push --tags
+</code></pre>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-01--week-01-day-7');</script>
+</body>
+</html>

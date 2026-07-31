@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 2 (Tue): JSON и работа с данными · Modules &amp; API · web-roadmap</title>
+  <meta name="description" content="День 2 (Tue): JSON и работа с данными — неделя 07.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-07--week-07-day-2">
+  <meta http-equiv="refresh" content="0;url=../#week-07--week-07-day-2">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-07--week-07-day-2">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-07-day-2">День 2 (Tue): JSON и работа с данными</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Notes Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>JSON (JavaScript Object Notation) — текстовый формат обмена данными между клиентом, сервером и файлами. Он поддерживает объекты, массивы, строки, числа, <code>true</code>/<code>false</code> и <code>null</code>, но не функции, <code>undefined</code> и комментарии. При <code>JSON.stringify</code> объекты <code>Date</code> превращаются в ISO-строки, а <code>undefined</code> в свойствах объекта просто опускаются — это важно помнить при экспорте данных.</p>
+<p>Метод <code>JSON.stringify(obj, replacer, space)</code> умеет фильтровать поля (через массив ключей или функцию-replacer) и форматировать вывод: <code>space: 2</code> делает JSON читаемым для человека при отладке. Обратная операция — <code>JSON.parse</code>, которая бросает <code>SyntaxError</code> на невалидном тексте. Импорт из файла всегда требует валидации: проверь наличие обязательных полей, типы и допустимые значения до того, как смешаешь чужие данные со своим состоянием.</p>
+<p>В приложениях с localStorage данные со временем меняют форму. Добавь поле <code>schemaVersion</code> в сохраняемый объект — при загрузке сравни версию и при необходимости мигрируй старый формат в новый. Обновления списков объектов делай иммутабельно: <code>items.map(item =&gt; item.id === id ? { ...item, title } : item)</code> вместо прямой мутации элемента массива. Так проще отслеживать изменения и избегать побочных эффектов.</p>
+<p><strong>Ментальная модель:</strong> JSON удобно представлять как универсальный «переводчик» между живыми JS-объектами в памяти и текстом, который можно сохранить в файл, отправить по сети или положить в localStorage. <code>stringify</code> — перевод «объект → текст», <code>parse</code> — обратный перевод «текст → объект». Важно помнить, что перевод не идеален: некоторые вещи (функции, <code>undefined</code>, <code>Date</code> как объект) в JSON не выражаются напрямую и либо теряются, либо превращаются в упрощённую форму (строку).</p>
+<p><strong>Почему это важно дальше:</strong> JSON — универсальный язык обмена данными, на котором будет разговаривать твой код с любым сервером на неделе 8 и дальше: любой ответ от Fetch API, который ты получишь завтра, придёт именно в этом формате. А привычка валидировать импортированные данные до того, как смешать их со своим состоянием, защищает приложение от падения при получении неожиданного формата — что произойдёт неизбежно при работе с реальными внешними данными.</p>
+<p><strong>Пример:</strong> экспорт задач для скачивания — <code>JSON.stringify(tasks, null, 2)</code> создаёт читаемый, отформатированный текст с отступом в 2 пробела вместо сплошной строки — это то самое <code>space</code>, которое пригодится при отладке в консоли. При импорте того же файла <code>JSON.parse(text)</code> вернёт исходный массив объектов, и на этом этапе стоит сразу проверить, что каждый элемент содержит обязательные поля <code>id</code>, <code>title</code>.</p>
+<p><strong>Частое заблуждение:</strong> новички считают, что раз <code>JSON.parse(JSON.stringify(obj))</code> возвращает «тот же» объект, значит JSON сохраняет абсолютно всё. На деле это популярный, но неполный способ глубокого клонирования: методы объекта, <code>undefined</code>-свойства и специальные типы вроде <code>Map</code>/<code>Set</code> при этом теряются молча, без предупреждения. Для задач сегодняшней практики (Todo-объекты с простыми полями) это не проблема, но важно понимать границу метода.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/JavaScript/Objects/JSON">MDN: Working with JSON</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify">MDN: JSON.stringify()</a>
+- <a href="https://learn.javascript.ru/json">learn.javascript.ru: Формат JSON</a></p>
+<p><strong>Ключевая мысль:</strong> JSON — контракт обмена данными; валидация и версионирование схемы защищают приложение от битых импортов и устаревших сохранений.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Экспорт Todo в JSON-файл (download через Blob + URL.createObjectURL)</li>
+<li>Импорт: <code>&lt;input type="file"&gt;</code> → FileReader → parse → merge в список</li>
+<li>Функция <code>validateTodo(data)</code> — проверка обязательных полей</li>
+<li>Статистика: группировка задач по дате создания</li>
+<li>Миграция данных: если версия схемы старая — обнови формат</li>
+<li>Добавь <code>exportedAt</code> в экспортируемый JSON</li>
+<li>Отклони импорт с понятным сообщением при невалидном файле</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Экспорт/импорт JSON работает
+- [ ] Валидация отклоняет невалидные данные
+- [ ] Иммутабельные обновления, не мутация массива напрямую</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Экспорт Todo в JSON-файл (download через Blob + URL.createObjectURL)</li>
+<li>Импорт: <code>&lt;input type="file"&gt;</code> → FileReader → parse → merge в список</li>
+<li>Функция <code>validateTodo(data)</code> — проверка обязательных полей</li>
+<li>Статистика: группировка задач по дате создания</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 07 day 2: json import export"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-07--week-07-day-2');</script>
+</body>
+</html>

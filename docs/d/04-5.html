@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 5 (Fri): DevTools — Network, Sources, Performance · Git advanced · web-roadmap</title>
+  <meta name="description" content="День 5 (Fri): DevTools — Network, Sources, Performance — неделя 04.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-04--week-04-day-5">
+  <meta http-equiv="refresh" content="0;url=../#week-04--week-04-day-5">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-04--week-04-day-5">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-04-day-5">День 5 (Fri): DevTools — Network, Sources, Performance</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Панель <strong>Network</strong> показывает каждый HTTP-запрос при загрузке страницы: URL, статус, размер, время. <strong>Waterfall</strong> — диаграмма «кто за кем»: видно, что блокирует рендер (тяжёлые картинки, синхронные скрипты). Статусы: <strong>200</strong> OK, <strong>304</strong> Not Modified (из кэша), <strong>404</strong> Not Found. При разработке включай <strong>Disable cache</strong>, иначе видишь устаревшие файлы.</p>
+<p><strong>Sources</strong> — отладка JavaScript: breakpoint останавливает выполнение в точке; step over/into проходят по строкам; watch expressions следят за переменными. <strong>Performance</strong> записывает профиль: FPS, long tasks, jank при скролле. <strong>Lighthouse</strong> в DevTools — аудит Performance, Accessibility, Best Practices с конкретными рекомендациями.</p>
+<p>Вкладка <strong>Application</strong> — хранилища браузера: Local Storage, Cookies, Service Workers (обзор на будущее). Тяжёлый ресурс в Network — первый кандидат на оптимизацию: сжатие, WebP, lazy loading.</p>
+<p><strong>Ментальная модель:</strong> если Elements — это рентген структуры страницы, то Network — рентген её загрузки во времени. Waterfall буквально показывает, что происходит от нулевой миллисекунды до полной загрузки: какой запрос начался первым, какой ждал завершения другого, что можно распараллелить. Sources и Performance добавляют временное измерение к тому, что раньше казалось мгновенным «код просто выполнился».</p>
+<p><strong>Почему это важно дальше:</strong> на неделях с JavaScript breakpoint в Sources станет основным способом отладки — гораздо быстрее и надёжнее, чем расставлять <code>console.log</code> вручную. А умение читать Lighthouse-отчёт понадобится перед сдачей любого проекта курса: это стандартный внешний критерий качества, который проверяющий может запустить за 10 секунд.</p>
+<p><strong>Пример:</strong> страница грузится 4 секунды. Открываешь Network, видишь в waterfall один PNG весом 3 МБ, который блокирует появление остального контента. Сжимаешь его до WebP весом 200 КБ — время загрузки падает в разы, а Lighthouse Performance-score растёт на 20+ пунктов.</p>
+<p><strong>Частое заблуждение:</strong> новички думают, что статус 304 — это ошибка, раз число «не как 200». На самом деле 304 Not Modified означает, что браузер удачно переиспользовал кэш и не скачивал файл заново — это хороший знак производительности, а не проблема. Похожая путаница возникает и с breakpoint в Sources: кажется, что это «то же самое, что console.log, но сложнее» — на деле breakpoint замораживает выполнение целиком, позволяя изучить значения всех переменных в этой точке одновременно, а не только той, что ты решил залогировать заранее. Сегодняшняя практика с анализом waterfall и запуском Lighthouse научит отличать реальные проблемы от нормального поведения браузера.</p>
+<p><strong>Ключевая мысль:</strong> Network waterfall — карта загрузки; Lighthouse — чеклист перед сдачей.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.chrome.com/docs/devtools/network">Chrome DevTools: Network</a>
+- <a href="https://developer.chrome.com/docs/devtools/performance">Chrome DevTools: Performance</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Перезагрузи страницу с Network open — проанализируй waterfall</li>
+<li>Найди самый тяжёлый ресурс, оптимизируй (сжатие изображения)</li>
+<li>Запусти Lighthouse, сохрани отчёт, исправь 2+ замечания</li>
+<li>В Sources поставь breakpoint (на inline script или будущий JS)</li>
+<li>Запиши Performance profile при скролле — есть ли jank?</li>
+<li>Отфильтруй Network по CSS/JS — оцени общий вес страницы</li>
+<li>Проверь Application → Local Storage (пока пусто — заготовка под неделю 7)</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Понимаю статусы 200, 304, 404 в Network
+- [ ] Lighthouse score улучшен после правок
+- [ ] Умею ставить breakpoint и читать call stack</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Перезагрузи страницу с Network open — проанализируй waterfall</li>
+<li>Найди самый тяжёлый ресурс, оптимизируй (сжатие изображения)</li>
+<li>Запусти Lighthouse, сохрани отчёт, исправь 2+ замечания</li>
+<li>В Sources поставь breakpoint (на inline script или будущий JS)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 5: devtools network performance"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-04--week-04-day-5');</script>
+</body>
+</html>

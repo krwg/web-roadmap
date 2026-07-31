@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 6 (Sat): Promise utilities · Async &amp; HTTP · web-roadmap</title>
+  <meta name="description" content="День 6 (Sat): Promise utilities — неделя 08.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-08--week-08-day-6">
+  <meta http-equiv="refresh" content="0;url=../#week-08--week-08-day-6">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-08--week-08-day-6">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-08-day-6">День 6 (Sat): Promise utilities</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Помимо базового <code>Promise.all</code>, в JavaScript есть набор утилит для разных сценариев. <code>Promise.allSettled</code> ждёт завершения <strong>всех</strong> Promise и возвращает массив <code>{ status, value/reason }</code> — идеально, когда нужны результаты нескольких независимых API, даже если часть упала. <code>Promise.race</code> отдаёт результат первого завершившегося Promise — удобно для timeout-обёртки. <code>Promise.any</code> возвращает первый успешный, игнорируя reject (если все упали — <code>AggregateError</code>).</p>
+<p><code>Promise.all</code> работает по принципу fail-fast: один reject ломает весь результат. Используй его, когда все данные обязательны (загрузка профиля + настроек одновременно). <code>Promise.allSettled</code> — когда частичный успех допустим (дашборд с виджетами от разных сервисов). Timeout через race: <code>Promise.race([fetch(url), delay(5000).then(() =&gt; Promise.reject('timeout'))])</code>.</p>
+<p>Необработанный reject (<code>unhandledrejection</code>) — сигнал, что где-то забыли <code>.catch</code> или <code>try/catch</code>. В production повесь глобальный listener <code>window.addEventListener('unhandledrejection', ...)</code> для логирования. <code>for await...of</code> позволяет последовательно обрабатывать асинхронные итерируемые источники без гонки параллельных запросов.</p>
+<p>Мысленная модель — выбор инструмента под задачу, как в наборе отвёрток: <code>Promise.all</code> — это шуруп, который либо закручен полностью, либо задача провалена целиком (все данные обязательны); <code>Promise.allSettled</code> — гаечный набор, где допустимо закрутить не все гайки (дашборд из независимых виджетов); <code>Promise.race</code> — секундомер, который останавливается по первому событию, будь то успешный ответ или превышение таймаута.</p>
+<p>Это понимание пригодится при построении дашбордов и агрегирующих экранов на протяжении всего курса: почти любой сложный UI загружает данные из нескольких источников с разной надёжностью, и выбор правильной Promise-утилиты определяет, упадёт ли весь экран из-за одного медленного виджета. Частое заблуждение — использовать <code>Promise.all</code> по умолчанию для всего подряд: если один из пяти виджетов дашборда временно недоступен, весь дашборд из-за <code>Promise.all</code> останется пустым экраном, хотя четыре виджета вполне могли отрендериться.</p>
+<p>Конкретный пример timeout: <code>Promise.race([fetch(url), new Promise((_, reject) =&gt; setTimeout(() =&gt; reject(new Error('timeout')), 5000))])</code> — если <code>fetch</code> не успел за 5 секунд, <code>race</code> вернёт reject от таймера, а не будет ждать вечно зависший запрос. Такой <code>withTimeout</code> — это шаг 2 практики дня, и он же станет частью финального api-wrapper: без таймаута зависший запрос к нестабильному API способен «подвесить» весь пользовательский интерфейс на неопределённое время.</p>
+<p>Отдельно стоит запомнить <code>Promise.any</code>: в отличие от <code>race</code>, который отдаёт первый результат вообще (успех или ошибка), <code>any</code> дожидается первого <strong>успешного</strong> ответа и игнорирует reject, пока не упадут все кандидаты — удобно для запроса к нескольким зеркалам одного API, где важен любой рабочий ответ, а не именно самый быстрый.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled">MDN: Promise.allSettled()</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise/race">MDN: Promise.race()</a>
+- <a href="https://learn.javascript.ru/promise-api">learn.javascript.ru: Promise API</a></p>
+<p><strong>Ключевая мысль:</strong> выбирай Promise-утилиту по сценарию — all для «всё или ничего», allSettled для «что получилось», race для таймаутов.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Загрузи 5 URL через <code>Promise.allSettled</code>, покажи успешные и failed</li>
+<li>Timeout wrapper: <code>withTimeout(promise, 5000)</code> через <code>Promise.race</code></li>
+<li>Последовательная обработка массива URL без Promise.all (for await)</li>
+<li>Глобальный <code>unhandledrejection</code> listener — логирование</li>
+<li>Рефакторинг dashboard недели 7 с новыми паттернами</li>
+<li>Сравни <code>Promise.all</code> vs <code>allSettled</code> на массиве с одним failed URL</li>
+<li>Добавь timeout 10s на все fetch в api wrapper</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] allSettled и race использованы по назначению
+- [ ] Timeout на долгие запросы
+- [ ] Нет unhandled promise rejections в Console</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Загрузи 5 URL через <code>Promise.allSettled</code>, покажи успешные и failed</li>
+<li>Timeout wrapper: <code>withTimeout(promise, 5000)</code> через <code>Promise.race</code></li>
+<li>Последовательная обработка массива URL без Promise.all (for await)</li>
+<li>Глобальный <code>unhandledrejection</code> listener — логирование</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 6: promise utilities timeout"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-08--week-08-day-6');</script>
+</body>
+</html>

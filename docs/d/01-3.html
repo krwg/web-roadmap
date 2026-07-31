@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 3 (Wed): Ссылки, изображения, медиа · HTML · web-roadmap</title>
+  <meta name="description" content="День 3 (Wed): Ссылки, изображения, медиа — неделя 01.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-01--week-01-day-3">
+  <meta http-equiv="refresh" content="0;url=../#week-01--week-01-day-3">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-01--week-01-day-3">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-01-day-3">День 3 (Wed): Ссылки, изображения, медиа</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Многостраничный сайт связывается <strong>ссылками</strong> и <strong>путями к ресурсам</strong>. Относительные пути (<code>./about.html</code>, <code>../images/photo.jpg</code>) привязаны к структуре папок проекта, а не к домену — перенеси папку на другой хостинг, и ссылки продолжат работать. Абсолютные URL с доменом (например <code>example.com/page</code>) нужны для внешних ресурсов. Якорные ссылки (<code>#section-id</code>) прыгают к элементу с соответствующим <code>id</code> на той же странице.</p>
+<p>Изображения — отдельная дисциплина доступности и производительности. Атрибут <code>alt</code> описывает смысл картинки для тех, кто её не видит. Декоративное изображение получает <code>alt=""</code> (пустой), чтобы скринридер его пропустил. Не дублируй текст из <code>figcaption</code> в <code>alt</code> — это раздражает при озвучивании дважды. Атрибут <code>loading="lazy"</code> откладывает загрузку картинок ниже первого экрана, ускоряя начальную отрисовку. Пара <code>srcset</code> + <code>sizes</code> позволяет браузеру выбрать подходящий размер файла под экран — меньше трафика на мобильном.</p>
+<p>Видео встраивается тегом <code>&lt;video&gt;</code> с <code>controls</code> для панели управления и <code>poster</code> — превью до воспроизведения. Текст внутри тега — fallback для старых браузеров: «Ваш браузер не поддерживает видео».</p>
+<p>Мысленная модель для путей: относительный путь — это инструкция «иди отсюда», а не «иди по этому адресу в интернете». Если файл <code>about.html</code> лежит рядом с <code>index.html</code>, ссылка <code>./about.html</code> сработает где угодно — на твоём компьютере, на GitHub Pages, на любом хостинге — потому что она описывает взаимное расположение файлов, а не конкретный домен.</p>
+<p>Почему это важно дальше: на неделе 9+ с системами сборки (Vite, Webpack) пути к изображениям и скриптам будут переписываться автоматически, но принцип «относительно текущего файла» останется тем же — непонимание разницы <code>./</code>, <code>../</code> и <code>/</code> в начале пути — частый источник «битых картинок после деплоя» даже у опытных разработчиков.</p>
+<p>Конкретный пример: галерея с 10 фотографиями по 3 МБ каждая без <code>loading="lazy"</code> загрузит все 30 МБ сразу при открытии страницы, даже если пользователь видит только первые три — это заметно тормозит мобильный интернет. С <code>loading="lazy"</code> браузер подгружает картинку только когда она приближается к области видимости при скролле.</p>
+<p>Частое заблуждение — считать, что <code>alt=""</code> означает «забыл добавить описание». На самом деле пустой <code>alt</code> — осознанное решение для декоративной картинки (орнамент, разделитель), и скринридер тогда молча её пропускает; отсутствие атрибута <code>alt</code> вообще — это ошибка, при которой скринридер зачитывает весь путь к файлу. В сегодняшней практике, добавляя аватар и галерею, различай эти два случая осознанно.</p>
+<p><strong>Ключевая мысль:</strong> <code>alt</code> — не украшение, а часть контента; пустой <code>alt</code> уместен только для декора, а не как способ сэкономить время на описании.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/HTML/Multimedia_and_embedding/Images_in_HTML">MDN: Изображения в HTML</a>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images">MDN: Responsive images</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>week-01/about.html</code>, <code>week-01/gallery.html</code> — единый <code>header</code>/<code>nav</code>/<code>footer</code></li>
+<li>Относительные ссылки между страницами + якоря <code>#section-id</code></li>
+<li>Галерея 4+ <code>figure</code> с WebP/JPG, lazy loading</li>
+<li>Одно <code>video</code> с <code>poster</code> (короткий клип о себе или placeholder)</li>
+<li>Lighthouse Accessibility на <code>index.html</code></li>
+<li>Обнови <code>nav</code> на всех страницах — активная страница через <code>aria-current="page"</code> на текущей ссылке</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Нет битых ссылок
+- [ ] Внешние ссылки с <code>rel="noopener noreferrer"</code>
+- [ ] <code>aria-current</code> на активном пункте nav</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>week-01/about.html</code>, <code>week-01/gallery.html</code> — единый <code>header</code>/<code>nav</code>/<code>footer</code></li>
+<li>Относительные ссылки между страницами + якоря <code>#section-id</code></li>
+<li>Галерея 4+ <code>figure</code> с WebP/JPG, lazy loading</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">git add week-01/
+git commit -m &quot;week 01 day 3: multi-page site with gallery and media&quot;
+git push
+</code></pre>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-01--week-01-day-3');</script>
+</body>
+</html>

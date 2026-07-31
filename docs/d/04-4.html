@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 4 (Thu): DevTools — Elements и Console · Git advanced · web-roadmap</title>
+  <meta name="description" content="День 4 (Thu): DevTools — Elements и Console — неделя 04.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-04--week-04-day-4">
+  <meta http-equiv="refresh" content="0;url=../#week-04--week-04-day-4">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-04--week-04-day-4">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-04-day-4">День 4 (Thu): DevTools — Elements и Console</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~45м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Chrome DevTools — рентген твоей страницы. Панель <strong>Elements</strong> показывает живое DOM-дерево: кликни на узел — увидишь применённые стили, box model, flex/grid overlay. Вкладка <strong>Styles</strong> перечисляет все CSS-правила с указанием файла и строки; перечёркнутое свойство проиграло в каскаде — ищи победителя выше. <strong>Computed</strong> — итоговые вычисленные значения после каскада, наследования и браузерных дефолтов.</p>
+<p>Live-редактирование CSS в DevTools — быстрый эксперимент: подобрал отступ — перенеси в файл. Flex/Grid overlay рисует треки и gap поверх страницы — не гадай, смотри. В <strong>Console</strong> <code>$0</code> — ссылка на элемент, выбранный в Elements; мост между визуальным и программным исследованием.</p>
+<p><code>console.log</code> — базовый вывод; <code>console.table</code> — таблица для массивов объектов; <code>console.group</code> — группировка связанных логов. Уровни <code>warn</code> и <code>error</code> выделяются визуально и фильтруются.</p>
+<p><strong>Ментальная модель:</strong> DevTools — не «дополнительный инструмент для продвинутых», а рентгеновский снимок твоей страницы в реальном времени. Elements показывает не исходный HTML-файл, а <strong>живой</strong> DOM — то, во что браузер превратил разметку прямо сейчас, включая изменения, сделанные JS. Это принципиально другая картина, чем «View Page Source», который показывает статичный исходник.</p>
+<p><strong>Почему это важно дальше:</strong> без уверенного владения Elements и Console отладка CSS и будущего JS превращается в метод «тыка» — правишь код, обновляешь страницу, смотришь, повторяешь. С DevTools ты меняешь значение прямо в браузере и мгновенно видишь результат, а находишь причину проблемы за секунды через Computed и Styles. Это основной инструмент во всех последующих неделях, включая отладку JavaScript.</p>
+<p><strong>Пример:</strong> элемент выглядит не так, как ожидалось — отступ слишком большой. Открываешь Elements, кликаешь на элемент, смотришь Styles: видно зачёркнутое правило <code>margin: 0</code> из одного файла и победившее <code>margin: 16px</code> из другого, более специфичного селектора. Проблема найдена за 10 секунд, а не за 10 минут просмотра CSS-файлов.</p>
+<p><strong>Частое заблуждение:</strong> начинающие правят стили прямо в DevTools и считают, что «исправили баг» — но эти изменения исчезают при обновлении страницы, потому что они не сохраняются в файл. DevTools — инструмент для эксперимента и диагностики, а не для постоянного редактирования; найденное значение всегда нужно перенести в исходный CSS-файл, что и требует сегодняшняя практика.</p>
+<p><strong>Ключевая мысль:</strong> Styles — «кто перебил?», Computed — «что в итоге?»; overlay — «как устроена сетка?».</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.chrome.com/docs/devtools/overview">Chrome DevTools: Overview</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Открой лендинг, исследуй box model каждой секции в Elements</li>
+<li>Включи flex/grid overlay для layout-контейнеров</li>
+<li>Найди и исправь «лишний» margin через live edit, перенеси в CSS-файл</li>
+<li>В Console: выбери элемент, измени текст через <code>$0.textContent</code></li>
+<li>Добавь <code>console.log</code> в будущий JS-файл (заготовка) — проверь вывод</li>
+<li>Используй <code>console.table</code> для массива объектов (заготовка данных)</li>
+<li>Найди перечёркнутое свойство в Styles — объясни, почему оно не применилось</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Умею найти источник стиля в панели Styles (файл и строка)
+- [ ] Использовал flex/grid overlay
+- [ ] Знаю разницу Computed vs Styles</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Открой лендинг, исследуй box model каждой секции в Elements</li>
+<li>Включи flex/grid overlay для layout-контейнеров</li>
+<li>Найди и исправь «лишний» margin через live edit, перенеси в CSS-файл</li>
+<li>В Console: выбери элемент, измени текст через <code>$0.textContent</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 4: devtools elements console"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-04--week-04-day-4');</script>
+</body>
+</html>

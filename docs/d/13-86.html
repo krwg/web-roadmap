@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 86 (Вт): Динамические маршруты и nested routes · Router &amp; Context · web-roadmap</title>
+  <meta name="description" content="День 86 (Вт): Динамические маршруты и nested routes — неделя 13.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-13--week-13-day-86">
+  <meta http-equiv="refresh" content="0;url=../#week-13--week-13-day-86">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-13--week-13-day-86">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-13-day-86">День 86 (Вт): Динамические маршруты и nested routes</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio SPA</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Статический маршрут <code>/about</code> покрывает фиксированную страницу, но реальные приложения оперируют сущностями с идентификаторами: посты, проекты, профили. Динамический сегмент <code>/blog/:slug</code> превращает часть URL в параметр, который компонент читает через <code>useParams</code>. Помни: все параметры приходят строками — для чисел нужны <code>Number()</code> или явная валидация.</p>
+<p>Вложенные маршруты (nested routes) строят иерархию UI: общий layout для раздела <code>/blog</code> и дочерние страницы списка и детали. Родительский <code>Route</code> рендерит layout с <code>&lt;Outlet /&gt;</code>; без outlet дочерние страницы просто не появятся — классическая ловушка. Index route задаёт страницу по умолчанию, когда пользователь открывает родительский путь без суффикса.</p>
+<p>Query string (<code>?sort=date&amp;tab=comments</code>) описывает фильтры и вкладки, не меняя структуру пути. <code>useSearchParams</code> даёт к ним доступ в React-стиле. <code>useLocation</code> полезен для breadcrumbs и для передачи временного state при <code>navigate('/path', { state: { from: 'list' } })</code>. В React Router 6.4+ <code>useMatches</code> помогает строить цепочку навигации из дерева маршрутов.</p>
+<p>Мысленная модель вложенных маршрутов — русская матрёшка: родительский <code>Route</code> рендерит свой layout, а <code>&lt;Outlet /&gt;</code> — это буквально дыра в этом layout, куда React Router подставляет компонент дочернего маршрута. Если у <code>/blog</code> есть общий сайдбар с категориями, а <code>/blog/:slug</code> показывает конкретный пост, то сайдбар рендерится один раз на уровне родителя и не размонтируется при переходе между постами — меняется только содержимое outlet.</p>
+<p>Эта модель прямо переносится на Dashboard недели 14: общий Layout с навигацией остаётся смонтированным, пока пользователь переключается между <code>/tasks</code>, <code>/weather</code> и <code>/settings</code> — размонтируется и монтируется заново только содержимое конкретной страницы. То же самое почти в любом реальном приложении с админкой: общая рамка интерфейса не должна перерисовываться при переходе между разделами.</p>
+<p>Конкретный пример: URL <code>/blog/react-hooks-guide</code> — <code>slug</code> в <code>useParams()</code> придёт строкой <code>"react-hooks-guide"</code>, и если это на самом деле числовой id поста (<code>/blog/42</code>), <code>useParams().id</code> всё равно будет строкой <code>"42"</code>, а не числом 42. Сравнение <code>id === 42</code> без <code>Number(id)</code> всегда будет <code>false</code>, хотя внешне всё выглядит правильно — классическая ловушка, о которой явно предупреждают «Ловушки» этого дня.</p>
+<p>Частое заблуждение — полагать, что если родительский <code>Route</code> определён, дочерние страницы появятся «автоматически». Без явного <code>&lt;Outlet /&gt;</code> в JSX родительского компонента React Router прекрасно вычисляет, какой маршрут совпал, но рендерить его содержимое ему буквально некуда — сайдбар покажется, а сам пост — нет, и разработчик потратит время на поиск несуществующего бага в дочернем компоненте, хотя проблема в layout на уровень выше. В практике дня именно это нужно проверить в первую очередь при вёрстке <code>/blog</code> с сайдбаром категорий и вложенной страницей поста.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://reactrouter.com/6.28.0/start/tutorial#nested-routes">Nested Routes</a></li>
+<li><a href="https://reactrouter.com/6.28.0/hooks/use-search-params">useSearchParams</a></li>
+<li><a href="https://reactrouter.com/6.28.0/hooks/use-location">useLocation</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> путь описывает «где», query — «как показать»; параметры маршрута всегда строки.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>/blog</code> — список постов, <code>/blog/:slug</code> — детальная страница</li>
+<li>Данные постов — mock JSON или JSONPlaceholder</li>
+<li>Breadcrumbs: Home → Blog → Post Title</li>
+<li>Query <code>?sort=date</code> — сортировка списка</li>
+<li>Несуществующий slug → страница «Не найдено»</li>
+<li>Nested layout для <code>/blog</code> с sidebar категорий</li>
+<li><code>useSearchParams</code> для tab: <code>?tab=comments</code></li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] <code>useParams</code> корректно читает <code>:slug</code></p>
+</li>
+<li>
+<p>[ ] Несуществующий slug → страница «Не найдено»</p>
+</li>
+<li>
+<p>[ ] Breadcrumbs обновляются при навигации</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>/blog</code> — список постов, <code>/blog/:slug</code> — детальная страница</li>
+<li>Данные постов — mock JSON или JSONPlaceholder</li>
+<li>Breadcrumbs: Home → Blog → Post Title</li>
+<li>Query <code>?sort=date</code> — сортировка списка</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-13
+
+git add src/pages/blog/
+
+git commit -m &quot;week-13 day-86: динамические маршруты и breadcrumbs&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Параметр <code>:id</code> всегда string — нужен <code>Number(id)</code> или валидация</p>
+</li>
+<li>
+<p>Забытый <code>&lt;Outlet /&gt;</code> в layout — дочерние страницы не рендерятся</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-13--week-13-day-86');</script>
+</body>
+</html>

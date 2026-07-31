@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 141 (Пн): Связка Frontend + Backend · Docker · web-roadmap</title>
+  <meta name="description" content="День 141 (Пн): Связка Frontend + Backend — неделя 21.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-21--week-21-day-141">
+  <meta http-equiv="refresh" content="0;url=../#week-21--week-21-day-141">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-21--week-21-day-141">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-21-day-141">День 141 (Пн): Связка Frontend + Backend</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Full-stack начинается там, где фронтенд и бэкенд встречаются в браузере. Same-origin policy: <code>localhost:5173</code> (Vite) и <code>localhost:3000</code> (API) — разные origins. Браузер блокирует cross-origin fetch без заголовков CORS от сервера. Preflight OPTIONS запрос отправляется для «непростых» запросов.</p>
+<p><code>cors</code> middleware в Express или <code>CORSMiddleware</code> в FastAPI с whitelist <code>http://localhost:5173</code>. <code>VITE_API_URL</code> — build-time переменная для фронтенда; <code>DATABASE_URL</code> — runtime для бэкенда. Vite proxy в dev обходит CORS, направляя <code>/api</code> на backend — same-origin для браузера.</p>
+<p>Замени localStorage tasks/notes на API CRUD — это суть недели. Проверь Network tab: нет CORS errors. <code>.env.example</code> для обоих проектов. Hardcoded localhost в production build — сломает deploy.</p>
+<p>Ментальная модель: origin — это тройка (протокол, домен, порт), и браузер по умолчанию блокирует любой fetch между разными origin, если сервер явно не разрешил это через CORS-заголовки. Это защита пользователя, а не бага фреймворка — без same-origin policy любой сайт мог бы читать твою банковскую сессию через скрытый fetch. Для junior full-stack разработчика непонимание CORS — источник часа-двух бесполезной отладки почти в каждом первом проекте; умение быстро прочитать ошибку CORS в консоли и понять, на чьей она стороне (сервер не разрешил origin) — практический навык уровня middle.</p>
+<p>Конкретный пример: если <code>VITE_API_URL</code> не имеет префикса <code>VITE_</code>, Vite просто не включит переменную в bundle — переменная будет <code>undefined</code> в runtime, и ошибка проявится не как CORS, а как fetch на <code>undefined/api/tasks</code>, что сбивает с толку новичков. Частое заблуждение — «CORS настраивается на клиенте» — на самом деле разрешение полностью на стороне сервера (заголовки <code>Access-Control-Allow-Origin</code>), клиент только соблюдает то, что разрешил браузер. Именно этот CORS-контракт между React-клиентом и API — фундамент для docker-compose сети в этой же неделе (день 145), где origin меняются на container hostnames, и для production deploy в DevHub capstone, где появится третий origin — Vercel domain.</p>
+<p>Для продакшена preflight OPTIONS-запрос — источник ещё одной частой путаницы: браузер отправляет его автоматически перед «непростыми» запросами (с кастомными заголовками вроде <code>Authorization</code> или методом <code>PUT</code>/<code>DELETE</code>), и сервер должен явно ответить на OPTIONS без падения — иначе основной запрос до сервера вообще не дойдёт, а в Network tab будет видна только неудачная preflight-строка, что сбивает с толку при первой отладке.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS (MDN)</a></li>
+<li><a href="https://expressjs.com/en/resources/middleware/cors.html">cors (Express)</a></li>
+<li><a href="https://vitejs.dev/config/server-options.html#server-proxy">Vite proxy</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> CORS — согласие сервера; <code>VITE_</code> prefix обязателен для клиентских env.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>React Dashboard (нед.14) или Secure Notes (нед.20) → fetch к Express/FastAPI API</li>
+<li><code>.env</code>: <code>VITE_API_URL=http://localhost:3000</code> (или 8000 для FastAPI)</li>
+<li>CORS: allow <code>http://localhost:5173</code> в dev, credentials если нужны cookies</li>
+<li>Замени localStorage tasks/notes на API CRUD</li>
+<li>Проверь Network tab — нет CORS errors</li>
+<li><code>.env.example</code> для обоих проектов</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] CRUD через API, не localStorage
+- [ ] CORS настроен — нет ошибки в browser console
+- [ ] <code>.env.example</code> для обоих проектов</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>React Dashboard (нед.14) или Secure Notes (нед.20) → fetch к Express/FastAPI API</li>
+<li><code>.env</code>: <code>VITE_API_URL=http://localhost:3000</code> (или 8000 для FastAPI)</li>
+<li>CORS: allow <code>http://localhost:5173</code> в dev, credentials если нужны cookies</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-21/</code> → <code>git commit -m "week 21 day 141: frontend backend CORS integration"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li><code>VITE_</code> prefix обязателен — иначе переменная не попадёт в bundle</li>
+<li>Hardcoded localhost в production build</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-21--week-21-day-141');</script>
+</body>
+</html>

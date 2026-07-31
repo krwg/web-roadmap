@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 2 (Tue): Типы данных и операторы · JavaScript · web-roadmap</title>
+  <meta name="description" content="День 2 (Tue): Типы данных и операторы — неделя 05.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-05--week-05-day-2">
+  <meta http-equiv="refresh" content="0;url=../#week-05--week-05-day-2">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-05--week-05-day-2">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-05-day-2">День 2 (Tue): Типы данных и операторы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1.5ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~45м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Console Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>JavaScript — динамически типизированный язык: тип определяется <strong>значением</strong>, а не объявлением. <strong>Примитивы</strong> — <code>number</code>, <code>string</code>, <code>boolean</code>, <code>null</code>, <code>undefined</code>, <code>symbol</code>, <code>bigint</code> — неизменяемы: <code>str.toUpperCase()</code> возвращает новую строку, оригинал не трогает. Всё остальное — объекты (массивы, функции, plain objects).</p>
+<p><code>typeof</code> возвращает строку с типом; ловушка: <code>typeof null === 'object'</code> — исторический баг, проверяй <code>value === null</code>. <code>null</code> — намеренное «пусто»; <code>undefined</code> — переменная не инициализирована. Сравнение <code>==</code> приводит типы неявно (<code>'5' == 5</code> → true); <strong><code>===</code></strong> сравнивает значение и тип — используй всегда в новом коде.</p>
+<p>Template literals <code>`Привет, ${name}!`</code> поддерживают интерполяцию и многострочность — чище конкатенации через <code>+</code>. Truthy/falsy: <code>0</code>, <code>''</code>, <code>null</code>, <code>undefined</code>, <code>NaN</code>, <code>false</code> — falsy; всё остальное truthy.</p>
+<p><strong>Ментальная модель:</strong> думай о <code>==</code> как о переводчике, который сначала пытается «подогнать» два разных языка (типа) под общий знаменатель, а потом сравнивает — и этот перевод не всегда очевиден. <code>===</code> ничего не переводит: сравнивает как есть, тип и значение. Именно поэтому опытные разработчики почти никогда не используют <code>==</code> — предсказуемость важнее «экономии» одного символа.</p>
+<p><strong>Почему это важно дальше:</strong> динамическая типизация — источник и гибкости, и большинства багов JS. Понимание того, где JS молча приводит типы (в сравнении, в сложении, в условиях <code>if</code>), — фундамент для отладки на всех следующих неделях, включая работу с формами (неделя 6-7), где данные из инпутов всегда приходят строками.</p>
+<p><strong>Пример:</strong> <code>'5' == 5</code> вернёт <code>true</code>, потому что <code>==</code> приводит строку к числу перед сравнением. Но <code>'5' === 5</code> вернёт <code>false</code> — разные типы. Похожая ловушка: <code>[] == false</code> даёт <code>true</code> из-за цепочки неявных приведений, тогда как <code>[] === false</code> — однозначно <code>false</code>. Такие примеры стоит проверить вживую в Console, а не запоминать как правило.</p>
+<p><strong>Частое заблуждение:</strong> многие считают <code>null</code> и <code>undefined</code> взаимозаменяемыми синонимами «пусто». На деле <code>undefined</code> — это то, что даёт сам JS, когда значения ещё нет (необъявленная переменная, отсутствующее свойство объекта, функция без <code>return</code>), а <code>null</code> — то, что программист <strong>осознанно</strong> присваивает, чтобы сказать «здесь намеренно ничего нет». Различие пригодится при проектировании функций в сегодняшней практике.</p>
+<p><strong>Ключевая мысль:</strong> <code>===</code> вместо <code>==</code>; примитивы неизменяемы; <code>null</code> ≠ <code>undefined</code> по смыслу.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/types">learn.javascript.ru: Типы</a> — примитивы и объекты
+- <a href="https://learn.javascript.ru/operators">learn.javascript.ru: Операторы</a> — арифметика, сравнение, логика</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Напиши функцию <code>describeType(value)</code> — возвращает строку с <code>typeof</code> и значением</li>
+<li>Таблица сравнений: <code>0 == false</code>, <code>'' == false</code>, <code>null == undefined</code> — предскажи, проверь</li>
+<li>Калькулятор в Console: сложение, деление, остаток, возведение в степень</li>
+<li>Конвертер температуры °C → °F с template literal в выводе</li>
+<li>Используй только <code>===</code> в новом коде</li>
+<li>Проверь <code>Number.isNaN(NaN)</code> vs <code>NaN === NaN</code> — зафиксируй в комментарии</li>
+<li>Создай таблицу truthy/falsy значений в <code>notes.md</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Все сравнения через <code>===</code>
+- [ ] Нет неявных приведений без понимания
+- [ ] Template literals для интерполяции строк</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Напиши функцию <code>describeType(value)</code> — возвращает строку с <code>typeof</code> и значением</li>
+<li>Таблица сравнений: <code>0 == false</code>, <code>'' == false</code>, <code>null == undefined</code> — предскажи, проверь</li>
+<li>Калькулятор в Console: сложение, деление, остаток, возведение в степень</li>
+<li>Конвертер температуры °C → °F с template literal в выводе</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 05 day 2: types and operators"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li><code>typeof null === 'object'</code> — исторический баг</li>
+<li><code>NaN === NaN</code> → false; проверка через <code>Number.isNaN()</code></li>
+<li>Сложение строки и числа: <code>'5' + 3</code> → <code>'53'</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-05--week-05-day-2');</script>
+</body>
+</html>

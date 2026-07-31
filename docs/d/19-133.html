@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 133 (Вс): Ревью Node.js и сравнение с FastAPI · Node.js · web-roadmap</title>
+  <meta name="description" content="День 133 (Вс): Ревью Node.js и сравнение с FastAPI — неделя 19.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-19--week-19-day-133">
+  <meta http-equiv="refresh" content="0;url=../#week-19--week-19-day-133">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-19--week-19-day-133">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-19-day-133">День 133 (Вс): Ревью Node.js и сравнение с FastAPI</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Ревью недели — сравнение двух backend-стеков, которые ты теперь знаешь. FastAPI: автодоки, Pydantic, async, Python ecosystem. Express: минимализм, npm, один язык с React. Для I/O-bound оба отличны; CPU-bound тяжёлая работа чаще уходит в Python или отдельный worker.</p>
+<p>npm scripts best practices: <code>start</code> (production), <code>dev</code> (nodemon), <code>test</code>, <code>db:migrate</code>. Postman collection — демо и ручное QA. Skeleton <code>auth.routes.js</code> — мост к неделе 20. <code>npm audit</code> показывает уязвимости в зависимостях.</p>
+<p>Сравнительная таблица FastAPI vs Express по 10 критериям учит аргументировать выбор стека. Express Notes API — parity с Library REST API недели 18: те же статусы, формат ошибок, layered structure. Тег <code>week-19-done</code>.</p>
+<p>Ментальная модель для сравнения стеков — две разные клавиатуры, подключённые к одному и тому же роялю. FastAPI и Express предлагают разную эргономику (типизация из коробки против гибкости без неё, автогенерация Swagger против ручной настройки, async Python против нативно-асинхронного JS), но производят одну и ту же «музыку» — REST-ресурсы, HTTP-статусы, JSON-контракты. Разработчик, освоивший оба, видит сквозь синтаксис общую архитектуру.</p>
+<p>Умение аргументированно сравнить два стека по конкретным критериям (типизация, экосистема библиотек, производительность под нагрузкой, порог входа для команды, зрелость инструментов) — это именно тот навык, который проверяют на технических интервью вопросом «почему вы выбрали X, а не Y», и именно поэтому сравнительная таблица — не формальность, а тренировка аргументации, которая пригодится за пределами учебного проекта.</p>
+<p>Частое заблуждение — искать единственно «правильный» стек и считать все остальные хуже. На практике выбор между FastAPI и Express в реальной команде почти никогда не решается голым сравнением фреймворков: он зависит от опыта команды, существующего кода, экосистемы (например, ML/data-задачи почти всегда тянут к Python), требований к производительности и скорости найма разработчиков. Skeleton <code>auth.routes.js</code> с заглушками — не проходной пункт практики, а прямой мост к теме аутентификации, которую ты будешь реализовывать уже на следующей неделе, причём в обоих стеках параллельно. <code>npm audit</code> в практике дня — ещё одна привычка, которая пригодится за пределами курса: открытый исходный код зависимостей означает и открытые уязвимости, и регулярная проверка (а не разовая на старте проекта) — часть базовой гигиены production-приложения.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.npmjs.com/cli/v10/using-npm/scripts">npm scripts</a></li>
+<li><a href="https://expressjs.com/">Express vs Fastify (обзор)</a></li>
+<li><a href="https://docs.npmjs.com/cli/v10/commands/npm-audit">npm audit</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> Express и FastAPI решают одну задачу разными инструментами — выбор по команде и экосистеме.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Сравнительная таблица: FastAPI (нед.18) vs Express — 10 критериев в <code>docs/compare.md</code></li>
+<li>Postman collection для Express API — export JSON</li>
+<li>README с curl примерами для всех endpoints</li>
+<li>Skeleton: <code>src/routes/auth.routes.js</code> с заглушками register/login</li>
+<li><code>npm audit</code> — отчёт об уязвимостях</li>
+<li>Финальный smoke test: CRUD notes через API</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] README полный (install, env, run, test)
+- [ ] Сравнительная таблица в docs
+- [ ] <code>npm start</code> и <code>npm run dev</code> работают</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Сравнительная таблица: FastAPI (нед.18) vs Express — 10 критериев в <code>docs/compare.md</code></li>
+<li>Postman collection для Express API — export JSON</li>
+<li>README с curl примерами для всех endpoints</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 133: docs, Postman, auth skeleton"</code></li>
+<li>Поставь тег: <code>git tag week-19-done</code></li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-19--week-19-day-133');</script>
+</body>
+</html>

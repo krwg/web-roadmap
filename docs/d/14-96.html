@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 96 (Пт): Settings — Context и персонализация · Frontend SPA · web-roadmap</title>
+  <meta name="description" content="День 96 (Пт): Settings — Context и персонализация — неделя 14.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-14--week-14-day-96">
+  <meta http-equiv="refresh" content="0;url=../#week-14--week-14-day-96">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-14--week-14-day-96">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-14-day-96">День 96 (Пт): Settings — Context и персонализация</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Settings — центр персонализации и хороший тест на Context. Разделяй <code>ThemeContext</code> и <code>UserContext</code>: смена имени пользователя не должна перерисовывать подписчиков темы. Controlled form синхронизирует поля с state; изменения сразу отражаются на Dashboard и Weather без перезагрузки.</p>
+<p><code>useId()</code> генерирует стабильные id для связки <code>label</code> + <code>input</code> — важно для доступности и для избежания коллизий при нескольких формах. Валидация на клиенте (имя ≥ 2 символов, город не пустой) улучшает UX, даже если позже добавишь серверную проверку.</p>
+<p>Деструктивные действия («Сбросить настройки») требуют confirm dialog. Persist через <code>localStorage</code> в Provider или custom hook. Бонус export/import JSON — учит сериализовать state целиком. Toast при успешном сохранении даёт обратную связь без блокировки UI.</p>
+<p>Мысленная модель Settings — это панель управления с несколькими независимыми переключателями, каждый из которых пишет в свой собственный Context, а не в один общий объект настроек. Это прямое практическое испытание урока с недели 13 (день 88): если разделение <code>ThemeContext</code> и <code>UserContext</code> было сделано правильно, ввод имени в форме настроек физически не должен вызывать перерисовку компонентов, подписанных только на тему — это легко проверить, поставив <code>console.log('theme render')</code> внутри компонента-потребителя <code>ThemeContext</code> и понаблюдав, срабатывает ли он при вводе имени.</p>
+<p>Такая дисциплина разделения ответственности пригодится в любом реальном приложении с профилем и настройками пользователя — от простого лендинга с личным кабинетом до крупных SaaS-продуктов, где страница настроек — один из самых часто посещаемых и при этом самых «тяжёлых по side effects» экранов.</p>
+<p>Конкретный пример независимого persist: смена темы должна сохраняться в <code>localStorage</code> сразу при клике на переключатель (через <code>useEffect</code> внутри <code>ThemeProvider</code>), а смена имени пользователя — при submit формы, а не посимвольно при каждом нажатии клавиши. Смешение этих двух момента persist (когда именно писать в storage) — частый источник лишних записей на диск или, наоборот, потери данных при случайном закрытии вкладки до отправки формы.</p>
+<p>Частое заблуждение — думать, что раз <code>useLocalStorage</code> уже был написан на неделе 13, «persist происходит сам по себе» для любых новых данных без дополнительных действий. На самом деле каждый новый кусок state (единицы измерения °C/°F, город по умолчанию) требует либо использования того же <code>useLocalStorage</code> хука явно, либо ручного <code>useEffect</code>, который синхронизирует именно это значение — забытый шаг здесь означает, что настройка «применится сейчас», но пропадёт после <code>F5</code>, что напрямую противоречит критерию дня «настройки переживают перезагрузку». Кнопка «Сбросить настройки» без <code>confirm()</code> — ещё один риск: пользователь может случайно потерять персонализацию одним кликом, поэтому диалог подтверждения — не формальность, а обязательная защита от необратимого действия.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://react.dev/reference/react/useId">React — useId</a></li>
+<li><a href="https://react.dev/reference/react-dom/components/form">React — Forms</a></li>
+<li><a href="https://react.dev/learn/passing-data-deeply-with-context">Context</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> Settings — single source для темы, города и единиц; разделяй контексты по доменам.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>/settings</code>: имя, город по умолчанию, переключатель темы, единицы °C/°F</li>
+<li>Изменения сразу отражаются на Dashboard и Weather</li>
+<li>Кнопка «Сбросить настройки» с confirm dialog</li>
+<li>Экспорт/импорт настроек JSON (bonus)</li>
+<li><code>useId()</code> для всех полей формы</li>
+<li>Валидация с сообщениями под полями</li>
+<li>Toast при успешном сохранении</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Тема применяется ко всему приложению</p>
+</li>
+<li>
+<p>[ ] Настройки переживают F5</p>
+</li>
+<li>
+<p>[ ] Form labels связаны с inputs</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>/settings</code>: имя, город по умолчанию, переключатель темы, единицы °C/°F</li>
+<li>Изменения сразу отражаются на Dashboard и Weather</li>
+<li>Кнопка «Сбросить настройки» с confirm dialog</li>
+<li>Экспорт/импорт настроек JSON (bonus)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-14
+
+git add src/contexts/ src/pages/Settings.tsx
+
+git commit -m &quot;week-14 day-96: Settings, Context и персонализация&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Один Context на theme + user + settings — лишние ререндеры</p>
+</li>
+<li>
+<p>Сброс без confirm — случайная потеря данных</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-14--week-14-day-96');</script>
+</body>
+</html>

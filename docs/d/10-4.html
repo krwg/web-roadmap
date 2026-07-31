@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 4 (Thu): Generics — основы · TypeScript · web-roadmap</title>
+  <meta name="description" content="День 4 (Thu): Generics — основы — неделя 10.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-10--week-10-day-4">
+  <meta http-equiv="refresh" content="0;url=../#week-10--week-10-day-4">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-10--week-10-day-4">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-10-day-4">День 4 (Thu): Generics — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Generics (обобщения) позволяют писать функции и типы, работающие с разными типами, сохраняя связь между входом и выходом. <code>function identity&lt;T&gt;(arg: T): T</code> — тип возвращаемого значения совпадает с типом аргумента. Без generics пришлось бы писать отдельные функции для <code>string</code>, <code>number</code>, <code>User</code> или откатываться к <code>any</code>.</p>
+<p>Constraints ограничивают generic сверху: <code>&lt;T extends { id: number }&gt;</code> гарантирует, что у <code>T</code> есть поле <code>id</code>. <code>keyof T</code> даёт union всех ключей объекта, а indexed access <code>T[K]</code> — тип значения по ключу. Это основа для <code>pluck(obj, 'name')</code> с правильным return type. Generic defaults <code>&lt;T = string&gt;</code> задают тип по умолчанию, если параметр не указан.</p>
+<p>Практические применения: <code>async function fetchJson&lt;T&gt;(url: string): Promise&lt;T&gt;</code> типизирует ответ API; <code>getItem&lt;T&gt;(key: string): T | null</code> типизирует localStorage wrapper; <code>groupBy&lt;T, K extends string&gt;(items, keyFn)</code> группирует массив любых объектов. IDE будет подсказывать поля на результате <code>fetchJson&lt;User[]&gt;(url)</code> без ручных кастов.</p>
+<p>Мысленная модель generic — форма для отливки, которая подходит под любой материал, но сохраняет форму: <code>function identity&lt;T&gt;(arg: T): T</code> — это форма, куда можно залить строку, число или объект, и на выходе гарантированно получить то же самое, что залили, а не что-то другое. Без generics пришлось бы либо копировать функцию под каждый тип материала, либо использовать <code>any</code> — и тогда форма перестаёт что-либо гарантировать, превращаясь в дырявое ведро.</p>
+<p>Generics — пожалуй, самая мощная идея TypeScript для junior-разработчика, потому что она напрямую используется в React: <code>useState&lt;Todo[]&gt;([])</code>, <code>useRef&lt;HTMLInputElement&gt;(null)</code>, <code>useContext&lt;AuthContextType&gt;</code> — все эти хуки на неделе 11 и позже являются generic-функциями. Тот, кто разобрался с <code>fetchJson&lt;T&gt;</code> сегодня, не удивится синтаксису <code>useState&lt;T&gt;</code> через несколько недель.</p>
+<p>Частое заблуждение — путать generic-параметр <code>&lt;T&gt;</code> с типом <code>any</code>, считая, что раз буква <code>T</code> может быть «чем угодно», значит проверки нет вообще. На самом деле после того, как <code>T</code> определён при вызове (<code>fetchJson&lt;User&gt;(url)</code>), TypeScript отслеживает его строго во всей функции. Конкретный пример пользы: <code>const user = await fetchJson&lt;User&gt;('/api/user')</code> даёт автодополнение по полям <code>user.name</code>, <code>user.email</code> прямо в IDE — тогда как <code>fetchJson('/api/user')</code> без указания типа вернёт <code>unknown</code>, и обратиться к <code>.name</code> без явной проверки не получится, что стоит заметить в задании 7 практики («проверь inference в IDE»).</p>
+<p>Ещё один полезный приём — generic по умолчанию: <code>class ApiClient&lt;T = unknown&gt;</code> позволяет использовать <code>new ApiClient()</code> без явного указания типа, если он не критичен в конкретном месте, но при необходимости уточнить его как <code>new ApiClient&lt;User&gt;()</code>. Это балансирует гибкость и строгость, не заставляя писать <code>&lt;T&gt;</code> там, где тип и так очевиден из контекста.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/generics.html">Handbook: Generics</a>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/keyof-types.html">Handbook: Keyof Types</a>
+- <a href="https://www.totaltypescript.com/tutorials/beginners-typescript">Total TypeScript: Beginners</a></p>
+<p><strong>Ключевая мысль:</strong> generics связывают типы входа и выхода — <code>fetchJson&lt;User&gt;</code> безопаснее <code>fetchJson&lt;any&gt;</code>.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>function first&lt;T&gt;(arr: T[]): T | undefined</code></li>
+<li><code>async function fetchJson&lt;T&gt;(url: string): Promise&lt;T&gt;</code> — типизированный fetch</li>
+<li><code>function groupBy&lt;T, K extends string&gt;(items: T[], key: (item: T) =&gt; K)</code></li>
+<li>Типизируй localStorage wrapper: <code>getItem&lt;T&gt;(key): T | null</code></li>
+<li>Примени generics в api-клиенте каталога фильмов</li>
+<li><code>function pluck&lt;T, K extends keyof T&gt;(obj: T, key: K): T[K]</code></li>
+<li>Напиши тестовые вызовы с разными T — проверь inference в IDE</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] fetchJson типизирует ответ API</p>
+</li>
+<li>
+<p>[ ] groupBy работает с разными типами</p>
+</li>
+<li>
+<p>[ ] Constraints использован хотя бы раз</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>function first&lt;T&gt;(arr: T[]): T | undefined</code></li>
+<li><code>async function fetchJson&lt;T&gt;(url: string): Promise&lt;T&gt;</code> — типизированный fetch</li>
+<li><code>function groupBy&lt;T, K extends string&gt;(items: T[], key: (item: T) =&gt; K)</code></li>
+<li>Типизируй localStorage wrapper: <code>getItem&lt;T&gt;(key): T | null</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add src/lib/fetch.ts src/lib/storage.ts
+
+git commit -m &quot;week-10 day-04: generic fetchJson и localStorage wrapper&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-10--week-10-day-4');</script>
+</body>
+</html>
