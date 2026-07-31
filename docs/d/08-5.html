@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 5 (Fri): Паттерны работы с API · Async &amp; HTTP · web-roadmap</title>
+  <meta name="description" content="День 5 (Fri): Паттерны работы с API — неделя 08.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-08--week-08-day-5">
+  <meta http-equiv="refresh" content="0;url=../#week-08--week-08-day-5">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-08--week-08-day-5">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-08-day-5">День 5 (Fri): Паттерны работы с API</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Работа с API в production выходит за рамки простого <code>fetch(url)</code>. Пагинация делит большие наборы данных на страницы: offset/limit (<code>?page=2&amp;limit=20</code>) прост в реализации, но нестабилен при вставках новых записей; cursor-based пагинация (<code>?after=lastId</code>) надёжнее для лент и поиска. Retry с exponential backoff повторяет упавший запрос с растущей задержкой (1с, 2с, 4с), не перегружая сервер при временных сбоях.</p>
+<p>Race condition возникает, когда быстрый новый запрос завершается раньше старого, но старый ответ приходит последним и перезаписывает актуальные данные. Решения: <code>AbortController</code> (отменить предыдущий fetch) или счётчик/request id (игнорировать устаревший ответ). Request deduplication не запускает второй идентичный запрос, пока первый ещё в полёте — полезно для кэширования в памяти.</p>
+<p>Паттерн stale-while-revalidate: сначала покажи кэшированные данные (мгновенный отклик), затем обнови фоном. Skeleton UI резервирует место под контент во время загрузки, снижая layout shift (CLS). Эти приёмы превращают «голый fetch» в устойчивый клиентский слой данных.</p>
+<p>Мысленная модель здесь — работа диспетчера такси, а не одного водителя: диспетчер умеет распределять заказы (запросы), повторно назначать заказ при отказе водителя (retry), отменять устаревший заказ, если клиент уже уехал на другой машине (устаревший ответ при race condition), и показывать клиенту примерное время ожидания, пока машина едет (skeleton UI). Голый <code>fetch(url)</code> — это водитель без диспетчера: работает, пока всё идёт по плану, и ломается при малейшей нестабильности сети.</p>
+<p>Эти паттерны становятся особенно важны в реальных продакшен-приложениях и позже — в библиотеках вроде React Query или SWR, которые фактически реализуют stale-while-revalidate, retry и дедупликацию «из коробки»; понимание паттернов вручную объясняет, что происходит «под капотом» таких библиотек, а не заставляет воспринимать их как магию. Частое заблуждение — считать race condition редкой экзотикой: на практике она возникает в любом live-поиске с debounce, где пользователь быстро меняет запрос, и старый ответ может прийти позже нового.</p>
+<p>Конкретный пример: пользователь печатает «cat», затем быстро «dog» — уходят два запроса, но ответ на «cat» из-за сетевой задержки приходит позже ответа на «dog» и затирает актуальный результат неактуальным. Решение — <code>AbortController.abort()</code> на предыдущий запрос при старте нового, либо сравнение id запроса перед применением результата. Это именно тот сценарий, который нужно воспроизвести и исправить в шаге 5 практики дня — «отмена устаревшего ответа при быстром поиске».</p>
+<p><strong>Читать:</strong>
+- <a href="https://jsonapi.org/format/#fetching-pagination">JSON:API — Pagination</a>
+- <a href="https://web.dev/articles/optimize-lcp">web.dev: Optimize LCP</a> — skeleton и perceived performance
+- <a href="https://developer.mozilla.org/ru/docs/Web/API/AbortController">MDN: AbortController</a></p>
+<p><strong>Ключевая мысль:</strong> надёжный API-клиент обрабатывает не только успех, но и повторы, гонки запросов, пагинацию и кэширование.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Пагинация постов: кнопка «Загрузить ещё» с cursor (id последнего)</li>
+<li>Retry: 3 попытки с задержкой 1s, 2s, 4s при сетевой ошибке</li>
+<li>In-memory cache Map: повторный запрос того же URL — из кэша</li>
+<li>Skeleton UI на время загрузки, контент без layout shift</li>
+<li>Отмена устаревшего ответа: race condition при быстром поиске</li>
+<li>Реализуй <code>fetchWithRetry(url, options, maxRetries)</code></li>
+<li>Дедупликация: не запускай второй identical fetch, пока первый pending</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Retry реализован
+- [ ] Нет race condition в поиске
+- [ ] Pagination работает без дубликатов</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Пагинация постов: кнопка «Загрузить ещё» с cursor (id последнего)</li>
+<li>Retry: 3 попытки с задержкой 1s, 2s, 4s при сетевой ошибке</li>
+<li>In-memory cache Map: повторный запрос того же URL — из кэша</li>
+<li>Skeleton UI на время загрузки, контент без layout shift</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 5: api patterns retry pagination"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-08--week-08-day-5');</script>
+</body>
+</html>

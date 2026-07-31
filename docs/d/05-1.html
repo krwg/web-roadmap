@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 1 (Mon): Введение и переменные · JavaScript · web-roadmap</title>
+  <meta name="description" content="День 1 (Mon): Введение и переменные — неделя 05.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-05--week-05-day-1">
+  <meta http-equiv="refresh" content="0;url=../#week-05--week-05-day-1">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-05--week-05-day-1">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-05-day-1">День 1 (Mon): Введение и переменные</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Console Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>JavaScript в браузере — язык, который оживляет страницу. Браузер парсит HTML, строит DOM, затем загружает и <strong>выполняет</strong> JS в основном потоке (main thread). Код идёт сверху вниз; тяжёлый цикл блокирует UI — кнопки не реагируют, пока цикл не завершится.</p>
+<p>Подключение: <code>&lt;script defer src="app.js"&gt;</code> — скрипт грузится параллельно с HTML и выполняется <strong>после</strong> парсинга, не блокируя рендер. <code>type="module"</code> — ES-модули с изолированной областью видимости и <code>import</code>/<code>export</code>. Переменные: <code>let</code> — изменяемая; <code>const</code> — нельзя <strong>переприсвоить</strong>, но объект по <code>const</code> можно мутировать (менять свойства). <code>var</code> — устарел: function scope и поднятие (hoisting) создают ловушки.</p>
+<p><strong>Temporal Dead Zone (TDZ)</strong>: <code>let</code>/<code>const</code> недоступны до строки объявления — ReferenceError вместо тихого <code>undefined</code>. Строгий режим <code>'use strict'</code> ловит опечатки в именах переменных и небезопасные приёмы.</p>
+<p><strong>Ментальная модель:</strong> представь браузер как читателя, который сначала бегло просматривает весь файл (парсинг и «поднятие» объявлений), а только потом читает его вдумчиво сверху вниз (выполнение). <code>var</code> при беглом просмотре сразу создаёт переменную со значением <code>undefined</code> — поэтому обращение к ней до объявления не падает с ошибкой, а тихо возвращает <code>undefined</code>, маскируя баг. <code>let</code>/<code>const</code> в TDZ ведут себя строже: переменная «зарезервирована», но трогать её нельзя — это осознанное решение авторов языка сделать ошибки видимыми сразу.</p>
+<p><strong>Почему это важно дальше:</strong> от этого фундамента зависит вообще всё в JS — функции, объекты, DOM-события в следующих неделях объявляются через <code>let</code>/<code>const</code>, и понимание того, когда переменная «жива», а когда ещё нет, объясняет добрую половину загадочных багов новичков («почему тут undefined, а не моё значение»).</p>
+<p><strong>Пример:</strong> <code>console.log(x); var x = 5;</code> выведет <code>undefined</code> без ошибки — hoisting поднял объявление, но не присваивание. Замени на <code>let</code>: <code>console.log(x); let x = 5;</code> — получишь <code>ReferenceError: Cannot access 'x' before initialization</code>, потому что <code>x</code> в TDZ до строки объявления.</p>
+<p><strong>Частое заблуждение:</strong> начинающие думают, что <code>const</code> делает объект неизменяемым целиком. На самом деле <code>const</code> запрещает только <strong>переприсвоение</strong> самой переменной (<code>user = {}</code> — ошибка), а свойства объекта менять можно (<code>user.age = 26</code> — сработает). Это первое, что стоит проверить в сегодняшней практике на шаге с мутацией <code>const</code>-объекта.</p>
+<p><strong>Ключевая мысль:</strong> <code>defer</code> + <code>let</code>/<code>const</code> + strict mode — современный старт без сюрпризов hoisting.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/intro">learn.javascript.ru: Введение</a> — как выполняется JS в браузере
+- <a href="https://learn.javascript.ru/var">learn.javascript.ru: var</a> — разница let/const/var и TDZ</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Создай <code>app.js</code>, подключи к HTML через <code>defer</code></li>
+<li>Объяви переменные <code>let</code> и <code>const</code> разных типов, выведи в console</li>
+<li>Попробуй переприсвоить <code>const</code> объект — измени свойство vs переприсвоение</li>
+<li>Включи <code>'use strict'</code>, спровоцируй ошибку с необъявленной переменной</li>
+<li>Настрой VS Code: ESLint или встроенную проверку синтаксиса</li>
+<li>Создай папку <code>week-05/</code> и файл <code>app.js</code> — старт проекта недели</li>
+<li>Добавь <code>console.log</code> с шаблонной строкой и своим именем</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Используются только <code>let</code>/<code>const</code>, не <code>var</code>
+- [ ] Скрипт подключён корректно, нет ошибок в Console
+- [ ] Понимаю разницу переприсвоения и мутации объекта</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Создай <code>app.js</code>, подключи к HTML через <code>defer</code></li>
+<li>Объяви переменные <code>let</code> и <code>const</code> разных типов, выведи в console</li>
+<li>Попробуй переприсвоить <code>const</code> объект — измени свойство vs переприсвоение</li>
+<li>Включи <code>'use strict'</code>, спровоцируй ошибку с необъявленной переменной</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 05 day 1: js intro variables"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-05--week-05-day-1');</script>
+</body>
+</html>

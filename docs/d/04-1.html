@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 1 (Mon): Git — ревизия основ + git log как инструмент · Git advanced · web-roadmap</title>
+  <meta name="description" content="День 1 (Mon): Git — ревизия основ + git log как инструмент — неделя 04.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-04--week-04-day-1">
+  <meta http-equiv="refresh" content="0;url=../#week-04--week-04-day-1">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-04--week-04-day-1">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-04-day-1">День 1 (Mon): Git — ревизия основ + <code>git log</code> как инструмент</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Перед углублением в ветки стоит закрепить фундамент: Git отслеживает три <strong>состояния</strong> каждого файла — изменён (modified), проиндексирован (staged), зафиксирован (committed). Каждый коммит получает уникальный SHA-хеш — «отпечаток» снимка. <code>git log --oneline --graph --all</code> показывает историю как дерево решений, а не список сохранений.</p>
+<p><code>git show &lt;hash&gt;</code> раскрывает конкретный коммит: автор, дата, diff. <code>git diff</code> — разница между working directory и staging; <code>git diff --staged</code> — что войдёт в следующий коммит. Это инструменты <strong>расследования</strong>: «что я наменял и зачем?».</p>
+<p><strong>Conventional Commits</strong> — соглашение об именовании: <code>feat:</code>, <code>fix:</code>, <code>docs:</code>, <code>chore:</code>. Префикс сразу говорит тип изменения; в будущем из таких сообщений автогенерируется CHANGELOG. Хорошее сообщение отвечает на вопрос «зачем», а не «что нажал».</p>
+<p><strong>Ментальная модель:</strong> думай о Git не как о резервном копировании, а как о фотоальбоме проекта. Каждый коммит — цельный снимок всех файлов в конкретный момент, а не список построчных правок (в этом отличие от систем контроля версий старого поколения). Staging area — «поднос», на который ты выкладываешь изменения перед тем, как вклеить их в альбом одним кадром: можно взять не все файлы, а только логически связанные.</p>
+<p><strong>Почему это важно дальше:</strong> уже завтра <code>git diff</code> и <code>git log</code> понадобятся при разборе конфликтов слияния, а через несколько недель, когда придётся разбираться в чужом (или своём трёхмесячной давности) коде, именно история коммитов станет главным источником контекста — не документация, а сам <code>git log</code> объяснит, почему код выглядит именно так.</p>
+<p><strong>Пример:</strong> после трёх дней работы <code>git log --oneline</code> может выглядеть так: <code>a1b2c3d feat: add hero section</code>, <code>e4f5g6h fix: broken flex layout on mobile</code>, <code>i7j8k9l docs: update README</code>. По одному этому списку — без взгляда на код — понятно, что происходило в проекте.</p>
+<p><strong>Частое заблуждение:</strong> новички думают, что <code>git add</code> уже «сохраняет» файл. На самом деле фиксирует изменения только <code>git commit</code>; <code>add</code> лишь готовит их к следующему снимку, и их легко убрать из staging через <code>git restore --staged</code> до коммита. Сегодняшняя практика с <code>git log</code>, <code>git blame</code> и разбором commit message опирается именно на понимание этих трёх состояний.</p>
+<p><strong>Ключевая мысль:</strong> <code>git log</code> — дневник решений; осмысленные сообщения коммитов = документация для будущего себя.</p>
+<p><strong>Читать:</strong>
+- <a href="https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository">Pro Git: Основы</a> — три состояния, SHA коммитов
+- <a href="https://www.conventionalcommits.org/ru/">Conventional Commits</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>В <code>learning-log</code> выполни <code>git log --oneline -15</code> — опиши в <code>week-04/REFLECTION.md</code> паттерн своих сообщений</li>
+<li>Исправь 2 слабых commit message через <code>git rebase -i HEAD~3</code> <strong>только если ещё не пушил</strong>; иначе — лучше не переписывать историю</li>
+<li>Добавь в корень <code>learning-log</code> расширенный <code>.gitignore</code> (OS, IDE, env, build)</li>
+<li>Разбей незакоммиченные правки week-03 на 2 атомарных коммита через staging</li>
+<li><code>git blame week-03/index.html</code> — кто и когда менял строку (это ты — привыкай к прослеживаемости)</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Репозиторий инициализирован, секреты не в git
+- [ ] Минимум 3 коммита с понятными сообщениями
+- [ ] <code>git status</code> чист после коммита</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>В <code>learning-log</code> выполни <code>git log --oneline -15</code> — опиши в <code>week-04/REFLECTION.md</code> паттерн своих сообщений</li>
+<li>Исправь 2 слабых commit message через <code>git rebase -i HEAD~3</code> <strong>только если ещё не пушил</strong>; иначе — лучше не переписывать историю</li>
+<li>Добавь в корень <code>learning-log</code> расширенный <code>.gitignore</code> (OS, IDE, env, build)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 1: git init and first commits"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-04--week-04-day-1');</script>
+</body>
+</html>

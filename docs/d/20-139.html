@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 139 (Сб): Интеграция auth frontend + backend · Auth &amp; tests · web-roadmap</title>
+  <meta name="description" content="День 139 (Сб): Интеграция auth frontend + backend — неделя 20.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-20--week-20-day-139">
+  <meta http-equiv="refresh" content="0;url=../#week-20--week-20-day-139">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-20--week-20-day-139">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-20-day-139">День 139 (Сб): Интеграция auth frontend + backend</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Secure Notes</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Full-stack auth связывает JWT backend с React frontend. Token storage: localStorage прост, но уязвим к XSS; httpOnly cookie безопаснее, сложнее с CORS. Для учебного проекта localStorage + CSP + sanitize input — приемлемо; задокументируй trade-off в README.</p>
+<p><code>AuthContext</code>: <code>user</code>, <code>token</code>, <code>login</code>, <code>logout</code>, <code>isLoading</code>. <code>api.ts</code> wrapper подставляет <code>Authorization: Bearer</code> и на 401 очищает token + redirect <code>/login</code>. React Router <code>&lt;ProtectedRoute&gt;</code> оборачивает private pages. Token не в URL query string — утечёт в logs и history.</p>
+<p>Full flow: register → login → create note → logout → login → note visible. User A не видит notes User B — проверь вручную и тестами. Axios interceptors или fetch wrapper — один вход для всех API calls.</p>
+<p>Ментальная модель: думай о <code>AuthContext</code> как о единственном источнике правды про личность пользователя во всём React-дереве — компоненты не хранят свою копию token, а читают из контекста через <code>useAuth()</code>. Это устраняет рассинхронизацию состояния, когда один компонент думает, что пользователь залогинен, а другой — нет. Для реальной работы junior full-stack разработчика это один из первых архитектурных паттернов, который придётся освоить: почти любое SPA с авторизацией использует похожую структуру (Context/Redux/Zustand + protected routes).</p>
+<p>Конкретный пример проблемы без единого api-wrapper: если каждый компонент делает свой fetch и сам добавляет заголовок, то при истечении токена придётся чинить логику логаута в десятке мест — а с interceptor это одна точка изменения. Частое заблуждение — «localStorage полностью безопасен для токенов» — на деле любой XSS на странице получает доступ к localStorage через <code>localStorage.getItem</code>, поэтому в проде банки и финтех используют httpOnly cookie; для учебного проекта localStorage допустим при условии осознанного trade-off, задокументированного в README. Этот же auth flow — Context, api wrapper, protected routes — ты соберёшь заново, но уже с нуля, в DevHub capstone (неделя 22, день 151), так что качество кода сегодня напрямую экономит время через две недели.</p>
+<p>Для продакшена полезно явно проговорить trade-off хранения токена в коде и в README: это показывает ревьюеру портфолио, что решение осознанное, а не «забыл подумать про безопасность». Многие junior-кандидаты либо вообще не упоминают эту тему, либо копируют случайный код без понимания — а один абзац в README о том, почему выбран localStorage и какие меры снижают риск (CSP, sanitize, короткий TTL), выделяет проект среди типовых учебных.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html">OWASP Session Management</a></li>
+<li><a href="https://reactrouter.com/6.28.0/start/tutorial">React Router — Tutorial</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">MDN — HTTP Authentication</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> auth flow end-to-end — контракт между Context, api wrapper и protected routes.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>React (Vite + TS): Login/Register pages с валидацией форм</li>
+<li><code>AuthContext</code> + <code>useAuth()</code> hook</li>
+<li><code>api.ts</code> wrapper — подставляет Bearer token, обрабатывает 401</li>
+<li>Protected routes — redirect <code>/login</code> если не авторизован</li>
+<li>Logout очищает token и context, redirect на login</li>
+<li>Full flow manual test: register → login → create note → logout → login again</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Full flow: register → login → access protected → logout
+- [ ] 401 от API → redirect login
+- [ ] Token не в URL query string</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>React (Vite + TS): Login/Register pages с валидацией форм</li>
+<li><code>AuthContext</code> + <code>useAuth()</code> hook</li>
+<li><code>api.ts</code> wrapper — подставляет Bearer token, обрабатывает 401</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-20/</code> → <code>git commit -m "week 20 day 139: React auth integration"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>XSS + localStorage token — кража token (mitigate: CSP, sanitize input)</li>
+<li>Token без expiration check на клиенте — плохой UX при expired</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-20--week-20-day-139');</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 1 (Mon): Введение в React и JSX · React basics · web-roadmap</title>
+  <meta name="description" content="День 1 (Mon): Введение в React и JSX — неделя 11.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-11--week-11-day-1">
+  <meta http-equiv="refresh" content="0;url=../#week-11--week-11-day-1">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-11--week-11-day-1">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-11-day-1">День 1 (Mon): Введение в React и JSX</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>React — библиотека для построения пользовательских интерфейсов на основе компонентов. Компонент — это JavaScript-функция (или класс), которая принимает props и возвращает описание UI. React берёт это описание и обновляет реальный DOM эффективно через Virtual DOM и reconciliation. Философия React: UI = f(state) — интерфейс является функцией от состояния.</p>
+<p>JSX — синтаксическое расширение, которое выглядит как HTML, но компилируется в вызовы <code>React.createElement</code>. Правила JSX отличаются от HTML: <code>className</code> вместо <code>class</code>, <code>htmlFor</code> вместо <code>for</code>, все теги закрываются (<code>&lt;img /&gt;</code>, <code>&lt;br /&gt;</code>). В фигурных скобках <code>{expression}</code> встраивается любое JavaScript-выражение: переменные, вызовы функций, тернарные операторы.</p>
+<p>Компоненты именуются в PascalCase (<code>Header</code>, <code>TodoItem</code>), а props — в camelCase. JSX автоматически экранирует строки — вставка пользовательского текста безопасна от XSS. Компонент должен возвращать один корневой элемент; если нужно несколько соседних без обёрточного <code>&lt;div&gt;</code>, используй Fragment: <code>&lt;&gt;...&lt;/&gt;</code>. Не вызывай компоненты как обычные функции <code>Header()</code> — только через JSX <code>&lt;Header /&gt;</code>, иначе React не отследит жизненный цикл и hooks.</p>
+<p>Мысленная модель React — театр теней, где ты не двигаешь фигурки на экране руками (не пишешь <code>document.querySelector</code> и <code>.innerHTML</code> вручную), а просто описываешь, как должна выглядеть сцена при текущем состоянии сюжета — React сам разбирается, какие фигурки подвинуть, а какие оставить на месте. <code>UI = f(state)</code> означает: дай мне текущее состояние — и я построю (или перестрою) весь экран заново на бумаге (Virtual DOM), а дальше сравню с предыдущей версией и внесу в реальный DOM только конкретные изменения.</p>
+<p>Этот декларативный подход — причина, по которой почти весь современный фронтенд использует React или похожие библиотеки: он снимает с разработчика необходимость вручную отслеживать, какие части DOM устарели после изменения данных, — раньше это была одна из главных причин багов в jQuery-подобном коде. Всё, что изучалось на неделях 8–9 (async, замыкания, паттерн Observer), напрямую готовило именно к этой модели: React-компонент — это, по сути, функция, подписанная на изменения state через встроенный Observer-механизм.</p>
+<p>Частое заблуждение новичков — вызывать компонент как обычную функцию (<code>Header()</code>) вместо JSX (<code>&lt;Header /&gt;</code>), особенно когда нужно «просто получить разметку». Разница критична: только вызов через JSX регистрирует компонент в дереве React с собственным местом для hooks и состояния; прямой вызов функции полностью ломает эту связь, и hooks внутри такого компонента либо упадут с ошибкой, либо будут работать непредсказуемо. Задание 3 практики («вынеси Header, Footer, Hero в отдельные файлы») стоит сразу делать с привычкой использовать JSX-синтаксис, а не вызовы функций.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/describing-the-ui">react.dev: Describing the UI</a>
+- <a href="https://react.dev/learn/writing-markup-with-jsx">react.dev: Writing Markup with JSX</a>
+- <a href="https://react.dev/learn">React — Quick Start</a></p>
+<p><strong>Ключевая мысль:</strong> компонент — функция от props к UI; JSX — удобный синтаксис описания, а не HTML.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Изучи структуру Vite react-ts проекта из недели 10</li>
+<li>Очисти <code>App.tsx</code>, создай разметку лендинга в JSX</li>
+<li>Вынеси <code>Header</code>, <code>Footer</code>, <code>Hero</code> в отдельные файлы компонентов</li>
+<li>Используй Fragment вместо обёрточного div где возможно</li>
+<li>Подключи CSS-модуль или отдельный <code>App.css</code></li>
+<li>Создай <code>learning-log/week-11/</code> — новый Vite-проект или форк week-10</li>
+<li>Проверь ESLint rules для React (<code>eslint-plugin-react</code>)</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Минимум 3 компонента в отдельных файлах</p>
+</li>
+<li>
+<p>[ ] Корректный JSX без ошибок ESLint</p>
+</li>
+<li>
+<p>[ ] className вместо class</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Изучи структуру Vite react-ts проекта из недели 10</li>
+<li>Очисти <code>App.tsx</code>, создай разметку лендинга в JSX</li>
+<li>Вынеси <code>Header</code>, <code>Footer</code>, <code>Hero</code> в отдельные файлы компонентов</li>
+<li>Используй Fragment вместо обёрточного div где возможно</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add src/components/
+
+git commit -m &quot;week-11 day-01: JSX, Header, Footer и Hero&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-11--week-11-day-1');</script>
+</body>
+</html>

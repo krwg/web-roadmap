@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 1 (Mon): Асинхронность и Event Loop · Async &amp; HTTP · web-roadmap</title>
+  <meta name="description" content="День 1 (Mon): Асинхронность и Event Loop — неделя 08.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-08--week-08-day-1">
+  <meta http-equiv="refresh" content="0;url=../#week-08--week-08-day-1">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-08--week-08-day-1">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-08-day-1">День 1 (Mon): Асинхронность и Event Loop</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>JavaScript однопоточен: в каждый момент времени выполняется только один фрагмент кода на main thread. Синхронные операции (циклы, тяжёлые вычисления) блокируют интерфейс — кнопки не реагируют, анимации замирают. Асинхронность решает это: долгие задачи (таймеры, сетевые запросы, чтение файлов) делегируются Web APIs браузера, а результат возвращается через колбэки, когда main thread освободится.</p>
+<p>Event Loop — механизм, который координирует выполнение. Call stack выполняет текущий синхронный код. Когда стек пуст, Loop проверяет очереди задач. Сначала выполняются <strong>microtasks</strong> (колбэки Promise: <code>.then</code>, <code>.catch</code>, <code>queueMicrotask</code>), и только потом <strong>macrotasks</strong> (<code>setTimeout</code>, <code>setInterval</code>, I/O). Поэтому <code>Promise.resolve().then(...)</code> всегда выполнится раньше <code>setTimeout(fn, 0)</code> — даже с нулевой задержкой.</p>
+<p>Классическая ловушка — думать, что <code>setTimeout(fn, 0)</code> выполнится «сразу». На самом деле он попадёт в macrotask queue и дождётся завершения всего синхронного кода и всех microtasks. Понимание этого порядка — основа отладки «почему console.log выводится не в том порядке, который я ожидал». Визуализатор <a href="http://latentflip.com/loupe/">Loupe</a> помогает увидеть движение задач по очередям.</p>
+<p>Хорошая мысленная модель — ресторанная кухня с одним поваром (main thread) и официантами (Web APIs). Повар не может делать два блюда одновременно, но может передать заказ на гриль (таймер, сетевой запрос) официанту и продолжить резать овощи. Когда гриль готов, официант кладёт тарелку в очередь готовых блюд — повар заберёт её, как только освободится. Так же Event Loop не выполняет асинхронные операции сам — он лишь решает, когда вернуть управление колбэку.</p>
+<p>Понимание Event Loop критично не только для отладки порядка <code>console.log</code>. Это фундамент, на котором строятся Promise (дни 2–3 этой недели), рендеринг React (батчинг обновлений state — неделя 11) и производительность Node.js на бэкенде, где один процесс обслуживает тысячи соединений именно благодаря неблокирующей модели. Частое заблуждение новичков — думать, что Web Workers или async/await делают JavaScript многопоточным: на самом деле выполняется всё тот же один поток, просто задачи чередуются, а настоящий параллелизм (несколько ядер CPU) требует отдельных Worker-потоков с собственной памятью.</p>
+<p>Конкретный пример: <code>console.log('A'); setTimeout(() =&gt; console.log('B'), 0); Promise.resolve().then(() =&gt; console.log('C')); console.log('D')</code> выведет <code>A, D, C, B</code> — синхронный код первым, затем microtask C, затем macrotask B, даже с нулевой задержкой таймера. Именно такие цепочки предстоит разобрать в первом задании практики: предсказание порядка вывода тренирует эту модель до автоматизма, а диаграмма в блокноте (шаг 3) закрепляет её визуально.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/intro">learn.javascript.ru: Введение: колбэки</a>
+- <a href="https://javascript.info/event-loop">javascript.info: Event loop</a>
+- <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop">MDN: Event Loop</a>
+- <a href="http://latentflip.com/loupe/">Loupe — визуализация Event Loop</a></p>
+<p><strong>Ключевая мысль:</strong> microtasks (Promise) всегда опережают macrotasks (setTimeout) — запомни это правило, и половина async-багов исчезнет.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Предскажи порядок вывода 5 задач с <code>console.log</code>, <code>setTimeout</code>, <code>Promise.resolve().then</code></li>
+<li>Проверь в браузере, объясни через Event Loop</li>
+<li>Нарисуй диаграмму выполнения в блокноте</li>
+<li>Пройди 10+ примеров на <a href="https://javascript.info/event-loop">javascript.info/event-loop</a></li>
+<li>Запиши правило: microtasks перед macrotasks</li>
+<li>Добавь <code>queueMicrotask</code> в пример — сравни с <code>Promise.resolve().then</code></li>
+<li>Сохрани конспект Event Loop в <code>week-08/notes.md</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Могу предсказать порядок вывода в 4 из 5 примеров
+- [ ] Понимаю разницу microtask и macrotask
+- [ ] Есть конспект Event Loop своими словами</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Предскажи порядок вывода 5 задач с <code>console.log</code>, <code>setTimeout</code>, <code>Promise.resolve().then</code></li>
+<li>Проверь в браузере, объясни через Event Loop</li>
+<li>Нарисуй диаграмму выполнения в блокноте</li>
+<li>Пройди 10+ примеров на <a href="https://javascript.info/event-loop">javascript.info/event-loop</a></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 1: event loop basics"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Думать, что <code>setTimeout(0)</code> выполняется мгновенно</li>
+<li>Блокировка main thread тяжёлыми вычислениями — UI замрёт</li>
+<li>Бесконечная рекурсия Promise.then — microtask starvation</li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-08--week-08-day-1');</script>
+</body>
+</html>

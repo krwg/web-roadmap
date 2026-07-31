@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 3 (Wed): Fetch API — основы · Modules &amp; API · web-roadmap</title>
+  <meta name="description" content="День 3 (Wed): Fetch API — основы — неделя 07.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-07--week-07-day-3">
+  <meta http-equiv="refresh" content="0;url=../#week-07--week-07-day-3">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-07--week-07-day-3">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-07-day-3">День 3 (Wed): Fetch API — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Notes Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Fetch API — современный способ делать HTTP-запросы из браузера. Вызов <code>fetch(url)</code> сразу возвращает Promise, который разрешается объектом <code>Response</code>, ещё до того как тело ответа полностью загружено. Чтобы получить JSON, нужна вторая асинхронная операция: <code>response.json()</code>, которая тоже возвращает Promise. Типичная цепочка: <code>fetch(url).then(r =&gt; r.json()).then(data =&gt; ...)</code>.</p>
+<p>Важная особенность: fetch <strong>не отклоняет</strong> Promise при HTTP-ошибках вроде 404 или 500. Promise reject происходит только при сетевых сбоях (нет интернета, CORS, таймаут DNS). Поэтому всегда проверяй <code>response.ok</code> (это shorthand для статусов 200–299) и обрабатывай неуспешные ответы явно — выброси ошибку или верни понятное сообщение пользователю.</p>
+<p>Для POST-запросов передай объект опций вторым аргументом: <code>method: 'POST'</code>, <code>headers: { 'Content-Type': 'application/json' }</code> и <code>body: JSON.stringify(data)</code>. Без правильного <code>Content-Type</code> сервер может не распознать тело как JSON. Для обучения удобен <a href="https://jsonplaceholder.typicode.com/">JSONPlaceholder</a> — бесплатный mock REST API без регистрации, имитирующий посты, пользователей и комментарии.</p>
+<p><strong>Ментальная модель:</strong> fetch удобно представлять как письмо, отправленное по почте, а не телефонный звонок. Ты не получаешь ответ мгновенно — Promise возвращается сразу, но означает лишь «письмо отправлено», а не «ответ получен». <code>.then()</code> — это момент, когда почтальон приносит ответ; если ответов нужно два (сначала «получил ли сервер запрос вообще», потом «что внутри тела ответа»), их приходится ждать по очереди, отсюда и двухступенчатая цепочка <code>fetch(url).then(r =&gt; r.json())</code>.</p>
+<p><strong>Почему это важно дальше:</strong> Fetch — единственный способ получить данные с сервера из браузера, и с этого дня почти каждый проект курса будет обращаться к какому-нибудь API. На неделе 8 та же цепочка <code>.then()</code> перепишется на <code>async/await</code> — синтаксически проще, но модель поведения (Promise, отдельная обработка сетевых и HTTP-ошибок) останется точно такой же, так что сегодняшнее понимание не станет устаревшим.</p>
+<p><strong>Пример:</strong> <code>fetch('https://jsonplaceholder.typicode.com/posts/9999')</code> вернёт <strong>успешно разрешённый</strong> Promise с <code>response.status === 404</code>, а не ошибку — сеть отработала штатно, просто сервер сообщил «не найдено». Только <code>fetch('https://несуществующий-домен.test')</code> (сеть недоступна) действительно приведёт к <code>.catch()</code>.</p>
+<p><strong>Частое заблуждение:</strong> самая частая ошибка новичков — писать <code>fetch(url).then(data =&gt; console.log(data.title))</code>, ожидая сразу получить готовый объект. На деле первый <code>.then()</code> получает объект <code>Response</code> (метаданные: статус, заголовки), а не тело ответа — тело нужно отдельно распарсить через <code>response.json()</code>, который тоже асинхронный и требует своего <code>.then()</code>. Именно эта двухступенчатая цепочка отрабатывается в сегодняшней функции <code>fetchJson</code>.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/fetch">learn.javascript.ru: Fetch</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/API/Fetch_API/Using_Fetch">MDN: Using Fetch</a>
+- <a href="https://jsonplaceholder.typicode.com/guide/">JSONPlaceholder Guide</a></p>
+<p><strong>Ключевая мысль:</strong> fetch различает «сеть упала» (reject) и «сервер ответил ошибкой» (resolve с <code>ok: false</code>) — проверяй оба случая.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Загрузи посты с <a href="https://jsonplaceholder.typicode.com/posts">JSONPlaceholder</a></li>
+<li>Отобрази список заголовков в DOM</li>
+<li>Обработай loading state (текст «Загрузка...») и error state</li>
+<li>POST новый пост на API, выведи ответ в Console</li>
+<li>Используй <code>async/await</code> (предпросмотр, углубление на неделе 8)</li>
+<li>Создай функцию <code>fetchJson(url)</code> с проверкой <code>response.ok</code></li>
+<li>Покажи empty state, если массив постов пуст</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Данные с API отображаются в UI
+- [ ] Обработаны loading и error
+- [ ] Проверяется <code>response.ok</code></p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Загрузи посты с <a href="https://jsonplaceholder.typicode.com/posts">JSONPlaceholder</a></li>
+<li>Отобрази список заголовков в DOM</li>
+<li>Обработай loading state (текст «Загрузка...») и error state</li>
+<li>POST новый пост на API, выведи ответ в Console</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 07 day 3: fetch api basics"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-07--week-07-day-3');</script>
+</body>
+</html>

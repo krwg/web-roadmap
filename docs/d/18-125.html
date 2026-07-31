@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 125 (Сб): Тестирование API и обработка ошибок · FastAPI · web-roadmap</title>
+  <meta name="description" content="День 125 (Сб): Тестирование API и обработка ошибок — неделя 18.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-18--week-18-day-125">
+  <meta http-equiv="refresh" content="0;url=../#week-18--week-18-day-125">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-18--week-18-day-125">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-18-day-125">День 125 (Сб): Тестирование API и обработка ошибок</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library REST API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Тестирование API — страховка от регрессий. FastAPI <code>TestClient</code> (на базе httpx) шлёт запросы без реального сетевого сервера. pytest fixtures в <code>conftest.py</code>: client, db session, sample data. Test DB — отдельная schema или SQLite in-memory; никогда production.</p>
+<p>Arrange-Act-Assert: подготовь данные, выполни запрос, проверь status и body. Тесты: create author 201, get missing 404, loan conflict 409. <code>pytest -v --tb=short</code> — читаемый вывод. Rollback после каждого теста — иначе flaky tests.</p>
+<p>Global exception handlers: <code>IntegrityError</code> → 409, generic → 500 без stack trace в production. CORS middleware понадобится на нед. 21. Coverage <code>pytest --cov=app</code> показывает пробелы. ≥ 8 тестов — минимум для уверенности в CRUD и ошибках.</p>
+<p>Ментальная модель <code>TestClient</code> — «робот-клиент», который стучится в твоё FastAPI-приложение напрямую в памяти, без реального TCP-сокета и сетевого стека. Отсюда и скорость (сотни тестов выполняются за секунды), и детерминированность (нет случайных сетевых задержек или занятых портов) — тесты можно гонять на каждый коммит без страха, что они станут узким местом разработки.</p>
+<p>Автотесты — это не формальность для галочки в критериях: именно они дают возможность бесстрашно рефакторить код проекта недели, зная, что любая регрессия будет поймана до того, как попадёт в продакшен. Это тот же навык и тот же паттерн Arrange-Act-Assert, который ты используешь на любой позиции разработчика, независимо от языка — pytest здесь, Jest/Vitest в Node-мире.</p>
+<p>Частое заблуждение — писать тесты только на happy path («создание автора работает») и считать это достаточным покрытием. В реальности большинство продакшен-багов живёт именно в граничных случаях: что возвращается при 404, что происходит при попытке создать конфликтующий заём (409), что при невалидном body (422) — и сегодняшняя практика целенаправленно требует именно такие тесты. Вторая ошибка — забыть откат (rollback) состояния БД после каждого теста: без него тесты начинают зависеть от порядка выполнения и от результатов друг друга, превращаясь в нестабильные (flaky) — тест то падает, то проходит без изменений в коде. Global exception handler для <code>IntegrityError</code> (например, попытка создать книгу с несуществующим <code>author_id</code>) — та же идея централизованной обработки ошибок, которую ты применишь в Express на следующей неделе через error-middleware: одно место в коде решает, как любая непойманная ошибка конкретного типа превращается в понятный HTTP-ответ.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://fastapi.tiangolo.com/tutorial/testing/">FastAPI Testing</a></li>
+<li><a href="https://docs.pytest.org/en/stable/getting-started.html">pytest</a></li>
+<li><a href="https://www.python-httpx.org/">httpx</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> изолированная test DB; тесты на auth, 404, 409 — не только happy path.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>pip install pytest httpx</code></li>
+<li>Тесты: create author, get 404, create loan conflict → 409</li>
+<li><code>conftest.py</code> — fixture test client + test db (rollback после теста)</li>
+<li>Exception handler для SQLAlchemy <code>IntegrityError</code></li>
+<li>Тест пагинации и фильтрации books</li>
+<li>Добавь <code>pytest</code> в README и CI-заготовку</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] ≥ 8 pytest тестов, все проходят
+- [ ] Test DB изолирована от dev
+- [ ] <code>pytest -v</code> в README</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>pip install pytest httpx</code></li>
+<li>Тесты: create author, get 404, create loan conflict → 409</li>
+<li><code>conftest.py</code> — fixture test client + test db (rollback после теста)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-18/</code> → <code>git commit -m "week 18 day 125: pytest suite and error handlers"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Тесты на production DB — никогда</li>
+<li>Забытый rollback после теста — flaky tests</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-18--week-18-day-125');</script>
+</body>
+</html>

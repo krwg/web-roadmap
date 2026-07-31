@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 5 (Fri): Цвета, фоны и тени · CSS основы · web-roadmap</title>
+  <meta name="description" content="День 5 (Fri): Цвета, фоны и тени — неделя 02.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-02--week-02-day-5">
+  <meta http-equiv="refresh" content="0;url=../#week-02--week-02-day-5">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-02--week-02-day-5">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-02-day-5">День 5 (Fri): Цвета, фоны и тени</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Styled Blog Post</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Цвет в CSS — не только эстетика, но и <strong>доступность</strong>. Форматы: hex (<code>#3366cc</code>), <code>rgb()</code>, <code>hsl()</code>, современный <code>oklch()</code>. HSL и OKLCH удобны для вариаций: меняешь только lightness, сохраняя оттенок — получаешь палитру hover/active из одного базового цвета.</p>
+<p>Фоны выходят за сплошную заливку: <code>background-image</code> с <code>linear-gradient</code> создаёт hero-секции без тяжёлых картинок; <code>background-size: cover</code> масштабирует изображение на весь блок. Тени (<code>box-shadow</code>) и скругления (<code>border-radius</code>) добавляют глубину карточкам. Важный нюанс: <code>opacity: 0.5</code> на родителе делает полупрозрачными <strong>всех детей</strong>; для полупрозрачного фона без влияния на текст используй <code>rgba()</code> или <code>hsla()</code>.</p>
+<p><code>box-shadow</code> рисует тень прямоугольника элемента; <code>filter: drop-shadow()</code> следует за альфа-каналом PNG — лучше для иконок с прозрачностью. Всегда проверяй контраст текста на фоне: WCAG AA требует 4.5:1 для обычного текста, иначе градиент «съедает» читаемость.</p>
+<p>Мысленная модель: думай о цвете не как о наборе разрозненных hex-кодов, а как о палитре с системой — базовый оттенок и его вариации по яркости, как краски художника, смешанные из одной тюбика с добавлением белого или чёрного. HSL/OKLCH делают эту систему явной в коде: меняя только один параметр (lightness), получаешь согласованный набор состояний вместо угадывания «какой ещё синий взять для hover».</p>
+<p>Почему это важно дальше: завтра, в день 6, ты вынесешь именно эти цвета в CSS-переменные — и то, насколько системно они организованы сегодня (базовый + вариации, а не 15 несвязанных hex-кодов), определит, насколько легко будет собрать тёмную тему завтра. Хаотичная палитра сегодня означает мучительный рефакторинг завтра.</p>
+<p>Конкретный пример: hero-секция с <code>background: linear-gradient(135deg, #1a1a2e, #16213e)</code> и белым текстом поверх может визуально понравиться, но если не проверить контраст в месте, где текст пересекает более светлую часть градиента, там текст может провалиться ниже 4.5:1 — форматально «одна и та же секция» в разных точках имеет разный контраст.</p>
+<p>Частое заблуждение — считать <code>opacity</code> универсальным способом сделать элемент «полупрозрачным». <code>opacity: 0.5</code> на карточке с текстом сделает бледным и текст, и рамку, и фон одновременно — а часто нужно затемнить только фон, оставив текст чётким. Для этого — <code>rgba()</code>/<code>hsla()</code> именно на свойстве <code>background</code>, а не <code>opacity</code> на всём блоке.</p>
+<p><strong>Ключевая мысль:</strong> <code>rgba</code> для полупрозрачного фона, <code>opacity</code> — когда прозрачным должен быть весь блок целиком, а системная палитра сегодня — фундамент для темизации завтра.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/CSS/color_value">MDN color</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Создай hero-секцию с градиентным фоном и полупрозрачным оверлеем</li>
+<li>Стилизуй кнопки: обычное, hover, active состояния с плавным переходом цвета</li>
+<li>Добавь карточкам <code>border-radius</code> и лёгкую <code>box-shadow</code></li>
+<li>Проверь контраст текста на фоне (минимум 4.5:1 для обычного текста)</li>
+<li>Сделай тёмный вариант hero через другой градиент (подготовка к переменным)</li>
+<li>Сравни <code>opacity: 0.5</code> на блоке vs <code>background: rgba(..., 0.5)</code> — зафиксируй разницу</li>
+<li>Добавь <code>:active</code> состояние с <code>transform: scale(0.98)</code> для тактильного отклика</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Контраст текста соответствует WCAG AA
+- [ ] Градиент не мешает читаемости
+- [ ] Кнопки имеют distinct states</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Создай hero-секцию с градиентным фоном и полупрозрачным оверлеем</li>
+<li>Стилизуй кнопки: обычное, hover, active состояния с плавным переходом цвета</li>
+<li>Добавь карточкам <code>border-radius</code> и лёгкую <code>box-shadow</code></li>
+<li>Проверь контраст текста на фоне (минимум 4.5:1 для обычного текста)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 02 day 5: colors backgrounds shadows"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-02--week-02-day-5');</script>
+</body>
+</html>

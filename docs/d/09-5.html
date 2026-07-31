@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 5 (Fri): Паттерны проектирования · JS advanced · web-roadmap</title>
+  <meta name="description" content="День 5 (Fri): Паттерны проектирования — неделя 09.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-09--week-09-day-5">
+  <meta http-equiv="refresh" content="0;url=../#week-09--week-09-day-5">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-09--week-09-day-5">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-09-day-5">День 5 (Fri): Паттерны проектирования</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library System</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Паттерны проектирования — проверенные решения типовых задач в архитектуре кода. Observer (Pub-Sub) отделяет источник событий от подписчиков: store вызывает <code>emit('change', data)</code>, а UI подписывается через <code>on('change', render)</code>. Компоненты не знают друг о друге напрямую — слабая связанность упрощает рефакторинг. EventEmitter на 50 строк — отличная учебная реализация.</p>
+<p>Module pattern (в ES modules — через <code>export</code>/<code>import</code>) инкапсулирует детали реализации: наружу видны только публичные функции. Strategy позволяет подменять алгоритм (сортировка <code>byDate</code> / <code>byTitle</code>) без ветвления <code>if/else</code> в клиентском коде — стратегия передаётся как функция. Factory (<code>createNotification('error', msg)</code>) скрывает создание объектов за единым интерфейсом.</p>
+<p>Singleton гарантирует один экземпляр (например, глобальный store), но усложняет тестирование и создаёт скрытое глобальное состояние — используй осознанно. MVC/MVP разделяют Model (данные), View (DOM) и Controller (логика) — твой Todo уже движется в эту сторону. Главное правило: не применяй паттерн ради паттерна в проекте на 50 строк.</p>
+<p>Мысленная модель Observer — подписка на рассылку новостей: издатель (store) не знает лично каждого подписчика, он просто публикует событие в общий канал, а все, кто подписан, получают уведомление и решают сами, что с ним делать. Это радикально отличается от прямого вызова <code>updateUI()</code> внутри store — при таком подходе store пришлось бы знать обо всех частях UI, которые на него завязаны, и любое изменение интерфейса требовало бы правки store.</p>
+<p>Наблюдатель, который ты реализуешь сегодня вручную (<code>EventEmitter</code> на 50 строк), — тот же принцип, что лежит в основе React: изменение state вызывает ререндер подписанных компонентов, а не императивный вызов <code>render()</code> из логики данных. Понимание паттернов на этом уровне избавляет от ощущения «магии» при первой встрече с <code>useState</code> и <code>useEffect</code> на неделе 11.</p>
+<p>Частое заблуждение — начинать проектирование с вопроса «какой паттерн тут применить», а не «какая проблема связанности у меня есть». Паттерн — это название для решения, которое уже интуитивно напрашивается, а не чек-лист для внедрения ради резюме. Конкретный пример: если Store и View общаются напрямую через прямые вызовы методов друг друга, замена View (например, консольный вывод вместо DOM) потребует переписать Store — а с Observer Store продолжит работать без единой правки, просто у него появится другой подписчик. Это и есть цель задания 5 — «Рефакторинг Todo: Store + View + Controller», где связанность должна снизиться измеримо.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.patterns.dev/vanilla/observer-pattern/">patterns.dev: Observer Pattern</a>
+- <a href="https://www.patterns.dev/vanilla/module-pattern/">patterns.dev: Module Pattern</a>
+- <a href="https://www.patterns.dev/">patterns.dev</a></p>
+<p><strong>Ключевая мысль:</strong> паттерн оправдан, когда он снижает связанность или упрощает расширение — не когда добавляет абстракцию ради абстракции.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>EventEmitter: <code>on</code>, <code>off</code>, <code>emit</code> — 50 строк</li>
+<li>Подпиши UI на изменения store через Observer</li>
+<li>Strategy: сортировка <code>byDate</code>, <code>byTitle</code> — переключаемые функции</li>
+<li>Factory <code>createNotification(type, message)</code> → toast/error/success</li>
+<li>Рефакторинг Todo: Store (state) + View (DOM) + Controller</li>
+<li>Добавь <code>once(event, handler)</code> в EventEmitter</li>
+<li>Задокументируй в README, какие паттерны где применены</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] EventEmitter работает с несколькими подписчиками</p>
+</li>
+<li>
+<p>[ ] Store отделён от DOM</p>
+</li>
+<li>
+<p>[ ] Минимум 2 паттерна применены осознанно</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>EventEmitter: <code>on</code>, <code>off</code>, <code>emit</code> — 50 строк</li>
+<li>Подпиши UI на изменения store через Observer</li>
+<li>Strategy: сортировка <code>byDate</code>, <code>byTitle</code> — переключаемые функции</li>
+<li>Factory <code>createNotification(type, message)</code> → toast/error/success</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-09
+
+git add src/patterns/ src/store.js
+
+git commit -m &quot;week-09 day-05: EventEmitter, Strategy и Store/View&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-09--week-09-day-5');</script>
+</body>
+</html>

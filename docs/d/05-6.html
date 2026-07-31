@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 6 (Sat): Методы массивов · JavaScript · web-roadmap</title>
+  <meta name="description" content="День 6 (Sat): Методы массивов — неделя 05.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-05--week-05-day-6">
+  <meta http-equiv="refresh" content="0;url=../#week-05--week-05-day-6">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-05--week-05-day-6">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-05-day-6">День 6 (Sat): Методы массивов</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~45м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Console Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Методы массивов высокого порядка — рабочая лошадка современного JS. <code>map</code> трансформирует каждый элемент и возвращает <strong>новый</strong> массив. <code>filter</code> отбирает по условию. <code>reduce</code> сворачивает массив в одно значение: сумма, группировка, flatten. <code>find</code> / <code>findIndex</code> — первый подходящий элемент. <code>some</code> / <code>every</code> — проверки «хотя бы один» / «все».</p>
+<p><code>forEach</code> выполняет действие для каждого элемента, но <strong>ничего не возвращает</strong> — для побочных эффектов (логирование). Нужен новый массив — <code>map</code>. Цепочки <code>.filter().map().reduce()</code> читаются как конвейер данных.</p>
+<p>Ловушка <code>sort</code>: без compare-функции сортирует как <strong>строки</strong> — <code>[10, 5, 40]</code> → <code>[10, 40, 5]</code>. Для чисел: <code>(a, b) =&gt; a - b</code>. Мутирует исходный массив — сначала <code>[...arr].sort()</code>.</p>
+<p><strong>Ментальная модель:</strong> методы высшего порядка — это конвейер на заводе, а не ручная сборка. Вместо того чтобы писать цикл, который одновременно фильтрует, преобразует и суммирует (императивный стиль — «как делать»), ты описываешь этапы конвейера: «сначала отфильтруй», «потом преобразуй», «потом сложи» (декларативный стиль — «что сделать»). Каждый метод получает массив на входе и передаёт результат следующему.</p>
+<p><strong>Почему это важно дальше:</strong> <code>map</code>/<code>filter</code>/<code>reduce</code> — это язык, на котором пишется современный JavaScript и особенно React (когда дойдёшь до фреймворков): рендеринг списка компонентов почти всегда начинается с <code>.map()</code>. Умение читать и писать цепочки этих методов вместо ручных циклов резко повышает читаемость и снижает количество багов вроде забытого <code>break</code> или неправильного индекса.</p>
+<p><strong>Пример:</strong> задача «сумма цен товаров дороже 100» императивно — это цикл с условием и накопительной переменной. Декларативно: <code>items.filter(i =&gt; i.price &gt; 100).reduce((sum, i) =&gt; sum + i.price, 0)</code> — три слова описывают весь алгоритм, и почти невозможно ошибиться в границах цикла, потому что их просто нет.</p>
+<p><strong>Частое заблуждение:</strong> новички путают <code>forEach</code> с <code>map</code>, ожидая, что <code>forEach</code> тоже вернёт новый массив — но <code>forEach</code> всегда возвращает <code>undefined</code>, он предназначен только для побочных эффектов (например, логирования), а не для трансформации данных. Похожая путаница со <code>sort</code>: он мутирует <strong>исходный</strong> массив, поэтому если оригинал ещё нужен неотсортированным, всегда работай с копией через <code>[...arr].sort(...)</code>. Если нужен новый массив — это всегда <code>map</code>, что и отрабатывается в сегодняшних задачах на фильтрацию и группировку.</p>
+<p><strong>Ключевая мысль:</strong> <code>map</code>/<code>filter</code>/<code>reduce</code> — декларативный стиль; <code>sort</code> всегда с compare-функцией для чисел.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/array-methods">learn.javascript.ru: Методы массивов</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Массив пользователей <code>{name, age}</code>: фильтр 18+, map в имена</li>
+<li>Сумма цен корзины через <code>reduce</code></li>
+<li>Найди первый товар дороже 1000 через <code>find</code></li>
+<li>Проверь, все ли оценки ≥ 3 через <code>every</code></li>
+<li>Отсортируй числа <code>[10, 5, 40, 25]</code> правильно: <code>(a, b) =&gt; a - b</code></li>
+<li>Цепочка: фильтр активных задач → map в заголовки → join в строку</li>
+<li>Группировка задач по <code>done</code> через <code>reduce</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Использованы map, filter, reduce в реальных задачах
+- [ ] Сортировка чисел корректна
+- [ ] Цепочка из 3+ методов в одной задаче</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Массив пользователей <code>{name, age}</code>: фильтр 18+, map в имена</li>
+<li>Сумма цен корзины через <code>reduce</code></li>
+<li>Найди первый товар дороже 1000 через <code>find</code></li>
+<li>Проверь, все ли оценки ≥ 3 через <code>every</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 05 day 6: array methods"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-05--week-05-day-6');</script>
+</body>
+</html>

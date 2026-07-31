@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 3 (Wed): GitHub и удалённый workflow · Git advanced · web-roadmap</title>
+  <meta name="description" content="День 3 (Wed): GitHub и удалённый workflow — неделя 04.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-04--week-04-day-3">
+  <meta http-equiv="refresh" content="0;url=../#week-04--week-04-day-3">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-04--week-04-day-3">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-04-day-3">День 3 (Wed): GitHub и удалённый workflow</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~45м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Локальный Git — половина workflow. <strong>Remote</strong> (обычно <code>origin</code> на GitHub) — копия репозитория на сервере. <code>git push</code> публикует коммиты; <code>git pull</code> забирает чужие и сливает с твоими. Флаг <code>-u</code> при первом push связывает локальную ветку с удалённой — дальше достаточно <code>git push</code>.</p>
+<p><strong>Pull Request</strong> — запрос на слияние ветки с описанием изменений. Даже в solo-проекте PR учит дисциплине review: ты смотришь diff глазами «чужого» разработчика до merge. Стратегии merge на GitHub: обычный merge, squash (все коммиты ветки → один), rebase. Squash даёт чистую линейную историю <code>main</code>.</p>
+<p><strong>Issues</strong> — трекер задач: баг, улучшение, идея. Коммит с <code>fix #12</code> в сообщении автоматически закрывает issue №12. Fork + upstream — паттерн open source: форкаешь чужой репозиторий, вносишь правки, открываешь PR в оригинал.</p>
+<p><strong>Ментальная модель:</strong> если локальный Git — личный дневник, то GitHub — общая доска, на которую дневник выкладывается для чтения другими. Remote — не «резервная копия в облаке», а отдельная полноценная копия репозитория, с которой твоя локальная версия синхронизируется через <code>push</code>/<code>pull</code>, примерно как два человека редактируют документ и по очереди обмениваются версиями.</p>
+<p><strong>Почему это важно дальше:</strong> привычка открывать PR даже в одиночном проекте формирует дисциплину, которая станет обязательной в командной разработке — там код почти никогда не попадает в <code>main</code> напрямую, а PR с описанием и review — стандартный процесс в любой компании. Issues и связка <code>fix #12</code> — тот же язык, на котором ведутся реальные open-source проекты.</p>
+<p><strong>Пример:</strong> ты создаёшь issue «Кнопка не видна на мобильном», чинишь баг в ветке <code>fix/mobile-button</code>, а в сообщении коммита пишешь <code>fix: button visibility on mobile, closes #12</code> — после merge issue закроется автоматически, и в истории останется прямая связь «проблема → решение».</p>
+<p><strong>Частое заблуждение:</strong> новички считают, что PR нужен только когда работаешь в команде. На самом деле self-review через PR-диф — это возможность увидеть свой код «со стороны» ещё до того, как он попадёт в основную ветку, и поймать баги, которые не видны в редакторе. Сегодняшняя практика с созданием репозитория, PR и issue тренирует именно этот полный цикл.</p>
+<p><strong>Ключевая мысль:</strong> GitHub = remote + социальный слой; PR — разговор о коде до попадания в main.</p>
+<p><strong>Читать:</strong>
+- <a href="https://docs.github.com/ru/get-started/start-your-journey/hello-world">GitHub: Hello World</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Создай репозиторий на GitHub (public), подключи remote</li>
+<li>Запушь <code>main</code>, создай ветку <code>feature/readme</code>, добавь README.md</li>
+<li>Открой Pull Request с описанием изменений</li>
+<li>Смержи PR через GitHub UI (Squash or Merge — изучи разницу)</li>
+<li>Создай Issue с багом или улучшением, закрой через коммит <code>fix: ...</code></li>
+<li>Клонируй репозиторий в другую папку — убедись, что clone работает</li>
+<li>Добавь в README badges (build, license) — заготовка под неделю</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Код на GitHub, локальный и remote синхронизированы
+- [ ] Минимум 1 PR с описанием
+- [ ] README содержит название, описание, как запустить</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Создай репозиторий на GitHub (public), подключи remote</li>
+<li>Запушь <code>main</code>, создай ветку <code>feature/readme</code>, добавь README.md</li>
+<li>Открой Pull Request с описанием изменений</li>
+<li>Смержи PR через GitHub UI (Squash or Merge — изучи разницу)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 3: github remote and PR"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-04--week-04-day-3');</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 7 (Sun): Сборка Todo App и деплой · React basics · web-roadmap</title>
+  <meta name="description" content="День 7 (Sun): Сборка Todo App и деплой — неделя 11.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-11--week-11-day-7">
+  <meta http-equiv="refresh" content="0;url=../#week-11--week-11-day-7">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-11--week-11-day-7">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-11-day-7">День 7 (Sun): Сборка Todo App и деплой</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Завершение Todo App объединяет state, effects и production-сборку. <code>useEffect</code> — hook для синхронизации React state с внешним миром (localStorage, document.title, подписки). Для persist: <code>useEffect(() =&gt; { localStorage.setItem('todos', JSON.stringify(todos)) }, [todos])</code> — сохраняй при каждом изменении. Начальное значение загружай через lazy init: <code>useState(() =&gt; JSON.parse(localStorage.getItem('todos') ?? '[]'))</code>.</p>
+<p>Production-сборка: <code>npm run build</code> создаёт оптимизированный bundle в <code>dist/</code>, <code>npm run preview</code> проверяет его локально. Деплой на GitHub Pages, Netlify или Vercel — статический хостинг для SPA. Для GitHub Pages задай <code>base</code> в <code>vite.config.ts</code> (путь репозитория). Environment variables в Vite доступны только с префиксом <code>VITE_</code> — они встраиваются в клиентский код и видны всем.</p>
+<p>React Strict Mode в dev вызывает двойной mount/unmount — это помогает найти missing cleanup в effects. Перед деплоем прогони Lighthouse: Performance, Accessibility, Best Practices. Escape Hatches (useEffect, useRef) — инструменты «выхода» из чистой модели React, когда нужна интеграция с браузерными API.</p>
+<p>Мысленная модель <code>useEffect</code> — розетка, через которую компонент подключается к внешнему миру за пределами React (браузерное API, таймер, подписка, localStorage): React сам управляет своим внутренним миром (state, JSX), но для всего, что находится снаружи этой модели, нужен явный «провод» — эффект, который запускается после рендера и должен уметь отключиться (cleanup-функция), когда компонент размонтируется или зависимости меняются, — иначе розетка останется под напряжением без нужды (утечка памяти, лишние подписки).</p>
+<p>Эта неделя завершает связку тем всего курса: async/await и Promise (неделя 8) применяются внутри <code>useEffect</code> для загрузки данных, замыкания (неделя 9) объясняют, почему эффект «видит» устаревшее значение state, если забыть указать зависимость в массиве <code>[todos]</code>, а TypeScript (неделя 10) типизирует и сам <code>todos</code>, и то, что приходит из <code>localStorage.getItem()</code>. Деплой — финальный шаг, превращающий учебный проект в то, что можно показать в резюме и на собеседовании по ссылке, а не только скриншотом.</p>
+<p>Частое заблуждение — использовать обычный <code>useState(JSON.parse(localStorage.getItem('todos') ?? '[]'))</code> без функции-инициализатора: такая запись выполняет <code>JSON.parse</code> и чтение localStorage <strong>при каждом рендере</strong> компонента, а не только при первом монтировании, что зря тратит ресурсы на большом списке задач. Ленивая инициализация <code>useState(() =&gt; JSON.parse(...))</code> передаёт функцию, а не результат её вызова — React выполнит её ровно один раз, при первом рендере. Это стоит явно проверить в задании 2 практики дня, добавив временный <code>console.log</code> внутрь инициализатора и посчитав, сколько раз он сработает при обычном использовании приложения.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/escape-hatches">react.dev: Escape Hatches</a>
+- <a href="https://react.dev/reference/react/useEffect">react.dev: useEffect</a>
+- <a href="https://vite.dev/guide/static-deploy.html">Vite: Deploy</a></p>
+<p><strong>Ключевая мысль:</strong> useEffect связывает React с внешним миром; production build + deploy завершают цикл от кода до живого приложения.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Persist todos в localStorage через useEffect</li>
+<li>Загрузка начального state из localStorage (lazy init useState)</li>
+<li>Production build, проверь размер bundle</li>
+<li>Задеплой на GitHub Pages или Vercel</li>
+<li>Финальный self-review по react.dev Quick Start checklist</li>
+<li>README с live demo URL и скриншотом</li>
+<li>Тег <code>week-11-done</code></li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Todos сохраняются между сессиями</p>
+</li>
+<li>
+<p>[ ] Production build успешен</p>
+</li>
+<li>
+<p>[ ] Live demo доступен по URL</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Persist todos в localStorage через useEffect</li>
+<li>Загрузка начального state из localStorage (lazy init useState)</li>
+<li>Production build, проверь размер bundle</li>
+<li>Задеплой на GitHub Pages или Vercel</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add .
+
+git commit -m &quot;week-11 day-07: persist, deploy и React Todo App&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-11--week-11-day-7');</script>
+</body>
+</html>

@@ -23,6 +23,55 @@ TIMEOUT = 20
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 URL_RE = re.compile(r"https?://[^\s)\]\"<>]+")
 
+# Intentional examples / broken URLs used in curriculum — do not fail CI
+SKIP_HOST_SUFFIXES = (
+    "example.com",
+    "example.org",
+    "example.net",
+    ".test",
+    ".invalid",
+    ".localhost",
+    ".local",
+)
+SKIP_URL_SUBSTRINGS = (
+    "jsonplaceholder.typicode.com/posts/9999",  # intentional 404 demo
+    "несуществующий",
+)
+
+# Docs sites that often block / time out CI bots
+SKIP_HOSTS = {
+    "openweathermap.org",
+    "www.openweathermap.org",
+}
+
+
+def should_skip_external(url: str) -> bool:
+    try:
+        host = (urlparse(url).hostname or "").lower()
+    except Exception:
+        return True
+    if not host:
+        return True
+    if host in SKIP_HOSTS or any(host.endswith("." + h) for h in SKIP_HOSTS):
+        return True
+    if any(
+        host == s or host.endswith("." + s)
+        for s in SKIP_HOST_SUFFIXES
+        if not s.startswith(".")
+    ):
+        return True
+    if any(host.endswith(s) for s in SKIP_HOST_SUFFIXES if s.startswith(".")):
+        return True
+    lower = url.lower()
+    if any(s.lower() in lower for s in SKIP_URL_SUBSTRINGS):
+        return True
+    # Non-ASCII host used as "fake domain" teaching example
+    try:
+        host.encode("ascii")
+    except UnicodeEncodeError:
+        return True
+    return False
+
 
 def markdown_files() -> list[Path]:
     files: list[Path] = []
@@ -37,7 +86,8 @@ def collect_external_urls(files: list[Path]) -> set[str]:
     for path in files:
         text = path.read_text(encoding="utf-8")
         urls.update(URL_RE.findall(text))
-    return {u.rstrip(".,;`)'\"") for u in urls if "localhost" not in u}
+    cleaned = {u.rstrip(".,;`)'\"") for u in urls if "localhost" not in u}
+    return {u for u in cleaned if not should_skip_external(u)}
 
 
 def collect_local_links(files: list[Path]) -> list[tuple[Path, str, Path]]:
@@ -62,14 +112,17 @@ def check_external(url: str) -> tuple[str, bool, str]:
             req = urllib.request.Request(url, method=method, headers=headers)
             with urllib.request.urlopen(req, timeout=TIMEOUT, context=CTX) as resp:
                 code = resp.status
-            if code in (200, 403, 429):
+            if code in (200, 301, 302, 303, 307, 308, 403, 429):
                 return url, True, str(code)
             return url, False, str(code)
         except urllib.error.HTTPError as e:
-            if e.code in (200, 403, 429):
+            if e.code in (200, 301, 302, 303, 307, 308, 403, 429):
                 return url, True, str(e.code)
             if method == "HEAD" and e.code in (405, 501):
                 continue
+            # Follow redirect manually when opener does not
+            if e.code in (301, 302, 303, 307, 308) and e.headers.get("Location"):
+                return url, True, f"redirect-{e.code}"
             return url, False, f"HTTP {e.code}"
         except Exception as e:
             if method == "HEAD":

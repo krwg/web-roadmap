@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 7 (Sun): Асинхронная архитектура · Async &amp; HTTP · web-roadmap</title>
+  <meta name="description" content="День 7 (Sun): Асинхронная архитектура — неделя 08.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-08--week-08-day-7">
+  <meta http-equiv="refresh" content="0;url=../#week-08--week-08-day-7">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-08--week-08-day-7">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-08-day-7">День 7 (Sun): Асинхронная архитектура</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Асинхронная архитектура приложения определяет, как слои общаются между собой. API-слой возвращает данные или бросает типизированную ошибку (<code>ApiError</code> со статусом) — он не знает о DOM и не решает, показать спиннер или toast. UI-слой подписывается на состояние и рендерит соответствующий экран. Между ними — слой состояния с явными фазами: <code>idle | loading | success | error | empty</code>.</p>
+<p>Явная state machine убирает «зависшие» экраны: в каждый момент UI находится ровно в одном состоянии, и переходы предсказуемы (loading → success или loading → error). Простой pub/sub (<code>createAsyncState</code> с <code>subscribe</code>/<code>setState</code>) даёт реактивность без фреймворка — задел на React hooks. При тестировании async-кода fetch можно подменить mock-функцией, возвращающей фиксированный Promise.</p>
+<p>На следующих неделях TypeScript добавит <code>Promise&lt;T&gt;</code> как контракт: async-функция документирует, какой тип данных вернётся. Сейчас зафиксируй принцип: асинхронность — это не только синтаксис, а разделение ответственности между запросом, состоянием и отображением.</p>
+<p>Мысленная модель — конвейер на заводе с чёткими станциями: сырьё (запрос) поступает на станцию API, где либо превращается в готовую деталь (данные), либо помечается браком (<code>ApiError</code>) с понятной причиной. Дальше деталь попадает на станцию состояния, которая просто фиксирует текущую фазу конвейера, и только затем — на станцию сборки (UI), которая ничего не решает сама, а лишь отображает то, что сообщила предыдущая станция. Перепутай станции местами (например, дай UI напрямую вызывать fetch и решать, что показывать) — и конвейер быстро превратится в клубок проводов, который невозможно чинить.</p>
+<p>Это разделение — прямая подготовка к React: <code>useState</code>/<code>useReducer</code> (неделя 11) — это, по сути, официальная реализация той же идеи «явное состояние + подписка на изменения», которую ты сегодня собираешь вручную через <code>createAsyncState</code>. Частое заблуждение начинающих — хранить состояние загрузки как отдельные булевы флаги (<code>isLoading</code>, <code>isError</code>, <code>isEmpty</code>), которые могут противоречить друг другу (например, <code>isLoading = true</code> и <code>isError = true</code> одновременно), вместо одного явного состояния, где такие противоречия структурно невозможны.</p>
+<p>Пример на практике: функция <code>search(query)</code> в проекте «Каталог фильмов» должна явно переводить состояние <code>idle → loading → success</code> (нашлись фильмы), <code>loading → empty</code> (пустой результат) или <code>loading → error</code> (сеть упала) — и ни один компонент UI не должен сам решать, какой текст показать в каждом случае, кроме как читая это единственное состояние. Это и есть критерий «api / state / ui разделены» из чеклиста дня.</p>
+<p><strong>Читать:</strong>
+- <a href="https://javascript.info/promise-basics">javascript.info: Промисы</a>
+- <a href="https://www.patterns.dev/vanilla/observer-pattern/">patterns.dev: Observer Pattern</a>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/generics.html">TypeScript Handbook: Generics</a> — подготовка к неделе 10</p>
+<p><strong>Ключевая мысль:</strong> async-архитектура — это явные состояния UI и чёткие границы между api, state и render.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Реализуй хук-подобный паттерн <code>createAsyncState()</code> — subscribe на изменения</li>
+<li>UI автоматически реагирует на idle/loading/success/error</li>
+<li>Интегрируй в проект «Каталог фильмов» (OMDb или TMDB free tier / mock)</li>
+<li>Поиск + детали фильма + избранное в localStorage</li>
+<li>Code review своего async-кода по чеклисту</li>
+<li>Empty state: «Ничего не найдено» при пустом результате поиска</li>
+<li>Тег <code>week-08-done</code> на финальном коммите</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Явные состояния async-операций в UI
+- [ ] api / state / ui разделены
+- [ ] Проект работает без ошибок в Console</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Реализуй хук-подобный паттерн <code>createAsyncState()</code> — subscribe на изменения</li>
+<li>UI автоматически реагирует на idle/loading/success/error</li>
+<li>Интегрируй в проект «Каталог фильмов» (OMDb или TMDB free tier / mock)</li>
+<li>Поиск + детали фильма + избранное в localStorage</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 7: movie catalog final"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-08--week-08-day-7');</script>
+</body>
+</html>

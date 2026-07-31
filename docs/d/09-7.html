@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 7 (Sun): Рефакторинг и code quality · JS advanced · web-roadmap</title>
+  <meta name="description" content="День 7 (Sun): Рефакторинг и code quality — неделя 09.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-09--week-09-day-7">
+  <meta http-equiv="refresh" content="0;url=../#week-09--week-09-day-7">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-09--week-09-day-7">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-09-day-7">День 7 (Sun): Рефакторинг и code quality</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library System</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Качество кода определяется не только работоспособностью, но и читаемостью, поддерживаемостью и предсказуемостью. SOLID в JavaScript-практике чаще всего сводится к двум принципам: Single Responsibility (один модуль — одна задача: <code>api.js</code> не рендерит DOM) и Dependency Inversion (высокоуровневый код зависит от абстракций, а не от конкретных реализаций). DRY (Don't Repeat Yourself) полезен, но иногда явное дублирование лучше преждевременной абстракции (правило WET — Write Everything Twice).</p>
+<p>ESLint ловит ошибки до runtime: неиспользуемые переменные, потерянные <code>await</code>, проблемы с <code>==</code>. Prettier унифицирует форматирование — споры о пробелах исчезают. JSDoc документирует публичный API без TypeScript: <code>@param {string} url</code>, <code>@returns {Promise&lt;User&gt;}</code>. Это мост к строгой типизации на следующей неделе.</p>
+<p>ADR (Architecture Decision Record) — короткий документ «почему выбрали Store + Observer, а не один монолитный файл». Code review checklist: понятные имена, нет скрытых side effects, ошибки обработаны, модули имеют чёткие границы. Подготовка к TypeScript — явные контракты функций через JSDoc или <code>.ts</code> файлы.</p>
+<p>Мысленная модель качества кода — не «идеальный» код с первой попытки, а сад, который регулярно пропалывают: рефакторинг — не разовое событие перед дедлайном, а постоянная практика вычищения дублирования, неясных имён и скрытых побочных эффектов по мере роста кодовой базы. Инструменты вроде ESLint и Prettier автоматизируют часть этой прополки, освобождая внимание для более важных архитектурных решений.</p>
+<p>Привычка писать явные контракты (через JSDoc сегодня, через TypeScript — уже на следующей неделе) — прямая подготовка к строгой типизации: <code>@param {string} url</code> и <code>@returns {Promise&lt;User&gt;}</code> в JSDoc почти дословно превратятся в сигнатуру <code>function fetchUser(url: string): Promise&lt;User&gt;</code> в TypeScript. Тот, кто честно документирует функции сейчас, столкнётся с TypeScript не как с новым языком, а как с формализацией того, что он и так уже держал в голове.</p>
+<p>Частое заблуждение — воспринимать DRY как абсолютное правило «никогда не повторяй код»: две функции, которые сейчас выглядят одинаково, но описывают разные бизнес-смыслы (например, валидация email пользователя и валидация email в форме подписки на рассылку), могут начать расходиться по мере развития продукта — преждевременное объединение их в одну общую функцию создаст ненужную связанность. Правило WET («write everything twice») напоминает: дай коду повториться два раза, и только на третьем повторении абстрагируй — это здравый компромисс, который стоит внести в ADR из задания 5 практики дня.</p>
+<p><strong>Читать:</strong>
+- <a href="https://jsdoc.app/">JSDoc reference</a>
+- <a href="https://eslint.org/docs/latest/use/getting-started">ESLint: Getting Started</a>
+- <a href="https://adr.github.io/">adr.github.io</a> — формат Architecture Decision Records</p>
+<p><strong>Ключевая мысль:</strong> инструменты (ESLint, JSDoc, ADR) и принципы (SRP, явные контракты) готовят кодовую базу к росту и TypeScript.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Подключи ESLint (eslint:recommended) к проекту</li>
+<li>Исправь все warnings</li>
+<li>Рефакторинг каталога: classes + observer store + api module</li>
+<li>JSDoc для всех публичных функций api-модуля</li>
+<li>Напиши ADR (Architecture Decision Record) на 1 страницу — почему выбрана структура</li>
+<li>Собери скелет <strong>Library System</strong> — папки <code>models/</code>, <code>store/</code>, <code>ui/</code></li>
+<li>Прогони финальный self-review по ревью-чеклисту недели</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] ESLint проходит без ошибок</p>
+</li>
+<li>
+<p>[ ] Архитектура store/view/api</p>
+</li>
+<li>
+<p>[ ] JSDoc на ключевых экспортах</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Подключи ESLint (eslint:recommended) к проекту</li>
+<li>Исправь все warnings</li>
+<li>Рефакторинг каталога: classes + observer store + api module</li>
+<li>JSDoc для всех публичных функций api-модуля</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-09
+
+git add .
+
+git commit -m &quot;week-09 day-07: ESLint, ADR и скелет Library System&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-09--week-09-day-7');</script>
+</body>
+</html>

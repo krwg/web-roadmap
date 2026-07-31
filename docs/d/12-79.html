@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 79 (Вт): События и controlled components · React state · web-roadmap</title>
+  <meta name="description" content="День 79 (Вт): События и controlled components — неделя 12.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-12--week-12-day-79">
+  <meta http-equiv="refresh" content="0;url=../#week-12--week-12-day-79">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-12--week-12-day-79">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-12-day-79">День 79 (Вт): События и controlled components</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo Pro</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Обработка событий в React похожа на DOM, но есть отличия. Атрибуты пишутся в camelCase: <code>onClick</code>, <code>onChange</code>, <code>onSubmit</code>. React использует Synthetic Events — обёртку над нативными событиями с единым API и пулингом для производительности. <code>e.preventDefault()</code> отменяет действие по умолчанию (перезагрузка формы), <code>e.stopPropagation()</code> останавливает всплытие.</p>
+<p>Controlled component — input, значение которого полностью контролируется React state. Для text input: <code>value={text}</code> + <code>onChange={e =&gt; setText(e.target.value)}</code>. Для checkbox: <code>checked={done}</code> + <code>onChange</code>, не <code>value</code>. Для select: <code>value={priority}</code> на <code>&lt;select&gt;</code>, не <code>selected</code> на <code>&lt;option&gt;</code>. Группа radio: один state, разные <code>value</code> у <code>&lt;input type="radio"&gt;</code>.</p>
+<p>Разница <code>readOnly</code> и <code>disabled</code>: disabled элемент не участвует в tab-навигации и не отправляется с формой; readOnly виден и фокусируем, но не редактируется. <code>defaultValue</code> вместо <code>value</code> делает компонент uncontrolled — React не управляет значением после первого рендера. Для форм с валидацией и сбросом предпочитай controlled.</p>
+<p>Мысленная модель controlled input — однонаправленный цикл: state → JSX (value) → DOM показывает значение → пользователь печатает → событие onChange → setState → React перерисовывает input с новым value. React в этой схеме — единственный источник правды, а DOM-элемент — лишь его «зеркало». Как только это закольцовано, становится понятно, зачем вообще нужен onChange: не только для валидации, а чтобы замкнуть цикл и не дать полю «зависнуть» со старым значением.</p>
+<p>Эта модель критична для всего, что будет дальше: формы с валидацией (день 82), поиск с debounce (неделя 13), позже — библиотеки вроде React Hook Form, которые под капотом используют тот же паттерн, просто оптимизированный. Понимание controlled-цикла также объясняет, почему в React сложно «просто взять и вставить jQuery-плагин» — он мутирует DOM в обход React, и React в следующем рендере затирает изменения.</p>
+<p>Конкретный пример: поле поиска <code>&lt;input value={query} onChange={e =&gt; setQuery(e.target.value)} /&gt;</code> — при каждом нажатии клавиши React перерисовывает input с тем же символом, который пользователь только что ввёл, поэтому визуально ничего не «дёргается», хотя фактически элемент каждый раз получает новый value из state.</p>
+<p>Частая ошибка новичков — задать <code>value</code> только при определённом условии (например, <code>value={isEditing ? text : undefined}</code>), из-за чего React в консоли ругается на переключение input между controlled и uncontrolled в процессе жизни компонента. Правило: если хоть раз указал <code>value</code>, указывай его всегда, даже пустой строкой. Именно эта дисциплина понадобится при переписывании Todo App: чекбокс, textarea и select в одной форме должны быть либо все controlled, либо ни один — смешение ведёт к трудноуловимым багам с фокусом и потерянными нажатиями клавиш.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/responding-to-events">React — Responding to Events</a>
+- <a href="https://react.dev/reference/react-dom/components/input">React — Forms</a>
+- <a href="https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components">react.dev: Controlled vs Uncontrolled</a></p>
+<p><strong>Ключевая мысль:</strong> controlled input = React state единственный источник правды; <code>value</code> + <code>onChange</code> для каждого поля.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Перепиши Todo App (vanilla JS) на React с <code>useState</code></li>
+<li>Поля: добавление задачи, чекбокс «выполнено», удаление</li>
+<li>Фильтр: All / Active / Completed — отдельный state <code>filter</code></li>
+<li>Счётчик активных задач в шапке</li>
+<li>Textarea для описания задачи — controlled</li>
+<li>Select приоритета: low / medium / high</li>
+<li>Проверь tab-навигацию по всем полям формы</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Input полностью controlled</p>
+</li>
+<li>
+<p>[ ] <code>onSubmit</code> формы с <code>preventDefault</code></p>
+</li>
+<li>
+<p>[ ] Фильтрация не мутирует исходный массив</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Перепиши Todo App (vanilla JS) на React с <code>useState</code></li>
+<li>Поля: добавление задачи, чекбокс «выполнено», удаление</li>
+<li>Фильтр: All / Active / Completed — отдельный state <code>filter</code></li>
+<li>Счётчик активных задач в шапке</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-12
+
+git add src/components/todo/
+
+git commit -m &quot;week-12 day-79: controlled inputs и Todo на React&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p><code>defaultValue</code> вместо <code>value</code> — компонент становится uncontrolled</p>
+</li>
+<li>
+<p>Забытый <code>key</code> при рендере списка задач — баги при удалении</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-12--week-12-day-79');</script>
+</body>
+</html>

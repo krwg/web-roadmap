@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 1 (Mon): Введение в TypeScript · TypeScript · web-roadmap</title>
+  <meta name="description" content="День 1 (Mon): Введение в TypeScript — неделя 10.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-10--week-10-day-1">
+  <meta http-equiv="refresh" content="0;url=../#week-10--week-10-day-1">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-10--week-10-day-1">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-10-day-1">День 1 (Mon): Введение в TypeScript</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>TypeScript — это надмножество JavaScript со статической системой типов. Код пишется в <code>.ts</code> (или <code>.tsx</code> для JSX), компилируется компилятором <code>tsc</code> в обычный JavaScript, который выполняется в браузере или Node.js. Типы существуют только на этапе разработки и <strong>стираются</strong> при компиляции — в runtime никакой проверки типов нет. Зато IDE и компилятор ловят ошибки до запуска: опечатки в свойствах, неверные аргументы, забытые <code>null</code>.</p>
+<p>Установка: <code>npm init -y</code>, <code>npm i -D typescript</code>, <code>npx tsc --init</code> создаёт <code>tsconfig.json</code>. Ключевые опции: <code>strict: true</code> (включает все строгие проверки), <code>target</code> (версия JS на выходе), <code>module</code> (система модулей), <code>outDir</code> и <code>rootDir</code>. Базовые типы: <code>string</code>, <code>number</code>, <code>boolean</code>, <code>null</code>, <code>undefined</code>, <code>bigint</code>, <code>symbol</code>. Аннотация явная: <code>let name: string = 'Anna'</code>, но чаще полагайся на вывод типов (inference): <code>const count = 0</code> → TypeScript сам определит <code>number</code>.</p>
+<p>Команда <code>npx tsc --noEmit</code> проверяет типы без генерации файлов — удобно в CI. Разница <code>.ts</code> и <code>.tsx</code>: JSX-синтаксис допустим только в <code>.tsx</code>. Скрипт <code>"build": "tsc"</code> в <code>package.json</code> автоматизирует компиляцию, <code>"dev": "tsc --watch"</code> пересобирает при каждом сохранении.</p>
+<p>Хорошая мысленная модель TypeScript — строительные леса вокруг здания: леса (типы) помогают безопасно и быстро строить, показывают, где не хватает опоры, но к моменту сдачи объекта (компиляции в JS) их полностью убирают — в готовом здании (браузере) лесов уже нет, только сам дом. Именно поэтому в runtime нет проверки типов: <code>interface User</code> не существует после компиляции, это чисто инструмент разработки, а не часть исполняемой программы.</p>
+<p>Эта неделя — фундамент для всего оставшегося курса: React-компоненты, их props, состояние и API-слои в дальнейшем описываются практически исключительно на TypeScript, и большинство современных вакансий junior-frontend разработчика требуют именно TS, а не чистый JS. Инвестиция в понимание типов сейчас окупится кратно уже на неделе 11.</p>
+<p>Частое заблуждение — думать, что TypeScript «медленнее» JavaScript в исполнении: это неверно, поскольку типы стираются до запуска, и скомпилированный <code>.js</code>-файл работает ровно с той же скоростью, что и написанный вручную JS. Единственная «цена» TypeScript — время компиляции (<code>tsc</code>) перед запуском, а не runtime-производительность. Конкретный пример пользы: <code>function add(a: number, b: number) { return a + b }</code>, вызванная как <code>add('2', '3')</code>, немедленно подсветится редактором как ошибка ещё до сохранения файла — в чистом JS та же ошибка обнаружилась бы только в runtime как склейка строк <code>'23'</code> вместо ожидаемого <code>5</code>, и такую опечатку легко пропустить в задании 4 практики («исправь все ошибки компиляции»).</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html">TypeScript: Getting Started</a>
+- <a href="https://learn.javascript.ru/types">learn.javascript.ru: Типы</a>
+- <a href="https://www.typescriptlang.org/tsconfig">TSConfig Reference</a></p>
+<p><strong>Ключевая мысль:</strong> TypeScript ловит целый класс ошибок на этапе компиляции — типы это документация, которую нельзя проигнорировать.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Создай проект <code>learning-log/week-10</code>, инициализируй TypeScript</li>
+<li>Перепиши <code>utils.js</code> из прошлых недель в <code>utils.ts</code></li>
+<li>Включи <code>strict: true</code> в <code>tsconfig.json</code></li>
+<li>Исправь все ошибки компиляции</li>
+<li>Настрой скрипт <code>"build": "tsc"</code> в package.json</li>
+<li>Добавь <code>"dev": "tsc --watch"</code> для автопересборки</li>
+<li>Создай <code>src/index.ts</code> — точка входа, импорт utils</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] <code>tsc</code> компилирует без ошибок</p>
+</li>
+<li>
+<p>[ ] <code>strict: true</code> включён</p>
+</li>
+<li>
+<p>[ ] Понимаю разницу .ts и .js на выходе</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Создай проект <code>learning-log/week-10</code>, инициализируй TypeScript</li>
+<li>Перепиши <code>utils.js</code> из прошлых недель в <code>utils.ts</code></li>
+<li>Включи <code>strict: true</code> в <code>tsconfig.json</code></li>
+<li>Исправь все ошибки компиляции</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add package.json tsconfig.json src/
+
+git commit -m &quot;week-10 day-01: инициализация TS-проекта и utils.ts&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-10--week-10-day-1');</script>
+</body>
+</html>

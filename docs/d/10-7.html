@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 7 (Sun): Миграция и strict mode · TypeScript · web-roadmap</title>
+  <meta name="description" content="День 7 (Sun): Миграция и strict mode — неделя 10.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-10--week-10-day-7">
+  <meta http-equiv="refresh" content="0;url=../#week-10--week-10-day-7">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-10--week-10-day-7">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-10-day-7">День 7 (Sun): Миграция и strict mode</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Миграция существующего JS-проекта на TypeScript может быть постепенной. В <code>tsconfig.json</code> включи <code>allowJs: true</code> — компилятор будет проверять <code>.js</code> файлы рядом с <code>.ts</code>. <code>checkJs: true</code> добавляет проверку типов в JS через JSDoc-аннотации. Переименовывай файлы по одному: <code>api.js</code> → <code>api.ts</code>, исправляй ошибки, коммить.</p>
+<p>Типы для npm-пакетов без встроенной типизации лежат в DefinitelyTyped: <code>@types/react</code>, <code>@types/node</code>. Declaration files (<code>.d.ts</code>) описывают форму JS-модуля без реализации — нужны для legacy-библиотек. Path aliases в tsconfig (<code>"@/*": ["src/*"]</code>) и в <code>vite.config.ts</code> сокращают импорты: <code>import { Button } from '@/components/Button'</code>.</p>
+<p>Строгие опции поверх <code>strict</code>: <code>noUncheckedIndexedAccess</code> добавляет <code>| undefined</code> к <code>arr[i]</code> и <code>obj[key]</code> — заставляет проверять границы. <code>exactOptionalPropertyTypes</code> различает «поле отсутствует» и «поле равно <code>undefined</code>». Документируй решения tsconfig в <code>docs/typescript.md</code> — будущий ты (и команда) скажут спасибо.</p>
+<p>Мысленная модель постепенной миграции — замена деталей в работающем автомобиле на ходу, а не разбор его на запчасти в гараже на неделю: <code>allowJs: true</code> позволяет <code>.ts</code> и <code>.js</code> файлам существовать бок о бок и импортировать друг друга, пока файлы переименовываются по одному (<code>api.js</code> → <code>api.ts</code>), а не одним гигантским коммитом, который рискует сломать всё сразу и который невозможно нормально код-ревьюить.</p>
+<p>Этот навык напрямую пригодится в реальной работе: подавляющее большинство существующих production-кодовых баз в индустрии — это не написанный с нуля на строгом TypeScript проект, а именно постепенно мигрирующий JS-код, и умение делать это безопасно, файл за файлом, ценится не меньше умения писать типы с нуля. <code>noUncheckedIndexedAccess</code> — одна из самых важных строгих опций, о которой часто не знают даже после нескольких месяцев с TypeScript.</p>
+<p>Частое заблуждение — считать, что <code>strict: true</code> уже покрывает все возможные проверки безопасности типов: на самом деле <code>noUncheckedIndexedAccess</code> не входит в <code>strict</code> по историческим причинам обратной совместимости, и без неё <code>const item = arr[999]</code> в массиве из трёх элементов будет типизирован как обычный элемент, а не <code>T | undefined</code>, хотя в runtime там окажется <code>undefined</code> — источник классических «Cannot read property of undefined» уже после успешной компиляции. Задание 3 практики («включи noUncheckedIndexedAccess — исправь новые ошибки») специально показывает, сколько скрытых мест в коде полагались на удачу при обращении по индексу.</p>
+<p>Не стоит включать все строгие опции разом «для галочки»: каждая новая опция может вскрыть десятки мест в существующем коде, требующих исправления, и разумнее включать их по одной, коммитить исправления отдельно и двигаться к максимальной строгости постепенно — это тот же принцип итеративной миграции, что и с самим переходом с JS на TS.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html">Handbook: Migrating from JavaScript</a>
+- <a href="https://github.com/DefinitelyTyped/DefinitelyTyped">DefinitelyTyped</a>
+- <a href="https://www.typescriptlang.org/tsconfig#noUncheckedIndexedAccess">TSConfig: noUncheckedIndexedAccess</a></p>
+<p><strong>Ключевая мысль:</strong> миграция на TS — итеративный процесс; strict-опции и path aliases делают кодовую базу надёжнее с каждым коммитом.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Настрой alias <code>@/</code> в tsconfig и vite.config</li>
+<li>Мигрируй api-модуль в TS с полной типизацией</li>
+<li>Включи <code>noUncheckedIndexedAccess</code> — исправь новые ошибки</li>
+<li>Напиши <code>.d.ts</code> для маленькой JS-библиотеки без типов (mock)</li>
+<li>Документируй tsconfig решения в <code>docs/typescript.md</code></li>
+<li>Собери <strong>Typed API Client</strong> — финальная структура пакета</li>
+<li>Тег <code>week-10-done</code> после проверки strict mode</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Path aliases работают</p>
+</li>
+<li>
+<p>[ ] api модуль полностью типизирован</p>
+</li>
+<li>
+<p>[ ] noUncheckedIndexedAccess не ломает сборку</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Настрой alias <code>@/</code> в tsconfig и vite.config</li>
+<li>Мигрируй api-модуль в TS с полной типизацией</li>
+<li>Включи <code>noUncheckedIndexedAccess</code> — исправь новые ошибки</li>
+<li>Напиши <code>.d.ts</code> для маленькой JS-библиотеки без типов (mock)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add .
+
+git commit -m &quot;week-10 day-07: strict tsconfig и Typed API Client&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-10--week-10-day-7');</script>
+</body>
+</html>

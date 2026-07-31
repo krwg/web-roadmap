@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 142 (Вт): Единый API-контракт и обработка ошибок · Docker · web-roadmap</title>
+  <meta name="description" content="День 142 (Вт): Единый API-контракт и обработка ошибок — неделя 21.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-21--week-21-day-142">
+  <meta http-equiv="refresh" content="0;url=../#week-21--week-21-day-142">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-21--week-21-day-142">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-21-day-142">День 142 (Вт): Единый API-контракт и обработка ошибок</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>API contract — общий язык фронтенда и бэкенда. OpenAPI/Swagger — source of truth: типы, статусы, примеры. Единый формат ошибок <code>{ error: { code, message, details? } }</code> упрощает парсинг на клиенте. 4xx — «ты сделал что-то не так», 5xx — «попробуй позже».</p>
+<p>Три UI-состояния на каждой data-fetching странице: loading (spinner), error (message + retry), empty (подсказка действия). <code>services/api.ts</code> — единый fetch wrapper с auth header и error parsing; не дублируй fetch в 10 компонентах. TypeScript types <code>Task</code>, <code>ApiError</code> в <code>types/api.ts</code>.</p>
+<p>Проверяй <code>res.ok</code> перед <code>json()</code> — иначе парсишь HTML error page как JSON. React Query/SWR — опционально для кеша и retry. Сверь frontend types с OpenAPI вручную или через openapi-typescript.</p>
+<p>Ментальная модель: API contract — это письменный договор между командами (или между тобой сегодняшним и тобой через месяц), а не подразумеваемое соглашение в голове. Если backend меняет форму ошибки без предупреждения, frontend ломается тихо — вот почему OpenAPI-схема и типизированные ошибки экономят часы интеграционной отладки. В реальных компаниях frontend и backend часто пишут разные люди или разные команды, и контракт — единственное, что синхронизирует их работу без созвонов на каждый чих.</p>
+<p>Конкретный пример: если API возвращает <code>{ error: "Not found" }</code> в одном endpoint и <code>{ message: "Not found", code: 404 }</code> в другом, frontend не может написать один универсальный error handler — придётся городить if-ветки под каждый случай, что быстро превращается в технический долг. Частое заблуждение junior-разработчиков — «раз fetch не выбросил exception, значит всё ок» — но fetch не бросает ошибку на HTTP 404/500, только на сетевой сбой, поэтому проверка <code>res.ok</code> обязательна перед <code>res.json()</code>, иначе распарсишь HTML-страницу ошибки как JSON и получишь непонятный краш. Три состояния — loading/error/empty, которые ты добавляешь сегодня на каждую страницу, станут обязательным критерием приёмки для Dashboard и Tasks в DevHub capstone (неделя 22, день 150) — привычка, заложенная сейчас, там уже не потребует отдельного обдумывания.</p>
+<p>Для продакшена единый <code>services/api.ts</code> даёт ещё один практический бонус — единую точку для будущих улучшений вроде retry с exponential backoff или отмены запроса при размонтировании компонента (AbortController). Если fetch-логика раскидана по компонентам, добавление такой функциональности требует правки в десятке мест и почти гарантированно приводит к рассинхронизации поведения между страницами.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://swagger.io/specification/">OpenAPI</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">Fetch API</a></li>
+<li><a href="https://tanstack.com/query/latest">TanStack Query</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> один api module; loading/error/empty — не опциональный UX.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>services/api.ts</code> — единый fetch wrapper с error parsing и auth header</li>
+<li>Все страницы: loading spinner, error message + retry button, empty state</li>
+<li>Toast при успешном create/update/delete (или inline feedback)</li>
+<li>Типы <code>Task</code>, <code>Note</code>, <code>ApiError</code> в <code>types/api.ts</code></li>
+<li>4xx показывает user-friendly message; 5xx — «Попробуйте позже»</li>
+<li>Сверь frontend types с OpenAPI schema (ручно или openapi-typescript)</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Один api module, не fetch в каждом компоненте
+- [ ] Network error показывает понятное сообщение
+- [ ] 4xx/5xx обрабатываются по-разному</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>services/api.ts</code> — единый fetch wrapper с error parsing и auth header</li>
+<li>Все страницы: loading spinner, error message + retry button, empty state</li>
+<li>Toast при успешном create/update/delete (или inline feedback)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-21/</code> → <code>git commit -m "week 21 day 142: API client loading error states"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Дублирование fetch логики в 10 компонентах</li>
+<li>Игнорирование <code>res.ok</code> — парсинг error HTML как JSON</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-21--week-21-day-142');</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 128 (Вт): Асинхронность в Node · Node.js · web-roadmap</title>
+  <meta name="description" content="День 128 (Вт): Асинхронность в Node — неделя 19.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-19--week-19-day-128">
+  <meta http-equiv="refresh" content="0;url=../#week-19--week-19-day-128">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-19--week-19-day-128">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-19-day-128">День 128 (Вт): Асинхронность в Node</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Асинхронность — сердце Node. Эволюция: callback → Promise → async/await. Event loop libuv обрабатывает I/O неблокирующе, но синхронный <code>fs.readFileSync</code> в сервере заморозит все запросы — используй async API. <code>await</code> без <code>try/catch</code> — необработанный rejection.</p>
+<p>EventEmitter (<code>on</code>, <code>emit</code>, <code>once</code>) — основа многих Node API и паттерн pub/sub. <code>process.on('unhandledRejection')</code> ловит забытые rejections — настрой в entry point. <code>util.promisify</code> оборачивает legacy callback API в Promise — для понимания, не для нового кода.</p>
+<p>File watcher на <code>notes.json</code> учит реагировать на изменения; SIGINT корректно останавливает watcher. <code>Promise.all</code> читает три файла параллельно. Замер sync vs async на 10 файлах — наглядная демонстрация блокировки main thread.</p>
+<p>Ментальная модель event loop — один официант на много столиков. Официант (главный поток Node) не готовит блюдо сам: он передаёт заказ на кухню (файловую систему, сеть, таймер через libuv) и тут же идёт принимать заказ у следующего столика, а не стоит и ждёт готовности. Когда блюдо готово, официант возвращается и подаёт его — это и есть callback/promise resolution. Именно эта модель позволяет Node одним потоком обслуживать тысячи одновременных соединений.</p>
+<p>Это критично для всего, что будет построено дальше: каждый route-обработчик в Express на этой неделе — асинхронная функция, и если внутри неё случайно окажется синхронный блокирующий вызов (<code>fs.readFileSync</code> на большом файле, тяжёлые вычисления в цикле), это заморозит обработку <em>всех</em> остальных пользователей сервера одновременно, а не только текущий запрос — потому что официант всего один. <code>EventEmitter</code> с методами <code>on</code>, <code>emit</code>, <code>once</code> — ещё один слой этой же модели: множество встроенных Node API (потоки, HTTP-сервер) построены на событиях, и понимание паттерна pub/sub здесь напрямую объясняет, как работают, например, обработчики <code>req.on('data', ...)</code> при чтении тела запроса вручную.</p>
+<p>Частое заблуждение — думать, что <code>async/await</code> сам по себе даёт параллелизм. <code>await</code> внутри функции лишь приостанавливает выполнение <em>этой</em> функции до готовности промиса, но следующая строка кода не начнёт выполняться, пока не завершится текущая — если нужно выполнить три независимые операции одновременно, необходим явный <code>Promise.all([p1, p2, p3])</code>, а последовательные <code>await</code> одна за другой выполнятся строго по очереди, теряя выгоду от параллельного I/O. Вторая типичная ошибка — забыть <code>try/catch</code> вокруг <code>await</code>: непойманный rejected promise превращается в <code>unhandledRejection</code>, который в новых версиях Node может привести к аварийному завершению процесса. Настройка <code>process.on('unhandledRejection', ...)</code> в точке входа приложения — не избыточная предосторожность, а страховка от того, что один забытый <code>catch</code> где-то в глубине кода уронит весь сервер целиком.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick">Event Loop</a></li>
+<li><a href="https://nodejs.org/api/events.html">EventEmitter</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function">async/await (MDN)</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> не блокируй event loop; await + try/catch на каждом I/O.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Перепиши file I/O на async/await с try/catch</li>
+<li>File watcher: логирует изменения <code>notes.json</code>, останавливается на SIGINT</li>
+<li>Промисификация: <code>const readFile = promisify(fs.readFile)</code> — для понимания legacy</li>
+<li>Обработка <code>unhandledRejection</code> и <code>uncaughtException</code> в entry point</li>
+<li>Параллельное чтение 3 файлов через <code>Promise.all</code></li>
+<li>Замер: sync <code>readFileSync</code> vs async на 10 файлах — почувствуй блокировку</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Нет callback hell — только async/await
+- [ ] Watcher корректно останавливается (SIGINT)
+- [ ] try/catch вокруг await</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Перепиши file I/O на async/await с try/catch</li>
+<li>File watcher: логирует изменения <code>notes.json</code>, останавливается на SIGINT</li>
+<li>Промисификация: <code>const readFile = promisify(fs.readFile)</code> — для понимания legacy</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 128: async file watcher and error handling"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Забытый await — Promise вместо данных</li>
+<li>Синхронный <code>fs.readFileSync</code> в сервере — блокирует event loop</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-19--week-19-day-128');</script>
+</body>
+</html>

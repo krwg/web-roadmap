@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 6 (Sat): Функциональные приёмы · JS advanced · web-roadmap</title>
+  <meta name="description" content="День 6 (Sat): Функциональные приёмы — неделя 09.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-09--week-09-day-6">
+  <meta http-equiv="refresh" content="0;url=../#week-09--week-09-day-6">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-09--week-09-day-6">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-09-day-6">День 6 (Sat): Функциональные приёмы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library System</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Функциональное программирование в JavaScript — набор приёмов, делающих код предсказуемым. Чистая функция (pure function) при одинаковых аргументах всегда возвращает одинаковый результат и не вызывает побочных эффектов (не мутирует внешние переменные, не пишет в DOM). <code>map</code>, <code>filter</code>, <code>reduce</code> — примеры функций высшего порядка (HOF): они принимают функцию как аргумент и абстрагируют обход коллекции.</p>
+<p>Композиция объединяет маленькие функции в конвейер: <code>pipe(validate, normalize, save)(input)</code> читается слева направо, <code>compose</code> — справа налево. Каррирование превращает <code>add(a, b)</code> в <code>add(a)(b)</code> — полезно для частичного применения (<code>filterBy('status', 'active')</code>). Иммутабельность достигается через spread и <code>structuredClone</code> вместо прямой мутации.</p>
+<p>Рекурсия элегантна для деревьев и вложенных структур, но глубокая рекурсия упрётся в лимит стека (stack overflow). Для горячих путей предпочитай итерацию. <code>memoize(fn)</code> кэширует результаты чистой функции по аргументам — классический приём оптимизации. Referential transparency означает: можно заменить вызов функции её результатом без изменения поведения программы.</p>
+<p>Мысленная модель чистой функции — торговый автомат, а не живой кассир: положи одну и ту же монету (аргумент) — всегда получишь один и тот же товар (результат), и автомат никогда не крадёт твои деньги из чужого кошелька (не трогает внешнее состояние) и не меняет цену в зависимости от настроения. Именно предсказуемость делает чистые функции такими лёгкими для тестирования — не нужен сложный setup, достаточно вызвать функцию с известными входными данными и сравнить результат.</p>
+<p>Композиция (<code>pipe</code>/<code>compose</code>) и иммутабельность станут ежедневной практикой в React: обновление state через <code>setState(prev =&gt; ({...prev, field: value}))</code> — это иммутабельный апдейт, а селекторы данных обычно строятся именно как композиция маленьких чистых функций. Понимание рекурсии готовит к работе с деревьями — DOM-деревом, деревом компонентов React, вложенными комментариями или категориями.</p>
+<p>Частое заблуждение — считать, что <code>map</code>/<code>filter</code> мутируют исходный массив: на самом деле оба метода возвращают <strong>новый</strong> массив, оставляя оригинал нетронутым — в отличие от <code>push</code>, <code>splice</code> или прямого присваивания по индексу, которые мутируют исходные данные. Конкретный пример риска рекурсии — глубоко вложенное дерево комментариев на 10000 уровней: рекурсивный обход упадёт с <code>RangeError: Maximum call stack size exceeded</code>, тогда как итеративный вариант со своим стеком (массивом) отработает без проблем — это стоит проверить в задании 5 практики на <code>factorial(100)</code> и увидеть реальный предел.</p>
+<p>Тай-брейк между чистотой и производительностью решается прагматично: если функция вызывается редко (обработчик клика), пиши максимально чистой; если в горячем цикле рендера тысяч элементов — допустима контролируемая мутация локальной копии внутри функции, при условии что наружу она всё равно отдаёт новый объект и не трогает входные аргументы.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/currying-partials">learn.javascript.ru: Каррирование</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce">MDN: Array.prototype.reduce()</a>
+- <a href="https://javascript.info/recursion">javascript.info: Рекурсия и стек</a></p>
+<p><strong>Ключевая мысль:</strong> pure functions + immutability + composition дают код, который легко тестировать, переиспользовать и рассуждать о нём.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Перепиши обработку списка только pure functions</li>
+<li><code>pipe(...fns)</code> — композиция справа налево</li>
+<li>Curried <code>add(a)(b)(c)</code> или практичный <code>filterBy(prop, value)</code></li>
+<li>Рекурсивный обход вложенного меню (tree)</li>
+<li>Сравни производительность recursion vs loop для factorial(100) — stack overflow?</li>
+<li>Реализуй <code>memoize(fn)</code> для чистой функции с кэшем</li>
+<li>Рефакторинг фильтрации каталога через pipe из pure-функций</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Минимум 3 pure functions</p>
+</li>
+<li>
+<p>[ ] pipe/compose реализован</p>
+</li>
+<li>
+<p>[ ] Понимаю риск stack overflow в рекурсии</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Перепиши обработку списка только pure functions</li>
+<li><code>pipe(...fns)</code> — композиция справа налево</li>
+<li>Curried <code>add(a)(b)(c)</code> или практичный <code>filterBy(prop, value)</code></li>
+<li>Рекурсивный обход вложенного меню (tree)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-09
+
+git add src/utils/fp.js
+
+git commit -m &quot;week-09 day-06: pipe, currying и memoize&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-09--week-09-day-6');</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 152 (Пт): Docker — локальный full-stack · Capstone · web-roadmap</title>
+  <meta name="description" content="День 152 (Пт): Docker — локальный full-stack — неделя 22.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-22--week-22-day-152">
+  <meta http-equiv="refresh" content="0;url=../#week-22--week-22-day-152">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-22--week-22-day-152">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-22-day-152">День 152 (Пт): Docker — локальный full-stack</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Docker Compose — критерий сдачи capstone: <code>docker compose up</code> поднимает всё локально. Переиспользуй Task Manager Docker (нед. 21): services <code>db</code>, <code>backend</code>, <code>frontend</code>; healthchecks; named volumes; entrypoint wait-for-db → migrate → seed → start.</p>
+<p>Multi-stage frontend Dockerfile (nginx + dist). Backend Dockerfile slim. <code>VITE_API_URL</code> как build arg — в docker network указывает на backend service, не localhost. <code>.dockerignore</code> в обоих папках. <code>ARCHITECTURE.md</code> с Mermaid: client → API → DB → volumes.</p>
+<p>README «запуск за 5 команд»: clone → copy <code>.env</code> → <code>docker compose up --build</code> → open browser. Backend стартует до PG — healthcheck + retry в entrypoint. Полный smoke: auth + CRUD через dockerized frontend.</p>
+<p>Ментальная модель: docker compose up для целого capstone — это финальная репетиция перед premiere: если что-то не заводится в контейнерах, лучше узнать это сегодня, а не в день деплоя, когда времени на диагностику почти не останется. Для оценки готовности к junior-позиции воспроизводимость окружения («работает не только у меня») — один из первых критериев, которые технический ревьюер портфолио проверяет буквально за одну команду <code>docker compose up --build</code>.</p>
+<p>Конкретный пример: <code>VITE_API_URL</code> — build-time переменная, поэтому её нельзя просто передать в <code>docker run</code> как runtime env — если её значение зашито на localhost во время <code>npm run build</code> внутри Docker, production-сборка frontend будет пытаться достучаться до localhost из браузера пользователя, а не до реального backend, и все запросы будут падать молча. Частое заблуждение — «раз локально все три сервиса работают по отдельности, вместе тоже заработают» — но именно network-конфигурация (hostname <code>backend</code> вместо <code>localhost</code>, healthcheck на PostgreSQL) чаще всего ломается при первой сборке compose-стека. ARCHITECTURE.md с Mermaid-диаграммой, который ты создаёшь сегодня, станет частью финального README и будет тем документом, который ревьюер или интервьюер откроет первым, чтобы за 30 секунд понять устройство твоего DevHub.</p>
+<p>Для продакшена «запуск за 5 команд» в README — это не про красоту, а про снижение барьера для onboarding: чем больше шагов и недокументированных предположений («у тебя же уже установлен Postgres 16, да?») требует локальный запуск, тем меньше шанс, что коллега, ревьюер или рекрутер вообще дойдут до того, чтобы попробовать проект — большинство просто закроют вкладку после первой непонятной ошибки.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="#projects--projects-неделя-21-task-manager-docker">Task Manager Docker (нед. 21)</a></li>
+<li><a href="https://docs.docker.com/compose/">Docker Compose</a></li>
+<li><a href="#projects--projects-обязательный-стек">Infra в стеке</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> docker compose — часть MVP; <code>VITE_API_URL</code> для docker network, не localhost.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>docker-compose.yml</code>: postgres + backend + frontend (nginx)</li>
+<li>Backend Dockerfile, Frontend multi-stage Dockerfile</li>
+<li>Healthcheck на db (<code>pg_isready</code>) и backend (<code>/api/health</code>)</li>
+<li>Entrypoint: wait-for-db → migrate → seed → start</li>
+<li><code>.dockerignore</code> в frontend и backend</li>
+<li><code>docker compose up --build</code> — полный smoke test</li>
+<li><code>ARCHITECTURE.md</code> — Mermaid diagram (client → API → DB → volumes)</li>
+<li>Обнови README: «запуск за 5 команд» (клон → env → compose up → open browser)</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] <code>docker compose up</code> поднимает всё локально (<a href="#projects--projects-критерии-сдачи-capstone">критерии сдачи</a>)
+- [ ] Auth + CRUD работают через dockerized frontend
+- [ ] <code>ARCHITECTURE.md</code> с диаграммой
+- [ ] README local setup ≤ 5 команд</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>docker-compose.yml</code>: postgres + backend + frontend (nginx)</li>
+<li>Backend Dockerfile, Frontend multi-stage Dockerfile</li>
+<li>Healthcheck на db (<code>pg_isready</code>) и backend (<code>/api/health</code>)</li>
+<li>Entrypoint: wait-for-db → migrate → seed → start</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-22-capstone/</code> → <code>git commit -m "week 22 day 152: DevHub docker-compose and ARCHITECTURE.md"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Backend стартует до PG — добавь healthcheck и retry</li>
+<li><code>VITE_API_URL</code> указывает на localhost внутри docker network</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-22--week-22-day-152');</script>
+</body>
+</html>

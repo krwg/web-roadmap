@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 2 (Tue): Типы, union, literal, any · TypeScript · web-roadmap</title>
+  <meta name="description" content="День 2 (Tue): Типы, union, literal, any — неделя 10.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-10--week-10-day-2">
+  <meta http-equiv="refresh" content="0;url=../#week-10--week-10-day-2">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-10--week-10-day-2">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-10-day-2">День 2 (Tue): Типы, union, literal, any</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Union types объединяют несколько типов: <code>string | number</code> означает «или строка, или число». Literal types сужают множество до конкретных значений: <code>type Theme = 'light' | 'dark'</code> — не любая строка, а ровно два варианта. TypeScript не даст присвоить <code>'blue'</code>, если тип допускает только <code>'light' | 'dark'</code>. Это основа для моделирования состояний и флагов.</p>
+<p><code>any</code> отключает проверку типов — «дыра» в системе, через которую ошибки просачиваются обратно в runtime. Избегай <code>any</code>; вместо него используй <code>unknown</code> — тип «что-то есть, но мы не знаем что». С <code>unknown</code> нельзя ничего делать, пока не сузишь тип через <code>typeof</code>, <code>in</code> или type guard. Discriminated union добавляет общее поле-дискриминатор: <code>{ ok: true, data: T } | { ok: false, error: string }</code> — switch по <code>ok</code> сужает тип в каждой ветке.</p>
+<p><code>as const</code> делает объект readonly с literal-типами: <code>const STATUS = { LOADING: 'loading' } as const</code>. Тип <code>never</code> означает «недостижимо» — полезен в exhaustive switch: если добавишь новый вариант union, компилятор укажет на непокрытую ветку. Пользовательские type guards: <code>function isUser(x: unknown): x is User</code> — явный контракт сужения.</p>
+<p>Мысленная модель union type — меню с ограниченным выбором, а не открытый вопрос «что хочешь съесть»: <code>type Theme = 'light' | 'dark'</code> — это меню из двух блюд, и компилятор физически не позволит «заказать» <code>'blue'</code>, потому что такого пункта нет. Это резко отличается от обычного <code>string</code>, который допускает любую строку — как меню без ограничений, где легко случайно заказать несуществующее блюдо и получить ошибку уже на кухне (в runtime).</p>
+<p>Discriminated union и exhaustive switch — техника, которая будет использоваться постоянно при моделировании ответов API (успех/ошибка) и состояний UI (loading/success/error/empty, как в неделе 8) — только теперь эти состояния описываются типом, а не просто строкой, и компилятор гарантирует, что ни одна ветка не забыта. Это прямая подготовка к React, где состояния компонентов часто моделируются именно так.</p>
+<p>Частое заблуждение — считать <code>any</code> и <code>unknown</code> взаимозаменяемыми, потому что оба «принимают что угодно». Разница принципиальна: <code>any</code> отключает все проверки для значения и всего, что из него получено (заражает код), а <code>unknown</code> требует явно сузить тип перед использованием — <code>const x: unknown = data; x.toUpperCase()</code> не скомпилируется, пока не добавишь <code>if (typeof x === 'string')</code>. Конкретный пример из практики: функция <code>formatId(id: string | number)</code>, где внутри нужно явно проверить <code>typeof id === 'string'</code>, прежде чем вызвать <code>.toUpperCase()</code> — иначе компилятор справедливо укажет, что у <code>number</code> такого метода нет.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/everyday-types.html">Handbook: Everyday Types</a>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html">Handbook: Narrowing</a>
+- <a href="https://www.totaltypescript.com/tutorials/beginners-typescript">Total TypeScript: Beginners</a></p>
+<p><strong>Ключевая мысль:</strong> union + narrowing превращают TypeScript в инструмент моделирования состояний; <code>unknown</code> безопаснее <code>any</code>.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Тип <code>Theme = 'light' | 'dark'</code> для переключателя темы</li>
+<li>Функция <code>formatId(id: string | number): string</code> с narrowing</li>
+<li>Замени <code>any</code> на <code>unknown</code> + проверку перед использованием</li>
+<li>Discriminated union <code>Result = { ok: true, data: T } | { ok: false, error: string }</code></li>
+<li>Используй <code>as const</code> для объекта констант STATUS</li>
+<li>Напиши type guard <code>isApiError(err): err is ApiError</code></li>
+<li>Exhaustive switch по union — <code>default: const _exhaustive: never = value</code></li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Нет <code>any</code> в новом коде</p>
+</li>
+<li>
+<p>[ ] Union types с корректным narrowing</p>
+</li>
+<li>
+<p>[ ] Result pattern для ошибок API</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Тип <code>Theme = 'light' | 'dark'</code> для переключателя темы</li>
+<li>Функция <code>formatId(id: string | number): string</code> с narrowing</li>
+<li>Замени <code>any</code> на <code>unknown</code> + проверку перед использованием</li>
+<li>Discriminated union <code>Result = { ok: true, data: T } | { ok: false, error: string }</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add src/types/
+
+git commit -m &quot;week-10 day-02: union, Result pattern и type guards&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p><code>any</code> распространяется как зараза — теряется смысл TS</p>
+</li>
+<li>
+<p>Утверждение <code>as Type</code> без проверки — ложная безопасность</p>
+</li>
+<li>
+<p>Забытый <code>strictNullChecks</code> — null не ловится</p>
+</li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-10--week-10-day-2');</script>
+</body>
+</html>

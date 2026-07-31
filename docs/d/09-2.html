@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 2 (Tue): this и контекст вызова · JS advanced · web-roadmap</title>
+  <meta name="description" content="День 2 (Tue): this и контекст вызова — неделя 09.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-09--week-09-day-2">
+  <meta http-equiv="refresh" content="0;url=../#week-09--week-09-day-2">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-09--week-09-day-2">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-09-day-2">День 2 (Tue): this и контекст вызова</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library System</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Ключевое слово <code>this</code> в JavaScript определяется не местом объявления функции, а <strong>способом вызова</strong>. Существует четыре правила (в порядке приоритета): 1) <code>new</code> binding — <code>this</code> указывает на новый объект; 2) explicit binding — <code>call</code>/<code>apply</code>/<code>bind</code> задают <code>this</code> явно; 3) implicit binding — <code>obj.method()</code> привязывает <code>this</code> к <code>obj</code>; 4) default binding — в strict mode <code>this</code> равен <code>undefined</code>, иначе <code>window</code>.</p>
+<p>Потеря контекста — частая ошибка: <code>const fn = obj.handleClick; btn.addEventListener('click', fn)</code> передаёт функцию без объекта, и <code>this</code> внутри станет <code>undefined</code>. Решение — <code>bind</code>: <code>fn.bind(obj)</code> или стрелочная обёртка <code>() =&gt; obj.handleClick()</code>. Методы <code>call</code> и <code>apply</code> вызывают функцию немедленно с заданным <code>this</code>; <code>bind</code> возвращает новую функцию с навсегда привязанным контекстом.</p>
+<p>Стрелочные функции <strong>не имеют</strong> собственного <code>this</code> — они берут <code>this</code> из окружающего лексического scope. Это удобно для колбэков (<code>map</code>, <code>setTimeout</code>), но делает стрелочные функции плохими методами объектов. В strict mode default binding безопаснее — случайная привязка к <code>window</code> исчезает.</p>
+<p>Удобная мысленная модель — бейдж сотрудника, а не имя, зашитое в паспорт: <code>this</code> — это не свойство самой функции, а бейдж, который функция получает <strong>в момент вызова</strong> в зависимости от того, как её позвали. Одна и та же функция <code>greet</code> даст разный <code>this</code>, если её вызвать как <code>user.greet()</code> (бейдж «user»), через <code>greet.call(otherUser)</code> (бейдж «otherUser») или просто <code>greet()</code> без объекта (бейдж не выдан — <code>undefined</code> в strict mode).</p>
+<p>Понимание <code>this</code> критично для следующих двух дней недели: прототипы и классы (<code>class</code> и <code>extends</code>) целиком построены на корректной передаче <code>this</code> через цепочку конструкторов, а <code>super()</code> внутри дочернего класса — по сути явная передача бейджа от родителя к потомку. Позже, при работе с обработчиками событий DOM, потеря <code>this</code> — одна из самых частых причин багов уровня «функция вызвалась, но упала с <code>Cannot read property of undefined</code>».</p>
+<p>Частое заблуждение — думать, что <code>this</code> определяется тем, <strong>где</strong> объявлена функция (как в замыканиях). На самом деле место объявления не влияет на <code>this</code> вообще — только способ вызова. Пример: <code>const handleClick = obj.handleClick; button.addEventListener('click', handleClick)</code> — внутри <code>handleClick</code> при клике <code>this</code> будет указывать на сам <code>button</code> (implicit binding через слушателя события), а не на <code>obj</code>, как ожидал бы новичок, глядя на исходное место объявления метода. Именно это несоответствие ожиданий — суть задания 2 практики: исправить потерю контекста через <code>bind</code>.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/bind">learn.javascript.ru: Методы привязки контекста</a>
+- <a href="https://learn.javascript.ru/reference-type">learn.javascript.ru: Справка по оператору this</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Operators/this">MDN: this</a></p>
+<p><strong>Ключевая мысль:</strong> <code>this</code> — не переменная, а результат вызова; потеря контекста лечится <code>bind</code>, а стрелочные функции наследуют <code>this</code> снаружи.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Демонстрация 4 правил <code>this</code> — 4 примера в Console</li>
+<li>Исправь <code>button.addEventListener('click', obj.handleClick)</code> через bind</li>
+<li>Заимствование метода: <code>[].slice.call(arguments)</code></li>
+<li>Сравни обычную и arrow function как метод объекта</li>
+<li><code>partial</code> через bind: <code>const double = multiply.bind(null, 2)</code></li>
+<li>Реализуй <code>call</code>/<code>apply</code> вручную для одного примера — пойми механику</li>
+<li>Запиши конспект «4 правила this» в <code>day-02-this.md</code></li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] bind использован для сохранения контекста</p>
+</li>
+<li>
+<p>[ ] Понимаю, почему arrow не подходит как метод</p>
+</li>
+<li>
+<p>[ ] 4 правила this — конспект</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Демонстрация 4 правил <code>this</code> — 4 примера в Console</li>
+<li>Исправь <code>button.addEventListener('click', obj.handleClick)</code> через bind</li>
+<li>Заимствование метода: <code>[].slice.call(arguments)</code></li>
+<li>Сравни обычную и arrow function как метод объекта</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-09
+
+git add day-02-this.js day-02-this.md
+
+git commit -m &quot;week-09 day-02: this, bind и 4 правила контекста&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-09--week-09-day-2');</script>
+</body>
+</html>

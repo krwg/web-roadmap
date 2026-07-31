@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 137 (Чт): Тестирование backend — pytest · Auth &amp; tests · web-roadmap</title>
+  <meta name="description" content="День 137 (Чт): Тестирование backend — pytest — неделя 20.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-20--week-20-day-137">
+  <meta http-equiv="refresh" content="0;url=../#week-20--week-20-day-137">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-20--week-20-day-137">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-20-day-137">День 137 (Чт): Тестирование backend — pytest</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Secure Notes</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Backend-тесты ловят регрессии в auth и authorization. pytest + FastAPI TestClient или supertest для Express — HTTP без реального порта. Fixtures: <code>create_user()</code>, <code>auth_headers(token)</code>. Test DB изолирована: отдельная schema или rollback per test — никогда production.</p>
+<p>Arrange-Act-Assert в каждом тесте. Покрой: register success, duplicate 409, wrong password 401, protected 401 без token, 200 с token, user A не видит notes user B. <code>conftest.py</code> — shared setup. <code>pytest --cov=app</code> показывает пробелы.</p>
+<p>Тесты не должны зависеть от порядка выполнения. Hardcoded JWT secret в тестах должен совпадать с app config. ≥ 10 тестов — минимум для Secure Notes. Flaky tests из shared DB без cleanup — исправь до merge.</p>
+<p>Ментальная модель: тест — это исполняемая спецификация поведения, а не бюрократическая формальность. Arrange-Act-Assert структурирует мышление: подготовь данные, вызови действие, проверь результат — один тест проверяет одну вещь. Для junior-разработчика умение писать тесты на auth и authorization — сигнал зрелости для нанимающего менеджера: код без тестов на security-критичные пути в реальной компании не пройдёт code review.</p>
+<p>Конкретный пример пользы: тест «user A не видит notes user B» ловит IDOR-баг ещё до продакшена — без него такая уязвимость обнаруживается только в security-инциденте или пентесте, что стоит репутации и денег. Частое заблуждение новичков — «я протестировал руками через Postman, тестов достаточно» — но ручное тестирование не защищает от регрессий при следующем рефакторинге, а автоматические тесты запускаются на каждый commit. Инфраструктура тестов, которую ты строишь сегодня (fixtures, conftest.py, изоляция БД), — это ровно то, что масштабируется в неделе 22 (день 153) до ≥15 pytest-тестов в CI capstone-проекта.</p>
+<p>Для продакшена тесты выполняют вторую важную функцию — они документируют ожидаемое поведение системы точнее, чем любой комментарий в коде: новый разработчик, зашедший в проект, читает тесты, чтобы понять контракт API, а не гадает по названиям функций. <code>pytest --cov=app</code> показывает не «сколько строк покрыто», а скорее карту слепых зон — мест, куда никто не заглядывал тестами, и именно там чаще всего прячутся баги, которые всплывают в проде. Читай отчёт покрытия критически: 100% покрытия не гарантирует отсутствие багов, если assertions в тестах слабые, но пробелы в покрытии почти всегда указывают на риск.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.pytest.org/en/stable/getting-started.html">pytest</a></li>
+<li><a href="https://fastapi.tiangolo.com/tutorial/testing/">FastAPI Testing</a></li>
+<li><a href="https://github.com/ladjs/supertest">supertest</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> тестируй auth, 403 cross-user и 401 без token — не только happy path.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Тесты auth: register success, duplicate email 409, login, wrong password 401</li>
+<li>Fixture: test user + valid token в <code>Authorization</code> header</li>
+<li>Protected route: 401 без token, 200 с token</li>
+<li>CRUD notes per user — user A не видит notes user B</li>
+<li>≥ 10 pytest тестов для выбранного backend (FastAPI или Express через supertest)</li>
+<li><code>conftest.py</code> с test database и cleanup</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] <code>pytest</code> все зелёные
+- [ ] Тесты не зависят от порядка выполнения
+- [ ] conftest.py с test database</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Тесты auth: register success, duplicate email 409, login, wrong password 401</li>
+<li>Fixture: test user + valid token в <code>Authorization</code> header</li>
+<li>Protected route: 401 без token, 200 с token</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-20/</code> → <code>git commit -m "week 20 day 137: pytest auth and notes tests"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Тесты на shared DB без cleanup — flaky tests</li>
+<li>Hardcoded JWT secret в тестах отличается от app — 401 везде</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-20--week-20-day-137');</script>
+</body>
+</html>

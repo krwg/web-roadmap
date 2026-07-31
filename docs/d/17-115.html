@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 115 (Ср): Нормализация и проектирование схемы · SQL · web-roadmap</title>
+  <meta name="description" content="День 115 (Ср): Нормализация и проектирование схемы — неделя 17.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-17--week-17-day-115">
+  <meta http-equiv="refresh" content="0;url=../#week-17--week-17-day-115">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-17--week-17-day-115">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-17-day-115">День 115 (Ср): Нормализация и проектирование схемы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library Database</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Нормализация убирает избыточность и аномалии обновления. 1NF — атомарные значения в ячейке (не CSV списка id). 2NF — нет частичных зависимостей от составного ключа. 3NF — нет транзитивных зависимостей (город заёмщика не должен дублироваться в каждой записи loan, если borrower уже хранит город).</p>
+<p>One-to-many: FK в таблице «многих» (<code>books.author_id → authors.id</code>). Many-to-many: junction table (<code>task_tags</code> с двумя FK). Именование: <code>snake_case</code>, plural tables (<code>authors</code>, <code>books</code>) — выбери конвенцию и держись её. <code>CHECK (price &gt; 0)</code> и <code>NOT NULL</code> валидируют на уровне БД.</p>
+<p>Денормализация — осознанный trade-off ради скорости чтения, не лень проектировать. ER-диаграмма на dbdiagram.io или Mermaid фиксирует связи до написания SQL. Антипаттерн: хранить список id в одной TEXT-колонке.</p>
+<p>Ментальная модель нормализации — аккуратная картотека, где каждый факт хранится ровно в одном месте. Если город заёмщика продублирован в каждой записи <code>loan</code>, изменение города потребует найти и поправить десятки строк, а забытая хотя бы одна — уже аномалия обновления (данные противоречат друг другу). Нормализованная схема устраняет саму возможность такого рассинхрона: город хранится один раз в <code>borrowers</code>, и <code>loans</code> лишь ссылается на него по FK.</p>
+<p>Схема «Библиотека», которую ты проектируешь сегодня, — не разовое упражнение: это буквально та же схема <code>authors/books/borrowers/loans</code>, которую ты перенесёшь в SQLAlchemy-модели на неделе 18 и в <code>schema.sql</code> для Express на неделе 19. Ошибка в проектировании здесь (например, отсутствие junction table для many-to-many) аукнется трижды — придётся переделывать модели во всех трёх проектах.</p>
+<p>Частое заблуждение — доводить нормализацию до абсурда, разбивая всё на мельчайшие таблицы там, где осознанная денормализация была бы разумным компромиссом ради скорости чтения (это решение, а не лень). Куда более частая ошибка новичков — обратная: хранить список связанных id одной строкой через запятую в TEXT-колонке вместо junction table, что делает невозможными нормальные JOIN-запросы и проверку целостности через FK. В практике дня это прямо проверяется: если книге нужно несколько жанров, единственный правильный путь — таблица <code>book_genres</code> с двумя внешними ключами, а не текстовое поле. Отдельно стоит проговорить конвенции именования: <code>snake_case</code>, множественное число для таблиц (<code>authors</code>, а не <code>author</code>) — мелочь, которая экономит часы споров в команде и делает схему предсказуемой для любого, кто открывает её впервые.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://www.postgresqltutorial.com/postgresql-getting-started/">PostgreSQL Tutorial — Getting Started</a></li>
+<li><a href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-foreign-key/">Normalization (обзор)</a></li>
+<li><a href="https://dbdiagram.io/">dbdiagram.io</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> нормализация защищает от дублирования; many-to-many — всегда junction table.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Спроектируй БД «Библиотека»: <code>authors</code>, <code>books</code>, <code>borrowers</code>, <code>loans</code></li>
+<li>ER-диаграмма на <a href="https://dbdiagram.io/">dbdiagram.io</a> или Mermaid в README</li>
+<li><code>CREATE TABLE</code> с NOT NULL, UNIQUE, CHECK constraints</li>
+<li>Seed: 5 авторов, 20 книг, 3 заёмщика, 10 займов</li>
+<li>Документируй связи: 1:N author→books, N:M если нужны genres</li>
+<li>Проверь: нет дублирования <code>author_name</code> в <code>books</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Нет дублирования author name в books
+- [ ] Junction table для many-to-many (если нужна)
+- [ ] ER-диаграмма в repo</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Спроектируй БД «Библиотека»: <code>authors</code>, <code>books</code>, <code>borrowers</code>, <code>loans</code></li>
+<li>ER-диаграмма на <a href="https://dbdiagram.io/">dbdiagram.io</a> или Mermaid в README</li>
+<li><code>CREATE TABLE</code> с NOT NULL, UNIQUE, CHECK constraints</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-17/</code> → <code>git commit -m "week 17 day 115: library schema and ER diagram"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Хранение списка id в одной колонке CSV — антипаттерн</li>
+<li>Nullable всего подряд — потеря целостности данных</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-17--week-17-day-115');</script>
+</body>
+</html>
