@@ -40,7 +40,7 @@
 <li><a href="https://www.sqlstyle.guide/">SQL Style Guide</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> WHERE фильтрует строки, HAVING — группы; SQL описывает результат, не алгоритм.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Установи <a href="https://sqlitebrowser.org/">DB Browser for SQLite</a> или <code>sqlite3</code> CLI для быстрых экспериментов</li>
 <li>Создай БД «shop»: <code>products</code>, <code>categories</code>, <code>orders</code> с PRIMARY KEY</li>
@@ -53,7 +53,7 @@
 - [ ] Схема с PRIMARY KEY на каждой таблице
 - [ ] ≥ 10 осмысленных запросов в <code>queries.sql</code>
 - [ ] Понимаешь разницу WHERE vs HAVING</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Установи <a href="https://sqlitebrowser.org/">DB Browser for SQLite</a> или <code>sqlite3</code> CLI для быстрых экспериментов</li>
 <li>Создай БД «shop»: <code>products</code>, <code>categories</code>, <code>orders</code> с PRIMARY KEY</li>
@@ -62,7 +62,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
@@ -94,7 +94,7 @@
 <li><a href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-transaction/">Transactions</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> JOIN связывает таблицы; DELETE/UPDATE без WHERE — инцидент.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Расширь shop: <code>customers</code>, <code>order_items</code> с FK</li>
 <li>Запрос: заказы с именами клиентов (INNER JOIN)</li>
@@ -107,7 +107,7 @@
 - [ ] FOREIGN KEY между таблицами
 - [ ] JOIN-запрос возвращает ожидаемые строки
 - [ ] DELETE только с WHERE (не без него!)</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Расширь shop: <code>customers</code>, <code>order_items</code> с FK</li>
 <li>Запрос: заказы с именами клиентов (INNER JOIN)</li>
@@ -116,7 +116,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -148,7 +148,7 @@
 <li><a href="https://dbdiagram.io/">dbdiagram.io</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> нормализация защищает от дублирования; many-to-many — всегда junction table.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Спроектируй БД «Библиотека»: <code>authors</code>, <code>books</code>, <code>borrowers</code>, <code>loans</code></li>
 <li>ER-диаграмма на <a href="https://dbdiagram.io/">dbdiagram.io</a> или Mermaid в README</li>
@@ -161,7 +161,7 @@
 - [ ] Нет дублирования author name в books
 - [ ] Junction table для many-to-many (если нужна)
 - [ ] ER-диаграмма в repo</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Спроектируй БД «Библиотека»: <code>authors</code>, <code>books</code>, <code>borrowers</code>, <code>loans</code></li>
 <li>ER-диаграмма на <a href="https://dbdiagram.io/">dbdiagram.io</a> или Mermaid в README</li>
@@ -170,7 +170,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>
@@ -202,7 +202,7 @@
 <li><a href="https://hub.docker.com/_/postgres">Docker — postgres image</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> PostgreSQL — для multi-user и production; миграция учит диалектные различия.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Подними PostgreSQL (Docker или локально)</li>
 <li>Перенеси схему «Библиотека» в PostgreSQL через <code>schema.sql</code></li>
@@ -215,7 +215,7 @@
 - [ ] Подключение к PG работает
 - [ ] Схема создана через SQL-скрипт <code>schema.sql</code>
 - [ ] Seed script <code>seed.sql</code> выполняется без ошибок</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Подними PostgreSQL (Docker или локально)</li>
 <li>Перенеси схему «Библиотека» в PostgreSQL через <code>schema.sql</code></li>
@@ -224,7 +224,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <ul>
@@ -256,7 +256,7 @@
 <li><a href="https://use-the-index-luke.com/">Use The Index, Luke</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> индекс — trade-off read vs write; EXPLAIN — единственный честный ответ «почему медленно».</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Таблица <code>books</code> с 10 000+ строк (скрипт <code>scripts/generate_books.sql</code>)</li>
 <li><code>EXPLAIN ANALYZE SELECT * FROM books WHERE title LIKE 'Python%'</code> — без индекса</li>
@@ -269,7 +269,7 @@
 - [ ] Индекс создан на колонке поиска
 - [ ] EXPLAIN показывает Index Scan (или объясни почему Seq Scan)
 - [ ] Записаны выводы в <code>notes/indexes.md</code></p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Таблица <code>books</code> с 10 000+ строк (скрипт <code>scripts/generate_books.sql</code>)</li>
 <li><code>EXPLAIN ANALYZE SELECT * FROM books WHERE title LIKE 'Python%'</code> — без индекса</li>
@@ -278,7 +278,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -310,7 +310,7 @@
 <li><a href="https://pypi.org/project/python-dotenv/">python-dotenv</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> placeholders — не опция, а требование безопасности; commit явный или через context manager.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Расширь CLI Task Manager (нед.16): опция <code>--db postgres</code> vs sqlite</li>
 <li><code>DATABASE_URL</code> из <code>.env</code> через <code>python-dotenv</code></li>
@@ -323,7 +323,7 @@
 - [ ] Нет SQL injection — только placeholders
 - [ ] <code>with conn:</code> или try/finally close
 - [ ] <code>.env.example</code> с DATABASE_URL</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Расширь CLI Task Manager (нед.16): опция <code>--db postgres</code> vs sqlite</li>
 <li><code>DATABASE_URL</code> из <code>.env</code> через <code>python-dotenv</code></li>
@@ -332,7 +332,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -364,7 +364,7 @@
 <li><a href="https://www.sqlstyle.guide/">SQL Style Guide</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> SQL — база; ORM — удобство поверх, не замена понимания JOIN и индексов.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Пройди 15 уроков SQLBolt без подсказок — отметь слабые темы</li>
 <li>Напиши 5 сложных запросов: JOIN + агрегат + HAVING + ORDER BY</li>
@@ -377,7 +377,7 @@
 - [ ] 5 сложных запросов с JOIN и агрегатами
 - [ ] Ответы на «INNER vs LEFT JOIN» письменно
 - [ ] venv готов для недели 18</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Пройди 15 уроков SQLBolt без подсказок — отметь слабые темы</li>
 <li>Напиши 5 сложных запросов: JOIN + агрегат + HAVING + ORDER BY</li>
@@ -386,7 +386,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>

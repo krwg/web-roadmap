@@ -25,7 +25,7 @@
 <p>Почему это важно для всего маршрута: начиная с недели 1 каждый день заканчивается коммитом в эту же папку. Если репозиторий настроен неправильно сегодня — с чужой историей или без <code>.gitignore</code> — проблему придётся решать посреди недели 1, отвлекаясь от HTML.</p>
 <p>Частое заблуждение — думать, что показывать портфолио стоит только после «идеального» результата, поэтому можно закоммитить всё одним большим коммитом в конце. На деле частые маленькие коммиты с понятными сообщениями (<code>feat: add contact form</code>, а не <code>fix</code>) сами по себе сигнал профессионализма — и заметны раньше, чем содержимое кода.</p>
 <p><strong>Ключевая мысль:</strong> репозиторий появляется до первой строки HTML — сегодняшняя практика это подтверждает: вы создаёте <code>learning-log</code>, <code>.gitignore</code> и <code>README.md</code> ещё до того, как напишете хоть один тег.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Аккаунт GitHub (если нет) + 2FA по возможности</li>
 <li><strong>New repository</strong> → имя <code>learning-log</code> → Public → <strong>без</strong> README / .gitignore / license</li>
@@ -45,7 +45,7 @@ git push -u origin main
 <ol start="5">
 <li>Создайте минимальный <code>README.md</code>: название, цель («прохожу web-roadmap»), ссылка на https://github.com/krwg/web-roadmap — закоммитьте</li>
 </ol>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Создать пустой <code>learning-log</code> под своим аккаунтом</li>
 <li>Clone → <code>.gitignore</code> → первый push</li>
@@ -53,7 +53,7 @@ git push -u origin main
 <blockquote>
 <p>Лайт-DoD: репозиторий виден на github.com/ваш-логин/learning-log</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p><code>Permission denied</code> / auth — используйте HTTPS + <a href="https://github.com/settings/tokens">Personal Access Token</a> или GitHub CLI (<code>gh auth login</code>). Ветка называется <code>master</code> вместо <code>main</code> — переименуйте: <code>git branch -M main</code>.</p>
 <hr></article>
   </main>

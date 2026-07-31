@@ -37,7 +37,7 @@
 <p><strong>Ключевая мысль:</strong> Flexbox — одна ось, три свойства выравнивания; <code>gap</code> вместо margin между элементами, и сегодняшняя практика с шапкой и рядом карточек — это как раз тот повседневный паттерн, который встретится в 90% проектов впереди.</p>
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox">MDN: Flexbox</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Сверстай шапку сайта: логотип слева, навигация справа (<code>justify-content: space-between</code>)</li>
 <li>Сделай ряд из 3 карточек одинаковой высоты с <code>align-items: stretch</code></li>
@@ -51,7 +51,7 @@
 - [ ] Шапка не ломается при 768px ширине
 - [ ] Карточки одной высоты без фиксированного <code>height</code>
 - [ ] Flexbox Froggy пройден</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Сверстай шапку сайта: логотип слева, навигация справа (<code>justify-content: space-between</code>)</li>
 <li>Сделай ряд из 3 карточек одинаковой высоты с <code>align-items: stretch</code></li>
@@ -61,7 +61,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
 <h3>Git</h3>
 <ul>
@@ -84,7 +84,7 @@
 <p><strong>Ключевая мысль:</strong> <code>margin-top: auto</code> — flex-паттерн «прижать к краю»; <code>min-width: 0</code> — страховка от переполнения, и оба паттерна сегодня в практике встретятся напрямую в карточке товара и sticky footer.</p>
 <p><strong>Читать:</strong>
 - <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">CSS Tricks: Flexbox Guide</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Карточка товара: изображение, заголовок, описание, цена, кнопка прижата к низу</li>
 <li>Sticky footer: <code>body</code> как flex-column, <code>main { flex: 1 }</code></li>
@@ -98,7 +98,7 @@
 - [ ] Кнопка в карточке всегда внизу при разной длине текста
 - [ ] Footer прижат к низу viewport на короткой странице
 - [ ] Галерея скроллится горизонтально на мобильном</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Карточка товара: изображение, заголовок, описание, цена, кнопка прижата к низу</li>
 <li>Sticky footer: <code>body</code> как flex-column, <code>main { flex: 1 }</code></li>
@@ -108,7 +108,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <ul>
@@ -137,7 +137,7 @@
 <p><strong>Ключевая мысль:</strong> Grid — две оси и именованные зоны; <code>fr</code> делит пространство, а не проценты от неизвестной ширины, и сегодняшняя практика с areas — тренировка «рисовать» макет прямо в CSS, а не вычислять его на бумаге отдельно.</p>
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Web/CSS/CSS_grid_layout">MDN: Grid Layout</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Сетка 3×2 карточек через <code>grid-template-columns: repeat(3, 1fr)</code></li>
 <li>Макет страницы через areas: header, sidebar, main, footer</li>
@@ -151,7 +151,7 @@
 - [ ] Grid Garden пройден
 - [ ] Макет с areas читаем в CSS без HTML-подсказок
 - [ ] Адаптив: при 600px — одна колонка</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Сетка 3×2 карточек через <code>grid-template-columns: repeat(3, 1fr)</code></li>
 <li>Макет страницы через areas: header, sidebar, main, footer</li>
@@ -161,7 +161,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -184,7 +184,7 @@
 <p><strong>Ключевая мысль:</strong> <code>auto-fill</code>/<code>auto-fit</code> + <code>minmax()</code> — адаптивная сетка без ручных breakpoints, и разница между ними стоит того, чтобы проверить её сегодня на практике вживую, а не запоминать теоретически.</p>
 <p><strong>Читать:</strong>
 - <a href="https://css-tricks.com/snippets/css/complete-guide-grid/">CSS Tricks: Grid Guide</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Галерея с <code>grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))</code></li>
 <li>Dashboard: sidebar 250px, main <code>1fr</code>, виджеты внутри main — вложенный grid</li>
@@ -198,7 +198,7 @@
 - [ ] Галерея адаптируется без единой media query
 - [ ] Dashboard читаем на 1024px и 375px
 - [ ] Осознанный выбор flex vs grid в каждом блоке</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Галерея с <code>grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))</code></li>
 <li>Dashboard: sidebar 250px, main <code>1fr</code>, виджеты внутри main — вложенный grid</li>
@@ -208,7 +208,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -231,7 +231,7 @@
 <p><strong>Ключевая мысль:</strong> mobile-first + breakpoint по поломке контента, не по модели телефона — и сегодняшняя практика с перепиской стилей от 375px вверх — это тренировка именно такого мышления.</p>
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Learn/CSS/CSS_layout/Responsive_Design">MDN: Responsive design</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Перепиши стили mobile-first: база 375px, затем 768px, 1024px</li>
 <li>Навигация: горизонтальная на десктопе, вертикальный список на мобильном</li>
@@ -245,7 +245,7 @@
 - [ ] Нет горизонтального скролла на 375px
 - [ ] Touch targets ≥ 44×44px на мобильном
 - [ ] Breakpoints логичны, не «магические» без причины</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Перепиши стили mobile-first: база 375px, затем 768px, 1024px</li>
 <li>Навигация: горизонтальная на десктопе, вертикальный список на мобильном</li>
@@ -255,7 +255,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -279,7 +279,7 @@
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Web/CSS/CSS_transitions/Using_CSS_transitions">MDN: CSS transitions</a>
 - <a href="https://developer.mozilla.org/ru/docs/Web/CSS/CSS_animations/Using_CSS_animations">MDN: CSS animations</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Плавные hover-эффекты на кнопках и карточках (<code>transition: 0.2s ease</code>)</li>
 <li>Анимация появления модального блока через <code>@keyframes fadeIn</code></li>
@@ -293,7 +293,7 @@
 - [ ] Анимации на GPU-свойствах (<code>transform</code>, <code>opacity</code>)
 - [ ] <code>prefers-reduced-motion</code> учтён
 - [ ] Переходы не медленнее 300ms для UI-интеракций</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Плавные hover-эффекты на кнопках и карточках (<code>transition: 0.2s ease</code>)</li>
 <li>Анимация появления модального блока через <code>@keyframes fadeIn</code></li>
@@ -303,7 +303,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <ul>
@@ -327,7 +327,7 @@
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Web/CSS/position">MDN: position</a>
 - <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio">MDN: aspect-ratio</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Собери полноценный лендинг: hero, features (grid), testimonials (flex), CTA, footer</li>
 <li>Sticky header с тенью при скролле (CSS <code>position: sticky</code>)</li>
@@ -341,7 +341,7 @@
 - [ ] Лендинг адаптивен 375px–1440px
 - [ ] Использованы и flex, и grid осознанно
 - [ ] Lighthouse ≥ 85 по трём категориям</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Собери полноценный лендинг: hero, features (grid), testimonials (flex), CTA, footer</li>
 <li>Sticky header с тенью при скролле (CSS <code>position: sticky</code>)</li>
@@ -351,7 +351,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>

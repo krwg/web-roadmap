@@ -42,7 +42,7 @@
 <li><a href="#projects--projects-функции-mvp-минимум">Функции MVP</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> PLAN.md фиксирует scope; два backend одновременно — ловушка недели.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Прочитай <a href="#projects--projects-неделя-22-devhub-capstone-финальный">весь раздел capstone</a> и выпиши чеклист MVP (9 пунктов из projects.md)</li>
 <li>Выбери backend: FastAPI (нед. 18) или Express (нед. 19) — один основной стек</li>
@@ -58,7 +58,7 @@
 - [ ] ≥ 10 user stories с acceptance criteria
 - [ ] ER-диаграмма и API list в repo
 - [ ] Repo создан, ветка <code>main</code> + strategy feature branches</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Прочитай <a href="#projects--projects-неделя-22-devhub-capstone-финальный">весь раздел capstone</a> и выпиши чеклист MVP (9 пунктов из projects.md)</li>
 <li>Выбери backend: FastAPI (нед. 18) или Express (нед. 19) — один основной стек</li>
@@ -68,7 +68,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -100,7 +100,7 @@
 <li><a href="https://fastapi.tiangolo.com/tutorial/bigger-applications/">FastAPI Bigger Applications</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> backend capstone = CRUD + schema + seed + OpenAPI до auth layer.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Инициализируй <code>backend/</code> — FastAPI или Express по выбору из дня 148</li>
 <li>Модели/таблицы: <code>users</code>, <code>tasks</code>, <code>notes</code>, <code>tags</code>, <code>note_tags</code> (many-to-many)</li>
@@ -116,7 +116,7 @@
 - [ ] Tasks и Notes CRUD работают (пока без auth — заглушка user_id)
 - [ ] OpenAPI/Swagger актуален
 - [ ] Seed выполняется одной командой</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Инициализируй <code>backend/</code> — FastAPI или Express по выбору из дня 148</li>
 <li>Модели/таблицы: <code>users</code>, <code>tasks</code>, <code>notes</code>, <code>tags</code>, <code>note_tags</code> (many-to-many)</li>
@@ -126,7 +126,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
@@ -158,7 +158,7 @@
 <li><a href="https://vitejs.dev/guide/env-and-mode.html">Vite Env</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> один <code>api.ts</code>, три UI-состояния, shared components — фронтенд capstone в миниатюре.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>npm create vite@latest frontend -- --template react-ts</code></li>
 <li>React Router: Layout + routes <code>/dashboard</code>, <code>/tasks</code>, <code>/notes</code>, <code>/profile</code></li>
@@ -174,7 +174,7 @@
 - [ ] Tasks и Notes CRUD через API (без auth пока)
 - [ ] TypeScript strict, нет <code>any</code> в api layer
 - [ ] Loading и error states на всех data-fetching страницах</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>npm create vite@latest frontend -- --template react-ts</code></li>
 <li>React Router: Layout + routes <code>/dashboard</code>, <code>/tasks</code>, <code>/notes</code>, <code>/profile</code></li>
@@ -184,7 +184,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -216,7 +216,7 @@
 <li><a href="#projects--projects-функции-mvp-минимум">Auth в MVP</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> auth — сквозной слой; user_id только из verified JWT.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Backend auth: register, login, JWT middleware на все protected routes</li>
 <li>Привяжи tasks и notes к <code>user_id</code> из token — миграция если нужно</li>
@@ -232,7 +232,7 @@
 - [ ] User A не видит данные User B
 - [ ] 401 без token, 403 на чужие ресурсы
 - [ ] <code>SECURITY.md</code> начат</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Backend auth: register, login, JWT middleware на все protected routes</li>
 <li>Привяжи tasks и notes к <code>user_id</code> из token — миграция если нужно</li>
@@ -242,7 +242,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <ul>
@@ -274,7 +274,7 @@
 <li><a href="#projects--projects-обязательный-стек">Infra в стеке</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> docker compose — часть MVP; <code>VITE_API_URL</code> для docker network, не localhost.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>docker-compose.yml</code>: postgres + backend + frontend (nginx)</li>
 <li>Backend Dockerfile, Frontend multi-stage Dockerfile</li>
@@ -290,7 +290,7 @@
 - [ ] Auth + CRUD работают через dockerized frontend
 - [ ] <code>ARCHITECTURE.md</code> с диаграммой
 - [ ] README local setup ≤ 5 команд</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>docker-compose.yml</code>: postgres + backend + frontend (nginx)</li>
 <li>Backend Dockerfile, Frontend multi-stage Dockerfile</li>
@@ -300,7 +300,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -332,7 +332,7 @@
 <li><a href="https://docs.pytest.org/">pytest</a> · <a href="https://vitest.dev/">Vitest</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> CI green — критерий сдачи; тесты на auth и isolation обязательны.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Backend pytest: auth (register, login, 401), tasks CRUD, notes CRUD, 403 cross-user — ≥ 15 тестов</li>
 <li>Frontend Vitest: Login form, ProtectedRoute, TaskList, NoteEditor — ≥ 12 тестов</li>
@@ -347,7 +347,7 @@
 - [ ] CI green on push
 - [ ] ESLint без ошибок (или задокументированные исключения)
 - [ ] Auth flow покрыт тестами</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Backend pytest: auth (register, login, 401), tasks CRUD, notes CRUD, 403 cross-user — ≥ 15 тестов</li>
 <li>Frontend Vitest: Login form, ProtectedRoute, TaskList, NoteEditor — ≥ 12 тестов</li>
@@ -357,7 +357,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -389,7 +389,7 @@
 <li><a href="#projects--projects-портфолио-после-22-недель">Портфолио после 22 недель</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> deploy + FINAL_REVIEW + profile README — три грани финиша capstone.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><strong>Deploy backend:</strong> Render/Railway — connect repo, <code>DATABASE_URL</code> + <code>JWT_SECRET</code></li>
 <li><strong>Deploy DB:</strong> managed PostgreSQL, run migrations + seed</li>
@@ -407,7 +407,7 @@
 - [ ] <code>FINAL_REVIEW.md</code> заполнен
 - [ ] GitHub profile README обновлён со ссылками на все 22 проекта
 - [ ] README DevHub — demo link, docker setup, architecture, tests</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><strong>Deploy backend:</strong> Render/Railway — connect repo, <code>DATABASE_URL</code> + <code>JWT_SECRET</code></li>
 <li><strong>Deploy DB:</strong> managed PostgreSQL, run migrations + seed</li>
@@ -418,7 +418,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>

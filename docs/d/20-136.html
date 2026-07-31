@@ -32,7 +32,7 @@
 <li><a href="https://github.com/express-rate-limit/express-rate-limit">express-rate-limit</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> безопасность — слои: hash, JWT, rate limit, headers, CORS, audit.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Rate limit на <code>/auth/login</code>: 5 попыток / 15 мин per IP</li>
 <li><code>helmet()</code> в Express; FastAPI — security headers middleware (обзор)</li>
@@ -45,7 +45,7 @@
 - [ ] Rate limiting работает (429 Too Many Requests)
 - [ ] Helmet headers в response (проверь <code>curl -I</code>)
 - [ ] Чеклист OWASP заполнен в <code>security-audit.md</code></p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Rate limit на <code>/auth/login</code>: 5 попыток / 15 мин per IP</li>
 <li><code>helmet()</code> в Express; FastAPI — security headers middleware (обзор)</li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>

@@ -39,7 +39,7 @@
 - <a href="https://developer.mozilla.org/ru/docs/Web/API/Web_Storage_API">MDN: Web Storage API</a>
 - <a href="https://web.dev/storage-for-the-web/">web.dev: Storage for the web</a></p>
 <p><strong>Ключевая мысль:</strong> localStorage — удобный кэш для UI-состояния, но не сейф для секретов и не замена серверной базе данных.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Сохрани Todo-список в <code>localStorage</code> при каждом изменении</li>
 <li>При загрузке страницы восстанови задачи из storage</li>
@@ -53,7 +53,7 @@
 - [ ] Данные переживают перезагрузку страницы
 - [ ] Объекты сериализуются через JSON
 - [ ] Ошибки парсинга обработаны gracefully</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Сохрани Todo-список в <code>localStorage</code> при каждом изменении</li>
 <li>При загрузке страницы восстанови задачи из storage</li>
@@ -63,7 +63,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -94,7 +94,7 @@
 - <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify">MDN: JSON.stringify()</a>
 - <a href="https://learn.javascript.ru/json">learn.javascript.ru: Формат JSON</a></p>
 <p><strong>Ключевая мысль:</strong> JSON — контракт обмена данными; валидация и версионирование схемы защищают приложение от битых импортов и устаревших сохранений.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Экспорт Todo в JSON-файл (download через Blob + URL.createObjectURL)</li>
 <li>Импорт: <code>&lt;input type="file"&gt;</code> → FileReader → parse → merge в список</li>
@@ -108,7 +108,7 @@
 - [ ] Экспорт/импорт JSON работает
 - [ ] Валидация отклоняет невалидные данные
 - [ ] Иммутабельные обновления, не мутация массива напрямую</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Экспорт Todo в JSON-файл (download через Blob + URL.createObjectURL)</li>
 <li>Импорт: <code>&lt;input type="file"&gt;</code> → FileReader → parse → merge в список</li>
@@ -118,7 +118,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -143,7 +143,7 @@
 - <a href="https://developer.mozilla.org/ru/docs/Web/API/Fetch_API/Using_Fetch">MDN: Using Fetch</a>
 - <a href="https://jsonplaceholder.typicode.com/guide/">JSONPlaceholder Guide</a></p>
 <p><strong>Ключевая мысль:</strong> fetch различает «сеть упала» (reject) и «сервер ответил ошибкой» (resolve с <code>ok: false</code>) — проверяй оба случая.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Загрузи посты с <a href="https://jsonplaceholder.typicode.com/posts">JSONPlaceholder</a></li>
 <li>Отобрази список заголовков в DOM</li>
@@ -157,7 +157,7 @@
 - [ ] Данные с API отображаются в UI
 - [ ] Обработаны loading и error
 - [ ] Проверяется <code>response.ok</code></p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Загрузи посты с <a href="https://jsonplaceholder.typicode.com/posts">JSONPlaceholder</a></li>
 <li>Отобрази список заголовков в DOM</li>
@@ -167,7 +167,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -192,7 +192,7 @@
 - <a href="https://developer.mozilla.org/ru/docs/Web/HTTP/Overview">MDN: HTTP Overview</a>
 - <a href="https://open-meteo.com/en/docs">Open-Meteo API</a></p>
 <p><strong>Ключевая мысль:</strong> интеграция с API начинается с чтения документации и понимания HTTP-семантики, а не с написания fetch.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Погода: <a href="https://open-meteo.com/">Open-Meteo API</a> — без ключа</li>
 <li>Форма поиска города → fetch → отображение температуры и иконки</li>
@@ -206,7 +206,7 @@
 - [ ] Реальный API интегрирован в UI
 - [ ] Пользователь видит понятные сообщения об ошибках
 - [ ] Network panel использован для отладки</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Погода: <a href="https://open-meteo.com/">Open-Meteo API</a> — без ключа</li>
 <li>Форма поиска города → fetch → отображение температуры и иконки</li>
@@ -216,7 +216,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <ul>
@@ -241,7 +241,7 @@
 - <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Modules">MDN: JavaScript modules</a>
 - <a href="https://javascript.info/modules-intro">javascript.info: Модули</a></p>
 <p><strong>Ключевая мысль:</strong> модули превращают монолитный скрипт в граф зависимостей с изолированными областями видимости — основа масштабируемого фронтенда.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Разбей Todo App на модули: <code>storage.js</code>, <code>todo.js</code>, <code>render.js</code>, <code>main.js</code></li>
 <li><code>api.js</code> — функции fetch с экспортом</li>
@@ -255,7 +255,7 @@
 - [ ] Все скрипты — ES modules с <code>type="module"</code>
 - [ ] Нет глобальных переменных в <code>window</code>
 - [ ] Логичная структура папок js/</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Разбей Todo App на модули: <code>storage.js</code>, <code>todo.js</code>, <code>render.js</code>, <code>main.js</code></li>
 <li><code>api.js</code> — функции fetch с экспортом</li>
@@ -265,7 +265,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -290,7 +290,7 @@
 - <a href="https://developer.mozilla.org/ru/docs/Web/API/AbortController">MDN: AbortController</a>
 - <a href="https://learn.javascript.ru/task/debounce">learn.javascript.ru: debounce</a></p>
 <p><strong>Ключевая мысль:</strong> форма + fetch требуют защиты от двойной отправки, debounce для поиска и отмены устаревших запросов.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Форма «Добавить пост» → POST на JSONPlaceholder → добавь в список</li>
 <li>Поиск пользователей GitHub API с debounce 300ms</li>
@@ -304,7 +304,7 @@
 - [ ] POST отправляет корректный JSON
 - [ ] Debounce на поиске работает
 - [ ] UI не дублирует запросы при быстром вводе</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Форма «Добавить пост» → POST на JSONPlaceholder → добавь в список</li>
 <li>Поиск пользователей GitHub API с debounce 300ms</li>
@@ -314,7 +314,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -339,7 +339,7 @@
 - <a href="https://developer.mozilla.org/ru/docs/Web/API/Fetch_API">MDN: Fetch API</a>
 - <a href="https://learn.javascript.ru/promise-basics">learn.javascript.ru: Промисы</a> — подготовка к неделе 8</p>
 <p><strong>Ключевая мысль:</strong> зрелое клиентское приложение — это слои (api/cache/ui) плюс явная обработка ошибок, кэша и offline-сценариев.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Собери «Панель постов»: список + детали + форма создания</li>
 <li>Кэшируй список постов в localStorage на 5 минут</li>
@@ -353,7 +353,7 @@
 - [ ] Полный CRUD UI (create + read, delete опционально)
 - [ ] Кэш с TTL работает
 - [ ] Модульная архитектура</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Собери «Панель постов»: список + детали + форма создания</li>
 <li>Кэшируй список постов в localStorage на 5 минут</li>
@@ -363,7 +363,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>

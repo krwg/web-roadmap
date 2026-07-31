@@ -32,7 +32,7 @@
 <li><a href="https://tanstack.com/query/latest">TanStack Query</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> один api module; loading/error/empty — не опциональный UX.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>services/api.ts</code> — единый fetch wrapper с error parsing и auth header</li>
 <li>Все страницы: loading spinner, error message + retry button, empty state</li>
@@ -45,7 +45,7 @@
 - [ ] Один api module, не fetch в каждом компоненте
 - [ ] Network error показывает понятное сообщение
 - [ ] 4xx/5xx обрабатываются по-разному</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>services/api.ts</code> — единый fetch wrapper с error parsing и auth header</li>
 <li>Все страницы: loading spinner, error message + retry button, empty state</li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>

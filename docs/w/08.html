@@ -39,7 +39,7 @@
 - <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop">MDN: Event Loop</a>
 - <a href="http://latentflip.com/loupe/">Loupe — визуализация Event Loop</a></p>
 <p><strong>Ключевая мысль:</strong> microtasks (Promise) всегда опережают macrotasks (setTimeout) — запомни это правило, и половина async-багов исчезнет.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Предскажи порядок вывода 5 задач с <code>console.log</code>, <code>setTimeout</code>, <code>Promise.resolve().then</code></li>
 <li>Проверь в браузере, объясни через Event Loop</li>
@@ -53,7 +53,7 @@
 - [ ] Могу предсказать порядок вывода в 4 из 5 примеров
 - [ ] Понимаю разницу microtask и macrotask
 - [ ] Есть конспект Event Loop своими словами</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Предскажи порядок вывода 5 задач с <code>console.log</code>, <code>setTimeout</code>, <code>Promise.resolve().then</code></li>
 <li>Проверь в браузере, объясни через Event Loop</li>
@@ -63,7 +63,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
 <h3>Git</h3>
 <ul>
@@ -94,7 +94,7 @@
 - <a href="https://learn.javascript.ru/promise-chaining">learn.javascript.ru: Цепочка промисов</a>
 - <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise">MDN: Promise</a></p>
 <p><strong>Ключевая мысль:</strong> Promise — это цепочка, а не вложенность; <code>.then</code> возвращает новый Promise, и один <code>.catch</code> обслуживает всю цепочку.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Оберни <code>setTimeout</code> в функцию <code>delay(ms)</code> → Promise</li>
 <li>Цепочка: delay(1000) → «Шаг 1» → delay(500) → «Шаг 2»</li>
@@ -108,7 +108,7 @@
 - [ ] Цепочка then без callback hell
 - [ ] Ошибки ловятся в catch
 - [ ] Promise.all для параллельных запросов</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Оберни <code>setTimeout</code> в функцию <code>delay(ms)</code> → Promise</li>
 <li>Цепочка: delay(1000) → «Шаг 1» → delay(500) → «Шаг 2»</li>
@@ -118,7 +118,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
@@ -149,7 +149,7 @@
 - <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Statements/async_function">MDN: async function</a>
 - <a href="https://javascript.info/async-await">javascript.info: Async/await</a></p>
 <p><strong>Ключевая мысль:</strong> <code>await</code> не блокирует браузер — он лишь ставит на паузу текущую async-функцию, пока Promise не разрешится.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Рефакторинг fetch-функций на async/await</li>
 <li>Функция <code>loadUserWithPosts(userId)</code> — user, затем его posts</li>
@@ -163,7 +163,7 @@
 - [ ] Весь API-слой на async/await
 - [ ] Параллельные запросы не последовательные без причины
 - [ ] try/catch на каждом публичном API-вызове</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Рефакторинг fetch-функций на async/await</li>
 <li>Функция <code>loadUserWithPosts(userId)</code> — user, затем его posts</li>
@@ -173,7 +173,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -197,7 +197,7 @@
 - <a href="https://developer.mozilla.org/ru/docs/Web/HTTP/CORS">MDN: CORS</a>
 - <a href="https://developer.mozilla.org/ru/docs/Web/HTTP/Status">MDN: HTTP response status codes</a></p>
 <p><strong>Ключевая мысль:</strong> HTTP-метод + статус-код + заголовки — это язык, на котором клиент и сервер договариваются о результате операции.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>В Network изучи headers реального запроса к API</li>
 <li>Реализуй wrapper <code>api.get/post/put/delete</code> с базовым URL</li>
@@ -211,7 +211,7 @@
 - [ ] API wrapper переиспользуемый
 - [ ] Разные HTTP-ошибки — разные сообщения UI
 - [ ] Понимаю CORS на уровне «почему fetch заблокирован»</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>В Network изучи headers реального запроса к API</li>
 <li>Реализуй wrapper <code>api.get/post/put/delete</code> с базовым URL</li>
@@ -221,7 +221,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <ul>
@@ -245,7 +245,7 @@
 - <a href="https://web.dev/articles/optimize-lcp">web.dev: Optimize LCP</a> — skeleton и perceived performance
 - <a href="https://developer.mozilla.org/ru/docs/Web/API/AbortController">MDN: AbortController</a></p>
 <p><strong>Ключевая мысль:</strong> надёжный API-клиент обрабатывает не только успех, но и повторы, гонки запросов, пагинацию и кэширование.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Пагинация постов: кнопка «Загрузить ещё» с cursor (id последнего)</li>
 <li>Retry: 3 попытки с задержкой 1s, 2s, 4s при сетевой ошибке</li>
@@ -259,7 +259,7 @@
 - [ ] Retry реализован
 - [ ] Нет race condition в поиске
 - [ ] Pagination работает без дубликатов</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Пагинация постов: кнопка «Загрузить ещё» с cursor (id последнего)</li>
 <li>Retry: 3 попытки с задержкой 1s, 2s, 4s при сетевой ошибке</li>
@@ -269,7 +269,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -294,7 +294,7 @@
 - <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise/race">MDN: Promise.race()</a>
 - <a href="https://learn.javascript.ru/promise-api">learn.javascript.ru: Promise API</a></p>
 <p><strong>Ключевая мысль:</strong> выбирай Promise-утилиту по сценарию — all для «всё или ничего», allSettled для «что получилось», race для таймаутов.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Загрузи 5 URL через <code>Promise.allSettled</code>, покажи успешные и failed</li>
 <li>Timeout wrapper: <code>withTimeout(promise, 5000)</code> через <code>Promise.race</code></li>
@@ -308,7 +308,7 @@
 - [ ] allSettled и race использованы по назначению
 - [ ] Timeout на долгие запросы
 - [ ] Нет unhandled promise rejections в Console</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Загрузи 5 URL через <code>Promise.allSettled</code>, покажи успешные и failed</li>
 <li>Timeout wrapper: <code>withTimeout(promise, 5000)</code> через <code>Promise.race</code></li>
@@ -318,7 +318,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
@@ -342,7 +342,7 @@
 - <a href="https://www.patterns.dev/vanilla/observer-pattern/">patterns.dev: Observer Pattern</a>
 - <a href="https://www.typescriptlang.org/docs/handbook/2/generics.html">TypeScript Handbook: Generics</a> — подготовка к неделе 10</p>
 <p><strong>Ключевая мысль:</strong> async-архитектура — это явные состояния UI и чёткие границы между api, state и render.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Реализуй хук-подобный паттерн <code>createAsyncState()</code> — subscribe на изменения</li>
 <li>UI автоматически реагирует на idle/loading/success/error</li>
@@ -356,7 +356,7 @@
 - [ ] Явные состояния async-операций в UI
 - [ ] api / state / ui разделены
 - [ ] Проект работает без ошибок в Console</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Реализуй хук-подобный паттерн <code>createAsyncState()</code> — subscribe на изменения</li>
 <li>UI автоматически реагирует на idle/loading/success/error</li>
@@ -366,7 +366,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
 <h3>Git</h3>
 <ul>

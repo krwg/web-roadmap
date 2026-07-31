@@ -32,7 +32,7 @@
 <li><a href="https://fastapi.tiangolo.com/tutorial/body/">Pydantic Models</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> type hints + Pydantic = валидация и docs из коробки; response_model защищает API.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>main.py</code>: FastAPI app, <code>GET /health</code> → <code>{"status": "ok"}</code></li>
 <li>In-memory CRUD для <code>Note</code> (id, title, body) — без БД пока</li>
@@ -45,7 +45,7 @@
 - [ ] 422 при невалидном body
 - [ ] Response model отделён от create model
 - [ ] <code>uvicorn --reload</code> работает</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>main.py</code>: FastAPI app, <code>GET /health</code> → <code>{"status": "ok"}</code></li>
 <li>In-memory CRUD для <code>Note</code> (id, title, body) — без БД пока</li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>

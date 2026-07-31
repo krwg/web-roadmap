@@ -41,7 +41,7 @@
 <li><a href="https://peps.python.org/pep-0008/">PEP 8</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> venv на каждый проект; <code>input()</code> — всегда str, отступы — синтаксис.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Установи Python 3.11+, проверь <code>python --version</code></li>
 <li>Создай проект <code>learning-log/week-15</code>, venv, <code>pip install --upgrade pip</code></li>
@@ -63,7 +63,7 @@
 <p>[ ] Обработка деления на ноль</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Установи Python 3.11+, проверь <code>python --version</code></li>
 <li>Создай проект <code>learning-log/week-15</code>, venv, <code>pip install --upgrade pip</code></li>
@@ -73,7 +73,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -115,7 +115,7 @@ git commit -m &quot;week-15 day-99: venv, hello.py и calculator&quot;
 <li><a href="https://docs.python.org/3/library/stdtypes.html#truth-value-testing">Truth Value Testing</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> comprehension — сахар над циклом; <code>is</code> vs <code>==</code> — разные вещи для объектов.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>FizzBuzz 1–100</li>
 <li>Таблица умножения 10×10 через nested loops</li>
@@ -137,7 +137,7 @@ git commit -m &quot;week-15 day-99: venv, hello.py и calculator&quot;
 <p>[ ] <code>while</code> с условием выхода, не <code>while True</code> без break</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>FizzBuzz 1–100</li>
 <li>Таблица умножения 10×10 через nested loops</li>
@@ -147,7 +147,7 @@ git commit -m &quot;week-15 day-99: venv, hello.py и calculator&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -189,7 +189,7 @@ git commit -m &quot;week-15 day-100: FizzBuzz, циклы и comprehensions&quot
 <li><a href="https://peps.python.org/pep-0257/">PEP 257 — Docstring Conventions</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> mutable default argument — баг; type hints и docstrings — часть API функции.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Модуль <code>utils.py</code>: <code>celsius_to_fahrenheit</code>, <code>format_currency</code>, <code>truncate_text</code></li>
 <li>CLI-конвертер валют (фиксированные курсы в dict)</li>
@@ -211,7 +211,7 @@ git commit -m &quot;week-15 day-100: FizzBuzz, циклы и comprehensions&quot
 <p>[ ] Модуль импортируется без запуска main-логики</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Модуль <code>utils.py</code>: <code>celsius_to_fahrenheit</code>, <code>format_currency</code>, <code>truncate_text</code></li>
 <li>CLI-конвертер валют (фиксированные курсы в dict)</li>
@@ -221,7 +221,7 @@ git commit -m &quot;week-15 day-100: FizzBuzz, циклы и comprehensions&quot
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -263,7 +263,7 @@ git commit -m &quot;week-15 day-101: функции, type hints и utils&quot;
 <li><a href="https://docs.python.org/3/library/collections.html#collections.Counter">collections.Counter</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> dict для поиска по ключу, list для порядка; выбор структуры — это Big-O.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Телефонная книга: <code>dict[name] = phone</code>, CRUD через меню</li>
 <li>Подсчёт частоты слов в тексте через <code>dict</code></li>
@@ -285,7 +285,7 @@ git commit -m &quot;week-15 day-101: функции, type hints и utils&quot;
 <p>[ ] Понимаешь O(1) lookup в dict vs O(n) в list</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Телефонная книга: <code>dict[name] = phone</code>, CRUD через меню</li>
 <li>Подсчёт частоты слов в тексте через <code>dict</code></li>
@@ -295,7 +295,7 @@ git commit -m &quot;week-15 day-101: функции, type hints и utils&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -337,7 +337,7 @@ git commit -m &quot;week-15 day-102: телефонная книга и стру
 <li><a href="https://docs.python.org/3/library/pathlib.html">pathlib</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> всегда <code>with open</code> и <code>encoding='utf-8'</code>; JSON — контракт persist между запусками.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Расширь телефонную книгу: save/load <code>contacts.json</code></li>
 <li>Логгер: append строки в <code>app.log</code> с timestamp</li>
@@ -359,7 +359,7 @@ git commit -m &quot;week-15 day-102: телефонная книга и стру
 <p>[ ] Graceful handling если файл не существует</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Расширь телефонную книгу: save/load <code>contacts.json</code></li>
 <li>Логгер: append строки в <code>app.log</code> с timestamp</li>
@@ -369,7 +369,7 @@ git commit -m &quot;week-15 day-102: телефонная книга и стру
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -412,7 +412,7 @@ git commit -m &quot;week-15 day-103: JSON persist, логгер и CSV import&qu
 <li><a href="https://rich.readthedocs.io/">rich</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> пакетная структура + <code>requirements.txt</code> — основа любого Python-проекта.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Разбей телефонную книгу: <code>models.py</code>, <code>storage.py</code>, <code>cli.py</code></li>
 <li><code>pip install rich</code> — красивый вывод таблицы контактов</li>
@@ -434,7 +434,7 @@ git commit -m &quot;week-15 day-103: JSON persist, логгер и CSV import&qu
 <p>[ ] rich Table для list contacts</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Разбей телефонную книгу: <code>models.py</code>, <code>storage.py</code>, <code>cli.py</code></li>
 <li><code>pip install rich</code> — красивый вывод таблицы контактов</li>
@@ -444,7 +444,7 @@ git commit -m &quot;week-15 day-103: JSON persist, логгер и CSV import&qu
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -486,7 +486,7 @@ git commit -m &quot;week-15 day-104: пакет phonebook и rich CLI&quot;
 <li><a href="https://www.hackerrank.com/domains/python">HackerRank Python</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> Python-проект = venv + модули + persist + README; стиль PEP 8 с первого коммита.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Реши 10 задач на <a href="https://www.hackerrank.com/domains/python">HackerRank Python</a> (Easy)</li>
 <li>Рефакторинг телефонной книги по PEP 8</li>
@@ -508,7 +508,7 @@ git commit -m &quot;week-15 day-104: пакет phonebook и rich CLI&quot;
 <p>[ ] Шпаргалка в <code>notes/python-structures.md</code></p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Реши 10 задач на <a href="https://www.hackerrank.com/domains/python">HackerRank Python</a> (Easy)</li>
 <li>Рефакторинг телефонной книги по PEP 8</li>
@@ -518,7 +518,7 @@ git commit -m &quot;week-15 day-104: пакет phonebook и rich CLI&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">

@@ -41,7 +41,7 @@
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries">Mobile-first CSS (MDN)</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> спланируй страницы и state до кода; секреты — только через <code>VITE_*</code> и <code>.env</code>.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>npm create vite@latest week-14 -- --template react-ts</code> в <code>learning-log/</code></li>
 <li>Установи <code>react-router-dom</code>, настрой Layout + 4 маршрута</li>
@@ -63,7 +63,7 @@
 <p>[ ] <code>.env</code> в <code>.gitignore</code></p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>npm create vite@latest week-14 -- --template react-ts</code> в <code>learning-log/</code></li>
 <li>Установи <code>react-router-dom</code>, настрой Layout + 4 маршрута</li>
@@ -73,7 +73,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -115,7 +115,7 @@ git commit -m &quot;week-14 day-92: скелет Dashboard, Layout и 4 марш
 <li><a href="https://web.dev/articles/cls">Web Vitals — CLS</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> статистика — производная от данных tasks, не отдельный источник правды.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Главная <code>/</code> — 4 карточки: задачи (total/done), погода, имя user, дата</li>
 <li>Данные задач из <code>useLocalStorage('tasks')</code></li>
@@ -137,7 +137,7 @@ git commit -m &quot;week-14 day-92: скелет Dashboard, Layout и 4 марш
 <p>[ ] Контраст текста ≥ WCAG AA (проверь в DevTools)</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Главная <code>/</code> — 4 карточки: задачи (total/done), погода, имя user, дата</li>
 <li>Данные задач из <code>useLocalStorage('tasks')</code></li>
@@ -147,7 +147,7 @@ git commit -m &quot;week-14 day-92: скелет Dashboard, Layout и 4 марш
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -189,7 +189,7 @@ git commit -m &quot;week-14 day-93: Dashboard stats и StatCard grid&quot;
 <li><a href="https://react.dev/learn/you-might-not-need-an-effect">You Might Not Need an Effect</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> один <code>useTasks</code> на всё приложение; фильтры — derived state, не копия списка.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Страница <code>/tasks</code>: форма добавления, список, фильтры (all/active/done)</li>
 <li>Редактирование inline или modal</li>
@@ -211,7 +211,7 @@ git commit -m &quot;week-14 day-93: Dashboard stats и StatCard grid&quot;
 <p>[ ] <code>key</code> стабильный (id), не index</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Страница <code>/tasks</code>: форма добавления, список, фильтры (all/active/done)</li>
 <li>Редактирование inline или modal</li>
@@ -221,7 +221,7 @@ git commit -m &quot;week-14 day-93: Dashboard stats и StatCard grid&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -263,7 +263,7 @@ git commit -m &quot;week-14 day-94: useTasks, CRUD и фильтры&quot;
 <li><a href="https://vitejs.dev/guide/env-and-mode.html">Vite Env Variables</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> API-слой отдельно от UI; loading/error/success — на каждом экране с данными.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Страница <code>/weather</code>: input города, кнопка поиска</li>
 <li>Отображение: температура, описание, иконка, влажность, ветер</li>
@@ -285,7 +285,7 @@ git commit -m &quot;week-14 day-94: useTasks, CRUD и фильтры&quot;
 <p>[ ] Город по умолчанию из Settings</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Страница <code>/weather</code>: input города, кнопка поиска</li>
 <li>Отображение: температура, описание, иконка, влажность, ветер</li>
@@ -295,7 +295,7 @@ git commit -m &quot;week-14 day-94: useTasks, CRUD и фильтры&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -337,7 +337,7 @@ git commit -m &quot;week-14 day-95: OpenWeather API и кэш&quot;
 <li><a href="https://react.dev/learn/passing-data-deeply-with-context">Context</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> Settings — single source для темы, города и единиц; разделяй контексты по доменам.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>/settings</code>: имя, город по умолчанию, переключатель темы, единицы °C/°F</li>
 <li>Изменения сразу отражаются на Dashboard и Weather</li>
@@ -359,7 +359,7 @@ git commit -m &quot;week-14 day-95: OpenWeather API и кэш&quot;
 <p>[ ] Form labels связаны с inputs</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>/settings</code>: имя, город по умолчанию, переключатель темы, единицы °C/°F</li>
 <li>Изменения сразу отражаются на Dashboard и Weather</li>
@@ -369,7 +369,7 @@ git commit -m &quot;week-14 day-95: OpenWeather API и кэш&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -411,7 +411,7 @@ git commit -m &quot;week-14 day-96: Settings, Context и персонализа�
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion">prefers-reduced-motion (MDN)</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> a11y и mobile-first — часть Definition of Done, не «потом».</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Мобильное меню (hamburger → drawer)</li>
 <li>Toast-уведомления: задача добавлена, ошибка API</li>
@@ -433,7 +433,7 @@ git commit -m &quot;week-14 day-96: Settings, Context и персонализа�
 <p>[ ] Lighthouse Accessibility ≥ 90</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Мобильное меню (hamburger → drawer)</li>
 <li>Toast-уведомления: задача добавлена, ошибка API</li>
@@ -443,7 +443,7 @@ git commit -m &quot;week-14 day-96: Settings, Context и персонализа�
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -485,7 +485,7 @@ git commit -m &quot;week-14 day-97: mobile nav, toast и a11y polish&quot;
 <li><a href="https://vitest.dev/">Vitest (обзор для нед. 20)</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> capstone-качество начинается с README, deploy preview и осмысленной git-истории.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Пройди user flow: первый визит → настройки → задачи → погода → смена темы → F5</li>
 <li>Напиши README с GIF или 3 скриншотами</li>
@@ -507,7 +507,7 @@ git commit -m &quot;week-14 day-97: mobile nav, toast и a11y polish&quot;
 <p>[ ] Preview URL в README</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Пройди user flow: первый визит → настройки → задачи → погода → смена темы → F5</li>
 <li>Напиши README с GIF или 3 скриншотами</li>
@@ -517,7 +517,7 @@ git commit -m &quot;week-14 day-97: mobile nav, toast и a11y polish&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">

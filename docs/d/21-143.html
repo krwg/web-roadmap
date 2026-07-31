@@ -32,7 +32,7 @@
 <li><a href="https://docs.docker.com/build/building/context/#dockerignore-files">.dockerignore</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> image = шаблон, container = процесс; слои Dockerfile — про скорость сборки.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Dockerfile для backend: <code>node:20-alpine</code> или <code>python:3.12-slim</code></li>
 <li>COPY package files → install deps → COPY source → EXPOSE port → CMD</li>
@@ -45,7 +45,7 @@
 - [ ] Image собирается без ошибок
 - [ ] .dockerignore исключает node_modules
 - [ ] Container стартует и отвечает на /health</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Dockerfile для backend: <code>node:20-alpine</code> или <code>python:3.12-slim</code></li>
 <li>COPY package files → install deps → COPY source → EXPOSE port → CMD</li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>

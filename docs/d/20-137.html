@@ -32,7 +32,7 @@
 <li><a href="https://github.com/ladjs/supertest">supertest</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> тестируй auth, 403 cross-user и 401 без token — не только happy path.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Тесты auth: register success, duplicate email 409, login, wrong password 401</li>
 <li>Fixture: test user + valid token в <code>Authorization</code> header</li>
@@ -45,7 +45,7 @@
 - [ ] <code>pytest</code> все зелёные
 - [ ] Тесты не зависят от порядка выполнения
 - [ ] conftest.py с test database</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Тесты auth: register success, duplicate email 409, login, wrong password 401</li>
 <li>Fixture: test user + valid token в <code>Authorization</code> header</li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <ul>

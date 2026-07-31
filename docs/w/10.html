@@ -38,7 +38,7 @@
 - <a href="https://learn.javascript.ru/types">learn.javascript.ru: Типы</a>
 - <a href="https://www.typescriptlang.org/tsconfig">TSConfig Reference</a></p>
 <p><strong>Ключевая мысль:</strong> TypeScript ловит целый класс ошибок на этапе компиляции — типы это документация, которую нельзя проигнорировать.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Создай проект <code>learning-log/week-10</code>, инициализируй TypeScript</li>
 <li>Перепиши <code>utils.js</code> из прошлых недель в <code>utils.ts</code></li>
@@ -60,7 +60,7 @@
 <p>[ ] Понимаю разницу .ts и .js на выходе</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Создай проект <code>learning-log/week-10</code>, инициализируй TypeScript</li>
 <li>Перепиши <code>utils.js</code> из прошлых недель в <code>utils.ts</code></li>
@@ -70,7 +70,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -99,7 +99,7 @@ git commit -m &quot;week-10 day-01: инициализация TS-проекта
 - <a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html">Handbook: Narrowing</a>
 - <a href="https://www.totaltypescript.com/tutorials/beginners-typescript">Total TypeScript: Beginners</a></p>
 <p><strong>Ключевая мысль:</strong> union + narrowing превращают TypeScript в инструмент моделирования состояний; <code>unknown</code> безопаснее <code>any</code>.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Тип <code>Theme = 'light' | 'dark'</code> для переключателя темы</li>
 <li>Функция <code>formatId(id: string | number): string</code> с narrowing</li>
@@ -121,7 +121,7 @@ git commit -m &quot;week-10 day-01: инициализация TS-проекта
 <p>[ ] Result pattern для ошибок API</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Тип <code>Theme = 'light' | 'dark'</code> для переключателя темы</li>
 <li>Функция <code>formatId(id: string | number): string</code> с narrowing</li>
@@ -131,7 +131,7 @@ git commit -m &quot;week-10 day-01: инициализация TS-проекта
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -172,7 +172,7 @@ git commit -m &quot;week-10 day-02: union, Result pattern и type guards&quot;
 - <a href="https://www.typescriptlang.org/docs/handbook/utility-types.html">Handbook: Utility Types</a>
 - <a href="https://react-typescript-cheatsheet.netlify.app/">React TypeScript Cheatsheet</a></p>
 <p><strong>Ключевая мысль:</strong> interface/type — это контракт формы данных; DTO в отдельных файлах делают API и доменную модель явными.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Интерфейсы <code>Todo</code>, <code>TodoFilter</code>, <code>TodoState</code> для Todo App</li>
 <li><code>interface ApiResponse&lt;T&gt; { data: T; meta: PaginationMeta }</code></li>
@@ -194,7 +194,7 @@ git commit -m &quot;week-10 day-02: union, Result pattern и type guards&quot;
 <p>[ ] Опциональные и readonly поля использованы</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Интерфейсы <code>Todo</code>, <code>TodoFilter</code>, <code>TodoState</code> для Todo App</li>
 <li><code>interface ApiResponse&lt;T&gt; { data: T; meta: PaginationMeta }</code></li>
@@ -204,7 +204,7 @@ git commit -m &quot;week-10 day-02: union, Result pattern и type guards&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -234,7 +234,7 @@ git commit -m &quot;week-10 day-03: интерфейсы Todo и ApiResponse&quo
 - <a href="https://www.typescriptlang.org/docs/handbook/2/keyof-types.html">Handbook: Keyof Types</a>
 - <a href="https://www.totaltypescript.com/tutorials/beginners-typescript">Total TypeScript: Beginners</a></p>
 <p><strong>Ключевая мысль:</strong> generics связывают типы входа и выхода — <code>fetchJson&lt;User&gt;</code> безопаснее <code>fetchJson&lt;any&gt;</code>.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>function first&lt;T&gt;(arr: T[]): T | undefined</code></li>
 <li><code>async function fetchJson&lt;T&gt;(url: string): Promise&lt;T&gt;</code> — типизированный fetch</li>
@@ -256,7 +256,7 @@ git commit -m &quot;week-10 day-03: интерфейсы Todo и ApiResponse&quo
 <p>[ ] Constraints использован хотя бы раз</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>function first&lt;T&gt;(arr: T[]): T | undefined</code></li>
 <li><code>async function fetchJson&lt;T&gt;(url: string): Promise&lt;T&gt;</code> — типизированный fetch</li>
@@ -266,7 +266,7 @@ git commit -m &quot;week-10 day-03: интерфейсы Todo и ApiResponse&quo
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -295,7 +295,7 @@ git commit -m &quot;week-10 day-04: generic fetchJson и localStorage wrapper&qu
 - <a href="https://www.typescriptlang.org/docs/handbook/2/functions.html">Handbook: More on Functions</a>
 - <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator">TypeScript 4.9: satisfies</a></p>
 <p><strong>Ключевая мысль:</strong> utility types — конструктор из существующих типов; <code>Partial</code>/<code>Pick</code>/<code>Omit</code> заменяют ручное дублирование DTO.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>UpdateTodo = Partial&lt;Pick&lt;Todo, 'title' | 'done'&gt;&gt;</code></li>
 <li><code>Record&lt;Theme, string&gt;</code> для CSS-переменных по темам</li>
@@ -317,7 +317,7 @@ git commit -m &quot;week-10 day-04: generic fetchJson и localStorage wrapper&qu
 <p>[ ] EventEmitter типизирован</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>UpdateTodo = Partial&lt;Pick&lt;Todo, 'title' | 'done'&gt;&gt;</code></li>
 <li><code>Record&lt;Theme, string&gt;</code> для CSS-переменных по темам</li>
@@ -327,7 +327,7 @@ git commit -m &quot;week-10 day-04: generic fetchJson и localStorage wrapper&qu
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -357,7 +357,7 @@ git commit -m &quot;week-10 day-05: utility types и типизированны�
 - <a href="https://vite.dev/guide/">Vite Guide</a>
 - <a href="https://react.dev/learn">react.dev: Quick Start</a></p>
 <p><strong>Ключевая мысль:</strong> Vite + react-ts даёт типизированный старт за минуту; props типизируй через interface, не через React.FC.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Создай проект Vite + React + TypeScript в <code>week-10/</code></li>
 <li>Перенеси типы Todo в <code>src/types/todo.ts</code></li>
@@ -379,7 +379,7 @@ git commit -m &quot;week-10 day-05: utility types и типизированны�
 <p>[ ] Типы вынесены в отдельные файлы</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Создай проект Vite + React + TypeScript в <code>week-10/</code></li>
 <li>Перенеси типы Todo в <code>src/types/todo.ts</code></li>
@@ -389,7 +389,7 @@ git commit -m &quot;week-10 day-05: utility types и типизированны�
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -419,7 +419,7 @@ git commit -m &quot;week-10 day-06: Vite react-ts, Button и Card&quot;
 - <a href="https://github.com/DefinitelyTyped/DefinitelyTyped">DefinitelyTyped</a>
 - <a href="https://www.typescriptlang.org/tsconfig#noUncheckedIndexedAccess">TSConfig: noUncheckedIndexedAccess</a></p>
 <p><strong>Ключевая мысль:</strong> миграция на TS — итеративный процесс; strict-опции и path aliases делают кодовую базу надёжнее с каждым коммитом.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Настрой alias <code>@/</code> в tsconfig и vite.config</li>
 <li>Мигрируй api-модуль в TS с полной типизацией</li>
@@ -441,7 +441,7 @@ git commit -m &quot;week-10 day-06: Vite react-ts, Button и Card&quot;
 <p>[ ] noUncheckedIndexedAccess не ломает сборку</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Настрой alias <code>@/</code> в tsconfig и vite.config</li>
 <li>Мигрируй api-модуль в TS с полной типизацией</li>
@@ -451,7 +451,7 @@ git commit -m &quot;week-10 day-06: Vite react-ts, Button и Card&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
