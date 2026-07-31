@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 113 (Пн): SQL основы — SELECT, фильтрация, сортировка · SQL · web-roadmap</title>
+  <meta name="description" content="День 113 (Пн): SQL основы — SELECT, фильтрация, сортировка — неделя 17.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-17--week-17-day-113">
+  <meta http-equiv="refresh" content="0;url=../#week-17--week-17-day-113">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-17--week-17-day-113">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-17-day-113">День 113 (Пн): SQL основы — SELECT, фильтрация, сортировка</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library Database</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>SQL — декларативный язык: ты описываешь, <em>какие</em> данные нужны, а СУБД решает, <em>как</em> их достать. Базовый pipeline: <code>SELECT</code> колонки <code>FROM</code> таблицы <code>WHERE</code> условие <code>ORDER BY</code> сортировка <code>LIMIT</code> ограничение. <code>DISTINCT</code> убирает дубликаты строк в результате.</p>
+<p>Операторы фильтрации: <code>=</code>, <code>&lt;&gt;</code>, <code>IN (...)</code>, <code>BETWEEN</code>, <code>LIKE 'Py%'</code> (префикс), <code>IS NULL</code> / <code>IS NOT NULL</code>. Агрегаты <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code> сворачивают множество строк. <code>GROUP BY</code> группирует перед агрегацией; <code>HAVING</code> фильтрует группы <em>после</em> агрегации — не путай с <code>WHERE</code>, который фильтрует строки <em>до</em>.</p>
+<p>Порядок выполнения SQL: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT. Понимание этого порядка объясняет, почему нельзя использовать алиас SELECT в WHERE той же фазы. <code>SELECT *</code> удобно в учебе, в production выбирай нужные колонки.</p>
+<p>Ментальная модель: SQL декларативен, как заказ в ресторане — ты говоришь официанту «стейк средней прожарки», а не диктуешь повару пошаговый рецепт с температурой сковороды. СУБД (query planner) сама решает, каким путём достать данные — через полный перебор или индекс, в каком порядке соединить таблицы. Именно поэтому один и тот же SQL-запрос может выполняться по-разному в зависимости от статистики таблиц, а твоя задача — описать <em>что</em> нужно, а не <em>как</em> это получить.</p>
+<p>Это станет фундаментом всего backend: когда через две недели ты напишешь <code>select(Book).where(Book.title.ilike('%python%'))</code> в SQLAlchemy, под капотом сгенерируется ровно такой же <code>SELECT ... WHERE ... ILIKE</code>, который ты пишешь сегодня руками. Без понимания сырого SQL отладка «странного» ORM-запроса превращается в гадание, а с ним — в чтение сгенерированного SQL и логичный вывод, почему он медленный или неверный.</p>
+<p>Частое заблуждение — пытаться отфильтровать результат агрегации через <code>WHERE</code>: <code>WHERE COUNT(*) &gt; 2</code> вызовет ошибку, потому что на момент выполнения <code>WHERE</code> агрегаты ещё не посчитаны — для этого существует <code>HAVING</code>, которая работает уже после <code>GROUP BY</code>. Вторая типичная ошибка начинающих — забыть, что колонка, добавленная в <code>SELECT</code> без агрегатной функции, должна присутствовать и в <code>GROUP BY</code>, иначе строгий SQL-режим (в PostgreSQL это стандартное поведение) выдаст ошибку «column must appear in GROUP BY clause». Практика дня с <code>HAVING count(*) &gt; 2</code> — это ровно тренировка на понимание порядка выполнения, а не запоминание синтаксиса.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://sqlbolt.com/lesson/select_queries_introduction">SQLBolt Lessons 1–6</a></li>
+<li><a href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-select/">PostgreSQL SELECT</a></li>
+<li><a href="https://www.sqlstyle.guide/">SQL Style Guide</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> WHERE фильтрует строки, HAVING — группы; SQL описывает результат, не алгоритм.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Установи <a href="https://sqlitebrowser.org/">DB Browser for SQLite</a> или <code>sqlite3</code> CLI для быстрых экспериментов</li>
+<li>Создай БД «shop»: <code>products</code>, <code>categories</code>, <code>orders</code> с PRIMARY KEY</li>
+<li>10+ SELECT-запросов: топ-5 дорогих, средняя цена, count по категории</li>
+<li>Запрос с <code>GROUP BY category_id</code> и <code>HAVING count(*) &gt; 2</code></li>
+<li>Запрос с <code>DISTINCT</code> и сортировкой по двум колонкам</li>
+<li>Сохрани все запросы в <code>queries/day113.sql</code> с комментариями</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Схема с PRIMARY KEY на каждой таблице
+- [ ] ≥ 10 осмысленных запросов в <code>queries.sql</code>
+- [ ] Понимаешь разницу WHERE vs HAVING</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Установи <a href="https://sqlitebrowser.org/">DB Browser for SQLite</a> или <code>sqlite3</code> CLI для быстрых экспериментов</li>
+<li>Создай БД «shop»: <code>products</code>, <code>categories</code>, <code>orders</code> с PRIMARY KEY</li>
+<li>10+ SELECT-запросов: топ-5 дорогих, средняя цена, count по категории</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-17/</code> → <code>git commit -m "week 17 day 113: SQL SELECT and aggregates"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>SELECT * в production — выбирай нужные колонки</li>
+<li>GROUP BY без агрегата в SELECT — ошибка в строгом SQL</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-17--week-17-day-113');</script>
+</body>
+</html>

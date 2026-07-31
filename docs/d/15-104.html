@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 104 (Сб): Модули, пакеты, pip · Python · web-roadmap</title>
+  <meta name="description" content="День 104 (Сб): Модули, пакеты, pip — неделя 15.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-15--week-15-day-104">
+  <meta http-equiv="refresh" content="0;url=../#week-15--week-15-day-104">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-15--week-15-day-104">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-15-day-104">День 104 (Сб): Модули, пакеты, pip</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Expense Tracker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Модули и пакеты масштабируют код за пределы одного файла. <code>import module</code> и <code>from package import name</code> — два стиля; второй удобнее, но может засорить namespace. Пакет — папка с <code>__init__.py</code> (в Python 3.3+ namespace packages возможны без него, но для учебных проектов <code>__init__.py</code> явно). <code>__all__</code> объявляет публичный API пакета.</p>
+<p><code>pip install package</code> ставит зависимости в venv; <code>pip freeze &gt; requirements.txt</code> фиксирует версии для воспроизводимых сборок. Pin versions (<code>rich==13.x.x</code>) защищает от неожиданных breaking changes. PyPI — реестр пакетов: <code>requests</code>, <code>rich</code> и тысячи других.</p>
+<p>Запуск <code>python -m phonebook.cli</code> выполняет модуль как скрипт с корректными относительными импортами. Избегай циклических импортов: <code>models</code> не должен импортировать <code>cli</code>. Не называй файл <code>json.py</code> — затенишь стандартный модуль.</p>
+<p>Мысленная модель пакета: это граница пространства имён плюс явно объявленный публичный API. Папка с <code>__init__.py</code> — не формальность, а сигнал Python «это единый модуль, а не просто набор файлов рядом», а <code>__all__</code> внутри <code>__init__.py</code> явно перечисляет, что видно снаружи пакета, а что — внутренняя деталь реализации, которую пользователи пакета не должны трогать напрямую.</p>
+<p>Разделение на <code>models.py</code> (структуры данных), <code>storage.py</code> (чтение/запись) и <code>cli.py</code> (взаимодействие с пользователем) — это не искусственное упражнение, а миниатюрная версия слоистой архитектуры, которая будет использоваться в любом более крупном приложении: тот же принцип «данные отдельно от способа их хранения, отдельно от интерфейса» лежит в основе backend-фреймворков вроде Django (models/views/serializers) и FastAPI (schemas/crud/routers), с которыми ты столкнёшься позже в курсе.</p>
+<p>Конкретный пример пользы <code>requirements.txt</code> с зафиксированными версиями: если сегодня установлен <code>rich==13.7.0</code>, а через полгода на новой машине без pinned версии автоматически поставится <code>rich==14.x</code> с изменённым API, скрипт может сломаться без единого изменения в собственном коде — просто потому что зависимость обновилась. <code>pip freeze &gt; requirements.txt</code> фиксирует не только сам факт использования библиотеки, но и точную версию, гарантируя воспроизводимость окружения на любой машине и через любое время.</p>
+<p>Частое заблуждение — переносить из JS-опыта расслабленное отношение к порядку импортов, где циклические зависимости между модулями иногда «просто работают» из-за особенностей резолвинга ES-модулей или бандлера. В Python циклический импорт (<code>models.py</code> импортирует что-то из <code>cli.py</code>, а <code>cli.py</code> — из <code>models.py</code>) на практике почти гарантированно приводит к <code>ImportError: cannot import name ... (most likely due to a circular import)</code>, потому что модуль в момент своего первого импорта ещё не полностью выполнен. Именно поэтому «Ловушки» дня явно требуют однонаправленной иерархии зависимостей (models не импортирует cli) — это правило стоит соблюдать с самого начала разбиения телефонной книги на пакет <code>phonebook/</code>, а не исправлять постфактум, когда импорты уже переплетены.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.python.org/3/tutorial/modules.html">Modules</a></li>
+<li><a href="https://pip.pypa.io/en/stable/">pip documentation</a></li>
+<li><a href="https://pypi.org/">PyPI</a></li>
+<li><a href="https://rich.readthedocs.io/">rich</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> пакетная структура + <code>requirements.txt</code> — основа любого Python-проекта.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Разбей телефонную книгу: <code>models.py</code>, <code>storage.py</code>, <code>cli.py</code></li>
+<li><code>pip install rich</code> — красивый вывод таблицы контактов</li>
+<li><code>requirements.txt</code> с <code>rich==...</code></li>
+<li>Запуск: <code>python -m phonebook.cli</code></li>
+<li>Пакет <code>phonebook/</code> с <code>__init__.py</code></li>
+<li>Rich Table для <code>list contacts</code> с колонками name, phone</li>
+<li>Цветной вывод ошибок через <code>rich.print</code></li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Пакетная структура с <code>__init__.py</code></p>
+</li>
+<li>
+<p>[ ] requirements.txt актуален</p>
+</li>
+<li>
+<p>[ ] rich Table для list contacts</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Разбей телефонную книгу: <code>models.py</code>, <code>storage.py</code>, <code>cli.py</code></li>
+<li><code>pip install rich</code> — красивый вывод таблицы контактов</li>
+<li><code>requirements.txt</code> с <code>rich==...</code></li>
+<li>Запуск: <code>python -m phonebook.cli</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-15
+
+git add phonebook/ requirements.txt
+
+git commit -m &quot;week-15 day-104: пакет phonebook и rich CLI&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Циклические импорты — раздели слои (models не импортирует cli)</p>
+</li>
+<li>
+<p>Имя файла <code>json.py</code> — затеняет стандартный модуль</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-15--week-15-day-104');</script>
+</body>
+</html>

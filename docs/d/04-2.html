@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 2 (Tue): Ветки, слияние и конфликты · Git advanced · web-roadmap</title>
+  <meta name="description" content="День 2 (Tue): Ветки, слияние и конфликты — неделя 04.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-04--week-04-day-2">
+  <meta http-equiv="refresh" content="0;url=../#week-04--week-04-day-2">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-04--week-04-day-2">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-04-day-2">День 2 (Tue): Ветки, слияние и конфликты</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Ветка в Git — просто <strong>указатель</strong> на коммит. Создать ветку дёшево: <code>git switch -c feature/header</code> ответвляет от текущего состояния, и ты работаешь изолированно, не ломая <code>main</code>. Когда фича готова — <strong>слияние</strong> (merge) переносит изменения обратно.</p>
+<p><strong>Fast-forward merge</strong> возможен, если <code>main</code> не получил новых коммитов с момента ответвления: указатель <code>main</code> просто «перепрыгнет» на конец feature-ветки. Иначе Git создаёт <strong>merge commit</strong> — коммит с двумя родителями. <code>git merge --no-ff</code> принудительно создаёт merge commit даже при возможности ff — сохраняет видимость ветки в истории.</p>
+<p><strong>Конфликт</strong> возникает, когда одна и та же строка изменена в обеих ветках. Git вставляет маркеры <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> — ты вручную выбираешь итог, <code>git add</code>, <code>git commit</code>. Конфликт — не катастрофа, а диалог между версиями. <code>git stash</code> временно прячет незакоммиченные правки, если нужно срочно переключить ветку.</p>
+<p><strong>Ментальная модель:</strong> представь ветки как параллельные черновики одного текста. <code>main</code> — чистовик, а <code>feature/*</code> — листок, на котором можно свободно экспериментировать, не боясь испортить оригинал. Merge — это не «копирование», а совмещение двух версий текста построчно: там, где правки не пересекаются, Git совмещает их автоматически; там, где обе версии тронули одну и ту же строку, он честно останавливается и просит тебя решить.</p>
+<p><strong>Почему это важно дальше:</strong> без уверенного понимания веток и конфликтов работа в команде (недели с PR-review, а позже — реальные проекты) превращается в страх перед <code>git merge</code>. Умение спокойно читать маркеры конфликта и осознанно выбирать нужную версию — навык, который используется буквально каждую неделю при слиянии Pull Request.</p>
+<p><strong>Пример:</strong> ты правишь <code>style.css</code> в <code>feature/dark-theme</code>, добавляя <code>background: #111</code>, а параллельно в <code>main</code> кто-то (или ты сам вчера) поменял тот же селектор на <code>background: #222</code>. При merge Git покажет оба варианта между маркерами — нужно решить, оставить один, объединить логику или переписать заново, а не бездумно удалить «чужой» кусок.</p>
+<p><strong>Частое заблуждение:</strong> многие считают конфликт признаком того, что «что-то сломалось». На деле конфликт — это Git защищает тебя от тихой потери чужих изменений; после ручного разрешения обязательно проверь работоспособность кода, а не только факт исчезновения маркеров — этим и займётся сегодняшняя практика.</p>
+<p><strong>Ключевая мысль:</strong> ветка — дешёвый черновик; merge — слияние черновика с основной линией.</p>
+<p><strong>Читать:</strong>
+- <a href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">Pro Git: Ветвление</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Создай ветку <code>feature/dark-theme</code>, добавь тёмную тему</li>
+<li>Вернись на <code>main</code>, измени тот же файл — спровоцируй конфликт</li>
+<li>Смержи ветку, разреши конфликт вручную</li>
+<li>Попрактикуй <code>git stash</code> при переключении веток с незакоммиченными правками</li>
+<li>Нарисуй схему веток после всех операций</li>
+<li>Сравни <code>git merge --no-ff</code> и fast-forward — посмотри историю</li>
+<li>После разрешения конфликта проверь, что сайт работает</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Конфликт разрешён осознанно, не удалён «всё чужое»
+- [ ] История показывает merge (или осознанный ff)
+- [ ] Понимаю разницу между branch и commit</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Создай ветку <code>feature/dark-theme</code>, добавь тёмную тему</li>
+<li>Вернись на <code>main</code>, измени тот же файл — спровоцируй конфликт</li>
+<li>Смержи ветку, разреши конфликт вручную</li>
+<li>Попрактикуй <code>git stash</code> при переключении веток с незакоммиченными правками</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 2: branches merge conflicts"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Коммит в detached HEAD — изменения не на ветке</li>
+<li><code>git add .</code> без проверки — случайно добавил .env</li>
+<li>Разрешение конфликта без тестирования — сломанный код в main</li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-04--week-04-day-2');</script>
+</body>
+</html>

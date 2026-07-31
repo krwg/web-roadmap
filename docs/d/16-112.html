@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 112 (Вс): Ревью ООП и алгоритмов · Python OOP · web-roadmap</title>
+  <meta name="description" content="День 112 (Вс): Ревью ООП и алгоритмов — неделя 16.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-16--week-16-day-112">
+  <meta http-equiv="refresh" content="0;url=../#week-16--week-16-day-112">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-16--week-16-day-112">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-16-day-112">День 112 (Вс): Ревью ООП и алгоритмов</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Ревью ООП и алгоритмов готовит к SQLite-проекту недели. SOLID на junior-уровне: Single Responsibility — один класс, одна причина для изменения; Open/Closed — расширяй через композицию, не правь базовый класс везде. Не усложняй: простой скрипт — функции + dataclasses, сложный домен — классы с поведением.</p>
+<p>Code smells: god class на 500 строк, дублирование, magic numbers без констант. LeetCode Easy (Two Sum, Valid Parentheses) закрепляет структуры данных вне pet-проекта. Рефакторинг Expense Tracker на <code>Expense</code> + <code>ExpenseStore</code> — мост к <code>TaskRepository</code>.</p>
+<p>Подготовь venv для недели 17 с <code>psycopg2-binary</code> и <code>python-dotenv</code>. Конспект Big O на одну страницу — пригодится при EXPLAIN и выборе индексов. Тег <code>week-16-done</code> на финальном коммите.</p>
+<p>Ментальная модель для ревью-дня: думай о SOLID не как о наборе догм, а как о наборе вопросов-фильтров, которые ты задаёшь коду <em>после</em> того, как он заработал, а не до. «У этого класса одна причина для изменения?» — если нет, скорее всего пора разделить god class на несколько с чёткой ответственностью. Это защита от переусложнения не меньше, чем от недоусложнения: простому CLI-скрипту не нужна абстрактная фабрика, а <code>TaskRepository</code> с несколькими бэкендами хранения — вполне.</p>
+<p>Почему это важно дальше: рефакторинг Expense Tracker на <code>Expense</code> + <code>ExpenseStore</code> сегодня — прямая репетиция архитектуры, которую ты повторишь через два дня в SQLite-проекте недели, а затем в разделении models/schemas/crud FastAPI (неделя 18) и routes/controllers/services Express (неделя 19). Умение распознать «этот код стоит разбить на несколько сущностей» — переносимый навык, не привязанный к конкретному фреймворку.</p>
+<p>Частое заблуждение выпускников этого этапа — считать, что больше классов и паттернов автоматически означает более «профессиональный» код; на практике over-engineering (фабрики фабрик для трёх типов объектов) так же вреден, как один файл на 500 строк. LeetCode Easy задачи в практике дня не про запоминание решений, а про распознавание паттернов (хеш-таблица вместо вложенного цикла, два указателя вместо перебора) — тот же навык, что пригодится при выборе структуры данных в реальном проекте, а не абстрактная гимнастика для собеседований. Ревью недели — это ещё и точка перехода: SQLite и sqlite3, с которыми ты работал в проекте, следующая неделя расширит до PostgreSQL и psycopg2, а ООП-приёмы (dataclass, ABC, композиция) станут строительными блоками моделей SQLAlchemy.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://leetcode.com/problemset/">LeetCode Easy</a></li>
+<li><a href="https://realpython.com/solid-principles-python/">SOLID (обзор)</a></li>
+<li><a href="https://docs.python.org/3/library/sqlite3.html">sqlite3</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> ООП — инструмент, не цель; простые данные — dataclass, сложная логика — классы.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Реши 3 задачи LeetCode Easy: Two Sum, Valid Parentheses, Merge Sorted Array</li>
+<li>Рефакторинг Expense Tracker на классы <code>Expense</code>, <code>ExpenseStore</code></li>
+<li><code>ExpenseStore.save()</code> / <code>load()</code> через pathlib + JSON</li>
+<li>Напиши ответы в <code>notes/oop-review.md</code>: 3 магических метода и зачем</li>
+<li>Конспект Big O на 1 страницу с примерами из недели</li>
+<li>Создай venv и <code>requirements.txt</code> для недели 17</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] 3 LeetCode задачи приняты
+- [ ] ExpenseStore с save/load через pathlib
+- [ ] Конспект Big O на 1 страницу</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Реши 3 задачи LeetCode Easy: Two Sum, Valid Parentheses, Merge Sorted Array</li>
+<li>Рефакторинг Expense Tracker на классы <code>Expense</code>, <code>ExpenseStore</code></li>
+<li><code>ExpenseStore.save()</code> / <code>load()</code> через pathlib + JSON</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-16/</code> → <code>git commit -m "week 16 day 112: OOP review and LeetCode"</code></li>
+<li>Поставь тег: <code>git tag week-16-done</code></li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-16--week-16-day-112');</script>
+</body>
+</html>

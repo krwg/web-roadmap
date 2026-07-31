@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 103 (Пт): Работа с файлами и JSON · Python · web-roadmap</title>
+  <meta name="description" content="День 103 (Пт): Работа с файлами и JSON — неделя 15.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-15--week-15-day-103">
+  <meta http-equiv="refresh" content="0;url=../#week-15--week-15-day-103">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-15--week-15-day-103">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-15-day-103">День 103 (Пт): Работа с файлами и JSON</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Expense Tracker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Файлы и JSON — мост между программой и диском. Context manager <code>with open(path, 'r', encoding='utf-8') as f:</code> гарантирует закрытие файла даже при исключении. На Windows <code>encoding='utf-8'</code> критичен для кириллицы. Режимы: <code>r</code> чтение, <code>w</code> перезапись, <code>a</code> дополнение в конец.</p>
+<p>Модуль <code>json</code>: <code>load</code>/<code>dump</code> для файлов, <code>loads</code>/<code>dumps</code> для строк. <code>ensure_ascii=False</code> сохраняет Unicode, <code>indent=2</code> делает файл читаемым для человека. Обрабатывай <code>FileNotFoundError</code> (первый запуск) и <code>JSONDecodeError</code> (битый файл) — graceful start важнее краша.</p>
+<p><code>pathlib.Path</code> — современная альтернатива строковым путям: <code>Path('data') / 'contacts.json'</code>. Atomic write (запись во временный файл + rename) защищает от потери данных при сбое. Для отладки — <code>print</code>, для production — модуль <code>logging</code> с уровнями.</p>
+<p>Мысленная модель <code>with open(...) as f:</code> — это гарантия, а не просто удобный синтаксис: контекстный менеджер гарантированно закроет файл (и сбросит буфер записи на диск) даже если между открытием и закрытием произойдёт исключение. Без <code>with</code> пришлось бы вручную оборачивать код в <code>try/finally</code> с явным <code>f.close()</code>, и забытый <code>close()</code> в реальных программах — частая причина «файл вроде записался, но данные потерялись» из-за того, что операционная система буферизует запись и не обязана сбрасывать её на диск немедленно.</p>
+<p>JSON-файл в этом контексте — это сериализованный снимок состояния программы между запусками: <code>contacts.json</code> — не просто «файл с данными», а контракт, который читает и пишет твоя программа при каждом старте и завершении. Тот же принцип (сериализация состояния в текстовый формат для передачи или хранения) станет центральным чуть позже в курсе, когда JSON превратится в формат тела HTTP-запросов и ответов между фронтендом и backend — сегодняшнее упражнение с файлом на диске концептуально то же самое, что будущий API-запрос, только без сети.</p>
+<p>Конкретный пример скрытой проблемы: на Windows чтение файла без явного <code>encoding='utf-8'</code> может использовать системную кодировку (часто <code>cp1251</code> для русской локали), из-за чего кириллица в <code>contacts.json</code> превращается в кракозябры не сразу с ошибкой, а тихо — файл открывается, что-то читается, программа не падает, но данные повреждены, и заметить это можно далеко не сразу, особенно если тестировать только с латиницей.</p>
+<p>Частое заблуждение — думать, что <code>f.write(data)</code> мгновенно физически записывает байты на диск и что если сразу после <code>write()</code> выключить компьютер или убить процесс, данные точно сохранятся. На самом деле между <code>write()</code> и физической записью на диск стоит буфер операционной системы, и именно закрытие файла (явное или через выход из блока <code>with</code>) инициирует его сброс. В критериях дня явно указано «graceful handling если файл не существует» и «<code>ensure_ascii=False</code> для кириллицы» — оба пункта напрямую защищают от описанных выше проблем при реализации persist телефонной книги в JSON.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files">Reading and Writing Files</a></li>
+<li><a href="https://docs.python.org/3/library/json.html">json module</a></li>
+<li><a href="https://docs.python.org/3/library/pathlib.html">pathlib</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> всегда <code>with open</code> и <code>encoding='utf-8'</code>; JSON — контракт persist между запусками.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Расширь телефонную книгу: save/load <code>contacts.json</code></li>
+<li>Логгер: append строки в <code>app.log</code> с timestamp</li>
+<li>Чтение CSV вручную (split по запятой) → list of dicts</li>
+<li>Backup: копия JSON перед перезаписью</li>
+<li><code>storage.py</code> — функции <code>load_contacts()</code>, <code>save_contacts(data)</code></li>
+<li>Graceful start если <code>contacts.json</code> не существует</li>
+<li>Импорт контактов из CSV файла</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Все файлы через <code>with open</code></p>
+</li>
+<li>
+<p>[ ] <code>ensure_ascii=False</code> для кириллицы в JSON</p>
+</li>
+<li>
+<p>[ ] Graceful handling если файл не существует</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Расширь телефонную книгу: save/load <code>contacts.json</code></li>
+<li>Логгер: append строки в <code>app.log</code> с timestamp</li>
+<li>Чтение CSV вручную (split по запятой) → list of dicts</li>
+<li>Backup: копия JSON перед перезаписью</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-15
+
+git add storage.py data/
+
+git commit -m &quot;week-15 day-103: JSON persist, логгер и CSV import&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Забытый <code>encoding='utf-8'</code> на Windows — кракозябры</p>
+</li>
+<li>
+<p><code>json.dump</code> без <code>indent</code> — нечитаемый файл для человека</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-15--week-15-day-103');</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 4 (Thu): События — основы · DOM · web-roadmap</title>
+  <meta name="description" content="День 4 (Thu): События — основы — неделя 06.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-06--week-06-day-4">
+  <meta http-equiv="refresh" content="0;url=../#week-06--week-06-day-4">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-06--week-06-day-4">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-06-day-4">День 4 (Thu): События — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>События — способ браузера сообщить JS: «пользователь что-то сделал». <code>addEventListener('click', handler)</code> — современный стандарт; inline <code>onclick</code> в HTML — устарел и смешивает разметку с логикой. На один элемент можно повесить <strong>несколько</strong> обработчиков; <code>onclick</code> перезаписывает предыдущий.</p>
+<p>Объект события (<code>event</code>) несёт контекст: <code>target</code> — элемент, на котором <strong>сработало</strong> событие; <code>currentTarget</code> — элемент, на котором <strong>висит</strong> listener. <code>preventDefault()</code> отменяет действие браузера (submit формы, переход по ссылке), но <strong>не останавливает всплытие</strong>. <code>stopPropagation()</code> останавливает bubbling.</p>
+<p><strong>Всплытие (bubbling)</strong>: клик по кнопке внутри <code>li</code> внутри <code>ul</code> сначала срабатывает на кнопке, затем всплывает к <code>li</code>, <code>ul</code>, <code>body</code>, <code>document</code>. <strong>Делегирование</strong>: один listener на <code>ul</code> ловит клики по всем <code>li</code> — эффективно для динамических списков. Для снятия обработчика нужна <strong>именованная</strong> функция — анонимную <code>removeEventListener</code> не найдёт.</p>
+<p><strong>Ментальная модель:</strong> представь всплытие как круги на воде: бросаешь камень (клик) в конкретную точку (элемент), а волна расходится наружу через всех родителей до самого <code>document</code>. Делегирование пользуется этим эффектом: вместо того чтобы ставить сторожа (listener) у каждого маленького элемента, ты ставишь одного сторожа на общий контейнер — он «слышит» волну от любого клика внутри и по <code>event.target</code> понимает, где именно она началась.</p>
+<p><strong>Почему это важно дальше:</strong> делегирование — обязательный приём для динамических списков (Todo App этой недели, где задачи добавляются и удаляются во время работы страницы). Если вешать listener на каждый элемент списка отдельно, новые элементы, добавленные позже, окажутся без обработчика — типичный источник бага «кнопка удаления не работает у новых задач».</p>
+<p><strong>Пример:</strong> список задач с одним обработчиком на <code>ul</code>: <code>list.addEventListener('click', e =&gt; { if (e.target.matches('.delete-btn')) removeTask(e.target.closest('li').dataset.id) })</code>. Этот код продолжит работать для любой новой задачи, добавленной позже, потому что слушатель висит не на кнопках, а на их общем родителе.</p>
+<p><strong>Частое заблуждение:</strong> новички думают, что <code>preventDefault()</code> останавливает и всплытие события — но это не так, эти два механизма независимы. <code>preventDefault()</code> отменяет <strong>действие браузера по умолчанию</strong> (переход по ссылке, отправку формы), а <code>stopPropagation()</code> останавливает <strong>распространение</strong> события вверх по дереву. Спутав их, легко получить форму, которая не перезагружает страницу, но клик по ней всё равно «протекает» на родительские обработчики — это стоит явно проверить в сегодняшней задаче с <code>stopPropagation</code>.</p>
+<p><strong>Ключевая мысль:</strong> bubbling — основа делегирования; <code>preventDefault</code> ≠ <code>stopPropagation</code>.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/introduction-browser-events">learn.javascript.ru: Введение в события</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Кнопка «Наверх» — плавный скролл (пока <code>window.scrollTo</code>, событие click)</li>
+<li>Форма: <code>submit</code> → <code>preventDefault()</code>, вывод данных в Console</li>
+<li>Делегирование: один listener на <code>ul</code>, обработка кликов по <code>li</code></li>
+<li>Клавиатура: <code>keydown</code> — закрытие модалки по Escape</li>
+<li>Удали listener через <code>removeEventListener</code> (именованная функция)</li>
+<li>Добавь <code>stopPropagation</code> на вложенной кнопке — наблюдай разницу</li>
+<li>Подключи <code>{ passive: true }</code> на scroll listener (если добавишь)</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] <code>preventDefault</code> на форме предотвращает перезагрузку
+- [ ] Event delegation на списке
+- [ ] Именованные handler-функции для removeEventListener</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Кнопка «Наверх» — плавный скролл (пока <code>window.scrollTo</code>, событие click)</li>
+<li>Форма: <code>submit</code> → <code>preventDefault()</code>, вывод данных в Console</li>
+<li>Делегирование: один listener на <code>ul</code>, обработка кликов по <code>li</code></li>
+<li>Клавиатура: <code>keydown</code> — закрытие модалки по Escape</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 4: events delegation"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-06--week-06-day-4');</script>
+</body>
+</html>

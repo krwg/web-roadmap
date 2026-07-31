@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 95 (Чт): Weather — интеграция внешнего API · Frontend SPA · web-roadmap</title>
+  <meta name="description" content="День 95 (Чт): Weather — интеграция внешнего API — неделя 14.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-14--week-14-day-95">
+  <meta http-equiv="refresh" content="0;url=../#week-14--week-14-day-95">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-14--week-14-day-95">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-14-day-95">День 95 (Чт): Weather — интеграция внешнего API</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Интеграция внешнего API — переход от учебного localStorage к реальному асинхронному миру. OpenWeather Current Weather API принимает город и ключ, возвращает температуру, влажность, описание и код иконки. Единицы (<code>metric</code> / <code>imperial</code>) лучше брать из Settings, а не хардкодить.</p>
+<p>Три UI-состояния обязательны: loading (skeleton или spinner), error (сообщение + retry), success (данные). Проверяй <code>res.ok</code> — 401 (битый ключ), 404 (город не найден) и 429 (лимит free tier) должны давать понятный текст, а не «белый экран смерти». Кэш в <code>sessionStorage</code> на 10 минут с timestamp экономит квоту API.</p>
+<p><code>useFetch</code> или dedicated <code>weatherApi.ts</code> изолируют HTTP от компонента. Мини-виджет на Dashboard и полная страница <code>/weather</code> должны использовать один hook — иначе дублируется логика кэша. Debounce или submit по кнопке: запрос на каждый keystroke в поле города быстро исчерпает лимит.</p>
+<p>Мысленная модель API-слоя: <code>weatherApi.ts</code> — это граница, за которой прячутся все детали конкретного сервиса (URL, ключ, формат ответа), а компонент <code>Weather</code> вообще не должен знать, что источник данных — именно OpenWeather, а не какой-то другой провайдер. Если завтра понадобится сменить сервис погоды, меняется только этот файл — UI и hook, которые его используют, остаются нетронутыми.</p>
+<p>Это разделение — не абстрактная архитектурная гигиена, а буквально тот же принцип, который появится на неделях 21–22 при подключении собственного backend: компонент вызывает <code>getWeather(city)</code>, не зная и не заботясь о том, идёт ли запрос к внешнему API, к своему серверу или пока вообще к моковым данным. Правильно спроектированный <code>weatherApi.ts</code> сегодня — это репетиция будущего <code>apiClient.ts</code> для своих же REST-эндпоинтов.</p>
+<p>Конкретный пример квоты: free tier OpenWeather ограничен по количеству запросов в минуту/день. Кэш в <code>sessionStorage</code> с timestamp («если последний ответ для этого города младше 10 минут — используй его, не делай новый запрос») экономит квоту при обычном использовании (повторные заходы на страницу, переключение вкладок) и параллельно ускоряет восприятие — данные появляются мгновенно из кэша, а не после сетевого round-trip.</p>
+<p>Частое заблуждение — считать, что <code>fetch</code> сам «выбросит ошибку» при неудачном HTTP-ответе, как это делает, например, axios по умолчанию. На самом деле <code>fetch</code> реджектит промис только при сетевом сбое (нет соединения, DNS не резолвится); ответ с кодом 401 (неверный ключ) или 404 (город не найден) — это полностью «успешный» с точки зрения fetch промис, просто с <code>res.ok === false</code>. Если не проверять <code>res.ok</code> явно и не бросать собственную ошибку, <code>res.json()</code> на теле ошибки OpenWeather (<code>{ cod: 401, message: 'Invalid API key' }</code>) отработает без исключений, и приложение попытается отрисовать погоду из объекта, где температуры попросту нет — это и есть тот самый «белый экран смерти», упомянутый в «Ловушках» дня, и практика явно требует обрабатывать 401/404/429 текстом, понятным пользователю, а не давать приложению упасть в неопределённое состояние.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://openweathermap.org/current">OpenWeatherMap Current Weather</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">Fetch API (MDN)</a></li>
+<li><a href="https://vitejs.dev/guide/env-and-mode.html">Vite Env Variables</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> API-слой отдельно от UI; loading/error/success — на каждом экране с данными.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Страница <code>/weather</code>: input города, кнопка поиска</li>
+<li>Отображение: температура, описание, иконка, влажность, ветер</li>
+<li>Сохрани последний город в localStorage</li>
+<li>Обработка неверного API key и лимита запросов</li>
+<li>Кэш ответа в sessionStorage с timestamp</li>
+<li>Мини-виджет погоды на Dashboard (тот же hook)</li>
+<li>Retry кнопка при сетевой ошибке</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Loading / error / success states</p>
+</li>
+<li>
+<p>[ ] Кэш 10 мин — повторный запрос не уходит в сеть</p>
+</li>
+<li>
+<p>[ ] Город по умолчанию из Settings</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Страница <code>/weather</code>: input города, кнопка поиска</li>
+<li>Отображение: температура, описание, иконка, влажность, ветер</li>
+<li>Сохрани последний город в localStorage</li>
+<li>Обработка неверного API key и лимита запросов</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-14
+
+git add src/pages/Weather.tsx src/services/weatherApi.ts
+
+git commit -m &quot;week-14 day-95: OpenWeather API и кэш&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Запрос на каждый keystroke — debounce или submit по кнопке</p>
+</li>
+<li>
+<p>Не обработанный <code>res.ok === false</code> — «белый экран смерти»</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-14--week-14-day-95');</script>
+</body>
+</html>

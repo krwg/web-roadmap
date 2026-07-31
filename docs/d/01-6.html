@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 6 (Sat): Доступность (a11y) · HTML · web-roadmap</title>
+  <meta name="description" content="День 6 (Sat): Доступность (a11y) — неделя 01.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-01--week-01-day-6">
+  <meta http-equiv="refresh" content="0;url=../#week-01--week-01-day-6">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-01--week-01-day-6">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-01-day-6">День 6 (Sat): Доступность (a11y)</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Доступность (accessibility, a11y) — это не «галочка для инвалидов», а качество интерфейса для всех: плохой контраст мешает читать при ярком солнце, а чёткая навигация с клавиатуры спасает, когда мышь сломалась. Фреймворк <strong>POUR</strong> задаёт четыре принципа: контент должен быть <strong>воспринимаем</strong> (Perceivable), <strong>управляем</strong> (Operable), <strong>понятен</strong> (Understandable) и <strong>устойчив</strong> к разным технологиям (Robust).</p>
+<p>Клавиатурная навигация — базовый тест. Порядок Tab следует порядку элементов в DOM, а не визуальному расположению на экране. Не ставь положительный <code>tabindex</code> без веской причины — это ломает естественный порядок. <strong>Skip link</strong> — первая фокусируемая ссылка «Перейти к содержимому», ведущая к <code>#main-content</code>; пользователь скринридера не слушает меню на каждой странице заново.</p>
+<p>Контраст текста и фона по WCAG AA — минимум <strong>4.5:1</strong> для обычного текста и <strong>3:1</strong> для крупного. Проверяй через WebAIM Contrast Checker, а не «на глаз». ARIA-атрибуты (<code>aria-label</code>, <code>role</code>) дополняют HTML, когда нативного элемента нет — но <strong>первое правило ARIA</strong>: не используй ARIA, если подходит обычный тег (<code>button</code> вместо <code>div</code> с <code>role="button"</code>).</p>
+<p>Мысленная модель: представь, что весь сайт нужно пройти с закрытыми глазами и только с клавиатурой — это буквально то, как его использует часть аудитории. Всё, что требует «просто увидеть цвет» или «просто кликнуть мышкой точно в маленькую область», для такого пользователя не существует. a11y — это проектирование сразу для этого сценария, а не патч поверх готового интерфейса.</p>
+<p>Почему это важно дальше: вся вёрстка недель 2-3 (Flexbox, Grid, анимации) и весь JavaScript с недели 4 будут либо сохранять, либо ломать доступность, заложенную сегодня. Модальные окна, кастомные дропдауны, drag-and-drop на JS — везде придётся explicitly управлять фокусом и ARIA-атрибутами, и без сегодняшней базы POUR эти темы будут восприниматься как произвольный список правил, а не система.</p>
+<p>Конкретный пример: кастомная кнопка <code>&lt;div onclick="..."&gt;Отправить&lt;/div&gt;</code> выглядит как кнопка, но не получает фокус по Tab, не реагирует на Enter/Space и не объявляется скринридером как кнопка — три уровня доступности сломаны одним неверным выбором тега. <code>&lt;button&gt;Отправить&lt;/button&gt;</code> даёт всё это бесплатно, без единой строчки ARIA.</p>
+<p>Частое заблуждение — думать, что ARIA-атрибуты «чинят» доступность любого элемента. <code>role="button"</code> на <code>div</code> сообщает скринридеру, что это кнопка, но не добавляет фокусируемость и обработку клавиатуры — это придётся программировать вручную на JS. Отсюда и «первое правило ARIA»: нативный <code>button</code> уже умеет всё это сам.</p>
+<p><strong>Ключевая мысль:</strong> если страницу нельзя пройти Tab-ом — она недоступна, даже с идеальным дизайном; сегодняшний аудит A11Y.md — тренировка смотреть на свою вёрстку глазами другого пользователя.</p>
+<p><strong>Читать:</strong>
+- <a href="https://web.dev/learn/accessibility">web.dev: Learn Accessibility</a> — POUR: Perceivable, Operable, Understandable, Robust</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Пройди все страницы только Tab/Enter/Space</li>
+<li>Skip-link в начале <code>body</code> на каждой странице</li>
+<li><a href="https://webaim.org/resources/contrastchecker/">WebAIM Contrast Checker</a> — исправь слабый контраст (временный inline style допустим)</li>
+<li>Lighthouse a11y ≥ 90 на <code>index.html</code></li>
+<li>Запиши в <code>week-01/A11Y.md</code> — 5 найденных проблем и как исправил</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Skip-link работает
+- [ ] Видимый <code>:focus-visible</code> на ссылках
+- [ ] Lighthouse ≥ 90</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Пройди все страницы только Tab/Enter/Space</li>
+<li>Skip-link в начале <code>body</code> на каждой странице</li>
+<li><a href="https://webaim.org/resources/contrastchecker/">WebAIM Contrast Checker</a> — исправь слабый контраст (временный inline style допустим)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">git add week-01/
+git commit -m &quot;week 01 day 6: accessibility fixes and A11Y audit doc&quot;
+git push
+</code></pre>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-01--week-01-day-6');</script>
+</body>
+</html>

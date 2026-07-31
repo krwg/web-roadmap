@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 3 (Wed): CSS Grid — основы · CSS layouts · web-roadmap</title>
+  <meta name="description" content="День 3 (Wed): CSS Grid — основы — неделя 03.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-03--week-03-day-3">
+  <meta http-equiv="refresh" content="0;url=../#week-03--week-03-day-3">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-03--week-03-day-3">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-03-day-3">День 3 (Wed): CSS Grid — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>SaaS Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>CSS Grid — <strong>двумерная</strong> сетка: строки и колонки одновременно. <code>display: grid</code> на контейнере; <code>grid-template-columns</code> и <code>grid-template-rows</code> задают треки. Единица <code>fr</code> (fraction) делит свободное пространство пропорционально: <code>1fr 2fr</code> — вторая колонка вдвое шире. <code>repeat(3, 1fr)</code> — три равные колонки; <code>minmax(200px, 1fr)</code> — колонка не уже 200px, но растёт.</p>
+<p>Элементы позиционируются через <code>grid-column</code>, <code>grid-row</code> или именованные зоны <code>grid-template-areas</code>. Areas превращают CSS в карту макета: <code>header header / sidebar main / footer footer</code> — читаемо без подсчёта линий. <code>grid-column: span 2</code> растягивает элемент на две ячейки.</p>
+<p>Grid vs Flex: grid для страничных макетов, галерей, дашбордов; flex для навигации, рядов кнопок, выравнивания внутри ячейки grid. Часто они работают вместе: grid — скелет страницы, flex — внутри карточки.</p>
+<p>Мысленная модель: если Flexbox — это одна полка, то Grid — это стеллаж целиком, где ты заранее рисуешь чертёж (сколько полок, какой ширины каждая колонка) и потом расставляешь предметы по конкретным ячейкам этого чертежа. <code>grid-template-areas</code> буквально позволяет нарисовать этот чертёж текстом прямо в CSS — читая код, сразу видно макет страницы, не держа его в голове.</p>
+<p>Почему это критично дальше: практически любой реальный сайт — дашборд, интернет-магазин, лендинг — имеет двумерную структуру (шапка на всю ширину, сайдбар и контент рядом, футер снизу), и Grid решает это без единого хака с float или absolute-позиционированием, которые использовались до 2017 года. Это последний крупный layout-инструмент CSS перед тем, как на следующей неделе начнётся JavaScript — Grid и Flex вместе закрывают всю вёрстку, которая понадобится дальше.</p>
+<p>Конкретный пример: макет «шапка на всю ширину, слева сайдбар 250px, справа контент, снизу футер на всю ширину» через <code>grid-template-areas: "header header" "sidebar main" "footer footer"</code> с <code>grid-template-columns: 250px 1fr</code> — четыре строки CSS вместо десятков строк с <code>float</code>, <code>clear</code> и magic numbers, которые использовались в вёрстке 2010-х годов.</p>
+<p>Частое заблуждение — думать, что раз Grid двумерный, значит он всегда «лучше» Flexbox и должен использоваться везде. Для одномерных задач (ряд кнопок, центрирование одного блока) Grid избыточен и требует больше кода для того же результата — правило простое: одна ось — Flexbox, две оси одновременно — Grid.</p>
+<p><strong>Ключевая мысль:</strong> Grid — две оси и именованные зоны; <code>fr</code> делит пространство, а не проценты от неизвестной ширины, и сегодняшняя практика с areas — тренировка «рисовать» макет прямо в CSS, а не вычислять его на бумаге отдельно.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/CSS/CSS_grid_layout">MDN: Grid Layout</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Сетка 3×2 карточек через <code>grid-template-columns: repeat(3, 1fr)</code></li>
+<li>Макет страницы через areas: header, sidebar, main, footer</li>
+<li>Один элемент растяни на 2 колонки (<code>grid-column: span 2</code>)</li>
+<li>Пройди <a href="https://cssgridgarden.com/">Grid Garden</a> — 12+ уровней</li>
+<li>Сравни тот же макет на flex vs grid — запиши вывод</li>
+<li>Добавь <code>minmax(200px, 1fr)</code> в колонки — проверь поведение при сужении</li>
+<li>Нарисуй схему areas на бумаге, затем перенеси в CSS</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Grid Garden пройден
+- [ ] Макет с areas читаем в CSS без HTML-подсказок
+- [ ] Адаптив: при 600px — одна колонка</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Сетка 3×2 карточек через <code>grid-template-columns: repeat(3, 1fr)</code></li>
+<li>Макет страницы через areas: header, sidebar, main, footer</li>
+<li>Один элемент растяни на 2 колонки (<code>grid-column: span 2</code>)</li>
+<li>Пройди <a href="https://cssgridgarden.com/">Grid Garden</a> — 12+ уровней</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 03 day 3: css grid basics"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-03--week-03-day-3');</script>
+</body>
+</html>

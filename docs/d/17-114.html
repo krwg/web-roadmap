@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 114 (Вт): JOIN, INSERT, UPDATE, DELETE · SQL · web-roadmap</title>
+  <meta name="description" content="День 114 (Вт): JOIN, INSERT, UPDATE, DELETE — неделя 17.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-17--week-17-day-114">
+  <meta http-equiv="refresh" content="0;url=../#week-17--week-17-day-114">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-17--week-17-day-114">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-17-day-114">День 114 (Вт): JOIN, INSERT, UPDATE, DELETE</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library Database</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Реляционная модель связывает таблицы ключами. <code>INNER JOIN</code> возвращает только строки с совпадением в обеих таблицах. <code>LEFT JOIN</code> сохраняет все строки «слева» и подставляет NULL справа, если совпадения нет — идеально для «клиенты без заказов» (<code>WHERE orders.id IS NULL</code>).</p>
+<p>DML — изменение данных: <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>. Золотое правило: UPDATE и DELETE всегда с осмысленным <code>WHERE</code>. Без WHERE ты изменишь или удалишь всю таблицу — катастрофа, даже в учебной БД. <code>FOREIGN KEY</code> и <code>REFERENCES</code> обеспечивают целостность на уровне СУБД, не только приложения.</p>
+<p><code>ON DELETE CASCADE</code> удаляет дочерние записи вместе с родителем; <code>SET NULL</code> обнуляет FK. Транзакция <code>BEGIN</code> → операции → <code>COMMIT</code> или <code>ROLLBACK</code> — атомарность: либо всё, либо ничего. Забытый <code>ON</code> в JOIN даёт декартово произведение — взрыв числа строк.</p>
+<p>Ментальная модель для JOIN — диаграмма Венна из двух пересекающихся кругов. <code>INNER JOIN</code> — это только пересечение (строки, у которых есть пара в обеих таблицах); <code>LEFT JOIN</code> — весь левый круг целиком плюс то, что попало в пересечение, а недостающая часть справа заполняется <code>NULL</code>. Именно поэтому «клиенты без заказов» находятся через <code>LEFT JOIN ... WHERE orders.id IS NULL</code>: <code>NULL</code> в правой части и есть признак отсутствия совпадения.</p>
+<p>Это фундамент, который прорастёт в обе следующие недели: <code>relationship()</code> в SQLAlchemy (неделя 18) под капотом генерирует ровно такой же <code>JOIN</code>, когда ты обращаешься к <code>author.books</code>, а понимание <code>ON DELETE CASCADE</code>, которое ты настраиваешь сегодня, определяет, будут ли реальные пользовательские данные корректно удаляться или зависать сиротами при удалении родительской записи в продакшене.</p>
+<p>Частое и самое опасное заблуждение — думать, что <code>DELETE FROM orders WHERE customer_id = 5</code> «удалит только пять заказов», забыв, что без <code>WHERE</code> <code>DELETE FROM orders</code> стирает <em>все</em> строки таблицы безвозвратно, и в отличие от файла это не попадёт в корзину. Именно поэтому в критериях дня явно требуется тестировать деструктивные операции через <code>BEGIN</code> + <code>ROLLBACK</code>, прежде чем выполнять их «по-настоящему»: привычка проверять запрос в транзакции с откатом — это тот самый навык, который убережёт от инцидента на реальной базе данных. Такая же осторожность нужна и с самим JOIN: забытое условие <code>ON</code> превращает соединение в декартово произведение, где каждая строка левой таблицы умножается на каждую строку правой — на таблицах в тысячи строк результат может незаметно взорваться до миллионов, съедая память и время.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://sqlbolt.com/lesson/select_queries_with_joins">SQLBolt — JOINs</a></li>
+<li><a href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-joins/">PostgreSQL JOINs</a></li>
+<li><a href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-transaction/">Transactions</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> JOIN связывает таблицы; DELETE/UPDATE без WHERE — инцидент.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Расширь shop: <code>customers</code>, <code>order_items</code> с FK</li>
+<li>Запрос: заказы с именами клиентов (INNER JOIN)</li>
+<li>Клиенты без заказов (LEFT JOIN + <code>WHERE orders.id IS NULL</code>)</li>
+<li>UPDATE цены категории «sale» −10% в транзакции</li>
+<li>DELETE тестовых записей с ROLLBACK для проверки</li>
+<li>Запрос «выручка по клиенту» через JOIN + SUM</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] FOREIGN KEY между таблицами
+- [ ] JOIN-запрос возвращает ожидаемые строки
+- [ ] DELETE только с WHERE (не без него!)</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Расширь shop: <code>customers</code>, <code>order_items</code> с FK</li>
+<li>Запрос: заказы с именами клиентов (INNER JOIN)</li>
+<li>Клиенты без заказов (LEFT JOIN + <code>WHERE orders.id IS NULL</code>)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-17/</code> → <code>git commit -m "week 17 day 114: JOINs and DML with transactions"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>DELETE/UPDATE без WHERE — катастрофа</li>
+<li>Cartesian product — забытый ON в JOIN</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-17--week-17-day-114');</script>
+</body>
+</html>

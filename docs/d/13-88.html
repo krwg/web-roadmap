@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 88 (Чт): Context API — глобальное состояние · Router &amp; Context · web-roadmap</title>
+  <meta name="description" content="День 88 (Чт): Context API — глобальное состояние — неделя 13.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-13--week-13-day-88">
+  <meta http-equiv="refresh" content="0;url=../#week-13--week-13-day-88">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-13--week-13-day-88">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-13-day-88">День 88 (Чт): Context API — глобальное состояние</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio SPA</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Prop drilling — передача props через пять уровней дерева — быстро превращает код в лабиринт. Context API даёт альтернативу: Provider в корне публикует значение, любой потомок читает его через <code>useContext</code> без промежуточных компонентов. Классические кандидаты: тема оформления, язык интерфейса, данные текущего пользователя.</p>
+<p><code>createContext(defaultValue)</code> создаёт контекст; default нужен для подсказок в dev и как fallback, если забыли Provider. Разделяй контексты по доменам: <code>ThemeContext</code> отдельно от <code>UserContext</code>, иначе смена темы перерисует всё дерево, включая компоненты, которым нужен только user. Оборачивай <code>value</code> Provider в <code>useMemo</code>, если передаёшь объект или функции.</p>
+<p>Context не заменяет локальный state и не является полноценным store. Документация React предупреждает: не тащи в Context часто меняющиеся данные. Для сложного глобального state комбинация Context + <code>useReducer</code> — разумный следующий шаг, но для учебного проекта двух отдельных контекстов (theme + user) достаточно.</p>
+<p>Мысленная модель Context — это broadcast-канал для целого поддерева: Provider публикует значение один раз в корне, и любой компонент внутри, независимо от глубины вложенности, может подписаться на него через <code>useContext</code>, как будто настроившись на нужную «радиоволну», без необходимости, чтобы каждый промежуточный компонент знал об этом значении и передавал его дальше через props.</p>
+<p>Эта модель прямо используется в дне 89 этой же недели для <code>AuthContext</code> (сессия пользователя видна на любом маршруте без drilling через каждый layout) и станет ещё важнее на неделе 14, где <code>ThemeContext</code> и <code>UserContext</code> должны быть видны одновременно и в Dashboard, и в Settings, и в шапке навигации — трём совершенно разным веткам дерева компонентов.</p>
+<p>Конкретный пример: переключатель темы на странице <code>/settings</code> меняет <code>theme</code> в <code>ThemeContext</code>; хедер на <code>/</code> и карточки на <code>/tasks</code>, ни один из которых не связан прямым родительско-дочерним отношением с формой настроек, мгновенно перерисовываются с новым классом <code>dark</code> — потому что все они подписаны на один и тот же Provider, а не потому что кто-то явно передал им новое значение через props.</p>
+<p>Частое заблуждение — воспринимать Context как замену полноценного стейт-менеджера и пытаться засунуть туда вообще весь state приложения одним большим объектом. Проблема не только концептуальная, но и практическая: при таком подходе изменение любого поля (даже никак не связанного с большинством потребителей) вызывает ререндер всех компонентов, подписанных на этот Context, потому что React сравнивает ссылку на весь объект <code>value</code>, а не отдельные поля внутри него. Именно поэтому день явно требует разделять <code>ThemeContext</code> и <code>UserContext</code> — смена имени пользователя не должна лишний раз перерисовывать компоненты, которым нужна только тема. Это ровно та дисциплина, которую нужно соблюсти в практике: два независимых провайдера, а не один «God Context» на всё приложение.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://react.dev/reference/react/createContext">createContext</a></li>
+<li><a href="https://react.dev/reference/react/useContext">useContext</a></li>
+<li><a href="https://react.dev/learn/passing-data-deeply-with-context#before-you-use-context">Context — Caveats</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> Context — для редко меняющихся глобальных данных; разделяй провайдеры и мемоизируй value.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>ThemeContext</code>: <code>theme</code>, <code>toggleTheme</code>, CSS-класс <code>dark</code> на <code>&lt;html&gt;</code></li>
+<li><code>UserContext</code>: имя пользователя, setName — форма в Settings</li>
+<li>Потребители на разных страницах без prop drilling</li>
+<li>Вынеси Provider в <code>App.tsx</code> один раз</li>
+<li>Persist theme в localStorage через useEffect в Provider</li>
+<li>Custom hook <code>useTheme()</code> — обёртка над useContext</li>
+<li>Проверь: смена темы на /settings отражается на /</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Тема сохраняется в localStorage</p>
+</li>
+<li>
+<p>[ ] Минимум 3 компонента используют Context без промежуточных props</p>
+</li>
+<li>
+<p>[ ] Default value в createContext для dev-подсказок</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>ThemeContext</code>: <code>theme</code>, <code>toggleTheme</code>, CSS-класс <code>dark</code> на <code>&lt;html&gt;</code></li>
+<li><code>UserContext</code>: имя пользователя, setName — форма в Settings</li>
+<li>Потребители на разных страницах без prop drilling</li>
+<li>Вынеси Provider в <code>App.tsx</code> один раз</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-13
+
+git add src/contexts/
+
+git commit -m &quot;week-13 day-88: ThemeContext и UserContext&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Один Context на всё приложение — лишние ререндеры при любом изменении</p>
+</li>
+<li>
+<p>Забытый Provider — useContext возвращает default, баги «молча»</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-13--week-13-day-88');</script>
+</body>
+</html>

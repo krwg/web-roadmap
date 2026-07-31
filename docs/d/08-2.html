@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 2 (Tue): Promises — основы · Async &amp; HTTP · web-roadmap</title>
+  <meta name="description" content="День 2 (Tue): Promises — основы — неделя 08.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-08--week-08-day-2">
+  <meta http-equiv="refresh" content="0;url=../#week-08--week-08-day-2">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-08--week-08-day-2">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-08-day-2">День 2 (Tue): Promises — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Promise — объект-обёртка над результатом асинхронной операции, который ещё неизвестен. У Promise три состояния: <code>pending</code> (ожидание), <code>fulfilled</code> (успех) и <code>rejected</code> (ошибка). Переход из pending возможен только один раз — после resolve или reject состояние не меняется. Это делает Promise предсказуемым контрактом: либо данные, либо ошибка.</p>
+<p>Создание: <code>new Promise((resolve, reject) =&gt; { ... })</code>. Потребление: <code>.then(onFulfilled)</code> для успеха, <code>.catch(onRejected)</code> для ошибок, <code>.finally(onFinally)</code> для cleanup в любом случае (скрыть loader, сбросить флаг загрузки). Каждый <code>.then</code> возвращает <strong>новый</strong> Promise — поэтому цепочки <code>.then().then().catch()</code> читаются сверху вниз без «callback hell» вложенных функций.</p>
+<p>Если <code>.then</code>-колбэк возвращает значение, следующий <code>.then</code> получит его. Если возвращает Promise, следующий <code>.then</code> дождётся его разрешения. Один <code>.catch</code> в конце цепочки перехватит reject из любого предыдущего звена. <code>Promise.all([p1, p2])</code> запускает несколько Promise параллельно и ждёт все — но один reject роняет весь результат.</p>
+<p>Удобная мысленная модель — талон в химчистке: ты оставляешь вещи (запускаешь асинхронную операцию) и получаешь квиток (Promise) прямо сейчас, а не сами вещи. Квиток можно передать другому человеку и объяснить, что делать с готовым результатом (<code>.then</code>) или с проблемой (<code>.catch</code>) — сама операция при этом продолжает выполняться независимо от того, смотришь ты на квиток или нет.</p>
+<p>Это понимание — фундамент для async/await, который изучается уже завтра: <code>await</code> — это просто способ «подождать квиток», не потеряв читаемость кода. Позже, при работе с React Query или SWR, ты снова встретишь Promise как базовую единицу асинхронного состояния. Частое заблуждение — считать, что код внутри <code>new Promise((resolve) =&gt; {...})</code> выполняется асинхронно: на самом деле executor запускается <strong>синхронно и немедленно</strong>, а асинхронной становится только реакция через <code>.then</code>.</p>
+<p>Пример: <code>new Promise((resolve) =&gt; { console.log('1'); resolve('done'); }).then(v =&gt; console.log(v)); console.log('2')</code> выведет <code>1, 2, done</code> — executor отработал сразу, а <code>.then</code> дождался, пока текущий синхронный код (лог '2') закончится. В практике дня ты обернёшь <code>setTimeout</code> в <code>delay(ms)</code> (шаг 1) — стандартный паттерн превращения callback-based API в Promise-based, который пригодится для любой асинхронной функции без нативной поддержки Promise.</p>
+<p>Ещё один нюанс, который легко упустить: Promise может завершиться только один раз — повторный вызов <code>resolve</code> после первого <code>resolve</code> или <code>reject</code> просто игнорируется движком. Это гарантирует, что <code>.then</code> никогда не сработает дважды с разными значениями, и делает Promise надёжнее «сырых» колбэков, которые можно вызвать сколько угодно раз по ошибке.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/promise-basics">learn.javascript.ru: Промисы</a>
+- <a href="https://learn.javascript.ru/promise-chaining">learn.javascript.ru: Цепочка промисов</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise">MDN: Promise</a></p>
+<p><strong>Ключевая мысль:</strong> Promise — это цепочка, а не вложенность; <code>.then</code> возвращает новый Promise, и один <code>.catch</code> обслуживает всю цепочку.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Оберни <code>setTimeout</code> в функцию <code>delay(ms)</code> → Promise</li>
+<li>Цепочка: delay(1000) → «Шаг 1» → delay(500) → «Шаг 2»</li>
+<li><code>fetch</code> перепиши на <code>.then</code> без async/await</li>
+<li>Обработай reject: fetch несуществующего URL + catch</li>
+<li><code>Promise.all</code> — загрузи posts и users параллельно</li>
+<li>Добавь <code>.finally</code> для сброса loading state</li>
+<li>Верни значение из <code>.then</code> и прочитай его в следующем <code>.then</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Цепочка then без callback hell
+- [ ] Ошибки ловятся в catch
+- [ ] Promise.all для параллельных запросов</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Оберни <code>setTimeout</code> в функцию <code>delay(ms)</code> → Promise</li>
+<li>Цепочка: delay(1000) → «Шаг 1» → delay(500) → «Шаг 2»</li>
+<li><code>fetch</code> перепиши на <code>.then</code> без async/await</li>
+<li>Обработай reject: fetch несуществующего URL + catch</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 2: promises chaining"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-08--week-08-day-2');</script>
+</body>
+</html>

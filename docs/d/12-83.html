@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 83 (Сб): Подъём state (lifting state up) · React state · web-roadmap</title>
+  <meta name="description" content="День 83 (Сб): Подъём state (lifting state up) — неделя 12.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-12--week-12-day-83">
+  <meta http-equiv="refresh" content="0;url=../#week-12--week-12-day-83">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-12--week-12-day-83">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-12-day-83">День 83 (Сб): Подъём state (lifting state up)</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo Pro</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Lifting state up (подъём состояния) решает задачу, когда два или более компонента должны отображать или изменять одни данные. State перемещается к <strong>ближайшему общему родителю</strong>. Родитель хранит данные и передаёт вниз через props; дети сообщают об изменениях через callback props (<code>onSearchChange</code>, <code>onSortChange</code>). Siblings никогда не общаются напрямую — только через родителя.</p>
+<p>Derived state — значения, вычисляемые из props или state при рендере: <code>const filtered = items.filter(i =&gt; i.title.includes(query))</code>. Не дублируй их в отдельном <code>useState</code> — иначе рассинхрон при обновлении источника. Prop drilling на 1–2 уровня — нормально; при глубокой вложенности (неделя 13) поможет Context.</p>
+<p>Container/Presentational split: «умный» компонент управляет state и логикой, «глупый» — только рендерит по props. <code>useMemo</code> (preview) кэширует результат дорогой фильтрации: <code>useMemo(() =&gt; items.filter(...), [items, query])</code> — пересчёт только при изменении deps. Для 10 элементов не нужен; для 1000+ — заметная оптимизация.</p>
+<p>Мысленная модель для lifting state up формулируется просто: «state должен жить настолько низко, насколько возможно, и настолько высоко, насколько необходимо». Это значит — не поднимай вообще всё в корень приложения «на всякий случай»: если состояние нужно только одному компоненту (например, открыт ли dropdown), оно остаётся локальным; поднимается только то, что реально требуется нескольким потребителям одновременно.</p>
+<p>Этот баланс станет критичным на следующей неделе, когда drilling через 4–5 уровней станет неудобным и появится соблазн засунуть вообще всё в Context. Понимание сегодняшнего правила помогает не наступить на грабли «Context для всего»: то, что нужно двум соседним компонентам на одном уровне, поднимается к родителю (как сегодня), а Context нужен только для данных, нужных по-настоящему широко и на разной глубине дерева (тема, авторизация).</p>
+<p>Конкретный пример: <code>SearchBar</code> не может держать <code>searchQuery</code> у себя, а <code>ItemList</code> — фильтровать по нему, если они не знают друг о друге. Оба — дети одного родителя <code>FilterableList</code>, значит, <code>searchQuery</code> поднимается именно туда: родитель хранит state, передаёт <code>value</code> и <code>onChange</code> в <code>SearchBar</code>, а отфильтрованный список — в <code>ItemList</code>.</p>
+<p>Частая ошибка — воспринять «lifting state up» как сигнал переносить в родителя вообще все данные компонента, включая чисто визуальные вещи вроде «наведена ли мышь на элемент» или «раскрыт ли аккордеон» — это только раздувает родителя и провоцирует лишние ререндеры всего поддерева при каждом мелком UI-взаимодействии. Правило простое: поднимай ровно то состояние, которое читают или меняют минимум два разных компонента; всё остальное остаётся локальным. Именно на этом принципе строится рефакторинг Todo App в практике дня: <code>filter</code> и <code>searchQuery</code> поднимаются в общий родитель, а, например, состояние «редактируется ли конкретная задача прямо сейчас» может вполне остаться внутри <code>TodoItem</code>.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/sharing-state-between-components">Sharing State Between Components</a>
+- <a href="https://react.dev/learn/extracting-state-logic-into-a-reducer">react.dev: Extracting State Logic into a Reducer</a> — preview
+- <a href="https://react.dev/reference/react/useMemo">useMemo</a></p>
+<p><strong>Ключевая мысль:</strong> общий state — у ближайшего родителя; derived values вычисляй, не дублируй в useState.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>FilterableList</code>: родитель хранит <code>items</code> + <code>searchQuery</code></li>
+<li><code>SearchBar</code> — только input, вызывает <code>onSearchChange</code></li>
+<li><code>ItemList</code> — получает отфильтрованный массив, рендерит список</li>
+<li><code>ItemCount</code> — показывает «Найдено: N из M»</li>
+<li>Добавь сортировку (A–Z / Z–A) — ещё один поднятый state</li>
+<li>Вынеси фильтрацию в <code>useMemo</code> при 100+ элементах (mock)</li>
+<li>Рефакторинг Todo: filter + search в одном родителе</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] SearchBar не знает про items — только про query</p>
+</li>
+<li>
+<p>[ ] Фильтрация в родителе или через useMemo</p>
+</li>
+<li>
+<p>[ ] Нет дублирования state в siblings</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>FilterableList</code>: родитель хранит <code>items</code> + <code>searchQuery</code></li>
+<li><code>SearchBar</code> — только input, вызывает <code>onSearchChange</code></li>
+<li><code>ItemList</code> — получает отфильтрованный массив, рендерит список</li>
+<li><code>ItemCount</code> — показывает «Найдено: N из M»</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-12
+
+git add src/components/FilterableList/
+
+git commit -m &quot;week-12 day-83: lifting state, FilterableList и сортировка&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Дублирование одного state в двух дочерних компонентах — рассинхрон</p>
+</li>
+<li>
+<p>Слишком глубокий drilling — пока терпимо, Context на неделе 13</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-12--week-12-day-83');</script>
+</body>
+</html>

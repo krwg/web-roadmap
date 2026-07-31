@@ -19,7 +19,7 @@
   <img src="https://img.shields.io/badge/длительность-22%20недели-3dd6c6?style=flat-square" alt="22 weeks" />
   <img src="https://img.shields.io/badge/нагрузка-6--7%20ч%2Fдень-6eb5ff?style=flat-square" alt="6-7h per day" />
   <img src="https://img.shields.io/badge/стек-full--stack-8b95a5?style=flat-square" alt="full-stack" />
-  <img src="https://img.shields.io/badge/версия-1.2.3-8b95a5?style=flat-square" alt="v1.2.3" />
+  <img src="https://img.shields.io/badge/версия-1.3.0-8b95a5?style=flat-square" alt="v1.3.0" />
 </p>
 
 ---
@@ -133,6 +133,8 @@ flowchart TB
 ## Contributing
 
 Исправления, новые задания и ссылки — через [Issues](https://github.com/krwg/web-roadmap/issues) и [Pull Requests](https://github.com/krwg/web-roadmap/pulls). См. [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Комментарии на сайте (Giscus) работают после установки [приложения giscus](https://github.com/apps/giscus) на репозиторий (Discussions включены, категория **General**).
 
 ---
 

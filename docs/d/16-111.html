@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 111 (Сб): regex и обработка текстовых логов · Python OOP · web-roadmap</title>
+  <meta name="description" content="День 111 (Сб): regex и обработка текстовых логов — неделя 16.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-16--week-16-day-111">
+  <meta http-equiv="refresh" content="0;url=../#week-16--week-16-day-111">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-16--week-16-day-111">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-16-day-111">День 111 (Сб): regex и обработка текстовых логов</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Регулярные выражения — мини-язык поиска по тексту. Модуль <code>re</code>: <code>match</code> — с начала строки, <code>search</code> — везде, <code>findall</code> — все совпадения, <code>sub</code> — замена. Raw-строки <code>r"\d+"</code> — backslash не экранируется Python. Группы <code>()</code> и именованные <code>(?P&lt;name&gt;...)</code> извлекают поля из лога.</p>
+<p>Построчное чтение большого файла — O(1) память на строку; не загружай гигабайтный лог в <code>read()</code>. <code>re.compile(pattern)</code> переиспользуй в цикле — быстрее, чем компилировать каждый раз. regex101.com — тестируй паттерн до вставки в код.</p>
+<p>Парсер server.log с named groups для timestamp, level, message — типичная задача DevOps/junior backend. Топ ERROR по часам — агрегация в dict. Замена IP на <code>[REDACTED]</code> — <code>re.sub</code>. Жадный <code>.*</code> может «съесть» лишнее — будь осторожен с квантификаторами.</p>
+<p>Ментальная модель: регулярное выражение — это мини-язык программирования, компилируемый в конечный автомат (finite state machine), который «читает» строку символ за символом и решает, продолжать совпадение или откатиться назад. Понимание этого объясняет и жадность квантификаторов (<code>.*</code> пытается захватить максимум, потом «отдаёт» посимвольно, если весь паттерн не совпал), и почему сложные вложенные квантификаторы могут вызывать катастрофический backtracking — экспоненциальное замедление на определённых входах.</p>
+<p>Разбор логов — не учебная задача ради задачи: это одна из самых частых обязанностей junior/DevOps-инженера в первые месяцы работы, а извлечение структурированных полей через named groups — тот же навык, что валидация формата email или телефона регулярным выражением внутри Pydantic (неделя 18) или Zod (неделя 19), которые используют regex под капотом для паттернов вроде <code>pattern=r'^\+?\d{10,15}$'</code>.</p>
+<p>Частое заблуждение — использовать regex там, где нужен полноценный парсер: для вложенных структур вроде HTML или JSON регулярка либо не справится, либо станет нечитаемым нагромождением экранирования — для таких форматов есть специализированные библиотеки. Другая типичная ошибка — забыть про <code>re.search</code> в пользу <code>re.match</code>, который проверяет совпадение только с <em>начала</em> строки, из-за чего кажется, что «регулярка не работает», хотя она просто ищет не там. В практике дня это прямо в критериях: парсинг должен быть построчным (generator, не <code>read()</code> целиком) — тот же принцип экономии памяти, что и в generator'ах дня 108. Именованные группы <code>(?P&lt;timestamp&gt;...)</code> вместо позиционных <code>(...)</code> — не просто удобство: они делают код устойчивым к изменению порядка групп в паттерне и превращают <code>match.groupdict()</code> в готовый словарь с понятными ключами вместо <code>match.group(1)</code>, <code>match.group(2)</code>, где легко перепутать индексы.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.python.org/3/library/re.html">re module</a></li>
+<li><a href="https://regex101.com/">regex101</a></li>
+<li><a href="https://docs.python.org/3/howto/regex.html">Regular Expression HOWTO</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> для поиска везде — <code>search</code>, не <code>match</code>; большие файлы — построчно.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Генератор mock <code>server.log</code> (1000 строк: timestamp, level, message)</li>
+<li>Парсер: извлечь все ERROR с датой через named groups</li>
+<li>Топ-5 часов с наибольшим числом ERROR</li>
+<li>Замена IP-адресов на <code>[REDACTED]</code> в копии лога</li>
+<li>CLI: <code>python parse_log.py server.log --level ERROR</code></li>
+<li>Сохрани итоговую статистику в <code>reports/error-summary.txt</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Парсинг построчно (memory-efficient)
+- [ ] regex с named groups для timestamp и level
+- [ ] Итоговая статистика в читаемом виде</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Генератор mock <code>server.log</code> (1000 строк: timestamp, level, message)</li>
+<li>Парсер: извлечь все ERROR с датой через named groups</li>
+<li>Топ-5 часов с наибольшим числом ERROR</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-16/</code> → <code>git commit -m "week 16 day 111: log parser with regex"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li><code>re.match</code> только с начала строки — для поиска везде <code>re.search</code></li>
+<li>Жадные квантификаторы <code>.*</code> — неожиданные совпадения</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-16--week-16-day-111');</script>
+</body>
+</html>

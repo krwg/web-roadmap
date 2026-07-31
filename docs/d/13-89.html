@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 89 (Пт): Комбинация Router + Context + Hooks · Router &amp; Context · web-roadmap</title>
+  <meta name="description" content="День 89 (Пт): Комбинация Router + Context + Hooks — неделя 13.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-13--week-13-day-89">
+  <meta http-equiv="refresh" content="0;url=../#week-13--week-13-day-89">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-13--week-13-day-89">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-13-day-89">День 89 (Пт): Комбинация Router + Context + Hooks</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio SPA</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>На этой неделе складываются три слоя: Router отвечает за URL, Context — за глобальное состояние (auth, theme), custom hooks — за переиспользуемую логику. Protected route — тонкая обёртка: если в <code>AuthContext</code> нет пользователя, рендерится <code>&lt;Navigate to="/login" replace /&gt;</code>, иначе — дочерняя страница.</p>
+<p>Mock-авторизация без реального API — нормальная ступень обучения: сохраняй объект user в <code>localStorage</code>, восстанавливай при старте. Без persist пользователь «разлогинится» после F5. Logout должен атомарно очистить Context, storage и перенаправить на публичную страницу через <code>useNavigate</code> или декларативный <code>&lt;Navigate&gt;</code>.</p>
+<p>Разделяй ответственность: форма логина — controlled inputs; проверка доступа — в <code>ProtectedRoute</code>; данные сессии — в Context. <code>location.state</code> позволяет передать, откуда пришёл пользователь, чтобы после login вернуть его на исходную страницу, а не всегда на <code>/dashboard</code>.</p>
+<p>Мысленная модель сегодняшнего дня — три независимых слоя, которые взаимодействуют, но не смешиваются: Router отвечает на вопрос «где мы» (URL → компонент), Context — «что мы знаем» (авторизован ли пользователь, какая тема), custom hooks — «как это переиспользуется» (логика внутри <code>useLocalStorage</code>, применённая теперь к сессии). <code>ProtectedRoute</code> — это gatekeeper на стыке первых двух слоёв: он не хранит состояние сам, а лишь читает <code>AuthContext</code> и решает, пропустить дальше к маршруту или подменить его на <code>&lt;Navigate to="/login" /&gt;</code>.</p>
+<p>Этот паттерн — не учебная условность, а форма, в которой строятся почти все продакшен-приложения: на неделях 20+ появится настоящий backend с JWT-токенами, но структура останется той же — <code>AuthContext</code> будет хранить не мок-пользователя, а результат проверки токена, а <code>ProtectedRoute</code> не изменится вообще. Понимание сегодняшней архитектуры экономит недели путаницы позже, когда вместо мока появится реальный API.</p>
+<p>Конкретный пример UX-цепочки: неавторизованный пользователь пытается открыть <code>/dashboard</code>, <code>ProtectedRoute</code> перенаправляет на <code>/login</code>, попутно сохраняя исходный путь через <code>location.state = { from: '/dashboard' }</code>; после успешного (мок) логина <code>navigate(state?.from ?? '/dashboard', { replace: true })</code> возвращает его именно туда, куда он изначально шёл, а не на дефолтную страницу — мелкая деталь, которая сильно улучшает ощущение от приложения.</p>
+<p>Важная оговорка, которую стоит проговорить явно, чтобы не сформировать ложное чувство защищённости: client-side <code>ProtectedRoute</code> — это UX-фильтр, а не механизм безопасности. Весь JS-код, включая проверку <code>if (!user)</code>, выполняется в браузере пользователя и может быть обойдён (просто отредактирован в DevTools) кем угодно с базовыми навыками. Реальная защита данных всегда происходит на сервере, который должен сам проверять права на каждый запрос — client-side роутинг лишь скрывает UI, но никогда не заменяет серверную авторизацию. Это прямо связано с пунктом «Ловушки»: сегодняшний <code>ProtectedRoute</code> проверяет только наличие объекта user, а не валидность токена — эта тема вернётся на неделе 20 уже с настоящим backend.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://reactrouter.com/6.28.0/start/tutorial">React Router — Tutorial (auth patterns)</a></li>
+<li><a href="https://reactrouter.com/6.28.0/components/navigate">Navigate</a></li>
+<li><a href="https://reactrouter.com/6.28.0/hooks/use-navigate">useNavigate</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> protected route проверяет сессию на уровне маршрута; persist в storage переживает перезагрузку.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>AuthContext</code> с <code>user</code>, <code>login</code>, <code>logout</code> (mock, без реального API)</li>
+<li><code>ProtectedRoute</code> — children или <code>&lt;Navigate to="/login" /&gt;</code></li>
+<li><code>/dashboard</code> — только для авторизованных</li>
+<li>После login — <code>navigate('/dashboard', { replace: true })</code></li>
+<li>Страница <code>/login</code> — controlled form, mock credentials</li>
+<li>Persist user в localStorage — переживает F5</li>
+<li>Header: кнопка Logout на всех страницах</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Неавторизованный пользователь не видит /dashboard</p>
+</li>
+<li>
+<p>[ ] Logout очищает Context и редиректит на /</p>
+</li>
+<li>
+<p>[ ] Login form — controlled inputs</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>AuthContext</code> с <code>user</code>, <code>login</code>, <code>logout</code> (mock, без реального API)</li>
+<li><code>ProtectedRoute</code> — children или <code>&lt;Navigate to="/login" /&gt;</code></li>
+<li><code>/dashboard</code> — только для авторизованных</li>
+<li>После login — <code>navigate('/dashboard', { replace: true })</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-13
+
+git add src/contexts/AuthContext.tsx src/components/ProtectedRoute.tsx
+
+git commit -m &quot;week-13 day-89: AuthContext и protected routes&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Хранение «авторизации» только в state без persist — F5 разлогинивает</p>
+</li>
+<li>
+<p>Protected route проверяет только наличие объекта, не валидность token (позже на нед. 20)</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-13--week-13-day-89');</script>
+</body>
+</html>

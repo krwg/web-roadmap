@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 6 (Sat): TS + React setup · TypeScript · web-roadmap</title>
+  <meta name="description" content="День 6 (Sat): TS + React setup — неделя 10.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-10--week-10-day-6">
+  <meta http-equiv="refresh" content="0;url=../#week-10--week-10-day-6">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-10--week-10-day-6">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-10-day-6">День 6 (Sat): TS + React setup</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Vite — современный инструмент сборки для фронтенда с мгновенным dev-сервером и HMR (Hot Module Replacement). Создание React + TypeScript проекта: <code>npm create vite@latest my-app -- --template react-ts</code>. Структура: <code>src/main.tsx</code> — точка входа, <code>App.tsx</code> — корневой компонент, <code>vite-env.d.ts</code> — типы Vite. TypeScript настроен из коробки.</p>
+<p>Props React-компонента типизируются через interface: <code>interface ButtonProps { label: string; onClick: () =&gt; void; variant?: 'primary' | 'secondary'; disabled?: boolean }</code>. Современная рекомендация — обычная функция <code>function Button({ label, onClick }: ButtonProps)</code>, а не <code>React.FC</code> (устаревший паттерн с неявным <code>children</code>). <code>React.ReactNode</code> описывает всё, что можно отрендерить (строки, числа, элементы, массивы, null). <code>React.ReactElement</code> — конкретно JSX-элемент.</p>
+<p>Vite конфигурируется в <code>vite.config.ts</code>; path aliases настраиваются и в tsconfig, и в vite. React Strict Mode в dev намеренно вызывает двойной render компонентов, чтобы выявить побочные эффекты — это нормально и не баг. Команды: <code>npm run dev</code> (разработка), <code>npm run build</code> (production-сборка с проверкой типов).</p>
+<p>Мысленная модель Vite — конвейер быстрой сборки с горячей заменой деталей на ходу: вместо того чтобы каждый раз пересобирать весь автомобиль (bundle) с нуля при малейшей правке, HMR подменяет только изменённую деталь (модуль) прямо во время движения, не перезагружая всю страницу и сохраняя текущее состояние компонентов (например, введённый в форму текст).</p>
+<p>Всё, что изучалось эту неделю — интерфейсы, generics, utility types — сходится именно здесь: типизация props компонента — первое место, где TypeScript встречается с React напрямую, и качество этого стыка определяет, насколько безопасно можно будет рефакторить компоненты в дальнейшем на неделе 11. Хорошо типизированный <code>ButtonProps</code> — это защита от передачи <code>onClick={someString}</code> по ошибке, которую поймает компилятор, а не пользователь в браузере.</p>
+<p>Частое заблуждение — использовать <code>React.FC&lt;Props&gt;</code> для типизации компонентов по старой памяти из туториалов пятилетней давности: современное сообщество React рекомендует обычную функцию с типизированными параметрами (<code>function Button(props: ButtonProps)</code>), поскольку <code>React.FC</code> неявно добавляет <code>children</code> всем компонентам (даже тем, где children не предполагается) и хуже работает с generic-компонентами. Конкретный пример из задания 4 практики — <code>Card</code> с <code>children: React.ReactNode</code>: <code>ReactNode</code> покрывает всё, что React способен отрендерить (строка, число, JSX, массив, <code>null</code>), тогда как <code>ReactElement</code> — только конкретный JSX-элемент.</p>
+<p>Ещё одна деталь, которая экономит время: файлы Vite с JSX обязаны иметь расширение <code>.tsx</code>, а не <code>.ts</code> — компилятор попросту не поймёт синтаксис <code>&lt;div&gt;</code> внутри <code>.ts</code>-файла и попытается интерпретировать угловые скобки как generic-приведение типов, выдав криптичную ошибку. Эта путаница — частая причина первых «непонятных» ошибок при переносе логики из <code>.ts</code> в компонент.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react-typescript-cheatsheet.netlify.app/docs/basic/setup">React TypeScript Cheatsheet: Setup</a>
+- <a href="https://vite.dev/guide/">Vite Guide</a>
+- <a href="https://react.dev/learn">react.dev: Quick Start</a></p>
+<p><strong>Ключевая мысль:</strong> Vite + react-ts даёт типизированный старт за минуту; props типизируй через interface, не через React.FC.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Создай проект Vite + React + TypeScript в <code>week-10/</code></li>
+<li>Перенеси типы Todo в <code>src/types/todo.ts</code></li>
+<li>Компонент <code>Button</code> с props: <code>label</code>, <code>onClick</code>, <code>variant?</code>, <code>disabled?</code></li>
+<li>Компонент <code>Card</code> с <code>children: React.ReactNode</code></li>
+<li>Запусти <code>npm run dev</code>, убедись что HMR работает</li>
+<li>Компонент <code>TodoItem</code> с типизированными props из <code>types/todo.ts</code></li>
+<li>Проверь <code>npm run build</code> — production без ошибок TS</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Vite проект запускается</p>
+</li>
+<li>
+<p>[ ] Минимум 2 типизированных компонента</p>
+</li>
+<li>
+<p>[ ] Типы вынесены в отдельные файлы</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Создай проект Vite + React + TypeScript в <code>week-10/</code></li>
+<li>Перенеси типы Todo в <code>src/types/todo.ts</code></li>
+<li>Компонент <code>Button</code> с props: <code>label</code>, <code>onClick</code>, <code>variant?</code>, <code>disabled?</code></li>
+<li>Компонент <code>Card</code> с <code>children: React.ReactNode</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add src/components/
+
+git commit -m &quot;week-10 day-06: Vite react-ts, Button и Card&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-10--week-10-day-6');</script>
+</body>
+</html>

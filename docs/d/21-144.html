@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 144 (Чт): Docker для frontend и PostgreSQL · Docker · web-roadmap</title>
+  <meta name="description" content="День 144 (Чт): Docker для frontend и PostgreSQL — неделя 21.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-21--week-21-day-144">
+  <meta http-equiv="refresh" content="0;url=../#week-21--week-21-day-144">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-21--week-21-day-144">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-21-day-144">День 144 (Чт): Docker для frontend и PostgreSQL</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Production frontend в Docker — multi-stage: stage 1 <code>npm run build</code> (Node), stage 2 <code>nginx:alpine</code> копирует <code>dist/</code>. nginx отдаёт static assets с gzip; <code>try_files $uri /index.html</code> — SPA fallback для client-side routes. <code>VITE_API_URL</code> — build-time: пересобирай image при смене API URL.</p>
+<p>Official <code>postgres:16</code> image: env <code>POSTGRES_USER</code>, <code>POSTGRES_PASSWORD</code>, <code>POSTGRES_DB</code>. Named volume <code>pgdata:/var/lib/postgresql/data</code> — данные переживают <code>docker rm</code>. <code>localhost</code> внутри container — сам container, не host machine; в compose network используй имя service <code>db</code>.</p>
+<p>Подними три container вручную перед compose: frontend :80, API :3000, PG :5432. Backend подключается к postgres по hostname <code>db</code> в docker network. Проверь полный flow до <code>docker compose</code>.</p>
+<p>Ментальная модель: named volume — это внешний жёсткий диск, который ты подключаешь к контейнеру; сам контейнер — расходный, а volume переживает <code>docker rm</code> и пересоздание контейнера. Путаница «localhost внутри контейнера = localhost на хосте» — одна из самых частых ошибок новичков в Docker: у каждого контейнера своя сетевая изоляция, и «localhost» там означает сам контейнер, а не машину разработчика. В production-командах эта путаница стоит часов отладки connection refused, поэтому понимание docker network — маркер зрелости junior DevOps-навыков.</p>
+<p>Конкретный пример: если backend в контейнере пытается подключиться к Postgres по <code>localhost:5432</code>, он получит connection refused, даже если Postgres реально запущен и слушает порт — потому что это два разных сетевых namespace; правильный hostname — имя service (<code>db</code>) в общей docker-сети. Частое заблуждение — «раз я указал <code>-p 5432:5432</code>, значит порт открыт для всех контейнеров» — port mapping открывает порт наружу на хост-машину, а между контейнерами используется внутренняя docker network с DNS по именам сервисов. Multi-stage сборка frontend (build + nginx), которую ты делаешь сегодня, и правильное именование сервисов — прямая подготовка к <code>docker-compose.yml</code> завтрашнего дня и к продовому образу DevHub capstone.</p>
+<p>Для продакшена nginx как раздатчик статики — не случайный выбор: он эффективнее Node.js-сервера для отдачи файлов благодаря event-driven архитектуре, умеет gzip/brotli-сжатие «из коробки» и не тратит ресурсы на интерпретацию JavaScript ради банальной раздачи HTML/CSS/JS. <code>try_files $uri /index.html</code> решает специфичную для SPA проблему: без этой директивы прямой заход на <code>/tasks</code> (не через клик в приложении) вернёт 404, потому что физического файла <code>/tasks</code> на диске не существует — весь роутинг живёт в JS-бандле.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://hub.docker.com/_/nginx">nginx docker</a></li>
+<li><a href="https://hub.docker.com/_/postgres">postgres docker</a></li>
+<li><a href="https://docs.docker.com/build/building/multi-stage/">Multi-stage builds</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> в docker network хост БД — имя service, не localhost.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Frontend Dockerfile: stage 1 <code>npm run build</code>, stage 2 <code>nginx:alpine</code> + COPY dist</li>
+<li><code>docker run -d --name pg -e POSTGRES_PASSWORD=pass -v pgdata:/var/lib/postgresql/data postgres:16</code></li>
+<li>Backend container подключается к postgres по hostname (вручную: <code>--link</code> или host.docker.internal)</li>
+<li>nginx.conf: <code>try_files $uri /index.html</code> для SPA routing</li>
+<li>Проверь полный flow: 3 containers вручную</li>
+<li>Frontend на port 80, API на 3000, PG на 5432</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Frontend dist отдаётся nginx на port 80
+- [ ] Postgres data сохраняется после restart container
+- [ ] Backend видит DB по hostname <code>db</code> (в compose network)</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Frontend Dockerfile: stage 1 <code>npm run build</code>, stage 2 <code>nginx:alpine</code> + COPY dist</li>
+<li><code>docker run -d --name pg -e POSTGRES_PASSWORD=pass -v pgdata:/var/lib/postgresql/data postgres:16</code></li>
+<li>Backend container подключается к postgres по hostname (вручную: <code>--link</code> или host.docker.internal)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-21/</code> → <code>git commit -m "week 21 day 144: frontend nginx and postgres containers"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li><code>localhost</code> внутри container — это сам container, не host</li>
+<li>VITE_API_URL при build time — пересобирай image при смене URL</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-21--week-21-day-144');</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 132 (Сб): Структура проекта и роутеры · Node.js · web-roadmap</title>
+  <meta name="description" content="День 132 (Сб): Структура проекта и роутеры — неделя 19.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-19--week-19-day-132">
+  <meta http-equiv="refresh" content="0;url=../#week-19--week-19-day-132">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-19--week-19-day-132">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-19-day-132">День 132 (Сб): Структура проекта и роутеры</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Express Router модульно группирует маршруты: <code>notes.routes.js</code> монтируется с prefix <code>/api/notes</code>. Layered architecture: routes (тонкие) → controllers (HTTP) → services (бизнес-логика) → db (SQL). Бизнес-логика в route handler не тестируется — вынеси в service.</p>
+<p><code>dotenv</code> загружает secrets из <code>.env</code>; <code>NODE_ENV=development|production</code> меняет поведение (morgan 'dev' vs 'combined'). Health check <code>GET /api/health</code> возвращает <code>{ status, db: 'ok'|'down', uptime }</code> — нужен для Docker и мониторинга. 503 если БД недоступна.</p>
+<p>Graceful shutdown: SIGTERM → <code>server.close()</code> → <code>pool.end()</code>. <code>package-lock.json</code> в git — воспроизводимые сборки. README описывает слои папок — onboarding нового разработчика.</p>
+<p>Ментальная модель layered-архитектуры — песочные часы: HTTP-специфичные детали (заголовки, статусы, парсинг запроса) сужаются к чистой бизнес-логике в узком горлышке (service), а затем снова расширяются к деталям хранения данных (db). Каждый слой знает только о соседнем: controller не знает, как устроен SQL-запрос внутри service, а service не знает, что вызвавший его код — это HTTP-запрос, а не, например, cron-задача или CLI-команда.</p>
+<p>Это разделение — не Node-специфичная причуда: это буквально та же архитектура <code>routers → crud → models → db</code>, которую ты собрал в FastAPI на прошлой неделе, только с другими именами слоёв. Узнавание одного и того же архитектурного паттерна в двух разных языках и фреймворках — куда более ценный навык, чем запоминание синтаксиса одного конкретного стека, и именно это делает тебя способным быстро освоить третий, четвёртый фреймворк в будущем.</p>
+<p>Частое заблуждение — писать бизнес-логику прямо внутри route-обработчика «раз уж всё равно там нужен доступ к <code>req</code> и <code>res</code>». Логика, зашитая в controller, не может быть протестирована без поднятия HTTP-сервера и не может быть переиспользована, если та же операция понадобится, например, из cron-задачи. Вторая ошибка — делать health check, который слепо возвращает <code>200 OK</code>, не проверяя реальную доступность БД: оркестраторы вроде Docker или Kubernetes используют health check, чтобы решить, направлять ли трафик на этот инстанс, и «фальшиво здоровый» сервис без реального подключения к БД будет продолжать получать запросы, которые обречены на ошибку. Graceful shutdown (<code>SIGTERM</code> → <code>server.close()</code> → <code>pool.end()</code>) — финальный штрих той же дисциплины: сервер должен успеть корректно завершить уже начатые запросы и закрыть соединения с БД перед остановкой, а не обрубать их резко, теряя данные в процессе.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://expressjs.com/en/guide/routing.html#express-router">Express Router</a></li>
+<li><a href="https://github.com/motdotla/dotenv">dotenv</a></li>
+<li><a href="https://expressjs.com/en/advanced/healthcheck-graceful-shutdown.html">Graceful Shutdown</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> routes тонкие, logic в services; health check — контракт с инфраструктурой.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Структура: <code>src/routes/</code>, <code>controllers/</code>, <code>services/</code>, <code>db/pool.js</code></li>
+<li>Вынеси логику из routes в controller/service</li>
+<li><code>GET /api/health</code> — <code>{ status, db: 'ok'|'down', uptime }</code></li>
+<li>Router <code>notes.routes.js</code> → controller <code>notes.controller.js</code> → service <code>notes.service.js</code></li>
+<li>Graceful shutdown: SIGTERM → close server → pool.end()</li>
+<li>README: структура папок с описанием слоёв</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Routes тонкие — только маршрутизация
+- [ ] Service переиспользуется из controller
+- [ ] health check возвращает 503 если DB down</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Структура: <code>src/routes/</code>, <code>controllers/</code>, <code>services/</code>, <code>db/pool.js</code></li>
+<li>Вынеси логику из routes в controller/service</li>
+<li><code>GET /api/health</code> — <code>{ status, db: 'ok'|'down', uptime }</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 132: layered architecture and health check"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Бизнес-логика в route handler — не тестируется</li>
+<li>Циклические импорты между modules</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-19--week-19-day-132');</script>
+</body>
+</html>

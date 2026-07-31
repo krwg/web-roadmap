@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 87 (Ср): Custom Hooks — переиспользование логики · Router &amp; Context · web-roadmap</title>
+  <meta name="description" content="День 87 (Ср): Custom Hooks — переиспользование логики — неделя 13.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-13--week-13-day-87">
+  <meta http-equiv="refresh" content="0;url=../#week-13--week-13-day-87">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-13--week-13-day-87">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-13-day-87">День 87 (Ср): Custom Hooks — переиспользование логики</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio SPA</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Custom hook — обычная функция с префиксом <code>use</code>, внутри которой вызываются другие хуки. Она не добавляет новых возможностей React, а выносит повторяющуюся логику из компонентов: синхронизацию с <code>localStorage</code>, загрузку данных, debounce ввода. Компонент остаётся про UI, хук — про поведение.</p>
+<p>Типичный <code>useLocalStorage(key, initial)</code> комбинирует <code>useState</code> и <code>useEffect</code>: при изменении state значение пишется в storage, при монтировании — читается обратно. Оборачивай <code>JSON.parse</code> в try/catch — битые данные не должны ронять приложение. <code>useFetch(url)</code> инкапсулирует три состояния (loading, error, data) и избавляет каждую страницу от копипасты <code>useEffect</code>.</p>
+<p><code>useDebounce(value, delay)</code> откладывает обновление: пока пользователь печатает в поиске, тяжёлая фильтрация не запускается на каждый символ. Правила хуков действуют и внутри custom hook — нельзя вызывать хуки условно. Возвращай объект <code>{ data, loading }</code> или tuple, но придерживайся одного стиля в проекте.</p>
+<p>Мысленная модель custom hook: это не мини-компонент, а способ переиспользовать «поведение» без переиспользования UI. Хорошая аналогия — рецепт: <code>useLocalStorage(key, initial)</code> — это рецепт «состояние + синхронизация с storage», который можно применить к любым данным (тема, задачи, черновик формы), просто передав другой ключ. Важно, что каждый вызов хука создаёт полностью независимый экземпляр состояния: два компонента, вызвавшие <code>useLocalStorage('theme', 'light')</code> и <code>useLocalStorage('draft', '')</code>, не делят между собой ничего, кроме одинаковой логики внутри.</p>
+<p>Это прямо готовит к неделе 14, где почти всё приложение строится вокруг custom hooks: <code>useTasks</code> инкапсулирует CRUD и persist, а Dashboard и страница <code>/tasks</code> используют один и тот же хук вместо копирования логики в двух местах. Такой подход — стандартная практика в реальных React-кодовых базах, а не учебное упражнение.</p>
+<p>Конкретный пример переиспользования: <code>useLocalStorage</code> из этого дня одинаково подходит и для <code>theme</code> (день 88, Context), и для <code>tasks</code> (неделя 14) — меняется только ключ и тип данных, логика синхронизации с <code>localStorage</code> и обработка битого JSON через try/catch не дублируется.</p>
+<p>Частое заблуждение — путать custom hook с компонентом из-за префикса <code>use</code> и думать, что он должен возвращать JSX. На самом деле custom hook — это обычная функция, которая возвращает данные и функции (объект или массив), а не разметку; она не рендерит ничего сама по себе, только управляет состоянием и эффектами, которые уже само использующий её компонент решает, как отобразить. Ещё одна ошибка — забыть, что правила хуков (порядок вызова, только на верхнем уровне) действуют и внутри custom hook: если внутри <code>useDebounce</code> условно вызвать <code>useEffect</code>, это сломает тот же механизм позиционного сопоставления, что и в обычном компоненте — именно поэтому «Ловушки» дня отдельно упоминают запрет условных вызовов хуков.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://react.dev/learn/reusing-logic-with-custom-hooks">Custom Hooks</a></li>
+<li><a href="https://www.developerway.com/posts/debouncing-in-react">useDebounce patterns</a></li>
+<li><a href="https://testing-library.com/docs/react-testing-library/api/#renderhook">renderHook (Testing Library)</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> custom hook извлекает логику, а не UI; правила хуков обязательны внутри него.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Реализуй <code>useLocalStorage</code> с JSON parse/stringify</li>
+<li><code>useFetch(url)</code> — возвращает <code>{ data, loading, error, refetch }</code></li>
+<li><code>useDebounce(value, 300)</code> — для поля поиска в FilterableList</li>
+<li>Покрой хуки простыми тестами вручную (console + checklist)</li>
+<li><code>useMediaQuery('(min-width: 768px)')</code> — responsive hook</li>
+<li>Вынеси хуки в <code>src/hooks/</code> с index re-export</li>
+<li>JSDoc/TSDoc для публичного API каждого хука</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Хуки в папке <code>src/hooks/</code></p>
+</li>
+<li>
+<p>[ ] <code>useLocalStorage</code> работает после F5</p>
+</li>
+<li>
+<p>[ ] <code>useDebounce</code> уменьшает количество фильтраций</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Реализуй <code>useLocalStorage</code> с JSON parse/stringify</li>
+<li><code>useFetch(url)</code> — возвращает <code>{ data, loading, error, refetch }</code></li>
+<li><code>useDebounce(value, 300)</code> — для поля поиска в FilterableList</li>
+<li>Покрой хуки простыми тестами вручную (console + checklist)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-13
+
+git add src/hooks/
+
+git commit -m &quot;week-13 day-87: useLocalStorage, useFetch и useDebounce&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Условный вызов хуков внутри custom hook — нарушение Rules of Hooks</p>
+</li>
+<li>
+<p><code>useLocalStorage</code> без try/catch при битом JSON в storage</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-13--week-13-day-87');</script>
+</body>
+</html>

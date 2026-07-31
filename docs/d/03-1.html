@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 1 (Mon): Flexbox — основы · CSS layouts · web-roadmap</title>
+  <meta name="description" content="День 1 (Mon): Flexbox — основы — неделя 03.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-03--week-03-day-1">
+  <meta http-equiv="refresh" content="0;url=../#week-03--week-03-day-1">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-03--week-03-day-1">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-03-day-1">День 1 (Mon): Flexbox — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>SaaS Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Flexbox (Flexible Box Layout) решает задачу <strong>одномерного</strong> выравнивания: элементы в ряд или в колонку. Контейнер с <code>display: flex</code> становится flex-контейнером; прямые дети — flex-элементами. <code>flex-direction</code> задаёт главную ось: <code>row</code> (горизонталь, по умолчанию) или <code>column</code> (вертикаль). <code>justify-content</code> выравнивает по главной оси (<code>space-between</code>, <code>center</code>); <code>align-items</code> — по поперечной. Свойство <code>gap</code> заменяет margin-хаки между элементами — чище и предсказуемее.</p>
+<p>У flex-элементов три рычага размера: <code>flex-grow</code> (как делить свободное место), <code>flex-shrink</code> (как сжиматься) и <code>flex-basis</code> (начальный размер). Сокращение <code>flex: 1</code> означает <code>flex: 1 1 0%</code> — элемент жадно забирает доступное пространство. По умолчанию <code>align-items: stretch</code> растягивает детей по поперечной оси — карточки в ряду получают одинаковую высоту без фиксированного <code>height</code>.</p>
+<p>Flexbox — не замена Grid: он идеален для навигации, тулбаров, центрирования, рядов карточек. Двумерные макеты — задача Grid.</p>
+<p>После двух недель, где элементы просто «текли» друг за другом по умолчанию (block/inline), Flexbox — первый инструмент, который даёт настоящий <strong>контроль</strong> над расположением. Мысленная модель: представь, что flex-контейнер — это одна полка, а <code>justify-content</code>/<code>align-items</code> — это то, как расставлены предметы вдоль и поперёк этой полки. Главная ось — направление, куда «течёт» полка (<code>row</code> или <code>column</code>), поперечная — перпендикулярное направление.</p>
+<p>Почему это важно дальше: до сегодняшнего дня центрирование блока по вертикали требовало хаков (<code>position: absolute</code> + <code>transform</code>, или магические <code>margin</code>); одна строчка <code>display: flex; align-items: center; justify-content: center</code> решает это раз и навсегда, и этот паттерн будет использоваться в каждом следующем проекте маршрута — от карточек товаров до модальных окон с JavaScript.</p>
+<p>Конкретный пример: шапка сайта с логотипом слева и меню справа раньше делалась через <code>float: left/right</code> с последующим clearfix-хаком для родителя — хрупкая и неочевидная конструкция. С Flexbox это <code>display: flex; justify-content: space-between</code> на родителе — два ребёнка автоматически расходятся по краям без единого float.</p>
+<p>Частое заблуждение новичков — пытаться решить любую задачу вёрстки Flexbox-ом, включая двумерные сетки (несколько строк и колонок одновременно, которые должны выравниваться друг относительно друга). Flexbox отлично тянет одну ось, но при попытке выстроить сложную сетку карточек с выравниванием и по строкам, и по колонкам одновременно он начинает требовать обходных путей — для этого на этой же неделе есть Grid.</p>
+<p><strong>Ключевая мысль:</strong> Flexbox — одна ось, три свойства выравнивания; <code>gap</code> вместо margin между элементами, и сегодняшняя практика с шапкой и рядом карточек — это как раз тот повседневный паттерн, который встретится в 90% проектов впереди.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox">MDN: Flexbox</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Сверстай шапку сайта: логотип слева, навигация справа (<code>justify-content: space-between</code>)</li>
+<li>Сделай ряд из 3 карточек одинаковой высоты с <code>align-items: stretch</code></li>
+<li>Центрируй блок по вертикали и горизонтали через flex на родителе</li>
+<li>Поэкспериментируй с <code>flex-wrap</code> при сужении окна</li>
+<li>Используй <a href="https://flexboxfroggy.com/">Flexbox Froggy</a> — пройди 12+ уровней</li>
+<li>Добавь <code>gap</code> вместо margin между карточками — сравни читаемость CSS</li>
+<li>Попробуй <code>flex-direction: column</code> для мобильной шапки</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Шапка не ломается при 768px ширине
+- [ ] Карточки одной высоты без фиксированного <code>height</code>
+- [ ] Flexbox Froggy пройден</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Сверстай шапку сайта: логотип слева, навигация справа (<code>justify-content: space-between</code>)</li>
+<li>Сделай ряд из 3 карточек одинаковой высоты с <code>align-items: stretch</code></li>
+<li>Центрируй блок по вертикали и горизонтали через flex на родителе</li>
+<li>Поэкспериментируй с <code>flex-wrap</code> при сужении окна</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 03 day 1: flexbox basics"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-03--week-03-day-1');</script>
+</body>
+</html>

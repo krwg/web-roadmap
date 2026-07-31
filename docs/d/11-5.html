@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 5 (Fri): Формы и подъём состояния · React basics · web-roadmap</title>
+  <meta name="description" content="День 5 (Fri): Формы и подъём состояния — неделя 11.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-11--week-11-day-5">
+  <meta http-equiv="refresh" content="0;url=../#week-11--week-11-day-5">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-11--week-11-day-5">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-11-day-5">День 5 (Fri): Формы и подъём состояния</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Формы в React обрабатываются через событие <code>onSubmit</code> на <code>&lt;form&gt;</code> с обязательным <code>e.preventDefault()</code> — иначе браузер перезагрузит страницу. Подъём состояния (lifting state up) — ключевой паттерн: если два компонента (<code>TodoList</code> и <code>FilterTabs</code>) должны разделять данные, state поднимается к их <strong>ближайшему общему родителю</strong> (<code>TodoApp</code>). Родитель хранит <code>todos</code> и <code>filter</code>, детям передаёт данные и колбэки.</p>
+<p>Controlled components — стандарт для форм: значение input, textarea, select и checkbox полностью управляется React state. Uncontrolled (через <code>ref</code>) допустим для простых случаев, но controlled даёт полный контроль: валидация, disabled, сброс. Колбэки вниз: <code>onToggle(id)</code>, <code>onDelete(id)</code>, <code>onFilterChange('active')</code> — дочерний компонент сообщает родителю о действии, не меняя state напрямую.</p>
+<p>Валидация на клиенте: проверяй перед submit (пустая задача не добавляется), показывай ошибку рядом с полем. Атрибут <code>name</code> на input важен для autofill и семантики. Disabled кнопка submit при невалидной форме — простая и эффективная UX-защита. Enter в поле ввода сабмитит форму, если input внутри <code>&lt;form&gt;</code>.</p>
+<p>Мысленная модель подъёма состояния — общий банковский счёт семьи вместо отдельных кошельков у каждого члена: если <code>TodoList</code> и <code>FilterTabs</code> хранили бы каждый свою копию списка задач или фильтра, они быстро разошлись бы в показаниях; подняв единственный «счёт» (state) к общему родителю <code>TodoApp</code>, оба компонента всегда видят одни и те же актуальные данные, просто получают их сверху как props.</p>
+<p>Этот принцип — прямое следствие однонаправленного потока данных, изученного в день 2, и он же причина, по которой в больших приложениях появляются глобальные хранилища состояния (Context API, Redux, Zustand — темы будущих недель): по сути, они автоматизируют «подъём состояния» до уровня всего приложения, когда общий родитель для двух компонентов оказывается слишком далеко в дереве. Понимание lifting state up вручную — обязательный шаг перед тем, как эти инструменты станут осмысленными, а не «магическими коробками».</p>
+<p>Частое заблуждение — забывать <code>e.preventDefault()</code> в обработчике <code>onSubmit</code>: без него браузер выполнит свою родную логику отправки формы — полную перезагрузку страницы, — и весь React state приложения сбросится, будто страница открыта заново. Конкретный пример из задания 2 практики: <code>AddTodoForm</code> должен не просто добавить задачу в массив, но и явно очистить своё поле ввода после сабмита — если это забыть, React аккуратно оставит в controlled input то значение, что было до сабмита, ведь состояние поля никто не сбросил.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/reacting-to-input-with-state">react.dev: Reacting to Input with State</a>
+- <a href="https://react.dev/learn/sharing-state-between-components">react.dev: Sharing State Between Components</a>
+- <a href="https://react.dev/reference/react-dom/components/form">react.dev: Form</a></p>
+<p><strong>Ключевая мысль:</strong> общий state — у ближайшего общего родителя; форма controlled, события — через callbacks вверх.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>TodoApp</code> — state <code>todos</code>, <code>filter</code> наверху</li>
+<li><code>AddTodoForm</code> — submit добавляет задачу, очищает input</li>
+<li><code>FilterTabs</code> — подними filter state, передай <code>setFilter</code></li>
+<li><code>TodoStats</code> — вычисляемые значения из props (active count)</li>
+<li>Валидация: пустая задача не добавляется, показ ошибки</li>
+<li><code>AddTodoForm</code> — disabled кнопка при пустом поле</li>
+<li>Enter в поле ввода сабмитит форму</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] State в общем родителе TodoApp</p>
+</li>
+<li>
+<p>[ ] Форма с preventDefault</p>
+</li>
+<li>
+<p>[ ] Валидация пустого ввода</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>TodoApp</code> — state <code>todos</code>, <code>filter</code> наверху</li>
+<li><code>AddTodoForm</code> — submit добавляет задачу, очищает input</li>
+<li><code>FilterTabs</code> — подними filter state, передай <code>setFilter</code></li>
+<li><code>TodoStats</code> — вычисляемые значения из props (active count)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add src/components/todo/TodoApp.tsx
+
+git commit -m &quot;week-11 day-05: lifting state, форма и фильтры&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-11--week-11-day-5');</script>
+</body>
+</html>

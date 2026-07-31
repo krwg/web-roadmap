@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 90 (Сб): Оптимизация и структура проекта · Router &amp; Context · web-roadmap</title>
+  <meta name="description" content="День 90 (Сб): Оптимизация и структура проекта — неделя 13.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-13--week-13-day-90">
+  <meta http-equiv="refresh" content="0;url=../#week-13--week-13-day-90">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-13--week-13-day-90">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-13-day-90">День 90 (Сб): Оптимизация и структура проекта</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio SPA</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>К концу недели проект обрастает папками: <code>pages/</code>, <code>components/</code>, <code>hooks/</code>, <code>contexts/</code>, <code>utils/</code>. Предсказуемая структура важнее идеальной: новый разработчик (или ты через месяц) должен за минуту найти, где живут маршруты и где — хуки. <code>ARCHITECTURE.md</code> фиксирует решения, а не дублирует README с командами запуска.</p>
+<p>Оптимизация в React начинается с измерения, а не с <code>useMemo</code> на каждой функции. Profiler в DevTools показывает лишние ререндеры. <code>React.lazy</code> + <code>Suspense</code> разбивают bundle: тяжёлая страница <code>/admin</code> загружается только при переходе. <code>useMemo</code> оправдан для дорогих вычислений; <code>useCallback</code> — когда передаёшь колбэк в <code>React.memo</code>-компонент.</p>
+<p>Barrel exports (<code>index.ts</code>) ускоряют импорты, но могут ухудшить tree-shaking — используй осознанно. <code>useCallback</code> без memoized child бесполезен. Преждевременная мемоизация усложняет код без выигрыша: сначала работающее приложение, потом профилирование, потом точечные правки.</p>
+<p>Мысленная модель оптимизации в React: сначала измерить, потом чинить, а не наоборот. Profiler в DevTools отвечает на вопрос «какой компонент действительно долго рендерится и почему», превращая интуитивные догадки в конкретные цифры (миллисекунды на конкретный commit). Без этого шага легко потратить время на мемоизацию компонента, который и так рендерится за доли миллисекунды, пропустив реальную проблему в другом месте дерева.</p>
+<p>Это умение станет практически необходимым на неделе 14: Dashboard одновременно рендерит статистику, список задач и виджет погоды — без структуры и точечной оптимизации лишние ререндеры будут накапливаться незаметно, а профилирование покажет, где именно. Тот же навык прямо пригодится на реальной работе и часто спрашивается на технических собеседованиях как «как бы ты нашёл причину лагов в React-приложении».</p>
+<p>Конкретный пример пользы lazy loading: страница <code>/admin</code> нужна редкому проценту пользователей, но её код (таблицы, формы, графики) может весить сотни килобайт. <code>React.lazy(() =&gt; import('./pages/Admin'))</code> в паре с <code>&lt;Suspense&gt;</code> гарантирует, что этот код не попадёт в основной bundle и не замедлит первую загрузку для обычного посетителя, который никогда не откроет <code>/admin</code>.</p>
+<p>Частое заблуждение — воспринимать <code>useMemo</code> и <code>useCallback</code> как «бесплатную» оптимизацию, которую можно расставлять по коду на автомате. На самом деле у мемоизации есть своя цена: React должен хранить предыдущие зависимости и сравнивать их на каждом рендере, и если сравниваемое значение вычисляется быстрее, чем сам массив зависимостей проверяется, мемоизация не ускоряет код, а замедляет и усложняет его без всякой выгоды. Именно поэтому «Ловушки» дня прямо называют преждевременную оптимизацию проблемой — практика дня требует сначала реорганизовать структуру папок и задокументировать архитектуру, и только потом точечно применять <code>useMemo</code> там, где Profiler реально показал узкое место (например, фильтрация 1000+ элементов), а не «на всякий случай» по всему коду.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://react.dev/reference/react/useMemo">useMemo</a></li>
+<li><a href="https://react.dev/reference/react/useCallback">useCallback</a></li>
+<li><a href="https://react.dev/learn/render-and-commit">React — Performance</a></li>
+<li><a href="https://react.dev/reference/react/lazy">React.lazy</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> оптимизируй после профилирования; lazy routes уменьшают начальный bundle.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Реорганизуй проект недели по папкам</li>
+<li>Lazy-load страницу <code>/admin</code> с fallback-спиннером</li>
+<li><code>useMemo</code> для дорогой фильтрации списка (1000+ элементов — mock)</li>
+<li>Документируй архитектуру в <code>ARCHITECTURE.md</code> (1 страница)</li>
+<li><code>React.memo</code> на <code>TodoItem</code> — измерь, есть ли выгода</li>
+<li>Suspense boundary с понятным fallback UI</li>
+<li>Проверь bundle size после lazy loading</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Импорты страниц через <code>React.lazy</code></p>
+</li>
+<li>
+<p>[ ] Нет useMemo/useCallback «на всякий случай» без причины</p>
+</li>
+<li>
+<p>[ ] Понятная структура папок</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Реорганизуй проект недели по папкам</li>
+<li>Lazy-load страницу <code>/admin</code> с fallback-спиннером</li>
+<li><code>useMemo</code> для дорогой фильтрации списка (1000+ элементов — mock)</li>
+<li>Документируй архитектуру в <code>ARCHITECTURE.md</code> (1 страница)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-13
+
+git add ARCHITECTURE.md src/pages/
+
+git commit -m &quot;week-13 day-90: lazy routes, useMemo и структура&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Преждевременная оптимизация — сначала работающий код, потом профилирование</p>
+</li>
+<li>
+<p><code>useCallback</code> без memoized child — бесполезен</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-13--week-13-day-90');</script>
+</body>
+</html>

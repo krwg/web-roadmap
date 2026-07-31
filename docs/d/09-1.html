@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 1 (Mon): Scope и замыкания · JS advanced · web-roadmap</title>
+  <meta name="description" content="День 1 (Mon): Scope и замыкания — неделя 09.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-09--week-09-day-1">
+  <meta http-equiv="refresh" content="0;url=../#week-09--week-09-day-1">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-09--week-09-day-1">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-09-day-1">День 1 (Mon): Scope и замыкания</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library System</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Область видимости (scope) определяет, где переменная доступна для чтения и записи. В JavaScript действует лексическая (статическая) область: функция «видит» переменные того места, где была <strong>объявлена</strong>, а не где вызвана. <code>let</code> и <code>const</code> создают блочную область (<code>{ ... }</code>), а устаревший <code>var</code> — функциональную, что приводит к неожиданным утечкам переменных из циклов.</p>
+<p>Замыкание (closure) возникает, когда внутренняя функция сохраняет доступ к переменным внешней функции даже после того, как внешняя завершила выполнение. Практически это означает: <code>createCounter()</code> возвращает функции <code>increment</code> и <code>getValue</code>, которые «помнят» переменную <code>count</code> в своём лексическом окружении. Замыкания — основа приватности данных без классов: <code>createBankAccount(balance)</code> скрывает баланс от внешнего кода.</p>
+<p>Классическая ловушка — цикл с <code>var</code> и <code>setTimeout</code>: все колбэки ссылаются на одну и ту же переменную <code>i</code> с финальным значением. <code>let</code> в цикле создаёт новую привязку на каждой итерации, решая проблему. Замыкания удерживают ссылки на внешние переменные и могут мешать сборщику мусора — не замыкай на большие объекты без необходимости.</p>
+<p>Хорошая мысленная модель замыкания — рюкзак, который функция берёт с собой при рождении и никогда не снимает: внутри рюкзака лежат все переменные из окружения, где функция была объявлена. Даже если внешняя функция давно завершилась и, казалось бы, её данные должны исчезнуть, рюкзак продолжает их держать, пока жива хотя бы одна функция, которая на них ссылается — поэтому <code>getValue()</code> из <code>createCounter()</code> спустя сколько угодно вызовов «помнит» актуальное значение <code>count</code>.</p>
+<p>Замыкания — это не просто приём для счётчиков: это основа модульного паттерна (день 5 этой недели), React-хуков (<code>useState</code> работает благодаря замыканиям внутри функционального компонента) и мемоизации (<code>memoize(fn)</code>, день 6). Без понимания замыканий последующие темы курса будут восприниматься как магия, а не как логичное следствие лексической области видимости.</p>
+<p>Частое заблуждение — путать замыкание с копированием значения: <code>createMultiplier(n)</code> не сохраняет копию <code>n</code> в момент вызова функции-результата, а держит живую ссылку на переменную <code>n</code> в её лексическом окружении. Классический пример — цикл <code>for (var i = 0; i &lt; 3; i++) { setTimeout(() =&gt; console.log(i), 100) }</code> выведет <code>3, 3, 3</code>, потому что все три колбэка держат один и тот же рюкзак с переменной <code>i</code>, которая к моменту вызова уже равна 3. Замена <code>var</code> на <code>let</code> создаёт отдельный рюкзак (и отдельную переменную <code>i</code>) для каждой итерации — колбэки выведут <code>0, 1, 2</code>. Это задание 2 практики дня, и оно — лучший способ прочувствовать разницу на собственном опыте, а не поверить на слово.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/closure">learn.javascript.ru: Замыкание</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Closures">MDN: Closures</a>
+- <a href="https://javascript.info/closure">javascript.info: Замыкание</a></p>
+<p><strong>Ключевая мысль:</strong> замыкание — это функция плюс её лексическое окружение; на этом строятся приватность, фабрики и модульный паттерн.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>createCounter()</code> — increment, decrement, getValue через closure</li>
+<li>Ловушка цикла: <code>for (var i=0; ...)</code> + setTimeout — исправь через let и closure</li>
+<li><code>createMultiplier(n)</code> → функция умножения на n</li>
+<li>Приватное поле в factory <code>createBankAccount(balance)</code></li>
+<li>Объясни замыкание вслух за 2 минуты без кода</li>
+<li>Реализуй <code>once(fn)</code> — функция, которая вызывает <code>fn</code> только один раз</li>
+<li>Создай папку <code>learning-log/week-09/</code> и файл <code>day-01-closures.js</code> с примерами</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Counter работает без глобальных переменных</p>
+</li>
+<li>
+<p>[ ] Классическая ловушка var+setTimeout исправлена</p>
+</li>
+<li>
+<p>[ ] Могу объяснить closure своими словами</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>createCounter()</code> — increment, decrement, getValue через closure</li>
+<li>Ловушка цикла: <code>for (var i=0; ...)</code> + setTimeout — исправь через let и closure</li>
+<li><code>createMultiplier(n)</code> → функция умножения на n</li>
+<li>Приватное поле в factory <code>createBankAccount(balance)</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-09
+
+git add day-01-closures.js
+
+git commit -m &quot;week-09 day-01: замыкания, createCounter и once&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Создание функций в цикле с var — все ссылаются на финальный i</p>
+</li>
+<li>
+<p>Утечки памяти через closure на большие объекты</p>
+</li>
+<li>
+<p>Путаница closure и this</p>
+</li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-09--week-09-day-1');</script>
+</body>
+</html>

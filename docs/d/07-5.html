@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 5 (Fri): ES-модули · Modules &amp; API · web-roadmap</title>
+  <meta name="description" content="День 5 (Fri): ES-модули — неделя 07.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-07--week-07-day-5">
+  <meta http-equiv="refresh" content="0;url=../#week-07--week-07-day-5">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-07--week-07-day-5">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-07-day-5">День 5 (Fri): ES-модули</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Notes Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>ES-модули — стандартный способ организации JavaScript-кода в файлах с явными зависимостями. Каждый файл — отдельный модуль со своей областью видимости: переменные не попадают в глобальный <code>window</code>. Чтобы сделать функцию или константу доступной снаружи, используй <code>export</code>. Импорт: <code>import { fetchPosts } from './api.js'</code> для именованного экспорта или <code>import render from './render.js'</code> для default.</p>
+<p>В HTML подключай модули через <code>&lt;script type="module" src="main.js"&gt;</code>. Такой скрипт выполняется в strict mode, откладывается (defer) и загружается как модуль — браузер сам разрешит дерево зависимостей. В пути импорта обязательно указывай расширение <code>.js</code> — в отличие от bundler-ов, нативные модули в браузере этого требуют. Открытие файла через <code>file://</code> не сработает из-за CORS; нужен локальный HTTP-сервер (Live Server, <code>npx serve</code>).</p>
+<p>Именованный export предпочтителен, когда из файла экспортируется несколько сущностей — имена явные при импорте и рефакторинге. Default export удобен для «главной» сущности файла (один компонент, один класс). Типичная структура проекта: <code>api/</code> — запросы, <code>ui/</code> — рендер DOM, <code>utils/</code> — хелперы, <code>main.js</code> — точка входа, которая только связывает модули.</p>
+<p><strong>Ментальная модель:</strong> до модулей весь JS-код жил в одной большой общей комнате (глобальная область видимости <code>window</code>) — любая переменная была видна отовсюду, и случайное совпадение имён в разных файлах могло незаметно всё сломать. Модули — это отдельные комнаты с закрытыми дверями: то, что не экспортировано явно через <code>export</code>, остаётся приватным для файла, а <code>import</code> — единственный «дверной проём», через который одна комната может попросить что-то у другой.</p>
+<p><strong>Почему это важно дальше:</strong> структура <code>api/ui/utils/main.js</code> — это упрощённая версия архитектуры, которую ты увидишь в любом современном фронтенд-проекте, включая React-приложения дальше по курсу: разделение на слои по ответственности, а не по случайному принципу «файл разросся — создам новый». Умение аккуратно резать монолитный <code>app.js</code> на модули — прямая тренировка рефакторинга больших кодовых баз.</p>
+<p><strong>Пример:</strong> <code>storage.js</code> экспортирует <code>export function saveTasks(tasks) {...}</code> и <code>export function loadTasks() {...}</code>, а <code>main.js</code> импортирует <code>import { saveTasks, loadTasks } from './storage.js'</code>. Такой файл <code>storage.js</code> можно переиспользовать в другом проекте без единой правки — он не знает ничего о DOM или конкретных задачах, только про чтение/запись данных.</p>
+<p><strong>Частое заблуждение:</strong> новички забывают указать <code>.js</code> в пути импорта (<code>import { x } from './utils'</code> вместо <code>'./utils.js'</code>) по привычке из bundler-based проектов (Webpack, Vite), где расширение можно опустить. Нативные ES-модули в браузере таких «магических» разрешений путей не делают — без явного расширения браузер выдаст ошибку загрузки модуля, что стоит сразу проверить при первом запуске через Live Server.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/modules-intro">learn.javascript.ru: Модули</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Modules">MDN: JavaScript modules</a>
+- <a href="https://javascript.info/modules-intro">javascript.info: Модули</a></p>
+<p><strong>Ключевая мысль:</strong> модули превращают монолитный скрипт в граф зависимостей с изолированными областями видимости — основа масштабируемого фронтенда.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Разбей Todo App на модули: <code>storage.js</code>, <code>todo.js</code>, <code>render.js</code>, <code>main.js</code></li>
+<li><code>api.js</code> — функции fetch с экспортом</li>
+<li>Переименование при импорте: <code>import { fetchPosts as getPosts }</code></li>
+<li>Запуск через Live Server (модули требуют HTTP, не file://)</li>
+<li>Циклические зависимости — избегай, рефакторинг при необходимости</li>
+<li>Создай <code>week-07/js/</code> с 5+ модулями</li>
+<li>Точка входа <code>main.js</code> только импортирует и инициализирует</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Все скрипты — ES modules с <code>type="module"</code>
+- [ ] Нет глобальных переменных в <code>window</code>
+- [ ] Логичная структура папок js/</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Разбей Todo App на модули: <code>storage.js</code>, <code>todo.js</code>, <code>render.js</code>, <code>main.js</code></li>
+<li><code>api.js</code> — функции fetch с экспортом</li>
+<li>Переименование при импорте: <code>import { fetchPosts as getPosts }</code></li>
+<li>Запуск через Live Server (модули требуют HTTP, не file://)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 07 day 5: es modules structure"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-07--week-07-day-5');</script>
+</body>
+</html>

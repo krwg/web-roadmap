@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 4 (Thu): Классы ES6+ · JS advanced · web-roadmap</title>
+  <meta name="description" content="День 4 (Thu): Классы ES6+ — неделя 09.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-09--week-09-day-4">
+  <meta http-equiv="refresh" content="0;url=../#week-09--week-09-day-4">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-09--week-09-day-4">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-09-day-4">День 4 (Thu): Классы ES6+</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library System</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Синтаксис <code>class</code> в ES6+ делает прототипное наследование читаемым. Класс объявляется как <code>class TodoItem { constructor(title) { ... } toggle() { ... } }</code>. Методы автоматически попадают на <code>prototype</code>. <code>extends</code> связывает прототипы дочернего и родительского классов, а <code>super()</code> в конструкторе вызывает родительский конструктор — без этого <code>this</code> в дочернем классе недоступен.</p>
+<p>Статические методы (<code>static fromJSON(obj)</code>) принадлежат самому классу, а не экземплярам — удобны для фабрик и утилит. Геттеры и сеттеры (<code>get isOverdue()</code>) выглядят как свойства, но вычисляются при обращении. С ES2022 приватные поля <code>#id</code> дают настоящую инкапсуляцию: к ним нельзя обратиться снаружи, в отличие от конвенции <code>_id</code>.</p>
+<p>Когда выбирать <code>class</code>, а когда factory + closure? Класс хорош для сущностей с общим прототипом и иерархией (<code>Book extends Media</code>). Factory с замыканием — для объектов с приватным состоянием без наследования. Под капотом <code>class</code> всё равно функция с <code>prototype</code> — <code>typeof TodoItem === 'function'</code>.</p>
+<p>Мысленная модель — класс это чертёж (blueprint), а объект — конкретное здание, построенное по этому чертежу: чертёж описывает, какие комнаты (свойства) и какие двери (методы) будут в каждом здании, но жить в самом чертеже нельзя — нужно создать экземпляр через <code>new</code>. <code>extends</code> — это чертёж, который берёт за основу другой чертёж и добавляет к нему этаж, а <code>super()</code> — обязательный вызов «построй сначала базовый этаж по родительскому чертежу», без которого верхний этаж не может опираться ни на что.</p>
+<p>Классы становятся рабочим инструментом для всего оставшегося курса: домены проекта «Библиотека» (<code>Book</code>, <code>Member</code>, <code>Library</code>) и, позже, доменные модели в TypeScript и React будут использовать либо классы, либо похожие по духу объектно-ориентированные структуры данных. Приватные поля <code>#id</code> — это первый шаг к пониманию инкапсуляции, который в TypeScript (неделя 10) получит ещё более строгую форму через модификаторы доступа.</p>
+<p>Частое заблуждение — считать конвенцию <code>_id</code> (подчёркивание) настоящей приватностью: это лишь договорённость между разработчиками, и снаружи класса <code>obj._id</code> прекрасно читается и перезаписывается. Приватное поле <code>#id</code>, в отличие от этого, физически недоступно снаружи — попытка обратиться к <code>obj.#id</code> вне класса вызовет SyntaxError уже на этапе разбора кода, а не просто «плохой тон». Задание 4 практики («Private #id в классе») — шанс почувствовать разницу между «не трогай, пожалуйста» и «невозможно тронуть».</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/class">learn.javascript.ru: Класс</a>
+- <a href="https://learn.javascript.ru/class-inheritance">learn.javascript.ru: Наследование классов</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Classes">MDN: Classes</a></p>
+<p><strong>Ключевая мысль:</strong> <code>class</code> — это читаемый синтаксис над прототипами; <code>#private</code> и <code>static</code> делают модель данных явной и безопасной.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>class TodoItem { constructor(title) ... toggle() }</code></li>
+<li><code>class TodoList extends Array</code> или композиция — список с методами add/remove</li>
+<li>Static <code>TodoItem.fromJSON(obj)</code> — фабричный метод десериализации</li>
+<li>Private <code>#id</code> в классе — генерация уникального id</li>
+<li>Рефакторинг каталога фильмов: class <code>Movie</code>, <code>MovieCollection</code></li>
+<li>Добавь геттер <code>isOverdue</code> для задачи с дедлайном</li>
+<li>Напиши unit-проверки вручную (assert) для <code>TodoItem.toggle()</code></li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] extends + super корректны</p>
+</li>
+<li>
+<p>[ ] Static method для десериализации</p>
+</li>
+<li>
+<p>[ ] Private field использован</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>class TodoItem { constructor(title) ... toggle() }</code></li>
+<li><code>class TodoList extends Array</code> или композиция — список с методами add/remove</li>
+<li>Static <code>TodoItem.fromJSON(obj)</code> — фабричный метод десериализации</li>
+<li>Private <code>#id</code> в классе — генерация уникального id</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-09
+
+git add src/models/
+
+git commit -m &quot;week-09 day-04: классы TodoItem, Movie и private fields&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-09--week-09-day-4');</script>
+</body>
+</html>

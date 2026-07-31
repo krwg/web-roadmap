@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 151 (Чт): Auth — JWT end-to-end · Capstone · web-roadmap</title>
+  <meta name="description" content="День 151 (Чт): Auth — JWT end-to-end — неделя 22.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-22--week-22-day-151">
+  <meta http-equiv="refresh" content="0;url=../#week-22--week-22-day-151">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-22--week-22-day-151">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-22-day-151">День 151 (Чт): Auth — JWT end-to-end</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Auth end-to-end — обязательный MVP пункт. Переиспользуй Secure Notes (нед. 20): bcrypt/passlib, JWT, middleware на protected routes. Backend: <code>POST /auth/register</code>, <code>POST /auth/login</code>; все <code>/api/v1/*</code> требуют <code>Authorization: Bearer</code>. <code>user_id</code> из JWT payload — не из request body (IDOR уязвимость).</p>
+<p>Frontend: <code>AuthProvider</code>, <code>useAuth()</code>, <code>/login</code>, <code>/register</code>, protected routes с redirect. <code>api.ts</code> — auto Bearer header, logout on 401. Rate limit на login, CORS whitelist, helmet — из недели 20. Начни <code>SECURITY.md</code> с OWASP checklist.</p>
+<p>E2E manual test: register → login → create task → logout → login → task visible. User A не видит данные User B → 403. JWT secret в git — rotate немедленно. Задокументируй выбор localStorage vs httpOnly cookie.</p>
+<p>Ментальная модель: auth в capstone — не отдельная фича, а сквозной слой, который пронизывает буквально каждый существующий endpoint и компонент — именно поэтому его добавляют после того, как CRUD уже работает, а не в начале, чтобы не отлаживать две сложные вещи одновременно. Для нанимающего junior full-stack инженера способность интегрировать auth end-to-end в уже существующую кодовую базу без переписывания архитектуры с нуля — куда более реалистичный сценарий работы, чем стартовать проект «с чистого листа».</p>
+<p>Конкретный пример риска: если миграция привязки <code>tasks</code>/<code>notes</code> к <code>user_id</code> сделана небрежно (например, дефолтное значение <code>user_id = 1</code> для старых записей), в проде это создаст ситуацию, где новый пользователь внезапно видит демо-данные предыдущего — классическая ошибка, которую тестовый прогон «user A не видит данные user B» обязан поймать. Частое заблуждение — «раз я использую JWT, IDOR мне не грозит» — сам факт наличия токена не защищает, если backend всё равно читает <code>user_id</code> из тела запроса вместо payload токена; уязвимость возникает именно в этой конкретной строчке кода, а не в отсутствии JWT вообще. Auth end-to-end, который ты собираешь сегодня, — последний функциональный кирпич MVP перед инфраструктурными днями (Docker, тесты, деплой), поэтому качество этого дня определяет, будет ли остаток недели про полировку или про латание дыр в безопасности.</p>
+<p>Для продакшена стоит помнить: <code>SECURITY.md</code>, который ты начинаешь сегодня, — живой документ, а не разовый чеклист. В реальных компаниях подобные документы обновляются при каждом security review и служат доказательством due diligence перед аудиторами или партнёрами — привычка вести такую документацию с первого капстоун-проекта переносится в профессиональную практику без переучивания.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="#projects--projects-неделя-20-secure-notes">Secure Notes (нед. 20)</a></li>
+<li><a href="https://jwt.io/introduction">JWT Introduction</a></li>
+<li><a href="#projects--projects-функции-mvp-минимум">Auth в MVP</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> auth — сквозной слой; user_id только из verified JWT.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Backend auth: register, login, JWT middleware на все protected routes</li>
+<li>Привяжи tasks и notes к <code>user_id</code> из token — миграция если нужно</li>
+<li>React: <code>/login</code>, <code>/register</code> pages; <code>AuthProvider</code> + <code>useAuth()</code></li>
+<li>Protected routes — redirect на <code>/login</code> без token</li>
+<li><code>api.ts</code> — автоматический <code>Authorization: Bearer</code>, logout on 401</li>
+<li>Rate limit на <code>/auth/login</code>, helmet/CORS настроены</li>
+<li>Начни <code>SECURITY.md</code> — OWASP checklist (из нед. 20)</li>
+<li>E2E manual: register → login → create task → logout → login → task visible</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Auth end-to-end работает (см. <a href="#projects--projects-критерии-сдачи-capstone">критерии сдачи</a>)
+- [ ] User A не видит данные User B
+- [ ] 401 без token, 403 на чужие ресурсы
+- [ ] <code>SECURITY.md</code> начат</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Backend auth: register, login, JWT middleware на все protected routes</li>
+<li>Привяжи tasks и notes к <code>user_id</code> из token — миграция если нужно</li>
+<li>React: <code>/login</code>, <code>/register</code> pages; <code>AuthProvider</code> + <code>useAuth()</code></li>
+<li>Protected routes — redirect на <code>/login</code> без token</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-22-capstone/</code> → <code>git commit -m "week 22 day 151: DevHub JWT auth frontend backend"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>user_id из body вместо JWT — IDOR уязвимость</li>
+<li>JWT secret в git — rotate немедленно</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-22--week-22-day-151');</script>
+</body>
+</html>

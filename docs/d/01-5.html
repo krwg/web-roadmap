@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 5 (Fri): Валидация форм · HTML · web-roadmap</title>
+  <meta name="description" content="День 5 (Fri): Валидация форм — неделя 01.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-01--week-01-day-5">
+  <meta http-equiv="refresh" content="0;url=../#week-01--week-01-day-5">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-01--week-01-day-5">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-01-day-5">День 5 (Fri): Валидация форм</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>HTML5 принёс <strong>встроенную валидацию</strong> — браузер проверяет поля до отправки без единой строки JavaScript. Атрибуты <code>required</code>, <code>minlength</code>, <code>pattern</code>, <code>type="email"</code> задают правила; при нарушении submit блокируется, и браузер показывает подсказку. За кулисами работает Constraint Validation API: у каждого поля есть объект <code>validity</code> со флагами (<code>valueMissing</code>, <code>patternMismatch</code> и др.) и свойство <code>validationMessage</code> с текстом ошибки.</p>
+<p>В CSS псевдокласс <code>:invalid</code> позволяет подсветить проблемное поле — но осторожно: поле считается <code>:invalid</code> и до первого ввода, если оно <code>required</code>. Часто комбинируют с <code>:user-invalid</code> или вешают стили после попытки submit. Атрибут <code>placeholder</code> — серый текст-подсказка внутри поля, который <strong>исчезает</strong> при вводе. Он не заменяет <code>label</code>: пользователь, начав печатать, уже не видит, что от него хотели. <code>datalist</code> даёт выпадающие подсказки, но не ограничивает ввод — в отличие от <code>select</code>.</p>
+<p>Клиентская валидация — удобство и ранняя обратная связь, но не защита: злоумышленник обойдёт её за секунду, отправив запрос напрямую в обход браузера. На сервере проверять всё равно обязательно.</p>
+<p>Мысленная модель: <code>pattern</code> и <code>required</code> — это турникет на входе в метро, а серверная валидация — охрана внутри здания. Турникет удобен и отсекает большинство случайных нарушителей, но полагаться только на него нельзя — до сервера с реальной проверкой долетит что угодно, если турникет обойти напрямую через инструменты разработчика или curl.</p>
+<p>Почему это важно дальше: на неделях 11–14 с бэкендом ты будешь писать серверную валидацию тех же самых полей — зная уже сегодня, какие правила выражает <code>pattern</code> и <code>required</code> на клиенте, легче понять, зачем дублировать похожую логику на сервере (спойлер: потому что клиенту нельзя доверять).</p>
+<p>Конкретный пример: <code>pattern="[A-Za-z0-9_]{3,20}"</code> для логина не пропустит пробелы и спецсимволы, а браузер покажет стандартную подсказку — но без <code>title="Только буквы, цифры и подчёркивание, 3-20 символов"</code> пользователь не поймёт, что именно не так, увидит просто «Please match the requested format».</p>
+<p>Частое заблуждение — думать, что <code>type="email"</code> полностью гарантирует валидный email. На деле встроенная проверка лишь требует наличие <code>@</code> и домена по упрощённому шаблону — <code>a@a</code> пройдёт, а несуществующий домен <code>ivan@nosuchdomain123.zzz</code> тоже пройдёт, ведь синтаксически он корректен. Реальную проверку существования email делает только сервер, отправляя письмо-подтверждение.</p>
+<p><strong>Ключевая мысль:</strong> <code>placeholder</code> — подсказка, <code>label</code> — подпись; не путай их роли, и не путай клиентскую валидацию с настоящей защитой данных.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/Forms/Form_validation">MDN: Form validation</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Форма регистрации на отдельной секции или <code>register.html</code></li>
+<li>Пароль <code>minlength="8"</code>, логин <code>pattern="[A-Za-z0-9_]{3,20}"</code></li>
+<li>Два <code>fieldset</code>: «Личные данные», «Учётные данные»</li>
+<li><code>datalist</code> для города (5+ городов)</li>
+<li>Тест: пустая отправка, неверный email, короткий пароль — браузер блокирует</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Нативная валидация без JS
+- [ ] <code>placeholder</code> не единственная подпись
+- [ ] Понятные <code>title</code> у полей с <code>pattern</code></p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Форма регистрации на отдельной секции или <code>register.html</code></li>
+<li>Пароль <code>minlength="8"</code>, логин <code>pattern="[A-Za-z0-9_]{3,20}"</code></li>
+<li>Два <code>fieldset</code>: «Личные данные», «Учётные данные»</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">git add week-01/
+git commit -m &quot;week 01 day 5: registration form with HTML5 validation&quot;
+git push
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>Две кнопки submit в одной форме</li>
+<li><code>type="number"</code> для телефона — лучше <code>type="tel"</code></li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-01--week-01-day-5');</script>
+</body>
+</html>

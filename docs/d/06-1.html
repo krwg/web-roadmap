@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 1 (Mon): Объекты — основы · DOM · web-roadmap</title>
+  <meta name="description" content="День 1 (Mon): Объекты — основы — неделя 06.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-06--week-06-day-1">
+  <meta http-equiv="refresh" content="0;url=../#week-06--week-06-day-1">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-06--week-06-day-1">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-06-day-1">День 1 (Mon): Объекты — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~45м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Объект в JavaScript — коллекция пар <strong>ключ–значение</strong>. Литерал <code>{ name: 'Анна', age: 25 }</code> — самый частый способ создания. Доступ: точечная нотация <code>user.name</code> и скобочная <code>user['name']</code> — вторая нужна для динамических ключей <code>user[fieldName]</code>. Методы — функции как свойства; внутри метода <code>this</code> ссылается на сам объект.</p>
+<p>Объекты хранятся <strong>по ссылке</strong>: <code>const b = a</code> копирует ссылку, не содержимое. Shallow copy через <code>{...obj}</code> или <code>Object.assign</code> — вложенные объекты остаются общими. <code>Object.keys</code>, <code>values</code>, <code>entries</code> — обход свойств; <code>entries</code> удобен для рендеринга пар в DOM.</p>
+<p><code>for...in</code> перебирает и унаследованные свойства — для собственных используй <code>Object.keys</code> или <code>hasOwnProperty</code>. Модель <code>task = { id, title, done }</code> с методом <code>toggle()</code> — мост к Todo App.</p>
+<p><strong>Ментальная модель:</strong> если массив — пронумерованный ряд ящиков, то объект — картотека с именованными карточками: чтобы найти нужное значение, не важен порядок, важно <strong>имя</strong> ключа. Хранение «по ссылке» удобно представить так: переменная — это не сам ящик с вещами, а бумажка с адресом ящика. Скопировав бумажку (<code>const b = a</code>), ты получаешь второй адрес того же самого ящика, а не новый ящик с копией содержимого.</p>
+<p><strong>Почему это важно дальше:</strong> модель объекта <code>{id, title, done}</code> — это буквально структура данных, вокруг которой строится DOM Todo App на этой неделе и все последующие проекты курса. Понимание ссылочной природы объектов защитит от одного из самых частых источников багов в JS-приложениях — случайного изменения объекта, который используется сразу в нескольких местах программы.</p>
+<p><strong>Пример:</strong> <code>const original = { count: 1 }; const copy = original; copy.count = 99;</code> — после этого <code>original.count</code> тоже станет <code>99</code>, потому что <code>copy</code> — не новый объект, а второй адрес того же самого. Чтобы получить независимую копию, нужен <code>{...original}</code> — но и он скопирует только верхний уровень: если внутри есть вложенный объект, он останется общим.</p>
+<p><strong>Частое заблуждение:</strong> новички думают, что <code>const user = {}</code> защищает объект от изменений, раз переменная константа. На деле <code>const</code> фиксирует только адрес (ссылку), а не содержимое — свойства объекта можно менять сколько угодно. Это стоит явно проверить в сегодняшней практике на шаге с shallow copy.</p>
+<p><strong>Ключевая мысль:</strong> объект — словарь по ссылке; spread копирует поверхностно, не глубоко.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/object">learn.javascript.ru: Объекты</a> — литералы, свойства, методы</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Объект <code>user</code> с полями name, email, age — чтение и изменение</li>
+<li>Метод <code>user.greet()</code> — function внутри объекта</li>
+<li>Перебери свойства через <code>Object.entries</code> и выведи пары ключ-значение</li>
+<li>Shallow copy: измени копию, убедись что вложенный объект общий</li>
+<li>Массив пользователей — 3+ объекта в массиве</li>
+<li>Создай объект <code>task</code> с <code>{id, title, done}</code> — модель для Todo</li>
+<li>Добавь метод <code>task.toggle()</code> — переключает <code>done</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Объект с минимум одним методом
+- [ ] Использованы keys/values/entries
+- [ ] Понимаю shallow vs deep copy (на уровне концепции)</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Объект <code>user</code> с полями name, email, age — чтение и изменение</li>
+<li>Метод <code>user.greet()</code> — function внутри объекта</li>
+<li>Перебери свойства через <code>Object.entries</code> и выведи пары ключ-значение</li>
+<li>Shallow copy: измени копию, убедись что вложенный объект общий</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 1: objects basics"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-06--week-06-day-1');</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 129 (Ср): Express — REST API основы · Node.js · web-roadmap</title>
+  <meta name="description" content="День 129 (Ср): Express — REST API основы — неделя 19.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-19--week-19-day-129">
+  <meta http-equiv="refresh" content="0;url=../#week-19--week-19-day-129">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-19--week-19-day-129">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-19-day-129">День 129 (Ср): Express — REST API основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Express — минималистичный HTTP-фреймворк поверх Node <code>http</code>. <code>app.get/post/put/delete</code> маппят метод + путь на handler. <code>req.params</code> — path params, <code>req.query</code> — query string, <code>req.body</code> — JSON после <code>express.json()</code> middleware. Без body parser <code>req.body</code> будет <code>undefined</code> — классическая ловушка.</p>
+<p>HTTP semantics: 200 OK, 201 Created, 204 No Content (DELETE без body), 400 Bad Request, 404 Not Found. Раздели <code>app.js</code> (конфигурация, middleware, routes) и <code>server.js</code> (<code>listen</code>) — app экспортируется для тестов. <code>nodemon</code> автоперезапускает в dev.</p>
+<p>CRUD <code>/api/notes</code> с хранением в JSON-файле — мост к PostgreSQL завтра. Единый формат ответа <code>{ data }</code> или <code>{ error: { message } }</code> упрощает фронтенд. RESTful URLs: существительные, не глаголы.</p>
+<p>Ментальная модель Express — конвейер middleware. Каждый входящий запрос проходит по цепочке функций-станций (<code>logger</code> → <code>express.json()</code> → маршруты → обработка 404 → обработчик ошибок), и каждая станция может прочитать/изменить запрос, ответить сразу или передать управление дальше через <code>next()</code>. Порядок подключения middleware в коде буквально определяет порядок их выполнения — это не декларативная конфигурация, а императивная последовательность.</p>
+<p>Разделение <code>app.js</code> (конфигурация приложения) и <code>server.js</code> (запуск через <code>listen</code>) — не формальность: это тот же принцип тестируемости, что и <code>TestClient</code> в FastAPI на предыдущей неделе — <code>app</code> можно импортировать в тесты и слать в него запросы напрямую, без реального сетевого порта, что делает автотесты (день 133 и практика проекта) быстрыми и надёжными.</p>
+<p>Частое заблуждение новичков — писать <code>POST</code>-обработчик, обращаться к <code>req.body</code> и получать <code>undefined</code>, не понимая почему: без подключённого <code>express.json()</code> middleware Express не парсит тело запроса автоматически — это осознанное архитектурное решение фреймворка, а не баг. Вторая распространённая ошибка — сваливать все маршруты в один растущий <code>app.js</code> на сотни строк вместо разделения по ресурсам (<code>routes/notes.js</code>, <code>routes/authors.js</code>), что уже на следующей неделе (после появления PostgreSQL) станет неуправляемым. Единый формат ответа (<code>{ data }</code> для успеха, <code>{ error: { message } }</code> для ошибки) — небольшая деталь с большим эффектом: фронтенд может написать один универсальный обработчик ответов вместо разбора уникальной формы JSON для каждого отдельного endpoint. HTTP-семантика статусов из практики дня — тоже часть этого контракта: 201 Created сообщает фронтенду «ресурс появился, можно обновить список», а 204 No Content на DELETE явно говорит «операция прошла успешно, но отвечать нечем» — разница, которая имеет значение для клиентского кода, реагирующего на статус, а не только на тело ответа.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://expressjs.com/en/starter/hello-world.html">Express Hello World</a></li>
+<li><a href="https://expressjs.com/en/api.html#express.json">express.json()</a></li>
+<li><a href="https://expressjs.com/en/guide/routing.html">Express Routing</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> express.json() обязателен; app отдельно от server — тестируемость.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>npm install express</code>, <code>src/app.js</code>, <code>src/server.js</code></li>
+<li>CRUD <code>/api/notes</code> — хранение в JSON-файле через fs</li>
+<li><code>GET /api/notes/:id</code> — 404 если нет (<code>res.status(404).json(...)</code>)</li>
+<li><code>npm install -D nodemon</code>, script <code>"dev": "nodemon src/server.js"</code></li>
+<li>Проверь все методы через curl или Thunder Client</li>
+<li>Единый формат ответа: <code>{ data }</code> или <code>{ error: { message } }</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] express.json() подключён
+- [ ] RESTful URLs и методы
+- [ ] 201 на POST, 204 на DELETE</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>npm install express</code>, <code>src/app.js</code>, <code>src/server.js</code></li>
+<li>CRUD <code>/api/notes</code> — хранение в JSON-файле через fs</li>
+<li><code>GET /api/notes/:id</code> — 404 если нет (<code>res.status(404).json(...)</code>)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 129: Express CRUD notes in-memory JSON"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>POST без body parser — req.body undefined</li>
+<li>Один огромный app.js — разбей на routes</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-19--week-19-day-129');</script>
+</body>
+</html>

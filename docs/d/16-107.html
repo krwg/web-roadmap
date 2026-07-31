@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 107 (Вт): Наследование, композиция, dataclasses · Python OOP · web-roadmap</title>
+  <meta name="description" content="День 107 (Вт): Наследование, композиция, dataclasses — неделя 16.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-16--week-16-day-107">
+  <meta http-equiv="refresh" content="0;url=../#week-16--week-16-day-107">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-16--week-16-day-107">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-16-day-107">День 107 (Вт): Наследование, композиция, dataclasses</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Наследование (<code>class Savings(BankAccount)</code>) расширяет базовый класс: дочерний получает методы родителя и добавляет свои. <code>super().__init__(...)</code> вызывает конструктор родителя — забудешь, и поля родителя не инициализируются. Но глубокие иерархии хрупки: предпочитай композицию («has-a»), когда объект содержит другие объекты, а не наследует их («is-a»).</p>
+<p><code>Portfolio</code> с <code>list[Account]</code> — композиция: портфель не «является» счётом, он их «содержит». Это гибче, чем <code>class Portfolio(Account)</code>. <code>@dataclass</code> автогенерирует <code>__init__</code>, <code>__repr__</code>, <code>__eq__</code> для DTO без сложного поведения — идеально для <code>Expense</code> или <code>Task</code>.</p>
+<p><code>__post_init__</code> валидирует поля после создания dataclass (сумма &gt; 0). <code>frozen=True</code> делает объект immutable — безопасен как ключ dict. ABC (<code>ABC</code>, <code>@abstractmethod</code>) задаёт контракт для <code>TaskRepository</code> — подкласс обязан реализовать методы.</p>
+<p>Ментальная модель для выбора между наследованием и композицией — LEGO-конструктор. Наследование — это «разблокировать улучшенную версию детали» с дополнительными способностями родителя (<code>SavingsAccount</code> умеет всё, что умеет <code>BankAccount</code>, плюс начисление процентов). Композиция — это «собрать модель из готовых независимых деталей» (<code>Portfolio</code> не является счётом, он содержит счета). Правило Liskov: наследуй только тогда, когда дочерний объект можно подставить всюду, где ожидается родительский, не сломав поведение. Если такой подстановки нет — это не «is-a», а признак того, что нужна композиция.</p>
+<p>Почему это важно позже: абстрактный <code>BaseRepository</code> с <code>@abstractmethod get/add/delete</code>, который ты создаёшь сегодня, — это тот же паттерн, что и Repository/Service слои в FastAPI-проекте недели 18 и layered-архитектура Express на неделе 19. Понимание ABC-контракта здесь напрямую объясняет, зачем в будущем API определяют интерфейсы, которые обязаны реализовать разные backend'ы (SQLite сегодня, PostgreSQL завтра).</p>
+<p>Частая ошибка новичков — наследовать ради переиспользования кода, а не ради логической связи «is-a», что приводит к глубоким и хрупким иерархиям (<code>Manager(Employee(Person))</code> с десятком переопределённых методов). Другая типичная ловушка — забыть <code>super().__init__(...)</code> в дочернем классе: тогда поля родителя просто не инициализируются, и на первый взгляд валидный код падает с <code>AttributeError</code> при первом обращении к унаследованному атрибуту. В практике дня это проверяется прямо: <code>SavingsAccount</code> должен вызывать <code>super().__init__()</code> и при этом оставаться взаимозаменяемым с обычным <code>BankAccount</code> везде, где ожидается счёт. Практическое правило для выбора: если ответ на вопрос «B — это разновидность A?» звучит естественно на русском языке, скорее всего перед тобой наследование; если естественнее звучит «B содержит/использует A», выбирай композицию.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.python.org/3/tutorial/classes.html#inheritance">Inheritance</a></li>
+<li><a href="https://realpython.com/inheritance-composition-python/">Композиция vs наследование</a></li>
+<li><a href="https://docs.python.org/3/library/dataclasses.html">@dataclass</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> композиция чаще наследования; dataclass — для данных, class — для поведения.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>SavingsAccount</code> с <code>interest_rate</code>, метод <code>apply_interest()</code> через <code>super()</code></li>
+<li><code>Portfolio</code> содержит <code>list[Account]</code> — композиция, не наследование</li>
+<li>Рефакторинг <code>@dataclass Expense</code> из недели 15 с <code>__post_init__</code> валидацией</li>
+<li>Абстрактный <code>BaseRepository</code> с <code>get</code>, <code>add</code>, <code>delete</code> — заготовка для SQLite</li>
+<li>Сравни размер кода: dataclass vs ручной класс для <code>Expense</code></li>
+<li>Задокументируй в <code>notes/oop.md</code>: когда наследование, когда композиция</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] <code>super().__init__()</code> в дочернем классе
+- [ ] Portfolio не наследует Account — композиция
+- [ ] dataclass с валидацией суммы &gt; 0</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>SavingsAccount</code> с <code>interest_rate</code>, метод <code>apply_interest()</code> через <code>super()</code></li>
+<li><code>Portfolio</code> содержит <code>list[Account]</code> — композиция, не наследование</li>
+<li>Рефакторинг <code>@dataclass Expense</code> из недели 15 с <code>__post_init__</code> валидацией</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-16/</code> → <code>git commit -m "week 16 day 107: inheritance, composition, dataclasses"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Глубокая иерархия наследования — хрупкий дизайн</li>
+<li>dataclass mutable по умолчанию — <code>frozen=True</code> для immutable</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-16--week-16-day-107');</script>
+</body>
+</html>

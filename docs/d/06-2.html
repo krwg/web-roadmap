@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 2 (Tue): Деструктуризация и spread для объектов · DOM · web-roadmap</title>
+  <meta name="description" content="День 2 (Tue): Деструктуризация и spread для объектов — неделя 06.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-06--week-06-day-2">
+  <meta http-equiv="refresh" content="0;url=../#week-06--week-06-day-2">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-06--week-06-day-2">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-06-day-2">День 2 (Tue): Деструктуризация и spread для объектов</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~45м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p><strong>Деструктуризация</strong> извлекает поля из объекта или элементы из массива в переменные: <code>const { name, age } = user</code>. Переименование: <code>{ name: userName }</code>. Значения по умолчанию: <code>{ role = 'user' }</code> — если поля нет. В параметрах функции <code>printUser({ name, email })</code> сигнатура самодокументируется.</p>
+<p><strong>Spread</strong> в объектах объединяет и переопределяет: <code>const config = { ...defaults, ...userConfig }</code> — поля из <code>userConfig</code> побеждают. Порядок важен: правый объект перекрывает левый. <strong>Rest</strong> собирает остаток: <code>const { id, ...rest } = product</code> — <code>rest</code> без <code>id</code>, удобно перед логированием без пароля.</p>
+<p>Иммутабельное обновление: <code>{ ...task, done: true }</code> — новый объект, оригинал не тронут. Паттерн для state management и React-подготовки. Swap переменных: <code>[a, b] = [b, a]</code> — элегантно через деструктуризацию массива.</p>
+<p><strong>Ментальная модель:</strong> деструктуризация — это распаковка посылки: вместо того чтобы работать с целым объектом (<code>user.name</code>, <code>user.age</code> в трёх разных местах), ты сразу «раскладываешь» нужные поля по отдельным переменным, а посылку (сам объект) можно выбросить. Spread, наоборот, — упаковка: собираешь несколько маленьких объектов в один новый, причём поля справа перекрывают поля слева, как более поздняя запись в анкете перебивает раннюю.</p>
+<p><strong>Почему это важно дальше:</strong> иммутабельное обновление через spread (<code>{...task, done: true}</code>) — это ровно тот паттерн, который лежит в основе state management в React и других фреймворках: там объекты <strong>никогда</strong> не мутируют напрямую, только заменяются новыми копиями с изменённым полем. Освоив это сейчас на простых задачах, ты избежишь одной из самых частых путаниц при переходе на фреймворки.</p>
+<p><strong>Пример:</strong> обновление задачи в списке без мутации — <code>tasks.map(t =&gt; t.id === id ? {...t, done: true} : t)</code>: создаётся новый массив, где нужный элемент заменён на новый объект с изменённым полем, а все остальные элементы остаются теми же ссылками. Так реактивные системы могут быстро понять, что именно изменилось, сравнивая ссылки, а не обходя все поля.</p>
+<p><strong>Частое заблуждение:</strong> новички считают, что порядок spread не важен — «ведь мы просто объединяем объекты». На деле <code>{...defaults, ...userConfig}</code> и <code>{...userConfig, ...defaults}</code> дадут разные результаты: во втором случае <code>defaults</code> перезапишет пользовательские настройки, что обычно не то, что нужно. Порядок «от общего к частному» стоит проверить в сегодняшней задаче на merge конфигураций.</p>
+<p><strong>Ключевая мысль:</strong> spread для merge и иммутабельного update; rest для «всё кроме».</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/destructuring-assignment">learn.javascript.ru: Деструктурирующее присваивание</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Функция <code>printUser({name, email, role = 'user'})</code> — деструктуризация параметров</li>
+<li>Объедини настройки: <code>const config = {...defaults, ...userConfig}</code></li>
+<li>Исключи поле <code>password</code> из объекта перед логированием (rest)</li>
+<li>Swap двух переменных через деструктуризацию массива <code>[a, b] = [b, a]</code></li>
+<li>Рефакторинг Todo из недели 5 с деструктуризацией</li>
+<li>Иммутабельное обновление задачи: <code>updateTask(tasks, id, {done: true})</code></li>
+<li>Деструктурируй массив: <code>const [first, ...rest] = tasks</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Деструктуризация в параметрах функций
+- [ ] Spread для иммутабельного обновления объекта
+- [ ] Rest для исключения полей</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Функция <code>printUser({name, email, role = 'user'})</code> — деструктуризация параметров</li>
+<li>Объедини настройки: <code>const config = {...defaults, ...userConfig}</code></li>
+<li>Исключи поле <code>password</code> из объекта перед логированием (rest)</li>
+<li>Swap двух переменных через деструктуризацию массива <code>[a, b] = [b, a]</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 2: destructuring spread"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li><code>for...in</code> перебирает унаследованные свойства — используй <code>hasOwnProperty</code> или <code>Object.keys</code></li>
+<li>Shallow copy не клонирует вложенные объекты</li>
+<li>Мутация объекта, переданного в функцию — ожидаемое поведение</li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-06--week-06-day-2');</script>
+</body>
+</html>

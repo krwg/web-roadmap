@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 121 (Вт): CRUD через ORM и запросы · FastAPI · web-roadmap</title>
+  <meta name="description" content="День 121 (Вт): CRUD через ORM и запросы — неделя 18.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-18--week-18-day-121">
+  <meta http-equiv="refresh" content="0;url=../#week-18--week-18-day-121">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-18--week-18-day-121">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-18-day-121">День 121 (Вт): CRUD через ORM и запросы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library REST API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>CRUD через ORM использует SQLAlchemy 2.0 style <code>select()</code>, не legacy <code>session.query()</code>. <code>session.get(Model, id)</code> — lookup по primary key с identity map cache. <code>session.scalars(select(Book).where(...)).all()</code> возвращает список ORM-объектов. Фильтры: <code>.where()</code>, <code>.join()</code>, <code>.order_by()</code>, <code>.limit()</code>, <code>.offset()</code> для пагинации.</p>
+<p>N+1 problem: цикл по авторам + <code>author.books</code> внутри генерирует запрос на каждую итерацию. Решение — eager loading: <code>selectinload(Author.books)</code> или <code>joinedload</code>. Замерь количество SQL-запросов до и после — наглядный урок.</p>
+<p><code>session.delete(obj)</code> + <code>commit()</code> удаляет с учётом cascade rules. Пагинация <code>page=1, size=20</code> — обязательна для API endpoints. Вынеси CRUD в <code>crud/authors.py</code> — routes остаются тонкими. <code>title.ilike('%python%')</code> — case-insensitive поиск в PostgreSQL.</p>
+<p>Ментальная модель N+1: представь, что нужно доставить книги 20 авторов, но вместо одной фуры, которая привозит всё за один рейс (<code>selectinload</code> — один дополнительный запрос со списком id), курьер каждый раз едет на склад за книгами одного конкретного автора — 20 отдельных поездок. Каждое обращение к <code>author.books</code> внутри цикла без eager loading — это отдельный SQL-запрос к базе, и для 100 авторов это будет 101 запрос вместо 2.</p>
+<p>N+1 — не теоретическая проблема из учебника: это самая частая жалоба на производительность в production API, построенных на ORM, и именно её ты научишься видеть и чинить сегодня. В любом реальном проекте на SQLAlchemy, который ты соберёшь после курса, первый вопрос при жалобе «эндпоинт тормозит» — это «сколько SQL-запросов он генерирует», и умение включить логирование запросов и посчитать их — прямой навык из сегодняшней практики.</p>
+<p>Частое заблуждение — думать, что раз <code>session.query()</code> (SQLAlchemy 1.x) всё ещё работает и встречается в старых туториалах, значит это актуальный способ писать запросы. Однако 2.0-style <code>select()</code> — новый стандарт с лучшей типизацией и явным поведением, и весь код недели построен на нём. Вторая ошибка — включать eager loading (<code>selectinload</code>) на все связи по умолчанию «на всякий случай»: это не бесплатно, каждая дополнительная связь — дополнительный запрос или JOIN, поэтому выбор между <code>selectinload</code> и <code>joinedload</code> должен опираться на реальный паттерн использования, а не привычку. Практическая привычка на будущее: при любом подозрении на медленный endpoint включай логирование SQL (<code>echo=True</code> в engine) и считай запросы за один HTTP-вызов — это тот же диагностический рефлекс, что и <code>EXPLAIN ANALYZE</code> на прошлой неделе, только применённый к ORM-коду.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.sqlalchemy.org/en/20/orm/queryguide/select.html">SQLAlchemy Select</a></li>
+<li><a href="https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html">Loading Relationships</a></li>
+<li><a href="https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html#selectin-loading">N+1 problem (обзор)</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> N+1 лечится eager loading; <code>select()</code> API — стандарт SQLAlchemy 2.0.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>CRUD: <code>create_author</code>, <code>get_authors</code>, <code>update_book</code>, <code>delete_book</code></li>
+<li>Запрос: все книги автора с join через relationship или explicit join</li>
+<li>Пагинация: <code>get_books(page=1, size=20)</code></li>
+<li>Замер N+1: цикл authors без selectinload vs с selectinload — считай запросы</li>
+<li>Фильтр: книги где <code>title.ilike('%python%')</code></li>
+<li>Вынеси CRUD в <code>crud/authors.py</code>, <code>crud/books.py</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] select() API, не legacy Query (1.x)
+- [ ] N+1 продемонстрирован и исправлен
+- [ ] Пагинация работает</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>CRUD: <code>create_author</code>, <code>get_authors</code>, <code>update_book</code>, <code>delete_book</code></li>
+<li>Запрос: все книги автора с join через relationship или explicit join</li>
+<li>Пагинация: <code>get_books(page=1, size=20)</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-18/</code> → <code>git commit -m "week 18 day 121: ORM CRUD and N+1 fix"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>N+1: цикл по authors + author.books внутри — сотни запросов</li>
+<li><code>session.query()</code> — legacy, используй <code>select()</code></li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-18--week-18-day-121');</script>
+</body>
+</html>

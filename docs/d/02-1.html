@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 1 (Mon): Подключение CSS и селекторы · CSS основы · web-roadmap</title>
+  <meta name="description" content="День 1 (Mon): Подключение CSS и селекторы — неделя 02.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-02--week-02-day-1">
+  <meta http-equiv="refresh" content="0;url=../#week-02--week-02-day-1">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-02--week-02-day-1">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-02-day-1">День 1 (Mon): Подключение CSS и селекторы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Styled Blog Post</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>CSS (Cascading Style Sheets) отделяет <strong>оформление</strong> от <strong>структуры</strong> HTML. Подключить стили можно тремя способами: inline-атрибут <code>style</code> (плохо для поддержки), блок <code>&lt;style&gt;</code> в <code>&lt;head&gt;</code> (допустимо для прототипа) и <strong>внешний файл</strong> <code>.css</code> через <code>&lt;link rel="stylesheet"&gt;</code> — предпочтительный вариант: один файл кэшируется браузером и обслуживает все страницы сайта.</p>
+<p><strong>Селектор</strong> — это «адрес» элементов, к которым применится правило. Базовые типы: по тегу (<code>p</code>), по классу (<code>.card</code>), по id (<code>#header</code>), по атрибуту (<code>[type="email"]</code>), универсальный (<code>*</code>). Комбинаторы уточняют связь: потомок (пробел — любой уровень вложенности), дочерний (<code>&gt;</code> — только прямой ребёнок), соседний (<code>+</code>) и общий сосед (<code>~</code>). Псевдоклассы (<code>:hover</code>, <code>:focus</code>, <code>:nth-child()</code>) реагируют на состояние; псевдоэлементы (<code>::before</code>, <code>::after</code>) создают виртуальные узлы — но без свойства <code>content</code> они не появятся на экране.</p>
+<p>Селектор по <strong>классу</strong> предпочтительнее <code>#id</code>: классы переиспользуются, id уникален и повышает специфичность, делая CSS хрупким. <code>:not()</code> сужает выборку элегантно: <code>li:not(:last-child)</code> вместо ручных классов на каждый элемент.</p>
+<p>Мысленная модель: HTML прошлой недели — это здание без покраски, а CSS — маляр, который приходит и красит стены, не трогая саму конструкцию. Селекторы — это адрес: «покрась именно эти стены», и чем точнее адрес, тем меньше риск покрасить что-то лишнее по ошибке.</p>
+<p>Почему это важно дальше: селекторы — язык, на котором ты будешь разговаривать с DOM всю оставшуюся программу. На неделе 6 в JavaScript <code>document.querySelector('.card:not(.hidden)')</code> использует ровно тот же синтаксис CSS-селекторов; во фреймворках (React, Vue) CSS-модули и styled-components тоже строятся вокруг классов, а не id. Плохая привычка навешивать <code>#id</code> на всё сегодня аукнется путаницей в компонентном коде позже.</p>
+<p>Конкретный пример: чтобы стилизовать активный пункт меню, соблазн — дать ему <code>id="active"</code>. Но если пункт меняется в зависимости от страницы (через JS или атрибут <code>aria-current="page"</code>), гораздо гибче написать <code>.nav-link[aria-current="page"]</code> — один селектор работает на любой странице сайта без дублирования id.</p>
+<p>Частое заблуждение новичков — думать, что раз id «более специфичный», значит «более правильный» выбор по умолчанию. На деле высокая специфичность id — это недостаток, а не достоинство: она мешает переопределить стиль позже без <code>!important</code>. Правильная стратегия — начинать с классов и повышать специфичность только когда есть явная причина.</p>
+<p><strong>Ключевая мысль:</strong> внешний CSS + селекторы по классу — основа поддерживаемых стилей, и сегодняшняя практика с <code>:hover</code>/<code>:focus-visible</code>/<code>:nth-child()</code> — это тренировка думать в терминах «состояние + класс», а не «id под каждый частный случай».</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/CSS/First_steps">MDN: CSS first steps</a> — inline, <code>&lt;style&gt;</code>, внешний файл</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Создай <code>styles.css</code> и подключи к HTML из недели 1</li>
+<li>Стилизуй навигацию: базовый вид, <code>:hover</code>, <code>:focus-visible</code></li>
+<li>Чередуй фон строк в списке через <code>:nth-child(even)</code></li>
+<li>Добавь декоративный <code>::before</code> к заголовкам секций</li>
+<li>В DevTools поэкспериментируй с селекторами в панели Styles</li>
+<li>Добавь селектор <code>[aria-current="page"]</code> для активного пункта навигации</li>
+<li>Проверь, что все интерактивные элементы имеют видимый <code>:focus-visible</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] CSS вынесен во внешний файл, нет inline-стилей в HTML
+- [ ] Использованы минимум 3 типа селекторов
+- [ ] Состояния <code>:hover</code> и <code>:focus-visible</code> различимы</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Создай <code>styles.css</code> и подключи к HTML из недели 1</li>
+<li>Стилизуй навигацию: базовый вид, <code>:hover</code>, <code>:focus-visible</code></li>
+<li>Чередуй фон строк в списке через <code>:nth-child(even)</code></li>
+<li>Добавь декоративный <code>::before</code> к заголовкам секций</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 02 day 1: css selectors and nav styles"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-02--week-02-day-1');</script>
+</body>
+</html>

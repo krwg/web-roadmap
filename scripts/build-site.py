@@ -17,7 +17,7 @@ OUT_WEEKS = DOCS / "weeks"
 OUT_PAGES = DOCS / "pages"
 LOGO_SRC = ROOT / "assets" / "logo.png"
 LOGO_DOCS = DOCS / "assets" / "logo.png"
-VERSION = "1.2.3"
+VERSION = "1.3.0"
 
 PHASE_MAP = {
     "00": ("setup", "Старт"),
@@ -214,6 +214,41 @@ def strip_text(html_body: str, limit: int = 200) -> str:
     return t[:limit] + ("…" if len(t) > limit else "")
 
 
+def split_week_sections(html_body: str, toc: list[dict]) -> tuple[str, list[dict]]:
+    """Split week HTML into intro + per-h2 lesson sections (days, project, review)."""
+    h2_iter = list(re.finditer(r"<h2\b", html_body, re.I))
+    if not h2_iter:
+        return html_body, []
+
+    intro = html_body[: h2_iter[0].start()].strip()
+    # Drop leading h1 from intro if present — shown in page chrome
+    intro = re.sub(r"^<h1\b[^>]*>.*?</h1>\s*", "", intro, count=1, flags=re.I | re.DOTALL)
+
+    sections: list[dict] = []
+    id_to_label = {t["id"]: t["label"] for t in toc}
+
+    for i, match in enumerate(h2_iter):
+        start = match.start()
+        end = h2_iter[i + 1].start() if i + 1 < len(h2_iter) else len(html_body)
+        chunk = html_body[start:end].strip()
+        id_m = re.search(r'<h2[^>]*\bid="([^"]+)"', chunk, re.I)
+        if not id_m:
+            continue
+        sid = id_m.group(1)
+        label = id_to_label.get(sid) or re.sub(
+            r"<[^>]+>", "", re.search(r"<h2[^>]*>(.*?)</h2>", chunk, re.I | re.DOTALL).group(1)
+        ).strip()
+        kind = "day" if "-day-" in sid else ("project" if sid.endswith("-project") else ("review" if sid.endswith("-review") else "section"))
+        sections.append({
+            "id": sid,
+            "label": label[:80],
+            "kind": kind,
+            "html": chunk,
+            "text": strip_text(chunk, 400),
+        })
+    return intro, sections
+
+
 def build_week_json(num: str, title: str) -> dict:
     path = WEEKS_DIR / f"week-{num}.md"
     raw = path.read_text(encoding="utf-8")
@@ -223,13 +258,17 @@ def build_week_json(num: str, title: str) -> dict:
     h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html_body, re.DOTALL | re.I)
     full = re.sub(r"<[^>]+>", "", h1.group(1)).strip() if h1 else f"Неделя {num}: {title}"
     toc = extract_toc(html_body, rid)
+    intro, sections = split_week_sections(html_body, toc)
     return {
         "id": rid,
         "title": title,
         "fullTitle": full,
         "html": html_body,
+        "introHtml": intro,
+        "sections": sections,
         "toc": toc,
         "text": strip_text(html_body, 800),
+        "sourcePath": f"roadmap/weeks/week-{num}.md",
     }
 
 
@@ -378,7 +417,7 @@ def write_index(search_index: list, routes: dict) -> None:
           </nav>
           <button type="button" class="icon-btn icon-only" id="search-btn" title="Поиск (Ctrl+K)"><span class="material-symbols-outlined">search</span></button>
           <button type="button" class="icon-btn icon-only" id="reading-mode-btn" title="Режим чтения"><span class="material-symbols-outlined">auto_stories</span></button>
-          <a class="icon-btn" href="https://github.com/krwg/web-roadmap" target="_blank" rel="noopener"><span class="material-symbols-outlined">code</span> GitHub</a>
+          <a class="icon-btn" href="https://github.com/krwg/web-roadmap" target="_blank" rel="noopener" id="nav-github"><span class="material-symbols-outlined">code</span> <span id="nav-star-label">GitHub</span></a>
         </div>
       </div>
     </header>
@@ -529,7 +568,7 @@ def write_index(search_index: list, routes: dict) -> None:
           <div class="section-inner">
             <div class="section-head">
               <h2>Программа курса</h2>
-              <p class="sub">23 модуля · нажмите на карточку — откроется урок с оглавлением по дням</p>
+              <p class="sub">23 модуля · откройте модуль — уроки по дням на отдельных страницах</p>
             </div>
             <div class="phase-filters" id="phase-filters">
               <button type="button" class="phase-chip active" data-filter="all">Все</button>
@@ -576,12 +615,18 @@ def write_index(search_index: list, routes: dict) -> None:
         </section>
 
         <section class="community section-alt" id="community">
-          <h2>Помогите маршруту расти</h2>
-          <p>Звезда на GitHub, репост или Issue с улучшением — всё помогает следующим ученикам.</p>
+          <h2>Связь с GitHub</h2>
+          <p>Звезда, Discussions, Issues и правки в репозитории — маршрут живёт вместе с кодом.</p>
           <div class="cta-row">
-            <a class="btn btn-primary" href="https://github.com/krwg/web-roadmap" target="_blank" rel="noopener"><span class="material-symbols-outlined">star</span> Star</a>
+            <a class="btn btn-primary" href="https://github.com/krwg/web-roadmap" target="_blank" rel="noopener" id="star-btn"><span class="material-symbols-outlined">star</span> <span id="star-count-label">Star</span></a>
+            <a class="btn btn-secondary" href="https://github.com/krwg/web-roadmap/discussions" target="_blank" rel="noopener"><span class="material-symbols-outlined">forum</span> Discussions</a>
             <button type="button" class="btn btn-secondary" id="share-btn"><span class="material-symbols-outlined">share</span> Поделиться</button>
             <a class="btn btn-ghost" href="https://github.com/krwg/web-roadmap/issues/new/choose" target="_blank" rel="noopener"><span class="material-symbols-outlined">bug_report</span> Issue</a>
+          </div>
+          <div class="github-actions-row">
+            <button type="button" class="btn btn-ghost btn-sm" id="progress-export-btn"><span class="material-symbols-outlined">download</span> Экспорт прогресса</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="progress-import-btn"><span class="material-symbols-outlined">upload</span> Импорт прогресса</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="copy-clone-btn"><span class="material-symbols-outlined">content_copy</span> git clone</button>
           </div>
         </section>
       </main>
@@ -596,28 +641,48 @@ def write_index(search_index: list, routes: dict) -> None:
     <div id="view-doc" class="view" hidden>
       <div class="page-header">
         <div class="page-header-inner">
-          <a class="back-link" href="#weeks" data-route="home"><span class="material-symbols-outlined">arrow_back</span> К программе курса</a>
+          <a class="back-link" href="#weeks" data-route="home"><span class="material-symbols-outlined">arrow_back</span> К программе</a>
+          <nav class="lesson-breadcrumb" id="lesson-breadcrumb" aria-label="Навигация по уроку"></nav>
           <h1 id="doc-page-title">Загрузка…</h1>
-          <div class="page-toolbar">
-            <button type="button" class="btn btn-ghost" id="mark-done-btn" hidden>Отметить неделю</button>
+          <p class="lesson-subtitle" id="doc-lesson-subtitle" hidden></p>
+          <div class="page-toolbar" id="page-toolbar">
+            <button type="button" class="btn btn-ghost btn-sm" id="mark-done-btn" hidden>Отметить неделю</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="mark-day-btn" hidden>Отметить день</button>
+            <a class="btn btn-ghost btn-sm" id="edit-github-btn" href="#" target="_blank" rel="noopener" hidden><span class="material-symbols-outlined">edit</span> Править</a>
+            <a class="btn btn-ghost btn-sm" id="issue-github-btn" href="#" target="_blank" rel="noopener" hidden><span class="material-symbols-outlined">bug_report</span> Issue</a>
+            <a class="btn btn-ghost btn-sm" id="source-github-btn" href="#" target="_blank" rel="noopener" hidden><span class="material-symbols-outlined">code</span> Исходник</a>
+          </div>
+          <div class="week-progress" id="week-progress" hidden>
+            <div class="week-progress-track"><div class="week-progress-fill" id="week-progress-fill"></div></div>
+            <span class="week-progress-label" id="week-progress-label"></span>
           </div>
         </div>
       </div>
       <div class="doc-layout">
         <aside class="doc-toc" id="doc-toc"></aside>
-        <div class="prose-wrap" id="doc-content"><div class="loading">Загрузка…</div></div>
+        <div class="prose-wrap">
+          <div id="doc-content"><div class="loading">Загрузка…</div></div>
+          <section class="comments-block" id="comments-block" hidden>
+            <h2 class="comments-title"><span class="material-symbols-outlined">forum</span> Обсуждение недели</h2>
+            <p class="comments-hint">Комментарии через GitHub Discussions (Giscus). Войдите аккаунтом GitHub, чтобы ответить.</p>
+            <div class="giscus" id="giscus-container"></div>
+          </section>
+        </div>
       </div>
       <div class="lesson-next" id="lesson-next" hidden>
         <div class="lesson-next-inner">
+          <a class="btn btn-ghost btn-sm" href="#" id="lesson-prev-link" hidden><span class="material-symbols-outlined">arrow_back</span> <span id="lesson-prev-text">Назад</span></a>
           <div class="lesson-next-label">
             <span class="material-symbols-outlined">arrow_forward</span>
-            <span id="lesson-next-text">Следующий модуль</span>
+            <span id="lesson-next-text">Следующий урок</span>
           </div>
           <a class="btn btn-primary btn-sm" href="#" id="lesson-next-link">Перейти</a>
         </div>
       </div>
     </div>
   </div>
+
+  <input type="file" id="progress-import-file" accept="application/json,.json" hidden>
 
   <div class="search-overlay" id="search-overlay">
     <div class="search-box">
@@ -628,6 +693,12 @@ def write_index(search_index: list, routes: dict) -> None:
 
   <script>window.SITE_ROUTES = {site_routes};</script>
   <script>window.SEARCH_INDEX = {search_json};</script>
+  <script>window.GISCUS = {{
+    repo: "krwg/web-roadmap",
+    repoId: "R_kgDOTPhP4Q",
+    category: "General",
+    categoryId: "DIC_kwDOTPhP4c4DCau6"
+  }};</script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
@@ -664,6 +735,13 @@ def build() -> None:
             "text": data["text"],
             "snippet": data["text"][:120],
         })
+        for sec in data.get("sections") or []:
+            search_index.append({
+                "route": f"{data['id']}--{sec['id']}",
+                "title": f"{title}: {sec['label']}",
+                "text": sec.get("text", ""),
+                "snippet": (sec.get("text") or "")[:120],
+            })
 
     page_routes = {}
     for pid, (rel, title) in PAGES.items():
@@ -693,9 +771,11 @@ def build() -> None:
 
 
 def write_prerender_pages(week_routes: dict) -> None:
-    """Static shareable URLs: /w/01.html → content + canonical to hash SPA."""
+    """Static shareable URLs: /w/01.html and /d/01-3.html → SPA hashes."""
     out = DOCS / "w"
     out.mkdir(parents=True, exist_ok=True)
+    dout = DOCS / "d"
+    dout.mkdir(parents=True, exist_ok=True)
     for num, title, _ in WEEKS_META:
         data = json.loads((OUT_WEEKS / f"{num}.json").read_text(encoding="utf-8"))
         route = f"week-{num}"
@@ -721,11 +801,45 @@ def write_prerender_pages(week_routes: dict) -> None:
 </html>"""
         (out / f"{num}.html").write_text(page, encoding="utf-8")
 
+        for sec in data.get("sections") or []:
+            if sec.get("kind") != "day":
+                continue
+            day_m = re.search(r"-day-(.+)$", sec["id"])
+            day_n = day_m.group(1) if day_m else heading_slug(sec["id"])
+            hash_url = f"{route}--{sec['id']}"
+            dpage = f"""<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{html.escape(sec['label'])} · {html.escape(title)} · web-roadmap</title>
+  <meta name="description" content="{html.escape(sec['label'])} — неделя {num}.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#{hash_url}">
+  <meta http-equiv="refresh" content="0;url=../#{hash_url}">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#{hash_url}">Открыть урок</a></p>
+    <article class="prose">{sec['html']}</article>
+  </main>
+  <script>location.replace('../#{hash_url}');</script>
+</body>
+</html>"""
+            (dout / f"{num}-{day_n}.html").write_text(dpage, encoding="utf-8")
+
 
 def write_sitemap(week_routes: dict, page_routes: dict) -> None:
     urls = ["https://krwg.github.io/web-roadmap/"]
     for num, _, _ in WEEKS_META:
         urls.append(f"https://krwg.github.io/web-roadmap/w/{num}.html")
+        data = json.loads((OUT_WEEKS / f"{num}.json").read_text(encoding="utf-8"))
+        for sec in data.get("sections") or []:
+            if sec.get("kind") != "day":
+                continue
+            day_m = re.search(r"-day-(.+)$", sec["id"])
+            if day_m:
+                urls.append(f"https://krwg.github.io/web-roadmap/d/{num}-{day_m.group(1)}.html")
     for pid in page_routes:
         urls.append(f"https://krwg.github.io/web-roadmap/#{pid}")
     body = [

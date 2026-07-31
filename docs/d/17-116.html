@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 116 (Чт): PostgreSQL — установка и отличия от SQLite · SQL · web-roadmap</title>
+  <meta name="description" content="День 116 (Чт): PostgreSQL — установка и отличия от SQLite — неделя 17.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-17--week-17-day-116">
+  <meta http-equiv="refresh" content="0;url=../#week-17--week-17-day-116">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-17--week-17-day-116">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-17-day-116">День 116 (Чт): PostgreSQL — установка и отличия от SQLite</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library Database</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>PostgreSQL — серверная СУБД для production: concurrent access, роли, extensions, богатые типы (<code>JSONB</code>, <code>UUID</code>, <code>TIMESTAMPTZ</code>). SQLite — один файл, zero-config, идеален для прототипов и встроенных приложений. На этой неделе ты переносишь схему «Библиотека» из SQLite в PG.</p>
+<p>Docker: <code>docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=pass postgres:16</code> поднимает изолированный инстанс за секунды. Клиенты: <code>psql</code>, pgAdmin, DBeaver — <code>psql</code> быстрее для точечных запросов и скриптов, GUI-клиенты удобнее для визуального просмотра схемы. Диалектные отличия: <code>AUTOINCREMENT</code> (SQLite) vs <code>SERIAL</code> / <code>GENERATED ALWAYS AS IDENTITY</code> (PostgreSQL).</p>
+<p><code>DATABASE_URL=postgresql://user:pass@localhost:5432/library</code> — стандартная строка подключения для приложений. Документируй пароль в <code>.env.example</code> без реальных значений. Сравни SQLite vs PG письменно: когда файл достаточен, когда нужен сервер.</p>
+<p>Ментальная модель: SQLite — это личный блокнот-файл, лежащий рядом с программой (embedded, без сети, один процесс пишет за раз); PostgreSQL — это офисный сервер базы данных, к которому по сети одновременно подключаются десятки клиентов через клиент-серверный протокол. Отсюда и разница use case: прототип, CLI-утилита, мобильное приложение — SQLite; веб-сервис с конкурентным доступом — PostgreSQL.</p>
+<p>Эта миграция — не разовое упражнение: практически каждый проект, который ты соберёшь дальше в программе (FastAPI на неделе 18, Express на неделе 19, деплой на неделе 21), будет подключаться именно к PostgreSQL через одну и ту же переменную <code>DATABASE_URL</code> — сегодняшняя настройка Docker-контейнера и строки подключения используется без изменений ещё как минимум трижды.</p>
+<p>Частое заблуждение — считать SQL PostgreSQL и SQLite полностью взаимозаменяемым диалектом: <code>AUTOINCREMENT</code> в SQLite становится <code>SERIAL</code> или <code>GENERATED ALWAYS AS IDENTITY</code> в PostgreSQL, типы данных богаче (<code>JSONB</code>, <code>UUID</code>, <code>TIMESTAMPTZ</code> не имеют прямых аналогов в SQLite), а поведение constraint-ов местами строже. В практике дня перенос схемы «Библиотека» специально выявляет эти расхождения — их стоит зафиксировать письменно в <code>notes/pg-vs-sqlite.md</code>, чтобы не наступать на те же грабли в будущих проектах. Ещё один момент, который легко упустить: SQLite не требует отдельного процесса-сервера и пароля, а PostgreSQL требует явного управления доступом (роли, пароли, сетевые порты) — именно поэтому сегодняшняя настройка <code>.env.example</code> с <code>DATABASE_URL</code> без реальных секретов в самом репозитории становится обязательной привычкой на все оставшиеся недели курса. Полезно письменно зафиксировать и обратное: в каких случаях SQLite достаточно даже для боевого использования — например, мобильные и десктопные приложения, локальные кэши или сервисы с одним писателем и низкой конкурентной нагрузкой, где сетевой сервер был бы избыточен.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://www.postgresql.org/download/">PostgreSQL Downloads</a></li>
+<li><a href="https://www.postgresql.org/docs/current/app-psql.html">psql</a></li>
+<li><a href="https://hub.docker.com/_/postgres">Docker — postgres image</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> PostgreSQL — для multi-user и production; миграция учит диалектные различия.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Подними PostgreSQL (Docker или локально)</li>
+<li>Перенеси схему «Библиотека» в PostgreSQL через <code>schema.sql</code></li>
+<li>Подключись через psql или DBeaver, выполни <code>\dt</code> и <code>\d books</code></li>
+<li><code>seed.sql</code> — вставка тестовых данных</li>
+<li>Сравни SQLite vs PG — запиши 5 пунктов в <code>notes/pg-vs-sqlite.md</code></li>
+<li>Создай <code>.env.example</code> с <code>DATABASE_URL=postgresql://user:pass@localhost:5432/library</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Подключение к PG работает
+- [ ] Схема создана через SQL-скрипт <code>schema.sql</code>
+- [ ] Seed script <code>seed.sql</code> выполняется без ошибок</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Подними PostgreSQL (Docker или локально)</li>
+<li>Перенеси схему «Библиотека» в PostgreSQL через <code>schema.sql</code></li>
+<li>Подключись через psql или DBeaver, выполни <code>\dt</code> и <code>\d books</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-17/</code> → <code>git commit -m "week 17 day 116: PostgreSQL setup and schema migration"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Забытый пароль postgres в Docker — документируй в <code>.env.example</code></li>
+<li>Различия SQL диалектов: AUTOINCREMENT vs SERIAL</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-17--week-17-day-116');</script>
+</body>
+</html>

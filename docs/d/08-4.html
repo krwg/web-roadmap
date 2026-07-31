@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 4 (Thu): HTTP углублённо · Async &amp; HTTP · web-roadmap</title>
+  <meta name="description" content="День 4 (Thu): HTTP углублённо — неделя 08.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-08--week-08-day-4">
+  <meta http-equiv="refresh" content="0;url=../#week-08--week-08-day-4">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-08--week-08-day-4">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-08-day-4">День 4 (Thu): HTTP углублённо</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>HTTP — протокол обмена сообщениями между клиентом и сервером. Каждый запрос состоит из метода, URL, заголовков и опционального тела. Ответ содержит статус-код, заголовки и тело. Методы несут семантику: GET читает ресурс (идемпотентен, кэшируем), POST создаёт новый, PUT/PATCH обновляют, DELETE удаляет. Понимание семантики помогает проектировать API и правильно обрабатывать ответы.</p>
+<p>Статус-коды сгруппированы: 1xx — информация, 2xx — успех (200 OK, 201 Created, 204 No Content), 3xx — перенаправление, 4xx — ошибка клиента (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found), 5xx — ошибка сервера. Для UI важно различать 401 («войдите в систему») и 403 («у вас нет прав») — пользователю нужны разные сообщения.</p>
+<p>Заголовки передают метаданные: <code>Content-Type</code> описывает формат тела, <code>Authorization</code> — токен доступа, <code>Cache-Control</code> и <code>ETag</code> управляют кэшированием. CORS настраивается <strong>на сервере</strong> через заголовки вроде <code>Access-Control-Allow-Origin</code>. «Непростые» запросы (нестандартные заголовки, методы кроме GET/POST) вызывают preflight — браузер сначала отправит OPTIONS и спросит разрешение.</p>
+<p>Мысленная модель HTTP — обмен письмами по строгим правилам почты: клиент пишет письмо (запрос) с адресом (URL), типом отправления (метод) и содержимым (тело), сервер отвечает своим письмом со штампом (статус-код) и вложениями (тело ответа). Оба участника не хранят состояние друг о друге между письмами — HTTP по своей природе stateless, поэтому авторизация передаётся заново в каждом запросе (заголовок <code>Authorization</code>), а не «запоминается» сервером автоматически.</p>
+<p>Это понимание пригодится сразу при проектировании api-wrapper (шаг 2 практики) и в дальнейшем — при работе с REST API на бэкенде и при чтении документации любого стороннего сервиса, которая всегда описана в терминах методов, статусов и заголовков. Частое заблуждение новичков — путать 401 и 403: 401 означает «сервер не знает, кто ты» (нет или истёк токен, нужен логин), а 403 — «сервер знает, кто ты, но тебе запрещено» (например, обычный пользователь пытается зайти в админку). UI должен обрабатывать эти случаи по-разному: 401 → редирект на страницу входа, 403 → сообщение «недостаточно прав».</p>
+<p>Конкретный пример CORS: фронтенд на <code>localhost:3000</code> обращается к API на <code>api.example.com</code> — браузер блокирует ответ, если сервер не прислал заголовок <code>Access-Control-Allow-Origin: http://localhost:3000</code> (или <code>*</code>). Это не ошибка сети и не баг клиента, а защитный механизм браузера, который стоит увидеть своими глазами в шаге 1 практики через вкладку Network: найди среди заголовков реального запроса те, что относятся именно к CORS и кэшированию.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/HTTP/Overview">MDN: HTTP Overview</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/HTTP/CORS">MDN: CORS</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/HTTP/Status">MDN: HTTP response status codes</a></p>
+<p><strong>Ключевая мысль:</strong> HTTP-метод + статус-код + заголовки — это язык, на котором клиент и сервер договариваются о результате операции.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>В Network изучи headers реального запроса к API</li>
+<li>Реализуй wrapper <code>api.get/post/put/delete</code> с базовым URL</li>
+<li>Добавь заголовок <code>Content-Type: application/json</code> автоматически</li>
+<li>Маппинг статусов в ошибки: <code>ApiError</code> с полем <code>status</code></li>
+<li>Обработай 401 — сообщение «Требуется авторизация»</li>
+<li>Класс <code>ApiError extends Error</code> с <code>status</code> и <code>body</code></li>
+<li>Логируй failed requests в console с status и url</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] API wrapper переиспользуемый
+- [ ] Разные HTTP-ошибки — разные сообщения UI
+- [ ] Понимаю CORS на уровне «почему fetch заблокирован»</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>В Network изучи headers реального запроса к API</li>
+<li>Реализуй wrapper <code>api.get/post/put/delete</code> с базовым URL</li>
+<li>Добавь заголовок <code>Content-Type: application/json</code> автоматически</li>
+<li>Маппинг статусов в ошибки: <code>ApiError</code> с полем <code>status</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 4: http api wrapper"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-08--week-08-day-4');</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 99 (Пн): Установка, синтаксис, venv · Python · web-roadmap</title>
+  <meta name="description" content="День 99 (Пн): Установка, синтаксис, venv — неделя 15.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-15--week-15-day-99">
+  <meta http-equiv="refresh" content="0;url=../#week-15--week-15-day-99">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-15--week-15-day-99">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-15-day-99">День 99 (Пн): Установка, синтаксис, venv</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Expense Tracker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Python — первый шаг в backend после фронтенда. Установка с python.org (или <code>py</code> launcher на Windows) и проверка <code>python --version</code> — база. Главная привычка с первого дня: виртуальное окружение <code>python -m venv .venv</code> изолирует зависимости проекта от системного Python. Без активации venv пакеты ставятся глобально и ломают другие проекты.</p>
+<p>Синтаксис Python читается почти как псевдокод: отступы (4 пробела, PEP 8) — часть языка, не стиль. Типы: <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>, <code>None</code>. f-strings (<code>f"Привет, {name}"</code>) — современный способ форматирования. <code>input()</code> всегда возвращает строку — для чисел нужен <code>int()</code> или <code>float()</code> с обработкой <code>ValueError</code>.</p>
+<p>Операторы <code>//</code> (целочисленное деление) и <code>%</code> (остаток) пригодятся в задачах. REPL (<code>python</code> без аргументов) — быстрая проверка выражений. <code>python -m pip install</code> ставит пакеты в активный venv. Shebang <code>#!/usr/bin/env python3</code> полезен для скриптов на Unix, на Windows — вторично.</p>
+<p>Мысленная модель venv: это то же самое, что <code>node_modules</code> в мире Node.js, но для Python нужно создавать его явно, потому что интерпретатор по умолчанию один на всю систему, а не «per project», как в JS-экосистеме с локальными зависимостями из коробки. <code>python -m venv .venv</code> создаёт изолированную копию интерпретатора и пространство для пакетов именно этого проекта — активация переключает <code>python</code> и <code>pip</code> на эту копию, деактивация возвращает к системной версии.</p>
+<p>Привычка, сформированная сегодня, будет использоваться в каждом Python-проекте до конца курса: без venv два учебных проекта, которым нужны разные версии одной библиотеки, начнут конфликтовать в системном Python, а на реальной работе разные сервисы одной компании почти гарантированно требуют разных версий одних и тех же зависимостей.</p>
+<p>Конкретный пример конфликта: проект A на неделе 15 использует <code>rich==13.0</code>, а гипотетический проект B — <code>rich==14.0</code> с другим API. Без venv установка пакета для проекта B перезапишет глобальную версию и сломает проект A при следующем запуске — оба будут молча использовать не ту версию библиотеки, для которой писался код.</p>
+<p>Частое заблуждение — считать, что установка «всего одного пакета» без активного venv не страшна, потому что «он маленький» или «я потом уберу». На практике такие исключения накапливаются: через несколько недель системный Python оказывается захламлён десятками пакетов из разных мини-экспериментов, версии конфликтуют между собой, а диагностировать, какой пакет откуда взялся, почти невозможно. Именно поэтому в критериях дня явно указано «venv активирован, зависимости не в global Python» — это не бюрократическая формальность, а страховка от часов будущей отладки при работе над <code>hello.py</code> и <code>calculator.py</code>, где пока используются только встроенные возможности языка, но привычка ставится с первого файла.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.python.org/3/using/index.html">Installing Python</a></li>
+<li><a href="https://docs.python.org/3/library/venv.html">venv</a></li>
+<li><a href="https://peps.python.org/pep-0008/">PEP 8</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> venv на каждый проект; <code>input()</code> — всегда str, отступы — синтаксис.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Установи Python 3.11+, проверь <code>python --version</code></li>
+<li>Создай проект <code>learning-log/week-15</code>, venv, <code>pip install --upgrade pip</code></li>
+<li><code>hello.py</code> — приветствие по имени из <code>input()</code></li>
+<li><code>calculator.py</code> — меню: +, -, *, /, выход</li>
+<li><code>.gitignore</code> с <code>.venv/</code> и <code>__pycache__/</code></li>
+<li>Обработка <code>ValueError</code> при неверном вводе числа</li>
+<li><code>README.md</code> с инструкцией активации venv</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] venv активирован, зависимости не в global Python</p>
+</li>
+<li>
+<p>[ ] <code>requirements.txt</code> пустой или с комментарием (пока без пакетов)</p>
+</li>
+<li>
+<p>[ ] Обработка деления на ноль</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Установи Python 3.11+, проверь <code>python --version</code></li>
+<li>Создай проект <code>learning-log/week-15</code>, venv, <code>pip install --upgrade pip</code></li>
+<li><code>hello.py</code> — приветствие по имени из <code>input()</code></li>
+<li><code>calculator.py</code> — меню: +, -, *, /, выход</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-15
+
+git add hello.py calculator.py .gitignore README.md
+
+git commit -m &quot;week-15 day-99: venv, hello.py и calculator&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Забытая активация venv — пакеты ставятся глобально</p>
+</li>
+<li>
+<p><code>input()</code> всегда возвращает str — нужен <code>int()</code> / <code>float()</code></p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-15--week-15-day-99');</script>
+</body>
+</html>

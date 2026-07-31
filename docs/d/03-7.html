@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 7 (Sun): Сборка адаптивного лендинга · CSS layouts · web-roadmap</title>
+  <meta name="description" content="День 7 (Sun): Сборка адаптивного лендинга — неделя 03.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-03--week-03-day-7">
+  <meta http-equiv="refresh" content="0;url=../#week-03--week-03-day-7">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-03--week-03-day-7">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-03-day-7">День 7 (Sun): Сборка адаптивного лендинга</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>SaaS Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Финальная сборка лендинга объединяет паттерны недели. <code>position: sticky</code> на шапке удерживает навигацию в viewport при скролле — без JavaScript. Работает, пока родитель не обрезает overflow. <code>aspect-ratio: 16/9</code> резервирует место под медиа до загрузки — меньше <strong>layout shift</strong> (CLS), когда картинка «прыгает» и сдвигает текст.</p>
+<p>Мобильное меню без JS — CSS-only через checkbox hack или <code>:target</code>, но доступность спорна (на неделе 6 заменишь на JS с клавиатурой). Перед сдачей — чеклист: 375px, 768px, 1280px в DevTools; Lighthouse ≥ 85; реальное устройство если есть.</p>
+<p>Архитектура CSS: variables → layout → components → utilities. Комментируй breakpoints и grid-решения в файле — через месяц сам забудешь, почему <code>minmax(280px, 1fr)</code>.</p>
+<p>Сегодняшний день — не про новую теорию, а про сборку всего изученного за неделю в единый рабочий продукт, и именно это упражнение показывает, насколько прочно улеглись Flexbox, Grid, адаптив и анимации. Мысленная модель финальной сборки: variables → layout → components → utilities — это порядок, в котором строят дом: сначала фундамент и коммуникации (токены), потом несущие стены (layout на grid/flex), потом мебель и отделка (компоненты), и только в конце — мелкие штрихи вроде отдельного класса <code>.text-center</code> (utilities).</p>
+<p>Почему это важно дальше: с недели 4 весь HTML/CSS фундамент считается «данностью» — фокус сместится на JavaScript, который будет управлять уже готовой вёрсткой (переключать классы, добавлять контент, обрабатывать формы). Если сегодня лендинг не собран целостно, а состоит из разрозненных экспериментов по дням, будущая работа с ним через JS будет затруднена — нельзя надёжно навешивать обработчики на структуру, которая ещё не устоялась.</p>
+<p>Конкретный пример: <code>position: sticky</code> на шапке с <code>top: 0</code> работает отлично, пока где-то выше по дереву DOM у родителя не стоит <code>overflow: hidden</code> или <code>overflow: auto</code> — в этом случае sticky «ломается» без явной ошибки в консоли, и разработчики тратят часы, не понимая, почему шапка вдруг перестала прилипать. Это одна из самых частых практических ловушек sticky-позиционирования.</p>
+<p>Частое заблуждение — считать, что раз лендинг «выглядит нормально» на своём мониторе, значит адаптивность готова. Реальная проверка требует явного прогона через DevTools Device Mode на нескольких размерах и, желательно, хотя бы одного реального устройства — многие баги (например, <code>100vh</code> на мобильных браузерах с адресной строкой) проявляются только в реальных условиях, а не в эмуляции.</p>
+<p><strong>Ключевая мысль:</strong> sticky + aspect-ratio — два CSS-приёма, которые заменяют килобайты JS, а сегодняшняя итоговая сборка — экзамен на то, что весь материал недели работает вместе, а не по отдельности в изолированных примерах.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/CSS/position">MDN: position</a>
+- <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio">MDN: aspect-ratio</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Собери полноценный лендинг: hero, features (grid), testimonials (flex), CTA, footer</li>
+<li>Sticky header с тенью при скролле (CSS <code>position: sticky</code>)</li>
+<li>Протестируй на Chrome, Firefox, Edge</li>
+<li>Lighthouse: Performance, Accessibility, Best Practices — все ≥ 85</li>
+<li>Задокументируй breakpoints и grid-решения в комментариях CSS</li>
+<li>Добавь <code>aspect-ratio</code> на hero-изображение или видео-заглушку</li>
+<li>Собери проект в <code>week-03/</code> — финальная версия SaaS-лендинга</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Лендинг адаптивен 375px–1440px
+- [ ] Использованы и flex, и grid осознанно
+- [ ] Lighthouse ≥ 85 по трём категориям</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Собери полноценный лендинг: hero, features (grid), testimonials (flex), CTA, footer</li>
+<li>Sticky header с тенью при скролле (CSS <code>position: sticky</code>)</li>
+<li>Протестируй на Chrome, Firefox, Edge</li>
+<li>Lighthouse: Performance, Accessibility, Best Practices — все ≥ 85</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 03 day 7: saas landing final"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-03--week-03-day-7');</script>
+</body>
+</html>

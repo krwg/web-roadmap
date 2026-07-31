@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 3 (Wed): Условия и циклы · JavaScript · web-roadmap</title>
+  <meta name="description" content="День 3 (Wed): Условия и циклы — неделя 05.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-05--week-05-day-3">
+  <meta http-equiv="refresh" content="0;url=../#week-05--week-05-day-3">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-05--week-05-day-3">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-05-day-3">День 3 (Wed): Условия и циклы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~45м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Console Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Условия направляют поток выполнения. <code>if/else</code> — базовая развилка; тернарный оператор <code>условие ? a : b</code> — для простых выборов в одну строку, не для вложенных лабиринтов. <code>switch</code> сравнивает значение с <code>case</code>; без <code>break</code> выполнение <strong>проваливается</strong> в следующий case — частая ошибка новичков.</p>
+<p>Циклы: <code>while</code> — пока условие true; <code>do...while</code> — минимум одна итерация; <code>for</code> — классика с счётчиком. <code>break</code> выходит из цикла, <code>continue</code> — пропускает текущую итерацию. Для массивов позже предпочтительнее <code>for...of</code>, но классический <code>for</code> нужен для индексов и обратного обхода.</p>
+<p><strong>Early return</strong> в функциях уменьшает вложенность: вместо <code>if (ok) { ... много кода }</code> — <code>if (!ok) return;</code> и дальше линейный код. Truthy/falsy позволяют писать <code>if (name)</code> вместо <code>if (name !== '' &amp;&amp; name !== null)</code> — но понимай, что <code>0</code> и <code>''</code> тоже falsy.</p>
+<p><strong>Ментальная модель:</strong> условия и циклы — это то, что превращает статичный код в программу, способную принимать решения и повторять действия. Если переменные и типы — это «существительные» языка программирования, то <code>if</code>, <code>for</code>, <code>while</code> — его «глаголы»: они управляют потоком выполнения, решая, какой код выполнится, а какой — нет, и сколько раз.</p>
+<p><strong>Почему это важно дальше:</strong> без уверенного владения циклами невозможна работа с массивами (уже завтра) и DOM-списками (неделя 6) — рендеринг списка задач в интерфейсе буквально означает «пройтись циклом по массиву и создать элемент для каждого». Early return как стиль тоже останется с тобой навсегда — это один из главных приёмов для читаемого кода в любом языке.</p>
+<p><strong>Пример:</strong> классическая ошибка <code>switch</code> без <code>break</code> — <code>case 'A': console.log('Отлично'); case 'B': console.log('Хорошо');</code> — при <code>'A'</code> выведет <strong>оба</strong> сообщения, потому что выполнение «проваливается» в следующий <code>case</code>. Добавление <code>break</code> после каждого блока — обязательная привычка, если явно не нужен fallthrough.</p>
+<p><strong>Частое заблуждение:</strong> новички считают тернарный оператор «более крутой» заменой любому <code>if/else</code> и начинают вкладывать тернарники друг в друга (<code>a ? b : c ? d : e</code>) — получается код, который сложнее читать, чем обычный <code>if</code>. Правило простое: тернарник — для одной простой развилки в присваивании или выводе, <code>if/else</code> — для всего остального, включая ветвление в сегодняшнем FizzBuzz.</p>
+<p><strong>Ключевая мысль:</strong> <code>switch</code> без <code>break</code> — провал; early return — меньше вложенных <code>if</code>.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/ifelse">learn.javascript.ru: Условное ветвление</a>
+- <a href="https://learn.javascript.ru/while-for">learn.javascript.ru: Циклы</a> — while, do...while, for</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Программа «FizzBuzz» (1–100) — вывод в Console</li>
+<li>Калькулятор оценок: число → буква (A/B/C/D/F) через <code>switch</code></li>
+<li>Таблица умножения 10×10 в виде строки в Console</li>
+<li>Найди сумму чисел 1..N через <code>for</code></li>
+<li>Рефакторинг: замени вложенные <code>if</code> на early return где уместно</li>
+<li>Добавь валидацию ввода в FizzBuzz — обработай <code>N &lt;= 0</code></li>
+<li>Перепиши один блок на тернарный оператор — оцени читаемость</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] FizzBuzz работает корректно
+- [ ] Нет бесконечных циклов
+- [ ] Код читаем, переменные с понятными именами</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Программа «FizzBuzz» (1–100) — вывод в Console</li>
+<li>Калькулятор оценок: число → буква (A/B/C/D/F) через <code>switch</code></li>
+<li>Таблица умножения 10×10 в виде строки в Console</li>
+<li>Найди сумму чисел 1..N через <code>for</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 05 day 3: conditions and loops"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-05--week-05-day-3');</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 3 (Wed): Interfaces и type aliases · TypeScript · web-roadmap</title>
+  <meta name="description" content="День 3 (Wed): Interfaces и type aliases — неделя 10.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-10--week-10-day-3">
+  <meta http-equiv="refresh" content="0;url=../#week-10--week-10-day-3">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-10--week-10-day-3">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-10-day-3">День 3 (Wed): Interfaces и type aliases</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Объекты в TypeScript описываются через <code>interface</code> или <code>type</code>. <code>interface User { id: number; name: string; email?: string }</code> — <code>email?</code> опционален, его может не быть. <code>readonly id: number</code> запрещает переприсвоение после создания. Оба способа описывают форму объекта; различия тонкие: <code>interface</code> можно расширять (<code>extends</code>) и объединять (declaration merging), <code>type</code> гибче для union и mapped types.</p>
+<p>Расширение: <code>interface Admin extends User { role: string }</code> добавляет поля. Альтернатива — intersection: <code>type Admin = User &amp; { role: string }</code>. Index signature <code>[key: string]: string</code> описывает объекты с динамическими ключами (словари, кэши). Для объектов предпочитай <code>interface</code>, для union и вычисляемых типов — <code>type</code>.</p>
+<p>Utility types из коробки: <code>Readonly&lt;T&gt;</code> делает все поля readonly, <code>ReadonlyArray&lt;T&gt;</code> — неизменяемый массив. В проекте заведи папку <code>types/</code> с DTO (Data Transfer Objects): <code>Todo</code>, <code>ApiResponse&lt;T&gt;</code>, <code>PaginationMeta</code>. Типизированный api-модуль возвращает <code>Promise&lt;ApiResponse&lt;Todo[]&gt;&gt;</code> вместо «что-то пришло с сервера». Это контракт между слоями, который компилятор проверяет.</p>
+<p>Мысленная модель <code>interface</code>/<code>type</code> — бланк договора между частями программы: до того как API-функция вернёт данные, интерфейс уже фиксирует, какие поля там будут и какого они типа — это контракт, который компилятор проверяет на каждом использовании, а не просто комментарий-пожелание. Если сервер изменит форму ответа, а DTO забудут обновить, TypeScript не поймает несоответствие с реальным JSON (он не знает про сеть), но зато любой код внутри приложения, который ожидает поля по старому контракту, останется согласованным и предсказуемым.</p>
+<p>Явные DTO в отдельной папке <code>types/</code> становятся особенно ценными на неделе 11: типы <code>Todo</code>, <code>ApiResponse&lt;T&gt;</code> из этой недели практически без изменений переедут в React-компоненты как типы props, избавляя от необходимости придумывать их заново. Хорошо спроектированные интерфейсы на этой неделе — это меньше работы на следующей.</p>
+<p>Частое заблуждение — воспринимать <code>interface</code> и <code>type</code> как взаимоисключающий выбор «правильного» и «неправильного» инструмента: в большинстве junior-задач разница не критична, и команды чаще выбирают один стиль как конвенцию проекта, а не по глубоким техническим причинам. Единственный практический критерий, который стоит запомнить: если нужен union (<code>'a' | 'b'</code>) или вычисляемый тип — это всегда <code>type</code>, поскольку <code>interface</code> такого не умеет; если нужно расширяемое описание формы объекта с возможностью declaration merging — чуть удобнее <code>interface</code>. Задание 4 практики («расширь User → Admin») — хороший повод попробовать оба варианта (<code>extends</code> и <code>&amp;</code>) и увидеть, что результат идентичен.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/objects.html">Handbook: Objects</a>
+- <a href="https://www.typescriptlang.org/docs/handbook/utility-types.html">Handbook: Utility Types</a>
+- <a href="https://react-typescript-cheatsheet.netlify.app/">React TypeScript Cheatsheet</a></p>
+<p><strong>Ключевая мысль:</strong> interface/type — это контракт формы данных; DTO в отдельных файлах делают API и доменную модель явными.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Интерфейсы <code>Todo</code>, <code>TodoFilter</code>, <code>TodoState</code> для Todo App</li>
+<li><code>interface ApiResponse&lt;T&gt; { data: T; meta: PaginationMeta }</code></li>
+<li>Type alias для функции: <code>type EventHandler = (e: Event) =&gt; void</code></li>
+<li>Расширь <code>User</code> → <code>Admin</code> с полем <code>permissions: string[]</code></li>
+<li>Рефакторинг api-модуля с типизированными ответами</li>
+<li>Создай <code>types/api.ts</code> — все DTO в одном месте</li>
+<li>Добавь <code>readonly</code> к id в Todo — попробуй изменить и поймай ошибку TS</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Все доменные сущности типизированы</p>
+</li>
+<li>
+<p>[ ] interface vs type — осознанный выбор</p>
+</li>
+<li>
+<p>[ ] Опциональные и readonly поля использованы</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Интерфейсы <code>Todo</code>, <code>TodoFilter</code>, <code>TodoState</code> для Todo App</li>
+<li><code>interface ApiResponse&lt;T&gt; { data: T; meta: PaginationMeta }</code></li>
+<li>Type alias для функции: <code>type EventHandler = (e: Event) =&gt; void</code></li>
+<li>Расширь <code>User</code> → <code>Admin</code> с полем <code>permissions: string[]</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add src/types/ src/api/
+
+git commit -m &quot;week-10 day-03: интерфейсы Todo и ApiResponse&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-10--week-10-day-3');</script>
+</body>
+</html>

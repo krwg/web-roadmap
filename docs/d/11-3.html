@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 3 (Wed): Списки, keys и рендеринг · React basics · web-roadmap</title>
+  <meta name="description" content="День 3 (Wed): Списки, keys и рендеринг — неделя 11.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-11--week-11-day-3">
+  <meta http-equiv="refresh" content="0;url=../#week-11--week-11-day-3">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-11--week-11-day-3">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-11-day-3">День 3 (Wed): Списки, keys и рендеринг</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Списки в React рендерятся через <code>array.map()</code>: каждый элемент массива превращается в JSX. React нужен атрибут <code>key</code> на элементе верхнего уровня в map — уникальный и <strong>стабильный</strong> идентификатор (обычно <code>item.id</code>). Key помогает reconciliation: React сопоставляет элементы между рендерами и обновляет только изменившиеся, а не пересоздаёт весь список.</p>
+<p>Использование индекса массива как key (<code>key={index}</code>) допустимо только для статических списков без reorder/delete. При удалении элемента из середины индексы сдвигаются — React перепутает компоненты, и state (например, фокус input) «переедет» к другому элементу. Всегда предпочитай <code>key={todo.id}</code>.</p>
+<p>Условный рендеринг: <code>{isLoggedIn &amp;&amp; &lt;Dashboard /&gt;}</code> (осторожно — <code>0</code> falsy и отрендерится как текст), тернарный <code>{loading ? &lt;Spinner /&gt; : &lt;List /&gt;}</code>, early return <code>if (!data) return null</code>. Не вызывай компоненты как функции <code>TodoItem(todo)</code> — только <code>&lt;TodoItem todo={todo} /&gt;</code>. Fragment с key нужен при map фрагментов: <code>&lt;Fragment key={id}&gt;...&lt;/Fragment&gt;</code>.</p>
+<p>Мысленная модель <code>key</code> — номерок в гардеробе, а не порядковое место в очереди: если ты сдал куртку под номерком 42, гардеробщик найдёт именно твою куртку, даже если перед тобой в очереди кто-то ушёл или встал новый человек — потому что номерок привязан к вещи, а не к позиции в очереди. Индекс массива в качестве key — это использование места в очереди вместо номерка: работает, пока никто не покидает очередь и не встаёт в середину, но ломается при малейшей перестановке.</p>
+<p>Правильная работа со списками и keys — база, на которой строится практически весь остаточный курс: Todo-приложение этой недели, а позже любой список карточек, комментариев или элементов меню в реальных проектах будет опираться именно на эту механику reconciliation. Ошибки с key — одна из самых частых причин странных багов вроде «текст в input переехал не в ту строку после удаления элемента», которые сложно диагностировать, не зная про reconciliation.</p>
+<p>Частое заблуждение — считать warning React про отсутствующий key просто стилистической придиркой линтера, которую можно проигнорировать. Конкретный пример: список из трёх задач с controlled input для редактирования названия, где key — это <code>index</code>; при удалении первой задачи React решит, что вторая задача (индекс 0) заменила первую, и переиспользует её DOM-узел вместе с локальным состоянием (например, фокусом или незасабмиченным текстом в поле), хотя данные (<code>todo.id</code>) на самом деле принадлежат другой задаче. Задание 7 практики («проверь: удаление средней задачи не ломает state остальных») — прямая проверка именно этого сценария.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/rendering-lists">react.dev: Rendering Lists</a>
+- <a href="https://react.dev/learn/conditional-rendering">react.dev: Conditional Rendering</a>
+- <a href="https://react.dev/reference/react/Fragment">react.dev: Fragment</a></p>
+<p><strong>Ключевая мысль:</strong> стабильный <code>key</code> по id — не оптимизация, а корректность при изменении порядка и удалении элементов.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Компонент <code>TodoList</code> — рендер массива <code>Todo[]</code></li>
+<li><code>TodoItem</code> с props: <code>todo</code>, <code>onToggle</code>, <code>onDelete</code></li>
+<li>keys = <code>todo.id</code>, не индекс массива</li>
+<li>Пустой список: условный рендер «Нет задач»</li>
+<li>Фильтр tabs: all / active / done — условное отображение</li>
+<li>Добавь mock-данные в <code>data/todos.ts</code> — 5+ задач</li>
+<li>Проверь: удаление средней задачи не ломает state остальных</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Стабильные keys на основе id</p>
+</li>
+<li>
+<p>[ ] Условный рендер для empty state</p>
+</li>
+<li>
+<p>[ ] map возвращает JSX, не side effects</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Компонент <code>TodoList</code> — рендер массива <code>Todo[]</code></li>
+<li><code>TodoItem</code> с props: <code>todo</code>, <code>onToggle</code>, <code>onDelete</code></li>
+<li>keys = <code>todo.id</code>, не индекс массива</li>
+<li>Пустой список: условный рендер «Нет задач»</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add src/components/todo/ src/data/
+
+git commit -m &quot;week-11 day-03: TodoList, keys и условный рендер&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-11--week-11-day-3');</script>
+</body>
+</html>

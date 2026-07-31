@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 131 (Пт): Express + PostgreSQL · Node.js · web-roadmap</title>
+  <meta name="description" content="День 131 (Пт): Express + PostgreSQL — неделя 19.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-19--week-19-day-131">
+  <meta http-equiv="refresh" content="0;url=../#week-19--week-19-day-131">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-19--week-19-day-131">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-19-day-131">День 131 (Пт): Express + PostgreSQL</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p><code>node-postgres</code> (<code>pg</code>) — драйвер PostgreSQL для Node. <code>Pool</code> переиспользует соединения под нагрузкой; <code>new Client()</code> на каждый запрос — антипаттерн. <code>pool.query('SELECT * FROM notes WHERE id = $1', [id])</code> — placeholders <code>$1, $2</code> защищают от SQL injection.</p>
+<p><code>DATABASE_URL=postgresql://user:pass@host:5432/db</code> из <code>.env</code> через dotenv. Prisma — ORM-альтернатива (обзор); на этой неделе raw <code>pg</code> учит SQL и placeholders. Graceful shutdown: <code>pool.end()</code> на SIGTERM.</p>
+<p>Перепиши notes API с JSON-файла на таблицу <code>notes(id, title, body, created_at)</code>. <code>schema.sql</code> + migrate script. Все запросы только через <code>pool.query</code> с массивом параметров — template strings в SQL запрещены.</p>
+<p>Ментальная модель <code>Pool</code> — парковка с несколькими свободными местами вместо строительства нового гаража под каждую машину. <code>new Client()</code> на каждый запрос означает установление нового TCP-соединения к PostgreSQL при каждом HTTP-запросе — дорого и не масштабируется под нагрузкой. <code>Pool</code> заранее держит несколько открытых соединений, выдаёт свободное на время запроса и возвращает обратно, а не закрывает — ровно тот же принцип переиспользования ресурсов, что и session-per-request в SQLAlchemy на прошлой неделе.</p>
+<p>Плейсхолдеры <code>$1, $2</code> в node-postgres — это тот же самый принцип безопасности, который ты уже видел как <code>?</code> в sqlite3 (неделя 16) и <code>%s</code> в psycopg2 (неделя 17): разный синтаксис, одна и та же идея — данные передаются драйверу отдельно от текста запроса, и СУБД никогда не путает пользовательский ввод с кодом SQL. Три экосистемы, три синтаксиса, один принцип — это стоит запомнить как универсальное правило, а не деталь конкретной библиотеки.</p>
+<p>Частое заблуждение — считать, что «ручная» экранизация кавычек в строке перед вставкой в SQL через шаблонный литерал (<code>`WHERE name = '${escaped}'`</code>) достаточно безопасна. Единственный надёжный способ защититься от SQL injection — параметризованные запросы; любая самодельная санитизация рано или поздно пропустит edge case (Unicode-трюки, вложенные кавычки, null-байты). Вторая ошибка — не закрывать <code>Pool</code> при остановке приложения (<code>pool.end()</code> на <code>SIGTERM</code>), из-за чего процесс может зависать при попытке штатной остановки, а открытые соединения — накапливаться на стороне PostgreSQL. Перенос notes API с JSON-файла на настоящую таблицу — не просто смена хранилища: он заставляет явно продумать схему (<code>id</code>, <code>title</code>, <code>body</code>, <code>created_at</code>) и написать <code>schema.sql</code> вместо неявной структуры JS-объекта, что дисциплинирует так же, как проектирование схемы «Библиотека» на прошлой неделе.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://node-postgres.com/">node-postgres</a></li>
+<li><a href="https://node-postgres.com/features/pooling">Connection Pooling</a></li>
+<li><a href="https://github.com/motdotla/dotenv">dotenv</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> Pool, не Client; <code>$1</code> placeholders — единственный безопасный способ.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>npm install pg dotenv</code></li>
+<li><code>src/db/pool.js</code> — Pool из <code>DATABASE_URL</code>, тест <code>SELECT NOW()</code></li>
+<li>Перепиши notes API на таблицу <code>notes(id, title, body, created_at)</code></li>
+<li><code>schema.sql</code> + <code>scripts/migrate.js</code> или <code>npm run db:migrate</code></li>
+<li><code>seed.sql</code> с 5 тестовыми заметками</li>
+<li>Все запросы через <code>pool.query('... WHERE id = $1', [id])</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Pool, не Client на каждый запрос
+- [ ] Параметризованные запросы ($1, $2)
+- [ ] dotenv, <code>.env.example</code></p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>npm install pg dotenv</code></li>
+<li><code>src/db/pool.js</code> — Pool из <code>DATABASE_URL</code>, тест <code>SELECT NOW()</code></li>
+<li>Перепиши notes API на таблицу <code>notes(id, title, body, created_at)</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 131: Express notes with PostgreSQL pool"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>SQL injection через template strings — только placeholders</li>
+<li>Pool не закрывается при shutdown — graceful exit</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-19--week-19-day-131');</script>
+</body>
+</html>

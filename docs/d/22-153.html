@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 153 (Сб): Тесты и CI · Capstone · web-roadmap</title>
+  <meta name="description" content="День 153 (Сб): Тесты и CI — неделя 22.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-22--week-22-day-153">
+  <meta http-equiv="refresh" content="0;url=../#week-22--week-22-day-153">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-22--week-22-day-153">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-22-day-153">День 153 (Сб): Тесты и CI</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Quality gate capstone: pytest ≥ 15, Vitest ≥ 12, ESLint без ошибок, CI green on push. Тесты из MVP: auth flow, CRUD tasks, 401 без token, 403 cross-user. GitHub Actions: job <code>backend</code> (postgres service + pytest) + job <code>frontend</code> (vitest + lint). Badge CI в README.</p>
+<p>Test DB isolation — postgres service в CI или SQLite in-memory; не production. Flaky tests из shared state — изолируй fixtures с rollback. <code>npm audit</code> / <code>pip audit</code> — зафиксируй в <code>SECURITY.md</code>. Auth flow должен быть покрыт тестами, не только manual E2E.</p>
+<p>Локально все тесты зелёные перед push. CI без postgres service — тесты падают на GitHub. Это последний рубеж перед deploy: если CI красный, deploy откладывается.</p>
+<p>Ментальная модель: quality gate — это шлагбаум, который физически не пускает недоделанный код дальше, а не вежливая рекомендация. Тесты на auth flow и cross-user isolation (403) — не для галочки количества, а потому что именно эти сценарии чаще всего ломаются при рефакторинге и именно они наносят максимальный репутационный ущерб, если баг просочится в прод. Для junior-кандидата зелёный CI badge на GitHub рядом с ≥15 backend и ≥12 frontend тестами — конкретное, проверяемое доказательство инженерной дисциплины, которое весит больше любых слов в резюме.</p>
+<p>Конкретный пример: postgres service в GitHub Actions должен быть объявлен явно в workflow — если локально тесты используют реальный Postgres, а в CI забыли добавить сервис, тесты будут падать с connection refused именно на GitHub, хотя «на моей машине всё зелёное»; это одна из самых частых причин красного CI у новичков. Частое заблуждение — «раз тесты проходят локально один раз, в CI тоже пройдут» — flaky tests из-за shared state (например, два теста создают пользователя с одинаковым email) проявляются именно в CI, где тесты могут выполняться в другом порядке или параллельно. Green CI, который ты добиваешься сегодня, — формальный шлюз перед деплоем: день 154 начинается только если этот шлагбаум поднят.</p>
+<p>Для продакшена ESLint без ошибок — минимальная, но обязательная планка стиля: она не заменяет тесты, но ловит целый класс проблем до code review (неиспользуемые переменные, потенциальные null-referenced, несогласованный стиль) и экономит время ревьюера на комментарии вроде «убери console.log». Badge CI в README — маленькая деталь, которая на практике заметно повышает доверие к репозиторию при первом взгляде.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="#projects--projects-обязательный-стек">Quality в стеке</a></li>
+<li><a href="https://docs.github.com/en/actions">GitHub Actions</a></li>
+<li><a href="https://docs.pytest.org/">pytest</a> · <a href="https://vitest.dev/">Vitest</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> CI green — критерий сдачи; тесты на auth и isolation обязательны.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Backend pytest: auth (register, login, 401), tasks CRUD, notes CRUD, 403 cross-user — ≥ 15 тестов</li>
+<li>Frontend Vitest: Login form, ProtectedRoute, TaskList, NoteEditor — ≥ 12 тестов</li>
+<li>ESLint + <code>npm run lint</code> в frontend; ruff или flake8 в backend (опционально)</li>
+<li><code>.github/workflows/ci.yml</code>: job <code>backend</code> (postgres service, pytest) + job <code>frontend</code> (vitest, lint)</li>
+<li>Badge CI в README</li>
+<li><code>npm audit</code> / <code>pip audit</code> — зафиксируй в <code>SECURITY.md</code></li>
+<li>Все тесты зелёные локально перед push</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] pytest ≥ 15, Vitest ≥ 12 — все проходят
+- [ ] CI green on push
+- [ ] ESLint без ошибок (или задокументированные исключения)
+- [ ] Auth flow покрыт тестами</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Backend pytest: auth (register, login, 401), tasks CRUD, notes CRUD, 403 cross-user — ≥ 15 тестов</li>
+<li>Frontend Vitest: Login form, ProtectedRoute, TaskList, NoteEditor — ≥ 12 тестов</li>
+<li>ESLint + <code>npm run lint</code> в frontend; ruff или flake8 в backend (опционально)</li>
+<li><code>.github/workflows/ci.yml</code>: job <code>backend</code> (postgres service, pytest) + job <code>frontend</code> (vitest, lint)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-22-capstone/</code> → <code>git commit -m "week 22 day 153: DevHub tests and GitHub Actions CI"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>CI без postgres service — тесты падают на GitHub</li>
+<li>Flaky tests из-за shared state — изолируй fixtures</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-22--week-22-day-153');</script>
+</body>
+</html>

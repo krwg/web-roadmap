@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 3 (Wed): DOM — поиск и изменение элементов · DOM · web-roadmap</title>
+  <meta name="description" content="День 3 (Wed): DOM — поиск и изменение элементов — неделя 06.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-06--week-06-day-3">
+  <meta http-equiv="refresh" content="0;url=../#week-06--week-06-day-3">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-06--week-06-day-3">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-06-day-3">День 3 (Wed): DOM — поиск и изменение элементов</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>DOM (Document Object Model) — программный интерфейс к HTML-дереву. Браузер парсит разметку и строит дерево узлов; JavaScript может <strong>читать и изменять</strong> это дерево — текст обновляется на экране мгновенно. Поиск элементов: <code>document.querySelector('.card')</code> — первый; <code>querySelectorAll</code> — NodeList всех совпадений; <code>getElementById</code> — по id.</p>
+<p><code>textContent</code> устанавливает <strong>текст</strong> и экранирует HTML — безопасно для пользовательского ввода. <code>innerHTML</code> парсит HTML-строку — XSS-уязвимость, если вставляешь данные пользователя. Создавай элементы через <code>createElement</code>, <code>append</code>, <code>remove</code> — чистый DOM API.</p>
+<p><code>classList.add/remove/toggle/contains</code> управляет классами без перезаписи всего <code>className</code>. <code>dataset</code> маппит <code>data-*</code>: <code>el.dataset.price</code> ↔ <code>data-price</code>. Кэшируй частые <code>querySelector</code> в объект <code>elements</code> — меньше обходов дерева.</p>
+<p><strong>Ментальная модель:</strong> до сих пор JS был отдельно от страницы — вычислял что-то в Console, не трогая экран. DOM API — это мост между кодом и тем, что видит пользователь: HTML создаёт <strong>начальное</strong> дерево, а дальше JS может строить, изменять и удалять узлы этого дерева точно так же, как строил бы данные в объекте или массиве. Разница в том, что каждое изменение дерева браузер сразу же перерисовывает на экране.</p>
+<p><strong>Почему это важно дальше:</strong> сегодняшний навык — основа для всей недели и всего DOM Todo App: добавление задачи в интерфейсе — это буквально <code>createElement</code> + <code>append</code>; удаление — <code>remove()</code>. Без уверенного владения поиском и изменением элементов невозможно перейти к событиям (завтра) и интерактивному UI (позже на неделе).</p>
+<p><strong>Пример:</strong> вывод пользовательского имени на страницу через <code>card.innerHTML = userName</code> кажется удобным, но если <code>userName</code> содержит <code>&lt;img src=x onerror="alert(1)"&gt;</code>, браузер выполнит этот код как разметку — классическая XSS-атака. <code>card.textContent = userName</code> в той же ситуации просто покажет текст как есть, безопасно экранировав спецсимволы.</p>
+<p><strong>Частое заблуждение:</strong> новички считают <code>innerHTML</code> универсальным способом «вставить что угодно», не задумываясь об источнике данных. Правило простое: <code>innerHTML</code> допустим только для доверенной, статичной разметки (например, шаблона из твоего же кода), а любые данные, пришедшие от пользователя или внешнего API, должны идти через <code>textContent</code> или <code>createElement</code> — это и отрабатывается в сегодняшней практике на карточках товаров. Ещё одна ловушка — частые обращения к <code>querySelector</code> внутри циклов или обработчиков: каждый вызов заново обходит дерево DOM, поэтому ссылки на часто используемые элементы стоит один раз сохранить в объекте и переиспользовать.</p>
+<p><strong>Ключевая мысль:</strong> DOM — живое дерево; <code>textContent</code> для текста, <code>createElement</code> вместо <code>innerHTML</code> с user input.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/dom-nodes">learn.javascript.ru: DOM-дерево</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/API/Document_Object_Model">MDN DOM</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Подключи JS к лендингу, выбери заголовок и измени <code>textContent</code></li>
+<li>По клику на кнопку меняй класс <code>theme-dark</code> на <code>document.documentElement</code></li>
+<li>Динамически создай 5 элементов списка через <code>createElement</code> + <code>append</code></li>
+<li>Удали элемент через <code>remove()</code></li>
+<li>Читай data-атрибуты: <code>data-price</code> на карточках товаров</li>
+<li>Создай <code>week-06/index.html</code> — заготовка Todo App</li>
+<li>Вынеси DOM-ссылки в объект <code>elements = { form, list, input }</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Используется <code>querySelector</code>, не устаревшие методы без причины
+- [ ] <code>textContent</code> для текста, не <code>innerHTML</code> с пользовательскими данными
+- [ ] Элементы создаются через DOM API, не строками HTML</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Подключи JS к лендингу, выбери заголовок и измени <code>textContent</code></li>
+<li>По клику на кнопку меняй класс <code>theme-dark</code> на <code>document.documentElement</code></li>
+<li>Динамически создай 5 элементов списка через <code>createElement</code> + <code>append</code></li>
+<li>Удали элемент через <code>remove()</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 3: dom manipulation"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-06--week-06-day-3');</script>
+</body>
+</html>
