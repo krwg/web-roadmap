@@ -16,6 +16,8 @@ jobs:
           python-version: '3.12'
       - run: pip install markdown pillow
       - run: python scripts/build-site.py
+      - name: Structural tests
+        run: python scripts/test-site.py
       - name: Verify outputs
         shell: bash
         run: |
@@ -25,7 +27,13 @@ jobs:
           test -f docs/weeks/01.json
           test -f docs/weeks/22.json
           test -f docs/pages/projects.json
+          test -f giscus.json
+          test -d docs/d
           ls docs/weeks/*.json | wc -l | grep -q 23
+          test "$(ls docs/d/*.html | wc -l)" -ge 140
+          grep -q 'giscus-container' docs/index.html
+          grep -q 'window.GISCUS' docs/index.html
+          python3 -c "import json; d=json.load(open('docs/weeks/01.json')); assert d.get('sections'); assert any(s['kind']=='day' for s in d['sections'])"
 
   links:
     runs-on: ubuntu-latest
@@ -36,3 +44,31 @@ jobs:
           python-version: '3.12'
       - name: Check markdown links
         run: python scripts/check-links.py
+
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install markdown pillow
+      - name: Test week section split
+        run: |
+          python3 << 'PY'
+          import sys
+          sys.path.insert(0, "scripts")
+          from importlib.util import spec_from_loader, module_from_spec
+          from importlib.machinery import SourceFileLoader
+          loader = SourceFileLoader("build_site", "scripts/build-site.py")
+          spec = spec_from_loader(loader.name, loader)
+          mod = module_from_spec(spec)
+          loader.exec_module(mod)
+          data = mod.build_week_json("01", "HTML")
+          assert data["sections"], "no sections"
+          days = [s for s in data["sections"] if s["kind"] == "day"]
+          assert len(days) >= 7, days
+          assert all(s["html"].startswith("<h2") for s in data["sections"])
+          assert "sourcePath" in data
+          print("split ok:", len(data["sections"]), "sections,", len(days), "days")
+          PY
