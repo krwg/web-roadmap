@@ -39,7 +39,7 @@
 - <a href="https://react.dev/learn/state-a-components-memory">react.dev: State: A Component's Memory</a>
 - <a href="https://react.dev/learn/queueing-a-series-of-state-updates">react.dev: Queueing a Series of State Updates</a></p>
 <p><strong>Ключевая мысль:</strong> state — снимок на рендер; обновляй иммутабельно и используй функциональный апдейт при последовательных изменениях.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Создай Vite-проект: <code>npm create vite@latest week-12 -- --template react-ts</code> в <code>learning-log/</code></li>
 <li>Компонент <code>Counter</code> с кнопками <code>+1</code>, <code>-1</code>, <code>Сброс</code></li>
@@ -61,7 +61,7 @@
 <p>[ ] DevTools React показывает обновления state</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Создай Vite-проект: <code>npm create vite@latest week-12 -- --template react-ts</code> в <code>learning-log/</code></li>
 <li>Компонент <code>Counter</code> с кнопками <code>+1</code>, <code>-1</code>, <code>Сброс</code></li>
@@ -71,7 +71,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -111,7 +111,7 @@ git commit -m &quot;week-12 day-78: useState, Counter и ColorPicker&quot;
 - <a href="https://react.dev/reference/react-dom/components/input">React — Forms</a>
 - <a href="https://react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components">react.dev: Controlled vs Uncontrolled</a></p>
 <p><strong>Ключевая мысль:</strong> controlled input = React state единственный источник правды; <code>value</code> + <code>onChange</code> для каждого поля.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Перепиши Todo App (vanilla JS) на React с <code>useState</code></li>
 <li>Поля: добавление задачи, чекбокс «выполнено», удаление</li>
@@ -133,7 +133,7 @@ git commit -m &quot;week-12 day-78: useState, Counter и ColorPicker&quot;
 <p>[ ] Фильтрация не мутирует исходный массив</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Перепиши Todo App (vanilla JS) на React с <code>useState</code></li>
 <li>Поля: добавление задачи, чекбокс «выполнено», удаление</li>
@@ -143,7 +143,7 @@ git commit -m &quot;week-12 day-78: useState, Counter и ColorPicker&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -183,7 +183,7 @@ git commit -m &quot;week-12 day-79: controlled inputs и Todo на React&quot;
 - <a href="https://react.dev/learn/you-might-not-need-an-effect">You Might Not Need an Effect</a>
 - <a href="https://react.dev/learn/synchronizing-with-effects">react.dev: Synchronizing with Effects</a></p>
 <p><strong>Ключевая мысль:</strong> useEffect — для синхронизации с внешним миром; cleanup обязателен; не дублируй логику обработчиков событий.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>DocumentTitle</code> — меняет <code>document.title</code> при смене страницы/задачи</li>
 <li>Таймер Pomodoro: 25 мин countdown, cleanup при unmount</li>
@@ -205,7 +205,7 @@ git commit -m &quot;week-12 day-79: controlled inputs и Todo на React&quot;
 <p>[ ] Нет бесконечного цикла effect → setState → effect</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>DocumentTitle</code> — меняет <code>document.title</code> при смене страницы/задачи</li>
 <li>Таймер Pomodoro: 25 мин countdown, cleanup при unmount</li>
@@ -215,7 +215,7 @@ git commit -m &quot;week-12 day-79: controlled inputs и Todo на React&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -255,7 +255,7 @@ git commit -m &quot;week-12 day-80: useEffect, Pomodoro и localStorage sync&quo
 - <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController">MDN: AbortController</a>
 - <a href="https://jsonplaceholder.typicode.com/">JSONPlaceholder</a></p>
 <p><strong>Ключевая мысль:</strong> fetch в effect требует loading/error states, проверки <code>res.ok</code>, abort в cleanup и защиты от race condition.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Компонент <code>PostList</code> — GET <code>/posts</code>, спиннер при загрузке</li>
 <li>Обработка ошибки сети — блок с кнопкой «Повторить»</li>
@@ -277,7 +277,7 @@ git commit -m &quot;week-12 day-80: useEffect, Pomodoro и localStorage sync&quo
 <p>[ ] Нет setState на размонтированном компоненте</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Компонент <code>PostList</code> — GET <code>/posts</code>, спиннер при загрузке</li>
 <li>Обработка ошибки сети — блок с кнопкой «Повторить»</li>
@@ -287,7 +287,7 @@ git commit -m &quot;week-12 day-80: useEffect, Pomodoro и localStorage sync&quo
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -327,7 +327,7 @@ git commit -m &quot;week-12 day-81: fetch, loading/error/data и useFetch&quot;
 - <a href="https://react.dev/reference/react-dom/components/input">React — input</a>
 - <a href="https://react.dev/reference/react/useId">useId</a></p>
 <p><strong>Ключевая мысль:</strong> форма = набор controlled fields + валидация + сброс state; ошибки показывай после blur/submit, не мгновенно.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Форма регистрации: имя, email, пароль, роль (select)</li>
 <li>Валидация перед submit: email формат, пароль ≥ 8 символов</li>
@@ -349,7 +349,7 @@ git commit -m &quot;week-12 day-81: fetch, loading/error/data и useFetch&quot;
 <p>[ ] <code>type="password"</code> и <code>autoComplete</code> настроены</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Форма регистрации: имя, email, пароль, роль (select)</li>
 <li>Валидация перед submit: email формат, пароль ≥ 8 символов</li>
@@ -359,7 +359,7 @@ git commit -m &quot;week-12 day-81: fetch, loading/error/data и useFetch&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -399,7 +399,7 @@ git commit -m &quot;week-12 day-82: форма регистрации и вал�
 - <a href="https://react.dev/learn/extracting-state-logic-into-a-reducer">react.dev: Extracting State Logic into a Reducer</a> — preview
 - <a href="https://react.dev/reference/react/useMemo">useMemo</a></p>
 <p><strong>Ключевая мысль:</strong> общий state — у ближайшего родителя; derived values вычисляй, не дублируй в useState.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>FilterableList</code>: родитель хранит <code>items</code> + <code>searchQuery</code></li>
 <li><code>SearchBar</code> — только input, вызывает <code>onSearchChange</code></li>
@@ -421,7 +421,7 @@ git commit -m &quot;week-12 day-82: форма регистрации и вал�
 <p>[ ] Нет дублирования state в siblings</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>FilterableList</code>: родитель хранит <code>items</code> + <code>searchQuery</code></li>
 <li><code>SearchBar</code> — только input, вызывает <code>onSearchChange</code></li>
@@ -431,7 +431,7 @@ git commit -m &quot;week-12 day-82: форма регистрации и вал�
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -471,7 +471,7 @@ git commit -m &quot;week-12 day-83: lifting state, FilterableList и сорти�
 - <a href="https://react.dev/reference/rules/rules-of-hooks">Rules of Hooks</a>
 - <a href="https://react.dev/reference/react/StrictMode">React Strict Mode</a></p>
 <p><strong>Ключевая мысль:</strong> custom hooks выносят логику из компонентов; правила hooks и exhaustive-deps — страховка от типичных багов.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Пройди <a href="https://react.dev/learn/tutorial-tic-tac-toe">React Tutorial — Tic-Tac-Toe</a> до конца</li>
 <li>Рефакторинг Todo App: вынеси логику в <code>useTodos</code> (заготовка под custom hook)</li>
@@ -493,7 +493,7 @@ git commit -m &quot;week-12 day-83: lifting state, FilterableList и сорти�
 <p>[ ] Конспект «useState vs useEffect — когда что» на 1 страницу</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Пройди <a href="https://react.dev/learn/tutorial-tic-tac-toe">React Tutorial — Tic-Tac-Toe</a> до конца</li>
 <li>Рефакторинг Todo App: вынеси логику в <code>useTodos</code> (заготовка под custom hook)</li>
@@ -503,7 +503,7 @@ git commit -m &quot;week-12 day-83: lifting state, FilterableList и сорти�
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">

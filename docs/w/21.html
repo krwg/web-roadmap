@@ -40,7 +40,7 @@
 <li><a href="https://vitejs.dev/config/server-options.html#server-proxy">Vite proxy</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> CORS — согласие сервера; <code>VITE_</code> prefix обязателен для клиентских env.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>React Dashboard (нед.14) или Secure Notes (нед.20) → fetch к Express/FastAPI API</li>
 <li><code>.env</code>: <code>VITE_API_URL=http://localhost:3000</code> (или 8000 для FastAPI)</li>
@@ -53,7 +53,7 @@
 - [ ] CRUD через API, не localStorage
 - [ ] CORS настроен — нет ошибки в browser console
 - [ ] <code>.env.example</code> для обоих проектов</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>React Dashboard (нед.14) или Secure Notes (нед.20) → fetch к Express/FastAPI API</li>
 <li><code>.env</code>: <code>VITE_API_URL=http://localhost:3000</code> (или 8000 для FastAPI)</li>
@@ -62,7 +62,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -94,7 +94,7 @@
 <li><a href="https://tanstack.com/query/latest">TanStack Query</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> один api module; loading/error/empty — не опциональный UX.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>services/api.ts</code> — единый fetch wrapper с error parsing и auth header</li>
 <li>Все страницы: loading spinner, error message + retry button, empty state</li>
@@ -107,7 +107,7 @@
 - [ ] Один api module, не fetch в каждом компоненте
 - [ ] Network error показывает понятное сообщение
 - [ ] 4xx/5xx обрабатываются по-разному</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>services/api.ts</code> — единый fetch wrapper с error parsing и auth header</li>
 <li>Все страницы: loading spinner, error message + retry button, empty state</li>
@@ -116,7 +116,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
@@ -148,7 +148,7 @@
 <li><a href="https://docs.docker.com/build/building/context/#dockerignore-files">.dockerignore</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> image = шаблон, container = процесс; слои Dockerfile — про скорость сборки.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Dockerfile для backend: <code>node:20-alpine</code> или <code>python:3.12-slim</code></li>
 <li>COPY package files → install deps → COPY source → EXPOSE port → CMD</li>
@@ -161,7 +161,7 @@
 - [ ] Image собирается без ошибок
 - [ ] .dockerignore исключает node_modules
 - [ ] Container стартует и отвечает на /health</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Dockerfile для backend: <code>node:20-alpine</code> или <code>python:3.12-slim</code></li>
 <li>COPY package files → install deps → COPY source → EXPOSE port → CMD</li>
@@ -170,7 +170,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>
@@ -202,7 +202,7 @@
 <li><a href="https://docs.docker.com/build/building/multi-stage/">Multi-stage builds</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> в docker network хост БД — имя service, не localhost.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Frontend Dockerfile: stage 1 <code>npm run build</code>, stage 2 <code>nginx:alpine</code> + COPY dist</li>
 <li><code>docker run -d --name pg -e POSTGRES_PASSWORD=pass -v pgdata:/var/lib/postgresql/data postgres:16</code></li>
@@ -215,7 +215,7 @@
 - [ ] Frontend dist отдаётся nginx на port 80
 - [ ] Postgres data сохраняется после restart container
 - [ ] Backend видит DB по hostname <code>db</code> (в compose network)</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Frontend Dockerfile: stage 1 <code>npm run build</code>, stage 2 <code>nginx:alpine</code> + COPY dist</li>
 <li><code>docker run -d --name pg -e POSTGRES_PASSWORD=pass -v pgdata:/var/lib/postgresql/data postgres:16</code></li>
@@ -224,7 +224,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <ul>
@@ -256,7 +256,7 @@
 <li><a href="https://docs.docker.com/compose/reference/">docker compose CLI</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> compose + healthcheck + volumes = воспроизводимый full-stack локально.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>docker-compose.yml</code>:</li>
 <li><code>DATABASE_URL=postgresql://user:pass@db:5432/tasks</code> в backend env</li>
@@ -271,7 +271,7 @@
 - [ ] Одна команда поднимает 3 сервиса
 - [ ] Данные PG в named volume <code>pgdata</code>
 - [ ] depends_on + healthcheck db</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>docker-compose.yml</code>:</li>
 <li><code>DATABASE_URL=postgresql://user:pass@db:5432/tasks</code> в backend env</li>
@@ -280,7 +280,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -312,7 +312,7 @@
 <li><a href="https://docs.docker.com/engine/swarm/secrets/">Docker secrets</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> dev/prod compose — разные файлы, одна документация в README.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>docker-compose.dev.yml</code> — mount source, hot reload, exposed debug ports</li>
 <li><code>docker-compose.prod.yml</code> — optimized builds, no volume mounts</li>
@@ -325,7 +325,7 @@
 - [ ] Dev и prod compose файлы документированы
 - [ ] Seed data появляется после первого <code>up</code>
 - [ ] Логи доступны через compose logs</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>docker-compose.dev.yml</code> — mount source, hot reload, exposed debug ports</li>
 <li><code>docker-compose.prod.yml</code> — optimized builds, no volume mounts</li>
@@ -334,7 +334,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
@@ -366,7 +366,7 @@
 <li><a href="https://docs.docker.com/compose/how-tos/startup-order/">Health check pattern</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> smoke test + architecture diagram — входной билет в capstone неделю.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Smoke checklist в <code>SMOKE_TEST.md</code>: compose up → open app → login → CRUD task → refresh → persists</li>
 <li>Mermaid diagram в README: frontend, backend, db, volumes</li>
@@ -379,7 +379,7 @@
 - [ ] Smoke test checklist пройден
 - [ ] Mermaid diagram в README
 - [ ] Все env vars в <code>.env.example</code></p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Smoke checklist в <code>SMOKE_TEST.md</code>: compose up → open app → login → CRUD task → refresh → persists</li>
 <li>Mermaid diagram в README: frontend, backend, db, volumes</li>
@@ -388,7 +388,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>

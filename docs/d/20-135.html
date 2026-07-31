@@ -32,7 +32,7 @@
 <li><a href="https://python-jose.readthedocs.io/">python-jose</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> JWT — подписанный контракт, не шифрование; user_id только из verified token.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Login возвращает <code>{ access_token, token_type: "bearer", expires_in }</code></li>
 <li>Middleware <code>authenticateToken</code> — verify JWT, <code>req.user = { id, email }</code></li>
@@ -45,7 +45,7 @@
 - [ ] JWT_SECRET в .env, не в коде
 - [ ] Expired token → 401
 - [ ] user_id из token, не из body/query</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Login возвращает <code>{ access_token, token_type: "bearer", expires_in }</code></li>
 <li>Middleware <code>authenticateToken</code> — verify JWT, <code>req.user = { id, email }</code></li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>

@@ -32,7 +32,7 @@
 <li><a href="#projects--projects-функции-mvp-минимум">Auth в MVP</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> auth — сквозной слой; user_id только из verified JWT.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Backend auth: register, login, JWT middleware на все protected routes</li>
 <li>Привяжи tasks и notes к <code>user_id</code> из token — миграция если нужно</li>
@@ -48,7 +48,7 @@
 - [ ] User A не видит данные User B
 - [ ] 401 без token, 403 на чужие ресурсы
 - [ ] <code>SECURITY.md</code> начат</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Backend auth: register, login, JWT middleware на все protected routes</li>
 <li>Привяжи tasks и notes к <code>user_id</code> из token — миграция если нужно</li>
@@ -58,7 +58,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <ul>

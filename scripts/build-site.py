@@ -17,7 +17,7 @@ OUT_WEEKS = DOCS / "weeks"
 OUT_PAGES = DOCS / "pages"
 LOGO_SRC = ROOT / "assets" / "logo.png"
 LOGO_DOCS = DOCS / "assets" / "logo.png"
-VERSION = "1.3.0"
+VERSION = "1.4.0"
 
 PHASE_MAP = {
     "00": ("setup", "Старт"),
@@ -63,12 +63,15 @@ PAGES = {
     "intro": ("roadmap/introduction.md", "Введение"),
     "start": ("docs/getting-started.md", "Как начать"),
     "projects": ("docs/projects.md", "22 проекта"),
+    "changelog": ("CHANGELOG.md", "Changelog"),
     "cheatsheet-html": ("docs/cheatsheets/html-css.md", "Шпаргалка HTML/CSS"),
     "cheatsheet-js": ("docs/cheatsheets/javascript.md", "Шпаргалка JS/TS"),
     "cheatsheet-react": ("docs/cheatsheets/react.md", "Шпаргалка React"),
     "cheatsheet-sql": ("docs/cheatsheets/sql.md", "Шпаргалка SQL"),
     "cheatsheet-backend": ("docs/cheatsheets/backend.md", "Шпаргалка Backend"),
 }
+
+QUIZ_BANK = json.loads((Path(__file__).parent / "quiz-bank.json").read_text(encoding="utf-8"))
 
 MD = markdown.Markdown(
     extensions=["tables", "fenced_code", "sane_lists", "md_in_html"],
@@ -158,6 +161,23 @@ def normalize_heading_ids(html_body: str, prefix: str) -> str:
     return html_body
 
 
+def wrap_practice_tracks(html_body: str) -> str:
+    """Mark full/lite practice blocks so the SPA can filter by track."""
+    html_body = re.sub(
+        r"(<h3[^>]*>\s*Практика \(полный трек\)\s*</h3>)(.*?)(?=<h3[\s>]|<h2[\s>]|$)",
+        r'<section class="practice-track practice-full" data-track="full">\1\2</section>',
+        html_body,
+        flags=re.I | re.DOTALL,
+    )
+    html_body = re.sub(
+        r"(<h3[^>]*>\s*Практика \(лайт[^<]*</h3>)(.*?)(?=<h3[\s>]|<h2[\s>]|$)",
+        r'<section class="practice-track practice-lite" data-track="lite">\1\2</section>',
+        html_body,
+        flags=re.I | re.DOTALL,
+    )
+    return html_body
+
+
 def md_to_html(text: str, prefix: str = "") -> str:
     text = re.sub(r"```mermaid\n(.*?)```", r'<pre class="mermaid">\1</pre>', text, flags=re.DOTALL)
     MD.reset()
@@ -170,6 +190,7 @@ def md_to_html(text: str, prefix: str = "") -> str:
         body,
     )
     body = fix_links(body)
+    body = wrap_practice_tracks(body)
     if prefix:
         body = normalize_heading_ids(body, prefix)
     return body
@@ -267,6 +288,7 @@ def build_week_json(num: str, title: str) -> dict:
         "introHtml": intro,
         "sections": sections,
         "toc": toc,
+        "quizzes": QUIZ_BANK.get(num, []),
         "text": strip_text(html_body, 800),
         "sourcePath": f"roadmap/weeks/week-{num}.md",
     }
@@ -413,6 +435,7 @@ def write_index(search_index: list, routes: dict) -> None:
             <a href="#intro" data-route="intro">Введение</a>
             <a href="#weeks">Недели</a>
             <a href="#projects" data-route="projects">Проекты</a>
+            <a href="#changelog" data-route="changelog">Changelog</a>
             <a href="#cheatsheet-html" data-route="cheatsheet-html">Шпаргалки</a>
           </nav>
           <button type="button" class="icon-btn icon-only" id="search-btn" title="Поиск (Ctrl+K)"><span class="material-symbols-outlined">search</span></button>
@@ -448,11 +471,15 @@ def write_index(search_index: list, routes: dict) -> None:
             <div class="progress-panel">
               <div class="label" id="progress-label">Ваш прогресс: 0 / 23</div>
               <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
-              <div class="hint">Отмечайте недели и дни внутри урока — прогресс хранится локально</div>
+              <div class="hint">Отмечайте дни и недели — прогресс хранится локально и экспортируется в learning-log</div>
+              <div class="track-toggle" id="track-toggle" role="group" aria-label="Трек практики">
+                <button type="button" class="track-chip active" data-track-mode="full">Полный трек</button>
+                <button type="button" class="track-chip" data-track-mode="lite">Лайт</button>
+              </div>
             </div>
             <div class="cta-row">
-              <a class="btn btn-primary" href="#week-00" data-route="week-00">Начать обучение</a>
-              <a class="btn btn-secondary" href="#intro" data-route="intro">О маршруте</a>
+              <a class="btn btn-primary" href="#week-00" data-route="week-00" id="cta-start">Начать обучение</a>
+              <a class="btn btn-secondary" href="#progress-map">Карта прогресса</a>
               <a class="btn btn-ghost" href="#start" data-route="start">Как учиться</a>
             </div>
           </div>
@@ -564,6 +591,22 @@ def write_index(search_index: list, routes: dict) -> None:
           </div>
         </section>
 
+        <section class="section" id="progress-map">
+          <div class="section-inner">
+            <div class="section-head">
+              <h2>Карта прогресса</h2>
+              <p class="sub" id="progress-map-sub">Отмеченные дни подсвечены. Следующий шаг — кнопка «Продолжить».</p>
+            </div>
+            <div class="progress-map-grid" id="progress-map-grid"></div>
+            <div class="cta-row" style="margin-top:24px">
+              <button type="button" class="btn btn-primary" id="export-learning-log-btn"><span class="material-symbols-outlined">download</span> Экспорт в learning-log</button>
+              <button type="button" class="btn btn-secondary" id="progress-export-btn"><span class="material-symbols-outlined">content_copy</span> Копировать JSON</button>
+              <button type="button" class="btn btn-ghost" id="progress-import-btn"><span class="material-symbols-outlined">upload</span> Импорт</button>
+            </div>
+            <p class="export-hint">Сохраните файл как <code>learning-log/progress.json</code> или создайте private gist и положите ссылку в README.</p>
+          </div>
+        </section>
+
         <section class="section" id="weeks">
           <div class="section-inner">
             <div class="section-head">
@@ -646,6 +689,10 @@ def write_index(search_index: list, routes: dict) -> None:
           <h1 id="doc-page-title">Загрузка…</h1>
           <p class="lesson-subtitle" id="doc-lesson-subtitle" hidden></p>
           <div class="page-toolbar" id="page-toolbar">
+            <div class="track-toggle track-toggle-sm" id="track-toggle-lesson" role="group" aria-label="Трек практики">
+              <button type="button" class="track-chip" data-track-mode="full">Полный</button>
+              <button type="button" class="track-chip" data-track-mode="lite">Лайт</button>
+            </div>
             <button type="button" class="btn btn-ghost btn-sm" id="mark-done-btn" hidden>Отметить неделю</button>
             <button type="button" class="btn btn-ghost btn-sm" id="mark-day-btn" hidden>Отметить день</button>
             <a class="btn btn-ghost btn-sm" id="edit-github-btn" href="#" target="_blank" rel="noopener" hidden><span class="material-symbols-outlined">edit</span> Править</a>
@@ -722,6 +769,7 @@ def build() -> None:
 
     search_index: list[dict] = []
     week_routes = {}
+    day_index: list[dict] = []
 
     for num, title, _ in WEEKS_META:
         data = build_week_json(num, title)
@@ -742,6 +790,13 @@ def build() -> None:
                 "text": sec.get("text", ""),
                 "snippet": (sec.get("text") or "")[:120],
             })
+            if sec.get("kind") == "day":
+                day_index.append({
+                    "week": data["id"],
+                    "id": sec["id"],
+                    "label": sec["label"],
+                    "weekTitle": title,
+                })
 
     page_routes = {}
     for pid, (rel, title) in PAGES.items():
@@ -761,7 +816,7 @@ def build() -> None:
         json.dumps(search_index, ensure_ascii=False), encoding="utf-8"
     )
 
-    routes = {"weeks": week_routes, "pages": page_routes}
+    routes = {"weeks": week_routes, "pages": page_routes, "dayIndex": day_index}
     write_index(search_index, routes)
     write_prerender_pages(week_routes)
     write_sitemap(week_routes, page_routes)

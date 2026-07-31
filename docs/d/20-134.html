@@ -32,7 +32,7 @@
 <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">OWASP Password Storage</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> hash + salt через bcrypt; одинаковые сообщения об ошибке login — против enumeration.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Таблица <code>users(id, email UNIQUE, password_hash, created_at)</code></li>
 <li>Express: <code>POST /auth/register</code>, <code>POST /auth/login</code></li>
@@ -45,7 +45,7 @@
 - [ ] Пароль никогда не логируется и не возвращается в JSON
 - [ ] Дубликат email → 409
 - [ ] Неверный пароль → 401 (не 404)</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Таблица <code>users(id, email UNIQUE, password_hash, created_at)</code></li>
 <li>Express: <code>POST /auth/register</code>, <code>POST /auth/login</code></li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>

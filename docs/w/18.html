@@ -40,7 +40,7 @@
 <li><a href="https://alembic.sqlalchemy.org/">Alembic</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> ORM model ≠ API schema; сессия — граница транзакции.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Проект <code>library-api</code>, venv, <code>pip install sqlalchemy psycopg2-binary python-dotenv</code></li>
 <li>Модели <code>Author</code>, <code>Book</code> с one-to-many relationship</li>
@@ -53,7 +53,7 @@
 - [ ] SQLAlchemy 2.0 style (Mapped, mapped_column)
 - [ ] relationship двусторонний с back_populates
 - [ ] Таблицы создаются в PostgreSQL</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Проект <code>library-api</code>, venv, <code>pip install sqlalchemy psycopg2-binary python-dotenv</code></li>
 <li>Модели <code>Author</code>, <code>Book</code> с one-to-many relationship</li>
@@ -62,7 +62,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -94,7 +94,7 @@
 <li><a href="https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html#selectin-loading">N+1 problem (обзор)</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> N+1 лечится eager loading; <code>select()</code> API — стандарт SQLAlchemy 2.0.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>CRUD: <code>create_author</code>, <code>get_authors</code>, <code>update_book</code>, <code>delete_book</code></li>
 <li>Запрос: все книги автора с join через relationship или explicit join</li>
@@ -107,7 +107,7 @@
 - [ ] select() API, не legacy Query (1.x)
 - [ ] N+1 продемонстрирован и исправлен
 - [ ] Пагинация работает</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>CRUD: <code>create_author</code>, <code>get_authors</code>, <code>update_book</code>, <code>delete_book</code></li>
 <li>Запрос: все книги автора с join через relationship или explicit join</li>
@@ -116,7 +116,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
@@ -148,7 +148,7 @@
 <li><a href="https://fastapi.tiangolo.com/tutorial/body/">Pydantic Models</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> type hints + Pydantic = валидация и docs из коробки; response_model защищает API.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>main.py</code>: FastAPI app, <code>GET /health</code> → <code>{"status": "ok"}</code></li>
 <li>In-memory CRUD для <code>Note</code> (id, title, body) — без БД пока</li>
@@ -161,7 +161,7 @@
 - [ ] 422 при невалидном body
 - [ ] Response model отделён от create model
 - [ ] <code>uvicorn --reload</code> работает</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>main.py</code>: FastAPI app, <code>GET /health</code> → <code>{"status": "ok"}</code></li>
 <li>In-memory CRUD для <code>Note</code> (id, title, body) — без БД пока</li>
@@ -170,7 +170,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -202,7 +202,7 @@
 <li><a href="https://fastapi.tiangolo.com/tutorial/response-status-code/">Status Codes</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> одна DB session на request через Depends; HTTPException — явные ошибки API.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Подключи SQLAlchemy к FastAPI через <code>Depends(get_db)</code></li>
 <li><code>GET /authors</code>, <code>POST /authors</code>, <code>GET /authors/{id}</code></li>
@@ -215,7 +215,7 @@
 - [ ] DB session закрывается после каждого request
 - [ ] HTTPException с detail message
 - [ ] Endpoints покрывают CRUD authors</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Подключи SQLAlchemy к FastAPI через <code>Depends(get_db)</code></li>
 <li><code>GET /authors</code>, <code>POST /authors</code>, <code>GET /authors/{id}</code></li>
@@ -224,7 +224,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <ul>
@@ -256,7 +256,7 @@
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods">HTTP Methods</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> REST = ресурсы + HTTP semantics; 409 для нарушения бизнес-правил.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Роутеры: <code>routers/authors.py</code>, <code>books.py</code>, <code>loans.py</code></li>
 <li>CRUD для books и loans с Pydantic validation</li>
@@ -269,7 +269,7 @@
 - [ ] APIRouter + prefix <code>/api/v1</code>
 - [ ] Бизнес-правило: нельзя выдать уже выданную книгу → 409
 - [ ] Swagger актуален</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Роутеры: <code>routers/authors.py</code>, <code>books.py</code>, <code>loans.py</code></li>
 <li>CRUD для books и loans с Pydantic validation</li>
@@ -278,7 +278,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -310,7 +310,7 @@
 <li><a href="https://www.python-httpx.org/">httpx</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> изолированная test DB; тесты на auth, 404, 409 — не только happy path.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>pip install pytest httpx</code></li>
 <li>Тесты: create author, get 404, create loan conflict → 409</li>
@@ -323,7 +323,7 @@
 - [ ] ≥ 8 pytest тестов, все проходят
 - [ ] Test DB изолирована от dev
 - [ ] <code>pytest -v</code> в README</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>pip install pytest httpx</code></li>
 <li>Тесты: create author, get 404, create loan conflict → 409</li>
@@ -332,7 +332,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
@@ -364,7 +364,7 @@
 <li><a href="https://mermaid.js.org/">Mermaid</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> документация API — часть deliverable; OpenAPI из кода, не из Word.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>README: архитектура, запуск, env vars, примеры curl</li>
 <li><code>.env.example</code>: <code>DATABASE_URL</code>, <code>APP_ENV=development</code></li>
@@ -377,7 +377,7 @@
 - [ ] curl примеры для всех основных endpoints
 - [ ] Структура проекта понятна новому разработчику
 - [ ] <code>docker run postgres</code> документирован</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>README: архитектура, запуск, env vars, примеры curl</li>
 <li><code>.env.example</code>: <code>DATABASE_URL</code>, <code>APP_ENV=development</code></li>
@@ -386,7 +386,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>

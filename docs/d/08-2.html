@@ -31,7 +31,7 @@
 - <a href="https://learn.javascript.ru/promise-chaining">learn.javascript.ru: Цепочка промисов</a>
 - <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise">MDN: Promise</a></p>
 <p><strong>Ключевая мысль:</strong> Promise — это цепочка, а не вложенность; <code>.then</code> возвращает новый Promise, и один <code>.catch</code> обслуживает всю цепочку.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Оберни <code>setTimeout</code> в функцию <code>delay(ms)</code> → Promise</li>
 <li>Цепочка: delay(1000) → «Шаг 1» → delay(500) → «Шаг 2»</li>
@@ -45,7 +45,7 @@
 - [ ] Цепочка then без callback hell
 - [ ] Ошибки ловятся в catch
 - [ ] Promise.all для параллельных запросов</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Оберни <code>setTimeout</code> в функцию <code>delay(ms)</code> → Promise</li>
 <li>Цепочка: delay(1000) → «Шаг 1» → delay(500) → «Шаг 2»</li>
@@ -55,7 +55,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>

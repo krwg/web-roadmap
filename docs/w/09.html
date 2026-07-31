@@ -38,7 +38,7 @@
 - <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Closures">MDN: Closures</a>
 - <a href="https://javascript.info/closure">javascript.info: Замыкание</a></p>
 <p><strong>Ключевая мысль:</strong> замыкание — это функция плюс её лексическое окружение; на этом строятся приватность, фабрики и модульный паттерн.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>createCounter()</code> — increment, decrement, getValue через closure</li>
 <li>Ловушка цикла: <code>for (var i=0; ...)</code> + setTimeout — исправь через let и closure</li>
@@ -60,7 +60,7 @@
 <p>[ ] Могу объяснить closure своими словами</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>createCounter()</code> — increment, decrement, getValue через closure</li>
 <li>Ловушка цикла: <code>for (var i=0; ...)</code> + setTimeout — исправь через let и closure</li>
@@ -70,7 +70,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -111,7 +111,7 @@ git commit -m &quot;week-09 day-01: замыкания, createCounter и once&qu
 - <a href="https://learn.javascript.ru/reference-type">learn.javascript.ru: Справка по оператору this</a>
 - <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Operators/this">MDN: this</a></p>
 <p><strong>Ключевая мысль:</strong> <code>this</code> — не переменная, а результат вызова; потеря контекста лечится <code>bind</code>, а стрелочные функции наследуют <code>this</code> снаружи.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Демонстрация 4 правил <code>this</code> — 4 примера в Console</li>
 <li>Исправь <code>button.addEventListener('click', obj.handleClick)</code> через bind</li>
@@ -133,7 +133,7 @@ git commit -m &quot;week-09 day-01: замыкания, createCounter и once&qu
 <p>[ ] 4 правила this — конспект</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Демонстрация 4 правил <code>this</code> — 4 примера в Console</li>
 <li>Исправь <code>button.addEventListener('click', obj.handleClick)</code> через bind</li>
@@ -143,7 +143,7 @@ git commit -m &quot;week-09 day-01: замыкания, createCounter и once&qu
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -172,7 +172,7 @@ git commit -m &quot;week-09 day-02: this, bind и 4 правила контек�
 - <a href="https://learn.javascript.ru/function-prototype">learn.javascript.ru: F.prototype</a>
 - <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Object/create">MDN: Object.create()</a></p>
 <p><strong>Ключевая мысль:</strong> прототипная цепочка — механизм делегирования свойств; <code>class</code> лишь удобная обёртка над ним.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Constructor <code>Person(name)</code> + <code>Person.prototype.greet</code></li>
 <li><code>Student</code> наследует <code>Person</code> через <code>Object.create(Person.prototype)</code></li>
@@ -194,7 +194,7 @@ git commit -m &quot;week-09 day-02: this, bind и 4 правила контек�
 <p>[ ] Не поллю глобальные прототипы в production-коде</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Constructor <code>Person(name)</code> + <code>Person.prototype.greet</code></li>
 <li><code>Student</code> наследует <code>Person</code> через <code>Object.create(Person.prototype)</code></li>
@@ -204,7 +204,7 @@ git commit -m &quot;week-09 day-02: this, bind и 4 правила контек�
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -233,7 +233,7 @@ git commit -m &quot;week-09 day-03: прототипы, Person/Student и inheri
 - <a href="https://learn.javascript.ru/class-inheritance">learn.javascript.ru: Наследование классов</a>
 - <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Classes">MDN: Classes</a></p>
 <p><strong>Ключевая мысль:</strong> <code>class</code> — это читаемый синтаксис над прототипами; <code>#private</code> и <code>static</code> делают модель данных явной и безопасной.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>class TodoItem { constructor(title) ... toggle() }</code></li>
 <li><code>class TodoList extends Array</code> или композиция — список с методами add/remove</li>
@@ -255,7 +255,7 @@ git commit -m &quot;week-09 day-03: прототипы, Person/Student и inheri
 <p>[ ] Private field использован</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>class TodoItem { constructor(title) ... toggle() }</code></li>
 <li><code>class TodoList extends Array</code> или композиция — список с методами add/remove</li>
@@ -265,7 +265,7 @@ git commit -m &quot;week-09 day-03: прототипы, Person/Student и inheri
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -294,7 +294,7 @@ git commit -m &quot;week-09 day-04: классы TodoItem, Movie и private fiel
 - <a href="https://www.patterns.dev/vanilla/module-pattern/">patterns.dev: Module Pattern</a>
 - <a href="https://www.patterns.dev/">patterns.dev</a></p>
 <p><strong>Ключевая мысль:</strong> паттерн оправдан, когда он снижает связанность или упрощает расширение — не когда добавляет абстракцию ради абстракции.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>EventEmitter: <code>on</code>, <code>off</code>, <code>emit</code> — 50 строк</li>
 <li>Подпиши UI на изменения store через Observer</li>
@@ -316,7 +316,7 @@ git commit -m &quot;week-09 day-04: классы TodoItem, Movie и private fiel
 <p>[ ] Минимум 2 паттерна применены осознанно</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>EventEmitter: <code>on</code>, <code>off</code>, <code>emit</code> — 50 строк</li>
 <li>Подпиши UI на изменения store через Observer</li>
@@ -326,7 +326,7 @@ git commit -m &quot;week-09 day-04: классы TodoItem, Movie и private fiel
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -356,7 +356,7 @@ git commit -m &quot;week-09 day-05: EventEmitter, Strategy и Store/View&quot;
 - <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce">MDN: Array.prototype.reduce()</a>
 - <a href="https://javascript.info/recursion">javascript.info: Рекурсия и стек</a></p>
 <p><strong>Ключевая мысль:</strong> pure functions + immutability + composition дают код, который легко тестировать, переиспользовать и рассуждать о нём.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Перепиши обработку списка только pure functions</li>
 <li><code>pipe(...fns)</code> — композиция справа налево</li>
@@ -378,7 +378,7 @@ git commit -m &quot;week-09 day-05: EventEmitter, Strategy и Store/View&quot;
 <p>[ ] Понимаю риск stack overflow в рекурсии</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Перепиши обработку списка только pure functions</li>
 <li><code>pipe(...fns)</code> — композиция справа налево</li>
@@ -388,7 +388,7 @@ git commit -m &quot;week-09 day-05: EventEmitter, Strategy и Store/View&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -417,7 +417,7 @@ git commit -m &quot;week-09 day-06: pipe, currying и memoize&quot;
 - <a href="https://eslint.org/docs/latest/use/getting-started">ESLint: Getting Started</a>
 - <a href="https://adr.github.io/">adr.github.io</a> — формат Architecture Decision Records</p>
 <p><strong>Ключевая мысль:</strong> инструменты (ESLint, JSDoc, ADR) и принципы (SRP, явные контракты) готовят кодовую базу к росту и TypeScript.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Подключи ESLint (eslint:recommended) к проекту</li>
 <li>Исправь все warnings</li>
@@ -439,7 +439,7 @@ git commit -m &quot;week-09 day-06: pipe, currying и memoize&quot;
 <p>[ ] JSDoc на ключевых экспортах</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Подключи ESLint (eslint:recommended) к проекту</li>
 <li>Исправь все warnings</li>
@@ -449,7 +449,7 @@ git commit -m &quot;week-09 day-06: pipe, currying и memoize&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">

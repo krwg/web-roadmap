@@ -27,9 +27,15 @@ def main() -> int:
         'id="mark-day-btn"',
         'id="lesson-breadcrumb"',
         'id="edit-github-btn"',
+        'id="progress-map"',
+        "dayIndex",
     ):
         if needle not in html:
             fail(f"index.html missing {needle}")
+
+    changelog = DOCS / "pages" / "changelog.json"
+    if not changelog.exists():
+        fail("docs/pages/changelog.json missing")
 
     weeks = sorted((DOCS / "weeks").glob("*.json"))
     if len(weeks) != 23:
@@ -48,6 +54,8 @@ def main() -> int:
             fail(f"{path.name}: missing sections[]")
         if "sourcePath" not in data:
             fail(f"{path.name}: missing sourcePath")
+        if not data.get("quizzes"):
+            fail(f"{path.name}: missing quizzes")
         days = [s for s in sections if s.get("kind") == "day"]
         if path.stem != "00" and len(days) < 5:
             fail(f"{path.name}: expected ≥5 day sections, got {len(days)}")

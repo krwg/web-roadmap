@@ -32,7 +32,7 @@
 <li><a href="https://fastapi.tiangolo.com/tutorial/response-status-code/">Status Codes</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> одна DB session на request через Depends; HTTPException — явные ошибки API.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Подключи SQLAlchemy к FastAPI через <code>Depends(get_db)</code></li>
 <li><code>GET /authors</code>, <code>POST /authors</code>, <code>GET /authors/{id}</code></li>
@@ -45,7 +45,7 @@
 - [ ] DB session закрывается после каждого request
 - [ ] HTTPException с detail message
 - [ ] Endpoints покрывают CRUD authors</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Подключи SQLAlchemy к FastAPI через <code>Depends(get_db)</code></li>
 <li><code>GET /authors</code>, <code>POST /authors</code>, <code>GET /authors/{id}</code></li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <ul>

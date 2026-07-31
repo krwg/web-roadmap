@@ -31,7 +31,7 @@
 - <a href="https://www.typescriptlang.org/docs/handbook/2/keyof-types.html">Handbook: Keyof Types</a>
 - <a href="https://www.totaltypescript.com/tutorials/beginners-typescript">Total TypeScript: Beginners</a></p>
 <p><strong>Ключевая мысль:</strong> generics связывают типы входа и выхода — <code>fetchJson&lt;User&gt;</code> безопаснее <code>fetchJson&lt;any&gt;</code>.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>function first&lt;T&gt;(arr: T[]): T | undefined</code></li>
 <li><code>async function fetchJson&lt;T&gt;(url: string): Promise&lt;T&gt;</code> — типизированный fetch</li>
@@ -53,7 +53,7 @@
 <p>[ ] Constraints использован хотя бы раз</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>function first&lt;T&gt;(arr: T[]): T | undefined</code></li>
 <li><code>async function fetchJson&lt;T&gt;(url: string): Promise&lt;T&gt;</code> — типизированный fetch</li>
@@ -63,7 +63,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">

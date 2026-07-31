@@ -32,7 +32,7 @@
 <li><a href="https://docs.docker.com/build/building/multi-stage/">Multi-stage builds</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> в docker network хост БД — имя service, не localhost.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Frontend Dockerfile: stage 1 <code>npm run build</code>, stage 2 <code>nginx:alpine</code> + COPY dist</li>
 <li><code>docker run -d --name pg -e POSTGRES_PASSWORD=pass -v pgdata:/var/lib/postgresql/data postgres:16</code></li>
@@ -45,7 +45,7 @@
 - [ ] Frontend dist отдаётся nginx на port 80
 - [ ] Postgres data сохраняется после restart container
 - [ ] Backend видит DB по hostname <code>db</code> (в compose network)</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Frontend Dockerfile: stage 1 <code>npm run build</code>, stage 2 <code>nginx:alpine</code> + COPY dist</li>
 <li><code>docker run -d --name pg -e POSTGRES_PASSWORD=pass -v pgdata:/var/lib/postgresql/data postgres:16</code></li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <ul>

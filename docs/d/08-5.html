@@ -30,7 +30,7 @@
 - <a href="https://web.dev/articles/optimize-lcp">web.dev: Optimize LCP</a> — skeleton и perceived performance
 - <a href="https://developer.mozilla.org/ru/docs/Web/API/AbortController">MDN: AbortController</a></p>
 <p><strong>Ключевая мысль:</strong> надёжный API-клиент обрабатывает не только успех, но и повторы, гонки запросов, пагинацию и кэширование.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Пагинация постов: кнопка «Загрузить ещё» с cursor (id последнего)</li>
 <li>Retry: 3 попытки с задержкой 1s, 2s, 4s при сетевой ошибке</li>
@@ -44,7 +44,7 @@
 - [ ] Retry реализован
 - [ ] Нет race condition в поиске
 - [ ] Pagination работает без дубликатов</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Пагинация постов: кнопка «Загрузить ещё» с cursor (id последнего)</li>
 <li>Retry: 3 попытки с задержкой 1s, 2s, 4s при сетевой ошибке</li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>

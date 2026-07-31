@@ -40,7 +40,7 @@
 <li><a href="https://nodejs.org/api/fs.html#promises-api">fs.promises</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> Node — JS без браузера; ESM + fs.promises — современный baseline.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>mkdir notes-api &amp;&amp; npm init -y</code>, добавь <code>"type": "module"</code></li>
 <li>CLI: <code>node scripts/greet.js --name=Alex</code> (parse <code>process.argv</code>)</li>
@@ -53,7 +53,7 @@
 - [ ] ES modules (import/export)
 - [ ] fs.promises, не callback fs.readFile
 - [ ] npm script <code>"greet"</code> работает</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>mkdir notes-api &amp;&amp; npm init -y</code>, добавь <code>"type": "module"</code></li>
 <li>CLI: <code>node scripts/greet.js --name=Alex</code> (parse <code>process.argv</code>)</li>
@@ -62,7 +62,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
 <h3>Git</h3>
 <ul>
@@ -94,7 +94,7 @@
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function">async/await (MDN)</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> не блокируй event loop; await + try/catch на каждом I/O.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Перепиши file I/O на async/await с try/catch</li>
 <li>File watcher: логирует изменения <code>notes.json</code>, останавливается на SIGINT</li>
@@ -107,7 +107,7 @@
 - [ ] Нет callback hell — только async/await
 - [ ] Watcher корректно останавливается (SIGINT)
 - [ ] try/catch вокруг await</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Перепиши file I/O на async/await с try/catch</li>
 <li>File watcher: логирует изменения <code>notes.json</code>, останавливается на SIGINT</li>
@@ -116,7 +116,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -148,7 +148,7 @@
 <li><a href="https://expressjs.com/en/guide/routing.html">Express Routing</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> express.json() обязателен; app отдельно от server — тестируемость.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>npm install express</code>, <code>src/app.js</code>, <code>src/server.js</code></li>
 <li>CRUD <code>/api/notes</code> — хранение в JSON-файле через fs</li>
@@ -161,7 +161,7 @@
 - [ ] express.json() подключён
 - [ ] RESTful URLs и методы
 - [ ] 201 на POST, 204 на DELETE</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>npm install express</code>, <code>src/app.js</code>, <code>src/server.js</code></li>
 <li>CRUD <code>/api/notes</code> — хранение в JSON-файле через fs</li>
@@ -170,7 +170,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -202,7 +202,7 @@
 <li><a href="https://github.com/expressjs/morgan">morgan</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> порядок middleware; Zod на входе, error handler на выходе цепочки.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Logger middleware: method, url, duration (Date.now до/после)</li>
 <li>Zod schema для Note: <code>title</code> min 1, <code>body</code> optional string</li>
@@ -215,7 +215,7 @@
 - [ ] Все ошибки проходят через error middleware
 - [ ] Zod на POST и PUT
 - [ ] morgan или custom logger</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Logger middleware: method, url, duration (Date.now до/после)</li>
 <li>Zod schema для Note: <code>title</code> min 1, <code>body</code> optional string</li>
@@ -224,7 +224,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <ul>
@@ -256,7 +256,7 @@
 <li><a href="https://github.com/motdotla/dotenv">dotenv</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> Pool, не Client; <code>$1</code> placeholders — единственный безопасный способ.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>npm install pg dotenv</code></li>
 <li><code>src/db/pool.js</code> — Pool из <code>DATABASE_URL</code>, тест <code>SELECT NOW()</code></li>
@@ -269,7 +269,7 @@
 - [ ] Pool, не Client на каждый запрос
 - [ ] Параметризованные запросы ($1, $2)
 - [ ] dotenv, <code>.env.example</code></p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>npm install pg dotenv</code></li>
 <li><code>src/db/pool.js</code> — Pool из <code>DATABASE_URL</code>, тест <code>SELECT NOW()</code></li>
@@ -278,7 +278,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -310,7 +310,7 @@
 <li><a href="https://expressjs.com/en/advanced/healthcheck-graceful-shutdown.html">Graceful Shutdown</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> routes тонкие, logic в services; health check — контракт с инфраструктурой.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Структура: <code>src/routes/</code>, <code>controllers/</code>, <code>services/</code>, <code>db/pool.js</code></li>
 <li>Вынеси логику из routes в controller/service</li>
@@ -323,7 +323,7 @@
 - [ ] Routes тонкие — только маршрутизация
 - [ ] Service переиспользуется из controller
 - [ ] health check возвращает 503 если DB down</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Структура: <code>src/routes/</code>, <code>controllers/</code>, <code>services/</code>, <code>db/pool.js</code></li>
 <li>Вынеси логику из routes в controller/service</li>
@@ -332,7 +332,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
@@ -364,7 +364,7 @@
 <li><a href="https://docs.npmjs.com/cli/v10/commands/npm-audit">npm audit</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> Express и FastAPI решают одну задачу разными инструментами — выбор по команде и экосистеме.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Сравнительная таблица: FastAPI (нед.18) vs Express — 10 критериев в <code>docs/compare.md</code></li>
 <li>Postman collection для Express API — export JSON</li>
@@ -377,7 +377,7 @@
 - [ ] README полный (install, env, run, test)
 - [ ] Сравнительная таблица в docs
 - [ ] <code>npm start</code> и <code>npm run dev</code> работают</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Сравнительная таблица: FastAPI (нед.18) vs Express — 10 критериев в <code>docs/compare.md</code></li>
 <li>Postman collection для Express API — export JSON</li>
@@ -386,7 +386,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>

@@ -32,7 +32,7 @@
 <li><a href="https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html#selectin-loading">N+1 problem (обзор)</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> N+1 лечится eager loading; <code>select()</code> API — стандарт SQLAlchemy 2.0.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>CRUD: <code>create_author</code>, <code>get_authors</code>, <code>update_book</code>, <code>delete_book</code></li>
 <li>Запрос: все книги автора с join через relationship или explicit join</li>
@@ -45,7 +45,7 @@
 - [ ] select() API, не legacy Query (1.x)
 - [ ] N+1 продемонстрирован и исправлен
 - [ ] Пагинация работает</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>CRUD: <code>create_author</code>, <code>get_authors</code>, <code>update_book</code>, <code>delete_book</code></li>
 <li>Запрос: все книги автора с join через relationship или explicit join</li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>

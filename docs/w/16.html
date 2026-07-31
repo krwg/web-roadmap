@@ -40,7 +40,7 @@
 <li><a href="https://realpython.com/python3-object-oriented-programming/">Real Python — OOP</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> класс = данные + поведение; <code>self</code> обязателен; инкапсуляция через методы, не публичные поля.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Класс <code>BankAccount</code>: <code>deposit</code>, <code>withdraw</code>, <code>balance</code>, защита от отрицательного баланса</li>
 <li>Класс <code>Transaction</code> с датой, суммой, типом (<code>deposit</code> / <code>withdraw</code>)</li>
@@ -53,7 +53,7 @@
 - [ ] Инкапсуляция: баланс не меняется напрямую снаружи
 - [ ] <code>__repr__</code> однозначно идентифицирует объект
 - [ ] Type hints на аргументах и return всех публичных методов</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Класс <code>BankAccount</code>: <code>deposit</code>, <code>withdraw</code>, <code>balance</code>, защита от отрицательного баланса</li>
 <li>Класс <code>Transaction</code> с датой, суммой, типом (<code>deposit</code> / <code>withdraw</code>)</li>
@@ -62,7 +62,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -94,7 +94,7 @@
 <li><a href="https://docs.python.org/3/library/dataclasses.html">@dataclass</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> композиция чаще наследования; dataclass — для данных, class — для поведения.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>SavingsAccount</code> с <code>interest_rate</code>, метод <code>apply_interest()</code> через <code>super()</code></li>
 <li><code>Portfolio</code> содержит <code>list[Account]</code> — композиция, не наследование</li>
@@ -107,7 +107,7 @@
 - [ ] <code>super().__init__()</code> в дочернем классе
 - [ ] Portfolio не наследует Account — композиция
 - [ ] dataclass с валидацией суммы &gt; 0</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>SavingsAccount</code> с <code>interest_rate</code>, метод <code>apply_interest()</code> через <code>super()</code></li>
 <li><code>Portfolio</code> содержит <code>list[Account]</code> — композиция, не наследование</li>
@@ -116,7 +116,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -148,7 +148,7 @@
 <li><a href="https://docs.python.org/3/tutorial/classes.html#generators">Generators</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> dunder-методы — контракт с Python; generators — ленивость и экономия памяти.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Класс <code>Playlist</code> с <code>__len__</code>, <code>__getitem__</code>, итерацией по трекам</li>
 <li>Generator <code>fibonacci(n)</code> — первые n чисел без списка в памяти</li>
@@ -161,7 +161,7 @@
 - [ ] Playlist итерируется в for-loop
 - [ ] Generator не хранит весь ряд Фибоначчи в памяти
 - [ ] <code>__eq__</code> согласован с hash (если используешь в set)</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Класс <code>Playlist</code> с <code>__len__</code>, <code>__getitem__</code>, итерацией по трекам</li>
 <li>Generator <code>fibonacci(n)</code> — первые n чисел без списка в памяти</li>
@@ -170,7 +170,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>
@@ -202,7 +202,7 @@
 <li><a href="https://wiki.python.org/moin/TimeComplexity">Python TimeComplexity (wiki)</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> сначала правильная структура данных и алгоритм, потом микрооптимизации.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Реализуй linear search и binary search (sorted list)</li>
 <li>Замерь время на списке 10⁴ и 10⁶ элементов (<code>time.perf_counter</code>)</li>
@@ -215,7 +215,7 @@
 - [ ] Binary search работает только на sorted input
 - [ ] Замеры подтверждают разницу O(n) vs O(n²)
 - [ ] Two Sum hash map решение за один проход</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Реализуй linear search и binary search (sorted list)</li>
 <li>Замерь время на списке 10⁴ и 10⁶ элементов (<code>time.perf_counter</code>)</li>
@@ -224,7 +224,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <ul>
@@ -256,7 +256,7 @@
 <li><a href="https://docs.python.org/3/library/argparse.html">argparse</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> <code>Path(__file__).parent</code> — якорь для путей; pathlib вместо строк.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Скрипт <code>organize.py</code> — сортирует файлы по расширению в подпапки</li>
 <li>Рекурсивный поиск <code>*.py</code> через <code>rglob</code></li>
@@ -269,7 +269,7 @@
 - [ ] Только pathlib, не <code>os.path</code> (кроме env vars)
 - [ ] Dry-run режим работает
 - [ ] Обработка PermissionError</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Скрипт <code>organize.py</code> — сортирует файлы по расширению в подпапки</li>
 <li>Рекурсивный поиск <code>*.py</code> через <code>rglob</code></li>
@@ -278,7 +278,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -310,7 +310,7 @@
 <li><a href="https://docs.python.org/3/howto/regex.html">Regular Expression HOWTO</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> для поиска везде — <code>search</code>, не <code>match</code>; большие файлы — построчно.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Генератор mock <code>server.log</code> (1000 строк: timestamp, level, message)</li>
 <li>Парсер: извлечь все ERROR с датой через named groups</li>
@@ -323,7 +323,7 @@
 - [ ] Парсинг построчно (memory-efficient)
 - [ ] regex с named groups для timestamp и level
 - [ ] Итоговая статистика в читаемом виде</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Генератор mock <code>server.log</code> (1000 строк: timestamp, level, message)</li>
 <li>Парсер: извлечь все ERROR с датой через named groups</li>
@@ -332,7 +332,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -364,7 +364,7 @@
 <li><a href="https://docs.python.org/3/library/sqlite3.html">sqlite3</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> ООП — инструмент, не цель; простые данные — dataclass, сложная логика — классы.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Реши 3 задачи LeetCode Easy: Two Sum, Valid Parentheses, Merge Sorted Array</li>
 <li>Рефакторинг Expense Tracker на классы <code>Expense</code>, <code>ExpenseStore</code></li>
@@ -377,7 +377,7 @@
 - [ ] 3 LeetCode задачи приняты
 - [ ] ExpenseStore с save/load через pathlib
 - [ ] Конспект Big O на 1 страницу</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Реши 3 задачи LeetCode Easy: Two Sum, Valid Parentheses, Merge Sorted Array</li>
 <li>Рефакторинг Expense Tracker на классы <code>Expense</code>, <code>ExpenseStore</code></li>
@@ -386,7 +386,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>

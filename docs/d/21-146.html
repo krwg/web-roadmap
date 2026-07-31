@@ -32,7 +32,7 @@
 <li><a href="https://docs.docker.com/engine/swarm/secrets/">Docker secrets</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> dev/prod compose — разные файлы, одна документация в README.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>docker-compose.dev.yml</code> — mount source, hot reload, exposed debug ports</li>
 <li><code>docker-compose.prod.yml</code> — optimized builds, no volume mounts</li>
@@ -45,7 +45,7 @@
 - [ ] Dev и prod compose файлы документированы
 - [ ] Seed data появляется после первого <code>up</code>
 - [ ] Логи доступны через compose logs</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>docker-compose.dev.yml</code> — mount source, hot reload, exposed debug ports</li>
 <li><code>docker-compose.prod.yml</code> — optimized builds, no volume mounts</li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>

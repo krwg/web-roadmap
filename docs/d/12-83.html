@@ -31,7 +31,7 @@
 - <a href="https://react.dev/learn/extracting-state-logic-into-a-reducer">react.dev: Extracting State Logic into a Reducer</a> — preview
 - <a href="https://react.dev/reference/react/useMemo">useMemo</a></p>
 <p><strong>Ключевая мысль:</strong> общий state — у ближайшего родителя; derived values вычисляй, не дублируй в useState.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>FilterableList</code>: родитель хранит <code>items</code> + <code>searchQuery</code></li>
 <li><code>SearchBar</code> — только input, вызывает <code>onSearchChange</code></li>
@@ -53,7 +53,7 @@
 <p>[ ] Нет дублирования state в siblings</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>FilterableList</code>: родитель хранит <code>items</code> + <code>searchQuery</code></li>
 <li><code>SearchBar</code> — только input, вызывает <code>onSearchChange</code></li>
@@ -63,7 +63,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">

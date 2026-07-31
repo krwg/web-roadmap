@@ -30,7 +30,7 @@
 - <a href="https://www.typescriptlang.org/docs/handbook/2/functions.html">Handbook: More on Functions</a>
 - <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator">TypeScript 4.9: satisfies</a></p>
 <p><strong>Ключевая мысль:</strong> utility types — конструктор из существующих типов; <code>Partial</code>/<code>Pick</code>/<code>Omit</code> заменяют ручное дублирование DTO.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>UpdateTodo = Partial&lt;Pick&lt;Todo, 'title' | 'done'&gt;&gt;</code></li>
 <li><code>Record&lt;Theme, string&gt;</code> для CSS-переменных по темам</li>
@@ -52,7 +52,7 @@
 <p>[ ] EventEmitter типизирован</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>UpdateTodo = Partial&lt;Pick&lt;Todo, 'title' | 'done'&gt;&gt;</code></li>
 <li><code>Record&lt;Theme, string&gt;</code> для CSS-переменных по темам</li>
@@ -62,7 +62,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">

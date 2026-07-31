@@ -30,7 +30,7 @@
 - <a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html">Handbook: Narrowing</a>
 - <a href="https://www.totaltypescript.com/tutorials/beginners-typescript">Total TypeScript: Beginners</a></p>
 <p><strong>Ключевая мысль:</strong> union + narrowing превращают TypeScript в инструмент моделирования состояний; <code>unknown</code> безопаснее <code>any</code>.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Тип <code>Theme = 'light' | 'dark'</code> для переключателя темы</li>
 <li>Функция <code>formatId(id: string | number): string</code> с narrowing</li>
@@ -52,7 +52,7 @@
 <p>[ ] Result pattern для ошибок API</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Тип <code>Theme = 'light' | 'dark'</code> для переключателя темы</li>
 <li>Функция <code>formatId(id: string | number): string</code> с narrowing</li>
@@ -62,7 +62,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
