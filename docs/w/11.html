@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Неделя 11: React — компоненты, JSX, props, Vite, первые компоненты · web-roadmap</title>
+  <meta name="description" content="React basics — неделя 11 маршрута web-roadmap.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-11">
+  <meta property="og:title" content="Неделя 11: React — компоненты, JSX, props, Vite, первые компоненты">
+  <meta property="og:url" content="https://krwg.github.io/web-roadmap/w/11.html">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-11">Открыть в приложении маршрута</a> · <a href="../">На главную</a></p>
+    <article class="prose"><h1>Неделя 11: React — компоненты, JSX, props, Vite, первые компоненты</h1>
+<blockquote>
+<p><strong>Цель недели:</strong> создать первое React-приложение на Vite, освоить компоненты, JSX, props и базовые паттерны.</p>
+<p><strong>Литература:</strong> <a href="https://react.dev/learn">react.dev Learn</a>, <a href="https://react-typescript-cheatsheet.netlify.app/">React TypeScript Cheatsheet</a>, <a href="https://vite.dev/guide/">Vite Guide</a>, <a href="https://react.dev/learn/thinking-in-react">Thinking in React</a>, <a href="https://react.dev/learn">React — Quick Start</a></p>
+<p><strong>Проект недели:</strong> см. <a href="#projects">docs/projects.md</a></p>
+<p><strong>Git:</strong> минимум 1 осмысленный коммит каждый день в <code>learning-log/week-11/</code></p>
+</blockquote>
+<h2 id="week-11-day-1">День 1 (Mon): Введение в React и JSX</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>React — библиотека для построения пользовательских интерфейсов на основе компонентов. Компонент — это JavaScript-функция (или класс), которая принимает props и возвращает описание UI. React берёт это описание и обновляет реальный DOM эффективно через Virtual DOM и reconciliation. Философия React: UI = f(state) — интерфейс является функцией от состояния.</p>
+<p>JSX — синтаксическое расширение, которое выглядит как HTML, но компилируется в вызовы <code>React.createElement</code>. Правила JSX отличаются от HTML: <code>className</code> вместо <code>class</code>, <code>htmlFor</code> вместо <code>for</code>, все теги закрываются (<code>&lt;img /&gt;</code>, <code>&lt;br /&gt;</code>). В фигурных скобках <code>{expression}</code> встраивается любое JavaScript-выражение: переменные, вызовы функций, тернарные операторы.</p>
+<p>Компоненты именуются в PascalCase (<code>Header</code>, <code>TodoItem</code>), а props — в camelCase. JSX автоматически экранирует строки — вставка пользовательского текста безопасна от XSS. Компонент должен возвращать один корневой элемент; если нужно несколько соседних без обёрточного <code>&lt;div&gt;</code>, используй Fragment: <code>&lt;&gt;...&lt;/&gt;</code>. Не вызывай компоненты как обычные функции <code>Header()</code> — только через JSX <code>&lt;Header /&gt;</code>, иначе React не отследит жизненный цикл и hooks.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/describing-the-ui">react.dev: Describing the UI</a>
+- <a href="https://react.dev/learn/writing-markup-with-jsx">react.dev: Writing Markup with JSX</a>
+- <a href="https://react.dev/learn">React — Quick Start</a></p>
+<p><strong>Ключевая мысль:</strong> компонент — функция от props к UI; JSX — удобный синтаксис описания, а не HTML.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Изучи структуру Vite react-ts проекта из недели 10</li>
+<li>Очисти <code>App.tsx</code>, создай разметку лендинга в JSX</li>
+<li>Вынеси <code>Header</code>, <code>Footer</code>, <code>Hero</code> в отдельные файлы компонентов</li>
+<li>Используй Fragment вместо обёрточного div где возможно</li>
+<li>Подключи CSS-модуль или отдельный <code>App.css</code></li>
+<li>Создай <code>learning-log/week-11/</code> — новый Vite-проект или форк week-10</li>
+<li>Проверь ESLint rules для React (<code>eslint-plugin-react</code>)</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Минимум 3 компонента в отдельных файлах</p>
+</li>
+<li>
+<p>[ ] Корректный JSX без ошибок ESLint</p>
+</li>
+<li>
+<p>[ ] className вместо class</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Изучи структуру Vite react-ts проекта из недели 10</li>
+<li>Очисти <code>App.tsx</code>, создай разметку лендинга в JSX</li>
+<li>Вынеси <code>Header</code>, <code>Footer</code>, <code>Hero</code> в отдельные файлы компонентов</li>
+<li>Используй Fragment вместо обёрточного div где возможно</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add src/components/
+
+git commit -m &quot;week-11 day-01: JSX, Header, Footer и Hero&quot;
+
+</code></pre>
+<h2 id="week-11-day-2">День 2 (Tue): Props и композиция</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Props (properties) — единственный способ передать данные от родителя к ребёнку в React. Props <strong>read-only</strong>: дочерний компонент не должен их мутировать. Это основа однонаправленного потока данных (one-way data flow): состояние живёт выше, данные текут вниз через props, события — вверх через callback-функции.</p>
+<p>Деструктуризация в сигнатуре делает код читаемым: <code>function Button({ label, onClick, variant = 'primary' })</code> вместо <code>props.label</code>. Значения по умолчанию задавай прямо в деструктуризации. Специальный prop <code>children</code> — содержимое между открывающим и закрывающим тегами: <code>&lt;Card&gt;Это children&lt;/Card&gt;</code>. Паттерн slot: <code>Card</code> рендерит <code>children</code> внутри своей разметки, а родитель решает, что туда положить.</p>
+<p>Spread props (<code>&lt;Input {...fieldProps} /&gt;</code>) передаёт все свойства объекта разом — удобно, но осторожно: лишние props могут попасть на DOM-элемент и вызвать warning. Props drilling на 1–2 уровня — нормальная практика; Context (неделя 13+) понадобится при глубокой вложенности. В TypeScript каждый компонент получает <code>interface XxxProps</code> с явными типами.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/passing-props-to-a-component">react.dev: Passing Props to a Component</a>
+- <a href="https://react.dev/learn/thinking-in-react">react.dev: Thinking in React</a>
+- <a href="https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/basic_type_example">React TypeScript Cheatsheet: Components</a></p>
+<p><strong>Ключевая мысль:</strong> props — read-only вход компонента; данные вниз, события вверх через callbacks.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>Button</code> с props: <code>variant: 'primary' | 'secondary'</code>, <code>size</code>, <code>disabled</code>, <code>onClick</code></li>
+<li><code>Card</code> с <code>title</code>, <code>children</code>, опциональным <code>footer</code></li>
+<li><code>Avatar</code> с <code>src</code>, <code>alt</code>, <code>size</code> — значения по умолчанию</li>
+<li>Композиция: <code>Card</code> внутри <code>Hero</code>, <code>Button</code> в <code>Card.footer</code></li>
+<li>Задокументируй props через TypeScript interfaces</li>
+<li>Компонент <code>Icon</code> с <code>name</code> и <code>aria-label</code> для a11y</li>
+<li>Story-подобная страница: все варианты Button на одном экране</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Все props типизированы</p>
+</li>
+<li>
+<p>[ ] children используется для композиции</p>
+</li>
+<li>
+<p>[ ] Default props через деструктуризацию</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>Button</code> с props: <code>variant: 'primary' | 'secondary'</code>, <code>size</code>, <code>disabled</code>, <code>onClick</code></li>
+<li><code>Card</code> с <code>title</code>, <code>children</code>, опциональным <code>footer</code></li>
+<li><code>Avatar</code> с <code>src</code>, <code>alt</code>, <code>size</code> — значения по умолчанию</li>
+<li>Композиция: <code>Card</code> внутри <code>Hero</code>, <code>Button</code> в <code>Card.footer</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add src/components/ui/
+
+git commit -m &quot;week-11 day-02: Button, Card, Avatar и композиция&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Мутация props — запрещено</p>
+</li>
+<li>
+<p><code>key</code> не доступен как prop — отдельный атрибут</p>
+</li>
+<li>
+<p>Пропуск <code>alt</code> на img — a11y регрессия</p>
+</li>
+</ul>
+<h2 id="week-11-day-3">День 3 (Wed): Списки, keys и рендеринг</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Списки в React рендерятся через <code>array.map()</code>: каждый элемент массива превращается в JSX. React нужен атрибут <code>key</code> на элементе верхнего уровня в map — уникальный и <strong>стабильный</strong> идентификатор (обычно <code>item.id</code>). Key помогает reconciliation: React сопоставляет элементы между рендерами и обновляет только изменившиеся, а не пересоздаёт весь список.</p>
+<p>Использование индекса массива как key (<code>key={index}</code>) допустимо только для статических списков без reorder/delete. При удалении элемента из середины индексы сдвигаются — React перепутает компоненты, и state (например, фокус input) «переедет» к другому элементу. Всегда предпочитай <code>key={todo.id}</code>.</p>
+<p>Условный рендеринг: <code>{isLoggedIn &amp;&amp; &lt;Dashboard /&gt;}</code> (осторожно — <code>0</code> falsy и отрендерится как текст), тернарный <code>{loading ? &lt;Spinner /&gt; : &lt;List /&gt;}</code>, early return <code>if (!data) return null</code>. Не вызывай компоненты как функции <code>TodoItem(todo)</code> — только <code>&lt;TodoItem todo={todo} /&gt;</code>. Fragment с key нужен при map фрагментов: <code>&lt;Fragment key={id}&gt;...&lt;/Fragment&gt;</code>.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/rendering-lists">react.dev: Rendering Lists</a>
+- <a href="https://react.dev/learn/conditional-rendering">react.dev: Conditional Rendering</a>
+- <a href="https://react.dev/reference/react/Fragment">react.dev: Fragment</a></p>
+<p><strong>Ключевая мысль:</strong> стабильный <code>key</code> по id — не оптимизация, а корректность при изменении порядка и удалении элементов.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Компонент <code>TodoList</code> — рендер массива <code>Todo[]</code></li>
+<li><code>TodoItem</code> с props: <code>todo</code>, <code>onToggle</code>, <code>onDelete</code></li>
+<li>keys = <code>todo.id</code>, не индекс массива</li>
+<li>Пустой список: условный рендер «Нет задач»</li>
+<li>Фильтр tabs: all / active / done — условное отображение</li>
+<li>Добавь mock-данные в <code>data/todos.ts</code> — 5+ задач</li>
+<li>Проверь: удаление средней задачи не ломает state остальных</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Стабильные keys на основе id</p>
+</li>
+<li>
+<p>[ ] Условный рендер для empty state</p>
+</li>
+<li>
+<p>[ ] map возвращает JSX, не side effects</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Компонент <code>TodoList</code> — рендер массива <code>Todo[]</code></li>
+<li><code>TodoItem</code> с props: <code>todo</code>, <code>onToggle</code>, <code>onDelete</code></li>
+<li>keys = <code>todo.id</code>, не индекс массива</li>
+<li>Пустой список: условный рендер «Нет задач»</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add src/components/todo/ src/data/
+
+git commit -m &quot;week-11 day-03: TodoList, keys и условный рендер&quot;
+
+</code></pre>
+<h2 id="week-11-day-4">День 4 (Thu): События и состояние (useState)</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1.5ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Интерактивность в React начинается с <code>useState</code> — hook, дающий компоненту «память». <code>const [count, setCount] = useState(0)</code> возвращает текущее значение и функцию обновления. Вызов <code>setCount</code> планирует ререндер компонента с новым значением. State — это снимок на момент рендера: если вызвать <code>setCount(count + 1)</code> три раза подряд в одном обработчике, счётчик увеличится на 1, не на 3. Для последовательных обновлений используй функциональную форму: <code>setCount(c =&gt; c + 1)</code>.</p>
+<p>Обновления state должны быть <strong>иммутабельными</strong>: вместо <code>todos.push(item)</code> пиши <code>setTodos([...todos, item])</code>; вместо <code>todo.done = true</code> — <code>setTodos(todos.map(t =&gt; t.id === id ? { ...t, done: true } : t))</code>. React сравнивает ссылки — мутация не вызовет ререндер. Controlled input связывает <code>&lt;input value={text} onChange={e =&gt; setText(e.target.value)} /&gt;</code> — React state единственный источник правды для значения поля.</p>
+<p>Несколько <code>useState</code> предпочтительнее одного большого объекта state — проще обновлять отдельные поля. Derived values (счётчик активных задач) вычисляй из state при рендере, а не храни в отдельном <code>useState</code>. Batching: React объединяет несколько <code>setState</code> в одном обработчике события в один ререндер.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/state-a-components-memory">react.dev: State: A Component's Memory</a>
+- <a href="https://react.dev/learn/adding-interactivity">react.dev: Adding Interactivity</a>
+- <a href="https://react.dev/learn/queueing-a-series-of-state-updates">react.dev: Queueing a Series of State Updates</a></p>
+<p><strong>Ключевая мысль:</strong> state обновляй иммутабельно; функциональный апдейт <code>setX(x =&gt; ...)</code> даёт актуальное значение при batching.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Счётчик в <code>Hero</code> с <code>useState</code></li>
+<li>Controlled input: <code>value</code> + <code>onChange</code> для поля новой задачи</li>
+<li>Добавление задачи в массив через immutable update</li>
+<li>Toggle done: <code>todos.map(t =&gt; t.id === id ? {...t, done: !t.done} : t)</code></li>
+<li>Удаление через <code>filter</code></li>
+<li>Счётчик «активных» задач — derived из state, не отдельный useState</li>
+<li>Добавь <code>createdAt: Date.now()</code> при создании задачи</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Все inputs controlled</p>
+</li>
+<li>
+<p>[ ] State обновляется иммутабельно</p>
+</li>
+<li>
+<p>[ ] Нет прямой мутации массива todos</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Счётчик в <code>Hero</code> с <code>useState</code></li>
+<li>Controlled input: <code>value</code> + <code>onChange</code> для поля новой задачи</li>
+<li>Добавление задачи в массив через immutable update</li>
+<li>Toggle done: <code>todos.map(t =&gt; t.id === id ? {...t, done: !t.done} : t)</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add src/components/todo/
+
+git commit -m &quot;week-11 day-04: useState, CRUD задач и controlled input&quot;
+
+</code></pre>
+<h2 id="week-11-day-5">День 5 (Fri): Формы и подъём состояния</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Формы в React обрабатываются через событие <code>onSubmit</code> на <code>&lt;form&gt;</code> с обязательным <code>e.preventDefault()</code> — иначе браузер перезагрузит страницу. Подъём состояния (lifting state up) — ключевой паттерн: если два компонента (<code>TodoList</code> и <code>FilterTabs</code>) должны разделять данные, state поднимается к их <strong>ближайшему общему родителю</strong> (<code>TodoApp</code>). Родитель хранит <code>todos</code> и <code>filter</code>, детям передаёт данные и колбэки.</p>
+<p>Controlled components — стандарт для форм: значение input, textarea, select и checkbox полностью управляется React state. Uncontrolled (через <code>ref</code>) допустим для простых случаев, но controlled даёт полный контроль: валидация, disabled, сброс. Колбэки вниз: <code>onToggle(id)</code>, <code>onDelete(id)</code>, <code>onFilterChange('active')</code> — дочерний компонент сообщает родителю о действии, не меняя state напрямую.</p>
+<p>Валидация на клиенте: проверяй перед submit (пустая задача не добавляется), показывай ошибку рядом с полем. Атрибут <code>name</code> на input важен для autofill и семантики. Disabled кнопка submit при невалидной форме — простая и эффективная UX-защита. Enter в поле ввода сабмитит форму, если input внутри <code>&lt;form&gt;</code>.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/reacting-to-input-with-state">react.dev: Reacting to Input with State</a>
+- <a href="https://react.dev/learn/sharing-state-between-components">react.dev: Sharing State Between Components</a>
+- <a href="https://react.dev/reference/react-dom/components/form">react.dev: Form</a></p>
+<p><strong>Ключевая мысль:</strong> общий state — у ближайшего общего родителя; форма controlled, события — через callbacks вверх.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>TodoApp</code> — state <code>todos</code>, <code>filter</code> наверху</li>
+<li><code>AddTodoForm</code> — submit добавляет задачу, очищает input</li>
+<li><code>FilterTabs</code> — подними filter state, передай <code>setFilter</code></li>
+<li><code>TodoStats</code> — вычисляемые значения из props (active count)</li>
+<li>Валидация: пустая задача не добавляется, показ ошибки</li>
+<li><code>AddTodoForm</code> — disabled кнопка при пустом поле</li>
+<li>Enter в поле ввода сабмитит форму</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] State в общем родителе TodoApp</p>
+</li>
+<li>
+<p>[ ] Форма с preventDefault</p>
+</li>
+<li>
+<p>[ ] Валидация пустого ввода</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>TodoApp</code> — state <code>todos</code>, <code>filter</code> наверху</li>
+<li><code>AddTodoForm</code> — submit добавляет задачу, очищает input</li>
+<li><code>FilterTabs</code> — подними filter state, передай <code>setFilter</code></li>
+<li><code>TodoStats</code> — вычисляемые значения из props (active count)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add src/components/todo/TodoApp.tsx
+
+git commit -m &quot;week-11 day-05: lifting state, форма и фильтры&quot;
+
+</code></pre>
+<h2 id="week-11-day-6">День 6 (Sat): Стилизация и структура проекта</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Стилизация React-приложения начинается с организации, а не с выбора CSS-in-JS библиотеки. CSS Modules изолируют стили: <code>import styles from './Button.module.css'</code> и <code>className={styles.primary}</code> — классы уникальны на уровне файла, нет конфликтов имён. Условные классы удобно собирать через template literal или утилиту <code>cn(...classes)</code>, которая фильтрует falsy-значения.</p>
+<p>Структура <code>src/</code> по назначению: <code>components/ui/</code> — переиспользуемые (Button, Card), <code>components/todo/</code> — предметные, <code>types/</code> — TypeScript-интерфейсы, <code>hooks/</code> — custom hooks (позже), <code>utils/</code> — чистые функции, <code>data/</code> — mock-данные. Vite позволяет импортировать изображения как модули: <code>import logo from './logo.svg'</code> — URL подставится автоматически.</p>
+<p>Тёмная тема через CSS variables: в <code>:root</code> задай <code>--bg: #fff; --text: #111</code>, в <code>.dark</code> переопредели <code>--bg: #111; --text: #fff</code>. Переключение — class на <code>&lt;html&gt;</code> или корневом div, управляемый React state. <code>prefers-color-scheme: dark</code> в media query задаёт системную тему по умолчанию. Mobile-first: базовые стили для узкого экрана, <code>@media (min-width: 768px)</code> для расширения.</p>
+<p><strong>Читать:</strong>
+- <a href="https://vite.dev/guide/assets.html">Vite: Static Assets</a>
+- <a href="https://github.com/css-modules/css-modules">CSS Modules — spec</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/CSS/Using_CSS_custom_properties">MDN: CSS custom properties</a></p>
+<p><strong>Ключевая мысль:</strong> CSS Modules + логичная структура папок + CSS variables для темы — достаточный фундамент без CSS-in-JS.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>CSS Modules для Button, Card, TodoItem</li>
+<li>Утилита <code>cn(...classes)</code> для объединения классов</li>
+<li>Реорганизуй src: <code>components/todo/</code>, <code>components/ui/</code></li>
+<li>Перенеси типы в <code>types/todo.ts</code>, mock data в <code>data/</code></li>
+<li>Тёмная тема через class на root + CSS variables</li>
+<li>Адаптив: mobile-first для TodoApp (min-width breakpoints)</li>
+<li>Проверь контраст текста в обеих темах</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Логичная структура папок</p>
+</li>
+<li>
+<p>[ ] CSS Modules без глобальных конфликтов</p>
+</li>
+<li>
+<p>[ ] Тема переключается через state + class</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>CSS Modules для Button, Card, TodoItem</li>
+<li>Утилита <code>cn(...classes)</code> для объединения классов</li>
+<li>Реорганизуй src: <code>components/todo/</code>, <code>components/ui/</code></li>
+<li>Перенеси типы в <code>types/todo.ts</code>, mock data в <code>data/</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add src/ src/**/*.module.css
+
+git commit -m &quot;week-11 day-06: CSS Modules, структура и тёмная тема&quot;
+
+</code></pre>
+<h2 id="week-11-day-7">День 7 (Sun): Сборка Todo App и деплой</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Завершение Todo App объединяет state, effects и production-сборку. <code>useEffect</code> — hook для синхронизации React state с внешним миром (localStorage, document.title, подписки). Для persist: <code>useEffect(() =&gt; { localStorage.setItem('todos', JSON.stringify(todos)) }, [todos])</code> — сохраняй при каждом изменении. Начальное значение загружай через lazy init: <code>useState(() =&gt; JSON.parse(localStorage.getItem('todos') ?? '[]'))</code>.</p>
+<p>Production-сборка: <code>npm run build</code> создаёт оптимизированный bundle в <code>dist/</code>, <code>npm run preview</code> проверяет его локально. Деплой на GitHub Pages, Netlify или Vercel — статический хостинг для SPA. Для GitHub Pages задай <code>base</code> в <code>vite.config.ts</code> (путь репозитория). Environment variables в Vite доступны только с префиксом <code>VITE_</code> — они встраиваются в клиентский код и видны всем.</p>
+<p>React Strict Mode в dev вызывает двойной mount/unmount — это помогает найти missing cleanup в effects. Перед деплоем прогони Lighthouse: Performance, Accessibility, Best Practices. Escape Hatches (useEffect, useRef) — инструменты «выхода» из чистой модели React, когда нужна интеграция с браузерными API.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/escape-hatches">react.dev: Escape Hatches</a>
+- <a href="https://react.dev/reference/react/useEffect">react.dev: useEffect</a>
+- <a href="https://vite.dev/guide/static-deploy.html">Vite: Deploy</a></p>
+<p><strong>Ключевая мысль:</strong> useEffect связывает React с внешним миром; production build + deploy завершают цикл от кода до живого приложения.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Persist todos в localStorage через useEffect</li>
+<li>Загрузка начального state из localStorage (lazy init useState)</li>
+<li>Production build, проверь размер bundle</li>
+<li>Задеплой на GitHub Pages или Vercel</li>
+<li>Финальный self-review по react.dev Quick Start checklist</li>
+<li>README с live demo URL и скриншотом</li>
+<li>Тег <code>week-11-done</code></li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Todos сохраняются между сессиями</p>
+</li>
+<li>
+<p>[ ] Production build успешен</p>
+</li>
+<li>
+<p>[ ] Live demo доступен по URL</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Persist todos в localStorage через useEffect</li>
+<li>Загрузка начального state из localStorage (lazy init useState)</li>
+<li>Production build, проверь размер bundle</li>
+<li>Задеплой на GitHub Pages или Vercel</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add .
+
+git commit -m &quot;week-11 day-07: persist, deploy и React Todo App&quot;
+
+</code></pre>
+<h2 id="week-11-project">Проект недели</h2>
+<p><strong>React Todo App</strong> — полноценное приложение на Vite + TypeScript. Подробное ТЗ: <a href="#projects--projects-неделя-11-react-todo">docs/projects.md — Неделя 11</a>.</p>
+<p>Функции: CRUD задач, фильтры, счётчик, localStorage, тёмная тема, адаптивная вёрстка.</p>
+<p><strong>Функции:</strong></p>
+<ul>
+<li>
+<p>Добавление, toggle, удаление задач с валидацией</p>
+</li>
+<li>
+<p>Фильтры: all / active / completed + счётчик оставшихся</p>
+</li>
+<li>
+<p>Переключение светлой/тёмной темы с persist</p>
+</li>
+<li>
+<p>Адаптивная вёрстка от 320px</p>
+</li>
+</ul>
+<p><strong>Критерии проекта:</strong></p>
+<ul>
+<li>
+<p>[ ] 8+ компонентов, типизированные props</p>
+</li>
+<li>
+<p>[ ] useState + lifting state + controlled forms</p>
+</li>
+<li>
+<p>[ ] CSS Modules или эквивалентная изоляция стилей</p>
+</li>
+<li>
+<p>[ ] localStorage persist, deployed demo</p>
+</li>
+<li>
+<p>[ ] Lighthouse Accessibility ≥ 90</p>
+</li>
+<li>
+<p>[ ] README с URL деплоя и инструкцией <code>npm run dev</code></p>
+</li>
+<li>
+<p>[ ] Тег <code>week-11-done</code></p>
+</li>
+</ul>
+<h2 id="week-11-review">Ревью-чеклист</h2>
+<ul>
+<li>
+<p>Чем JSX отличается от HTML?</p>
+</li>
+<li>
+<p>Зачем нужен key в списках и почему не index?</p>
+</li>
+<li>
+<p>Как обновить элемент массива в state иммутабельно?</p>
+</li>
+<li>
+<p>Что такое controlled component?</p>
+</li>
+<li>
+<p>Могу ли я объяснить однонаправленный поток данных в React?</p>
+</li>
+</ul>
+<h2 id="week-11-review">Проверь себя</h2>
+<details>
+<summary>Что должно получиться к концу недели?</summary>
+
+Работающий проект **React Todo** в `learning-log/week-11/`, осмысленная Git-история, тег `week-11-done`.
+
+</details>
+
+<details>
+<summary>Главный навык недели одной фразой?</summary>
+
+React: компоненты, props, state
+
+</details>
+
+<details>
+<summary>Можно ли пропустить день?</summary>
+
+Нет — дни связаны. В **лайт-режиме** сократи практику до MVP, но теорию и Git-коммит не пропускай.
+
+</details></article>
+  </main>
+  <script>if (location.hash) location.replace('../' + location.hash);</script>
+</body>
+</html>

@@ -8,8 +8,8 @@
 ## День 134 (Пн): Аутентификация и хеширование паролей
 <a id="week-20-day-134"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Secure Notes**
 
 ### Теория
@@ -28,7 +28,7 @@ Registration flow: дубликат email → 409 Conflict. Login: неверн�
 
 **Ключевая мысль:** hash + salt через bcrypt; одинаковые сообщения об ошибке login — против enumeration.
 
-### Практика
+### Практика (полный трек)
 1. Таблица `users(id, email UNIQUE, password_hash, created_at)`
 2. Express: `POST /auth/register`, `POST /auth/login`
 3. `bcrypt.hash(password, 12)` при register, `bcrypt.compare()` при login
@@ -41,9 +41,17 @@ Registration flow: дубликат email → 409 Conflict. Login: неверн�
 - [ ] Дубликат email → 409
 - [ ] Неверный пароль → 401 (не 404)
 
+### Практика (лайт / MVP)
+1. Таблица `users(id, email UNIQUE, password_hash, created_at)`
+2. Express: `POST /auth/register`, `POST /auth/login`
+3. `bcrypt.hash(password, 12)` при register, `bcrypt.compare()` при login
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.
 
 ### Git
 - Закоммить изменения дня: `git add week-20/` → `git commit -m "week 20 day 134: register login bcrypt"`
@@ -57,8 +65,8 @@ Registration flow: дубликат email → 409 Conflict. Login: неверн�
 ## День 135 (Вт): JWT — выдача и проверка токенов
 <a id="week-20-day-135"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Secure Notes**
 
 ### Теория
@@ -77,7 +85,7 @@ Middleware `authenticateToken` verify JWT и кладёт `req.user = { id, emai
 
 **Ключевая мысль:** JWT — подписанный контракт, не шифрование; user_id только из verified token.
 
-### Практика
+### Практика (полный трек)
 1. Login возвращает `{ access_token, token_type: "bearer", expires_in }`
 2. Middleware `authenticateToken` — verify JWT, `req.user = { id, email }`
 3. Protected: `GET /api/notes` только с valid token
@@ -90,9 +98,17 @@ Middleware `authenticateToken` verify JWT и кладёт `req.user = { id, emai
 - [ ] Expired token → 401
 - [ ] user_id из token, не из body/query
 
+### Практика (лайт / MVP)
+1. Login возвращает `{ access_token, token_type: "bearer", expires_in }`
+2. Middleware `authenticateToken` — verify JWT, `req.user = { id, email }`
+3. Protected: `GET /api/notes` только с valid token
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.
 
 ### Git
 - Закоммить изменения дня: `git add week-20/` → `git commit -m "week 20 day 135: JWT middleware and protected routes"`
@@ -106,8 +122,8 @@ Middleware `authenticateToken` verify JWT и кладёт `req.user = { id, emai
 ## День 136 (Ср): OWASP Top 10 — практическая защита
 <a id="week-20-day-136"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Secure Notes**
 
 ### Теория
@@ -126,7 +142,7 @@ Helmet.js выставляет security headers: `X-Content-Type-Options`, `X-Fr
 
 **Ключевая мысль:** безопасность — слои: hash, JWT, rate limit, headers, CORS, audit.
 
-### Практика
+### Практика (полный трек)
 1. Rate limit на `/auth/login`: 5 попыток / 15 мин per IP
 2. `helmet()` в Express; FastAPI — security headers middleware (обзор)
 3. Аудит API: чеклист OWASP 10 пунктов → `security-audit.md`
@@ -139,9 +155,17 @@ Helmet.js выставляет security headers: `X-Content-Type-Options`, `X-Fr
 - [ ] Helmet headers в response (проверь `curl -I`)
 - [ ] Чеклист OWASP заполнен в `security-audit.md`
 
+### Практика (лайт / MVP)
+1. Rate limit на `/auth/login`: 5 попыток / 15 мин per IP
+2. `helmet()` в Express; FastAPI — security headers middleware (обзор)
+3. Аудит API: чеклист OWASP 10 пунктов → `security-audit.md`
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.
 
 ### Git
 - Закоммить изменения дня: `git add week-20/` → `git commit -m "week 20 day 136: OWASP audit rate limit helmet"`
@@ -155,8 +179,8 @@ Helmet.js выставляет security headers: `X-Content-Type-Options`, `X-Fr
 ## День 137 (Чт): Тестирование backend — pytest
 <a id="week-20-day-137"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Secure Notes**
 
 ### Теория
@@ -175,7 +199,7 @@ Arrange-Act-Assert в каждом тесте. Покрой: register success, d
 
 **Ключевая мысль:** тестируй auth, 403 cross-user и 401 без token — не только happy path.
 
-### Практика
+### Практика (полный трек)
 1. Тесты auth: register success, duplicate email 409, login, wrong password 401
 2. Fixture: test user + valid token в `Authorization` header
 3. Protected route: 401 без token, 200 с token
@@ -188,9 +212,17 @@ Arrange-Act-Assert в каждом тесте. Покрой: register success, d
 - [ ] Тесты не зависят от порядка выполнения
 - [ ] conftest.py с test database
 
+### Практика (лайт / MVP)
+1. Тесты auth: register success, duplicate email 409, login, wrong password 401
+2. Fixture: test user + valid token в `Authorization` header
+3. Protected route: 401 без token, 200 с token
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-20/` → `git commit -m "week 20 day 137: pytest auth and notes tests"`
@@ -204,8 +236,8 @@ Arrange-Act-Assert в каждом тесте. Покрой: register success, d
 ## День 138 (Пт): Тестирование frontend — Vitest
 <a id="week-20-day-138"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Secure Notes**
 
 ### Теория
@@ -224,7 +256,7 @@ Mock `fetch` через `vi.fn()` или `global.fetch = vi.fn().mockResolvedVal
 
 **Ключевая мысль:** RTL — «как пользователь видит»; mock fetch, не implementation details.
 
-### Практика
+### Практика (полный трек)
 1. `npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom @testing-library/user-event`
 2. Тест: Login form — submit вызывает API с email/password
 3. Тест: Protected route redirect на `/login` без token
@@ -237,9 +269,17 @@ Mock `fetch` через `vi.fn()` или `global.fetch = vi.fn().mockResolvedVal
 - [ ] Тесты ищут по role/label, не по className
 - [ ] ≥ 8 unit/component тестов
 
+### Практика (лайт / MVP)
+1. `npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom @testing-library/user-event`
+2. Тест: Login form — submit вызывает API с email/password
+3. Тест: Protected route redirect на `/login` без token
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-20/` → `git commit -m "week 20 day 138: Vitest auth and notes components"`
@@ -253,8 +293,8 @@ Mock `fetch` через `vi.fn()` или `global.fetch = vi.fn().mockResolvedVal
 ## День 139 (Сб): Интеграция auth frontend + backend
 <a id="week-20-day-139"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~1ч теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Secure Notes**
 
 ### Теория
@@ -273,7 +313,7 @@ Full flow: register → login → create note → logout → login → note visi
 
 **Ключевая мысль:** auth flow end-to-end — контракт между Context, api wrapper и protected routes.
 
-### Практика
+### Практика (полный трек)
 1. React (Vite + TS): Login/Register pages с валидацией форм
 2. `AuthContext` + `useAuth()` hook
 3. `api.ts` wrapper — подставляет Bearer token, обрабатывает 401
@@ -286,9 +326,17 @@ Full flow: register → login → create note → logout → login → note visi
 - [ ] 401 от API → redirect login
 - [ ] Token не в URL query string
 
+### Практика (лайт / MVP)
+1. React (Vite + TS): Login/Register pages с валидацией форм
+2. `AuthContext` + `useAuth()` hook
+3. `api.ts` wrapper — подставляет Bearer token, обрабатывает 401
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-20/` → `git commit -m "week 20 day 139: React auth integration"`
@@ -302,8 +350,8 @@ Full flow: register → login → create note → logout → login → note visi
 ## День 140 (Вс): Ревью безопасности и CI
 <a id="week-20-day-140"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Secure Notes**
 
 ### Теория
@@ -322,7 +370,7 @@ CI автоматизирует проверку качества на кажд�
 
 **Ключевая мысль:** CI + security audit — часть Definition of Done, не «после деплоя».
 
-### Практика
+### Практика (полный трек)
 1. `.github/workflows/ci.yml`: `pytest` + `vitest run` на push
 2. `npm audit` и `pip audit` — отчёт в `security-audit.md`
 3. Документируй auth flow: sequence diagram в README
@@ -335,9 +383,17 @@ CI автоматизирует проверку качества на кажд�
 - [ ] npm audit — нет critical без комментария
 - [ ] Auth flow задокументирован
 
+### Практика (лайт / MVP)
+1. `.github/workflows/ci.yml`: `pytest` + `vitest run` на push
+2. `npm audit` и `pip audit` — отчёт в `security-audit.md`
+3. Документируй auth flow: sequence diagram в README
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.
 
 ### Git
 - Закоммить изменения дня: `git add week-20/` → `git commit -m "week 20 day 140: CI workflow and security docs"`

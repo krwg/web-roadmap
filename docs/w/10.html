@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Неделя 10: TypeScript — типы, interfaces, generics basics, TS+React setup · web-roadmap</title>
+  <meta name="description" content="TypeScript — неделя 10 маршрута web-roadmap.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-10">
+  <meta property="og:title" content="Неделя 10: TypeScript — типы, interfaces, generics basics, TS+React setup">
+  <meta property="og:url" content="https://krwg.github.io/web-roadmap/w/10.html">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-10">Открыть в приложении маршрута</a> · <a href="../">На главную</a></p>
+    <article class="prose"><h1>Неделя 10: TypeScript — типы, interfaces, generics basics, TS+React setup</h1>
+<blockquote>
+<p><strong>Цель недели:</strong> освоить основы TypeScript и подготовить проект к React с типизированной кодовой базой.</p>
+<p><strong>Литература:</strong> <a href="https://www.typescriptlang.org/docs/handbook/intro.html">TypeScript Handbook</a>, <a href="https://learn.javascript.ru/types">learn.javascript.ru: Типы</a>, <a href="https://react-typescript-cheatsheet.netlify.app/">React TypeScript Cheatsheet</a>, <a href="https://www.totaltypescript.com/tutorials/beginners-typescript">Total TypeScript — Beginners</a>, <a href="https://www.typescriptlang.org/tsconfig">TSConfig Reference</a></p>
+<p><strong>Проект недели:</strong> см. <a href="#projects">docs/projects.md</a></p>
+<p><strong>Git:</strong> минимум 1 осмысленный коммит каждый день в <code>learning-log/week-10/</code></p>
+</blockquote>
+<h2 id="week-10-day-1">День 1 (Mon): Введение в TypeScript</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>TypeScript — это надмножество JavaScript со статической системой типов. Код пишется в <code>.ts</code> (или <code>.tsx</code> для JSX), компилируется компилятором <code>tsc</code> в обычный JavaScript, который выполняется в браузере или Node.js. Типы существуют только на этапе разработки и <strong>стираются</strong> при компиляции — в runtime никакой проверки типов нет. Зато IDE и компилятор ловят ошибки до запуска: опечатки в свойствах, неверные аргументы, забытые <code>null</code>.</p>
+<p>Установка: <code>npm init -y</code>, <code>npm i -D typescript</code>, <code>npx tsc --init</code> создаёт <code>tsconfig.json</code>. Ключевые опции: <code>strict: true</code> (включает все строгие проверки), <code>target</code> (версия JS на выходе), <code>module</code> (система модулей), <code>outDir</code> и <code>rootDir</code>. Базовые типы: <code>string</code>, <code>number</code>, <code>boolean</code>, <code>null</code>, <code>undefined</code>, <code>bigint</code>, <code>symbol</code>. Аннотация явная: <code>let name: string = 'Anna'</code>, но чаще полагайся на вывод типов (inference): <code>const count = 0</code> → TypeScript сам определит <code>number</code>.</p>
+<p>Команда <code>npx tsc --noEmit</code> проверяет типы без генерации файлов — удобно в CI. Разница <code>.ts</code> и <code>.tsx</code>: JSX-синтаксис допустим только в <code>.tsx</code>. Скрипт <code>"build": "tsc"</code> в <code>package.json</code> автоматизирует компиляцию, <code>"dev": "tsc --watch"</code> пересобирает при каждом сохранении.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html">TypeScript: Getting Started</a>
+- <a href="https://learn.javascript.ru/types">learn.javascript.ru: Типы</a>
+- <a href="https://www.typescriptlang.org/tsconfig">TSConfig Reference</a></p>
+<p><strong>Ключевая мысль:</strong> TypeScript ловит целый класс ошибок на этапе компиляции — типы это документация, которую нельзя проигнорировать.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Создай проект <code>learning-log/week-10</code>, инициализируй TypeScript</li>
+<li>Перепиши <code>utils.js</code> из прошлых недель в <code>utils.ts</code></li>
+<li>Включи <code>strict: true</code> в <code>tsconfig.json</code></li>
+<li>Исправь все ошибки компиляции</li>
+<li>Настрой скрипт <code>"build": "tsc"</code> в package.json</li>
+<li>Добавь <code>"dev": "tsc --watch"</code> для автопересборки</li>
+<li>Создай <code>src/index.ts</code> — точка входа, импорт utils</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] <code>tsc</code> компилирует без ошибок</p>
+</li>
+<li>
+<p>[ ] <code>strict: true</code> включён</p>
+</li>
+<li>
+<p>[ ] Понимаю разницу .ts и .js на выходе</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Создай проект <code>learning-log/week-10</code>, инициализируй TypeScript</li>
+<li>Перепиши <code>utils.js</code> из прошлых недель в <code>utils.ts</code></li>
+<li>Включи <code>strict: true</code> в <code>tsconfig.json</code></li>
+<li>Исправь все ошибки компиляции</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add package.json tsconfig.json src/
+
+git commit -m &quot;week-10 day-01: инициализация TS-проекта и utils.ts&quot;
+
+</code></pre>
+<h2 id="week-10-day-2">День 2 (Tue): Типы, union, literal, any</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Union types объединяют несколько типов: <code>string | number</code> означает «или строка, или число». Literal types сужают множество до конкретных значений: <code>type Theme = 'light' | 'dark'</code> — не любая строка, а ровно два варианта. TypeScript не даст присвоить <code>'blue'</code>, если тип допускает только <code>'light' | 'dark'</code>. Это основа для моделирования состояний и флагов.</p>
+<p><code>any</code> отключает проверку типов — «дыра» в системе, через которую ошибки просачиваются обратно в runtime. Избегай <code>any</code>; вместо него используй <code>unknown</code> — тип «что-то есть, но мы не знаем что». С <code>unknown</code> нельзя ничего делать, пока не сузишь тип через <code>typeof</code>, <code>in</code> или type guard. Discriminated union добавляет общее поле-дискриминатор: <code>{ ok: true, data: T } | { ok: false, error: string }</code> — switch по <code>ok</code> сужает тип в каждой ветке.</p>
+<p><code>as const</code> делает объект readonly с literal-типами: <code>const STATUS = { LOADING: 'loading' } as const</code>. Тип <code>never</code> означает «недостижимо» — полезен в exhaustive switch: если добавишь новый вариант union, компилятор укажет на непокрытую ветку. Пользовательские type guards: <code>function isUser(x: unknown): x is User</code> — явный контракт сужения.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/everyday-types.html">Handbook: Everyday Types</a>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html">Handbook: Narrowing</a>
+- <a href="https://www.totaltypescript.com/tutorials/beginners-typescript">Total TypeScript: Beginners</a></p>
+<p><strong>Ключевая мысль:</strong> union + narrowing превращают TypeScript в инструмент моделирования состояний; <code>unknown</code> безопаснее <code>any</code>.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Тип <code>Theme = 'light' | 'dark'</code> для переключателя темы</li>
+<li>Функция <code>formatId(id: string | number): string</code> с narrowing</li>
+<li>Замени <code>any</code> на <code>unknown</code> + проверку перед использованием</li>
+<li>Discriminated union <code>Result = { ok: true, data: T } | { ok: false, error: string }</code></li>
+<li>Используй <code>as const</code> для объекта констант STATUS</li>
+<li>Напиши type guard <code>isApiError(err): err is ApiError</code></li>
+<li>Exhaustive switch по union — <code>default: const _exhaustive: never = value</code></li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Нет <code>any</code> в новом коде</p>
+</li>
+<li>
+<p>[ ] Union types с корректным narrowing</p>
+</li>
+<li>
+<p>[ ] Result pattern для ошибок API</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Тип <code>Theme = 'light' | 'dark'</code> для переключателя темы</li>
+<li>Функция <code>formatId(id: string | number): string</code> с narrowing</li>
+<li>Замени <code>any</code> на <code>unknown</code> + проверку перед использованием</li>
+<li>Discriminated union <code>Result = { ok: true, data: T } | { ok: false, error: string }</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add src/types/
+
+git commit -m &quot;week-10 day-02: union, Result pattern и type guards&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p><code>any</code> распространяется как зараза — теряется смысл TS</p>
+</li>
+<li>
+<p>Утверждение <code>as Type</code> без проверки — ложная безопасность</p>
+</li>
+<li>
+<p>Забытый <code>strictNullChecks</code> — null не ловится</p>
+</li>
+</ul>
+<h2 id="week-10-day-3">День 3 (Wed): Interfaces и type aliases</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Объекты в TypeScript описываются через <code>interface</code> или <code>type</code>. <code>interface User { id: number; name: string; email?: string }</code> — <code>email?</code> опционален, его может не быть. <code>readonly id: number</code> запрещает переприсвоение после создания. Оба способа описывают форму объекта; различия тонкие: <code>interface</code> можно расширять (<code>extends</code>) и объединять (declaration merging), <code>type</code> гибче для union и mapped types.</p>
+<p>Расширение: <code>interface Admin extends User { role: string }</code> добавляет поля. Альтернатива — intersection: <code>type Admin = User &amp; { role: string }</code>. Index signature <code>[key: string]: string</code> описывает объекты с динамическими ключами (словари, кэши). Для объектов предпочитай <code>interface</code>, для union и вычисляемых типов — <code>type</code>.</p>
+<p>Utility types из коробки: <code>Readonly&lt;T&gt;</code> делает все поля readonly, <code>ReadonlyArray&lt;T&gt;</code> — неизменяемый массив. В проекте заведи папку <code>types/</code> с DTO (Data Transfer Objects): <code>Todo</code>, <code>ApiResponse&lt;T&gt;</code>, <code>PaginationMeta</code>. Типизированный api-модуль возвращает <code>Promise&lt;ApiResponse&lt;Todo[]&gt;&gt;</code> вместо «что-то пришло с сервера». Это контракт между слоями, который компилятор проверяет.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/objects.html">Handbook: Objects</a>
+- <a href="https://www.typescriptlang.org/docs/handbook/utility-types.html">Handbook: Utility Types</a>
+- <a href="https://react-typescript-cheatsheet.netlify.app/">React TypeScript Cheatsheet</a></p>
+<p><strong>Ключевая мысль:</strong> interface/type — это контракт формы данных; DTO в отдельных файлах делают API и доменную модель явными.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Интерфейсы <code>Todo</code>, <code>TodoFilter</code>, <code>TodoState</code> для Todo App</li>
+<li><code>interface ApiResponse&lt;T&gt; { data: T; meta: PaginationMeta }</code></li>
+<li>Type alias для функции: <code>type EventHandler = (e: Event) =&gt; void</code></li>
+<li>Расширь <code>User</code> → <code>Admin</code> с полем <code>permissions: string[]</code></li>
+<li>Рефакторинг api-модуля с типизированными ответами</li>
+<li>Создай <code>types/api.ts</code> — все DTO в одном месте</li>
+<li>Добавь <code>readonly</code> к id в Todo — попробуй изменить и поймай ошибку TS</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Все доменные сущности типизированы</p>
+</li>
+<li>
+<p>[ ] interface vs type — осознанный выбор</p>
+</li>
+<li>
+<p>[ ] Опциональные и readonly поля использованы</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Интерфейсы <code>Todo</code>, <code>TodoFilter</code>, <code>TodoState</code> для Todo App</li>
+<li><code>interface ApiResponse&lt;T&gt; { data: T; meta: PaginationMeta }</code></li>
+<li>Type alias для функции: <code>type EventHandler = (e: Event) =&gt; void</code></li>
+<li>Расширь <code>User</code> → <code>Admin</code> с полем <code>permissions: string[]</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add src/types/ src/api/
+
+git commit -m &quot;week-10 day-03: интерфейсы Todo и ApiResponse&quot;
+
+</code></pre>
+<h2 id="week-10-day-4">День 4 (Thu): Generics — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Generics (обобщения) позволяют писать функции и типы, работающие с разными типами, сохраняя связь между входом и выходом. <code>function identity&lt;T&gt;(arg: T): T</code> — тип возвращаемого значения совпадает с типом аргумента. Без generics пришлось бы писать отдельные функции для <code>string</code>, <code>number</code>, <code>User</code> или откатываться к <code>any</code>.</p>
+<p>Constraints ограничивают generic сверху: <code>&lt;T extends { id: number }&gt;</code> гарантирует, что у <code>T</code> есть поле <code>id</code>. <code>keyof T</code> даёт union всех ключей объекта, а indexed access <code>T[K]</code> — тип значения по ключу. Это основа для <code>pluck(obj, 'name')</code> с правильным return type. Generic defaults <code>&lt;T = string&gt;</code> задают тип по умолчанию, если параметр не указан.</p>
+<p>Практические применения: <code>async function fetchJson&lt;T&gt;(url: string): Promise&lt;T&gt;</code> типизирует ответ API; <code>getItem&lt;T&gt;(key: string): T | null</code> типизирует localStorage wrapper; <code>groupBy&lt;T, K extends string&gt;(items, keyFn)</code> группирует массив любых объектов. IDE будет подсказывать поля на результате <code>fetchJson&lt;User[]&gt;(url)</code> без ручных кастов.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/generics.html">Handbook: Generics</a>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/keyof-types.html">Handbook: Keyof Types</a>
+- <a href="https://www.totaltypescript.com/tutorials/beginners-typescript">Total TypeScript: Beginners</a></p>
+<p><strong>Ключевая мысль:</strong> generics связывают типы входа и выхода — <code>fetchJson&lt;User&gt;</code> безопаснее <code>fetchJson&lt;any&gt;</code>.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>function first&lt;T&gt;(arr: T[]): T | undefined</code></li>
+<li><code>async function fetchJson&lt;T&gt;(url: string): Promise&lt;T&gt;</code> — типизированный fetch</li>
+<li><code>function groupBy&lt;T, K extends string&gt;(items: T[], key: (item: T) =&gt; K)</code></li>
+<li>Типизируй localStorage wrapper: <code>getItem&lt;T&gt;(key): T | null</code></li>
+<li>Примени generics в api-клиенте каталога фильмов</li>
+<li><code>function pluck&lt;T, K extends keyof T&gt;(obj: T, key: K): T[K]</code></li>
+<li>Напиши тестовые вызовы с разными T — проверь inference в IDE</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] fetchJson типизирует ответ API</p>
+</li>
+<li>
+<p>[ ] groupBy работает с разными типами</p>
+</li>
+<li>
+<p>[ ] Constraints использован хотя бы раз</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>function first&lt;T&gt;(arr: T[]): T | undefined</code></li>
+<li><code>async function fetchJson&lt;T&gt;(url: string): Promise&lt;T&gt;</code> — типизированный fetch</li>
+<li><code>function groupBy&lt;T, K extends string&gt;(items: T[], key: (item: T) =&gt; K)</code></li>
+<li>Типизируй localStorage wrapper: <code>getItem&lt;T&gt;(key): T | null</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add src/lib/fetch.ts src/lib/storage.ts
+
+git commit -m &quot;week-10 day-04: generic fetchJson и localStorage wrapper&quot;
+
+</code></pre>
+<h2 id="week-10-day-5">День 5 (Fri): Функции, utility types, enums</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1.5ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Типизация функций в TypeScript охватывает параметры, возвращаемое значение и перегрузки. Optional параметры (<code>name?: string</code>), значения по умолчанию (<code>size = 'md'</code>) и rest (<code>...args: number[]</code>) типизируются явно. Return type можно вывести (inference), но явный return полезен для публичного API — компилятор проверит, что все ветки возвращают заявленный тип.</p>
+<p>Utility types трансформируют существующие типы: <code>Partial&lt;T&gt;</code> делает все поля опциональными (удобно для update DTO), <code>Pick&lt;T, 'title' | 'done'&gt;</code> выбирает подмножество полей, <code>Omit&lt;T, 'id'&gt;</code> исключает поля, <code>Record&lt;Keys, Type&gt;</code> строит объект с заданными ключами. Пример: <code>type UpdateTodo = Partial&lt;Pick&lt;Todo, 'title' | 'done'&gt;&gt;</code> — обновление только разрешённых полей.</p>
+<p><code>enum</code> в modern TypeScript уступает union of literals: <code>const STATUS = { LOADING: 'loading', SUCCESS: 'success' } as const; type Status = typeof STATUS[keyof typeof STATUS]</code>. Такой подход лучше tree-shaking и не генерирует лишний JS. Function overloads задают несколько сигнатур для одной реализации. <code>Parameters&lt;T&gt;</code> и <code>ReturnType&lt;T&gt;</code> извлекают типы из существующих функций. Оператор <code>satisfies</code> (TS 4.9+) проверяет тип, сохраняя literal inference.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.typescriptlang.org/docs/handbook/utility-types.html">Handbook: Utility Types</a>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/functions.html">Handbook: More on Functions</a>
+- <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator">TypeScript 4.9: satisfies</a></p>
+<p><strong>Ключевая мысль:</strong> utility types — конструктор из существующих типов; <code>Partial</code>/<code>Pick</code>/<code>Omit</code> заменяют ручное дублирование DTO.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>UpdateTodo = Partial&lt;Pick&lt;Todo, 'title' | 'done'&gt;&gt;</code></li>
+<li><code>Record&lt;Theme, string&gt;</code> для CSS-переменных по темам</li>
+<li>Замени enum статусов на <code>as const</code> объект + union type</li>
+<li>Overload: <code>createElement(tag: 'div'): HTMLDivElement</code> (упрощённо)</li>
+<li>Типизируй EventEmitter из недели 9 generics <code>&lt;T&gt;</code></li>
+<li><code>Required&lt;Pick&lt;Todo, 'title'&gt;&gt;</code> для create DTO</li>
+<li>Используй <code>ReturnType&lt;typeof fetchJson&gt;</code> в обёртке</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Partial/Pick/Omit в рефакторинге</p>
+</li>
+<li>
+<p>[ ] const assertion вместо enum</p>
+</li>
+<li>
+<p>[ ] EventEmitter типизирован</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>UpdateTodo = Partial&lt;Pick&lt;Todo, 'title' | 'done'&gt;&gt;</code></li>
+<li><code>Record&lt;Theme, string&gt;</code> для CSS-переменных по темам</li>
+<li>Замени enum статусов на <code>as const</code> объект + union type</li>
+<li>Overload: <code>createElement(tag: 'div'): HTMLDivElement</code> (упрощённо)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add src/lib/event-emitter.ts
+
+git commit -m &quot;week-10 day-05: utility types и типизированный EventEmitter&quot;
+
+</code></pre>
+<h2 id="week-10-day-6">День 6 (Sat): TS + React setup</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Vite — современный инструмент сборки для фронтенда с мгновенным dev-сервером и HMR (Hot Module Replacement). Создание React + TypeScript проекта: <code>npm create vite@latest my-app -- --template react-ts</code>. Структура: <code>src/main.tsx</code> — точка входа, <code>App.tsx</code> — корневой компонент, <code>vite-env.d.ts</code> — типы Vite. TypeScript настроен из коробки.</p>
+<p>Props React-компонента типизируются через interface: <code>interface ButtonProps { label: string; onClick: () =&gt; void; variant?: 'primary' | 'secondary'; disabled?: boolean }</code>. Современная рекомендация — обычная функция <code>function Button({ label, onClick }: ButtonProps)</code>, а не <code>React.FC</code> (устаревший паттерн с неявным <code>children</code>). <code>React.ReactNode</code> описывает всё, что можно отрендерить (строки, числа, элементы, массивы, null). <code>React.ReactElement</code> — конкретно JSX-элемент.</p>
+<p>Vite конфигурируется в <code>vite.config.ts</code>; path aliases настраиваются и в tsconfig, и в vite. React Strict Mode в dev намеренно вызывает двойной render компонентов, чтобы выявить побочные эффекты — это нормально и не баг. Команды: <code>npm run dev</code> (разработка), <code>npm run build</code> (production-сборка с проверкой типов).</p>
+<p><strong>Читать:</strong>
+- <a href="https://react-typescript-cheatsheet.netlify.app/docs/basic/setup">React TypeScript Cheatsheet: Setup</a>
+- <a href="https://vite.dev/guide/">Vite Guide</a>
+- <a href="https://react.dev/learn">react.dev: Quick Start</a></p>
+<p><strong>Ключевая мысль:</strong> Vite + react-ts даёт типизированный старт за минуту; props типизируй через interface, не через React.FC.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Создай проект Vite + React + TypeScript в <code>week-10/</code></li>
+<li>Перенеси типы Todo в <code>src/types/todo.ts</code></li>
+<li>Компонент <code>Button</code> с props: <code>label</code>, <code>onClick</code>, <code>variant?</code>, <code>disabled?</code></li>
+<li>Компонент <code>Card</code> с <code>children: React.ReactNode</code></li>
+<li>Запусти <code>npm run dev</code>, убедись что HMR работает</li>
+<li>Компонент <code>TodoItem</code> с типизированными props из <code>types/todo.ts</code></li>
+<li>Проверь <code>npm run build</code> — production без ошибок TS</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Vite проект запускается</p>
+</li>
+<li>
+<p>[ ] Минимум 2 типизированных компонента</p>
+</li>
+<li>
+<p>[ ] Типы вынесены в отдельные файлы</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Создай проект Vite + React + TypeScript в <code>week-10/</code></li>
+<li>Перенеси типы Todo в <code>src/types/todo.ts</code></li>
+<li>Компонент <code>Button</code> с props: <code>label</code>, <code>onClick</code>, <code>variant?</code>, <code>disabled?</code></li>
+<li>Компонент <code>Card</code> с <code>children: React.ReactNode</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add src/components/
+
+git commit -m &quot;week-10 day-06: Vite react-ts, Button и Card&quot;
+
+</code></pre>
+<h2 id="week-10-day-7">День 7 (Sun): Миграция и strict mode</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Typed API Client</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Миграция существующего JS-проекта на TypeScript может быть постепенной. В <code>tsconfig.json</code> включи <code>allowJs: true</code> — компилятор будет проверять <code>.js</code> файлы рядом с <code>.ts</code>. <code>checkJs: true</code> добавляет проверку типов в JS через JSDoc-аннотации. Переименовывай файлы по одному: <code>api.js</code> → <code>api.ts</code>, исправляй ошибки, коммить.</p>
+<p>Типы для npm-пакетов без встроенной типизации лежат в DefinitelyTyped: <code>@types/react</code>, <code>@types/node</code>. Declaration files (<code>.d.ts</code>) описывают форму JS-модуля без реализации — нужны для legacy-библиотек. Path aliases в tsconfig (<code>"@/*": ["src/*"]</code>) и в <code>vite.config.ts</code> сокращают импорты: <code>import { Button } from '@/components/Button'</code>.</p>
+<p>Строгие опции поверх <code>strict</code>: <code>noUncheckedIndexedAccess</code> добавляет <code>| undefined</code> к <code>arr[i]</code> и <code>obj[key]</code> — заставляет проверять границы. <code>exactOptionalPropertyTypes</code> различает «поле отсутствует» и «поле равно <code>undefined</code>». Документируй решения tsconfig в <code>docs/typescript.md</code> — будущий ты (и команда) скажут спасибо.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html">Handbook: Migrating from JavaScript</a>
+- <a href="https://github.com/DefinitelyTyped/DefinitelyTyped">DefinitelyTyped</a>
+- <a href="https://www.typescriptlang.org/tsconfig#noUncheckedIndexedAccess">TSConfig: noUncheckedIndexedAccess</a></p>
+<p><strong>Ключевая мысль:</strong> миграция на TS — итеративный процесс; strict-опции и path aliases делают кодовую базу надёжнее с каждым коммитом.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Настрой alias <code>@/</code> в tsconfig и vite.config</li>
+<li>Мигрируй api-модуль в TS с полной типизацией</li>
+<li>Включи <code>noUncheckedIndexedAccess</code> — исправь новые ошибки</li>
+<li>Напиши <code>.d.ts</code> для маленькой JS-библиотеки без типов (mock)</li>
+<li>Документируй tsconfig решения в <code>docs/typescript.md</code></li>
+<li>Собери <strong>Typed API Client</strong> — финальная структура пакета</li>
+<li>Тег <code>week-10-done</code> после проверки strict mode</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Path aliases работают</p>
+</li>
+<li>
+<p>[ ] api модуль полностью типизирован</p>
+</li>
+<li>
+<p>[ ] noUncheckedIndexedAccess не ломает сборку</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Настрой alias <code>@/</code> в tsconfig и vite.config</li>
+<li>Мигрируй api-модуль в TS с полной типизацией</li>
+<li>Включи <code>noUncheckedIndexedAccess</code> — исправь новые ошибки</li>
+<li>Напиши <code>.d.ts</code> для маленькой JS-библиотеки без типов (mock)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-10
+
+git add .
+
+git commit -m &quot;week-10 day-07: strict tsconfig и Typed API Client&quot;
+
+</code></pre>
+<h2 id="week-10-project">Проект недели</h2>
+<p><strong>Typed API Client</strong> — TS-библиотека + Vite React shell. Подробное ТЗ: <a href="#projects--projects-неделя-10-typed-api-client">docs/projects.md — Неделя 10</a>.</p>
+<p>Пакет: типы, generic <code>fetchJson&lt;T&gt;</code>, localStorage repo, unit-типы для всех функций. React: заглушка App с Button и Card.</p>
+<p><strong>Функции:</strong></p>
+<ul>
+<li>
+<p>Generic HTTP-клиент с <code>Result&lt;T&gt;</code> pattern и обработкой ошибок</p>
+</li>
+<li>
+<p>Типизированный репозиторий Todo в localStorage</p>
+</li>
+<li>
+<p>DTO для create/update через <code>Partial</code>/<code>Pick</code></p>
+</li>
+<li>
+<p>React shell: демо-компоненты, подключение типов из библиотеки</p>
+</li>
+</ul>
+<p><strong>Критерии проекта:</strong></p>
+<ul>
+<li>
+<p>[ ] strict TypeScript, zero <code>any</code> в <code>src/</code></p>
+</li>
+<li>
+<p>[ ] Generics в fetch и storage</p>
+</li>
+<li>
+<p>[ ] Utility types для update DTOs</p>
+</li>
+<li>
+<p>[ ] Vite react-ts scaffold с 2+ компонентами</p>
+</li>
+<li>
+<p>[ ] <code>docs/typescript.md</code> с объяснением tsconfig</p>
+</li>
+<li>
+<p>[ ] README с <code>npm run build</code> и <code>npm run dev</code></p>
+</li>
+<li>
+<p>[ ] Тег <code>week-10-done</code></p>
+</li>
+</ul>
+<h2 id="week-10-review">Ревью-чеклист</h2>
+<ul>
+<li>
+<p>Зачем TypeScript если есть JS?</p>
+</li>
+<li>
+<p>Разница <code>interface</code> и <code>type</code>?</p>
+</li>
+<li>
+<p>Когда <code>unknown</code> лучше <code>any</code>?</p>
+</li>
+<li>
+<p>Что делает <code>Partial&lt;T&gt;</code> и <code>Pick&lt;T, K&gt;</code>?</p>
+</li>
+<li>
+<p>Как типизировать props React-компонента?</p>
+</li>
+</ul>
+<h2 id="week-10-review">Проверь себя</h2>
+<details>
+<summary>Что должно получиться к концу недели?</summary>
+
+Работающий проект **Typed API Client** в `learning-log/week-10/`, осмысленная Git-история, тег `week-10-done`.
+
+</details>
+
+<details>
+<summary>Главный навык недели одной фразой?</summary>
+
+TypeScript strict: типы без any
+
+</details>
+
+<details>
+<summary>Можно ли пропустить день?</summary>
+
+Нет — дни связаны. В **лайт-режиме** сократи практику до MVP, но теорию и Git-коммит не пропускай.
+
+</details></article>
+  </main>
+  <script>if (location.hash) location.replace('../' + location.hash);</script>
+</body>
+</html>

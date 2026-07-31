@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Неделя 8: Async JS — promises, event loop, HTTP, API patterns · web-roadmap</title>
+  <meta name="description" content="Async &amp; HTTP — неделя 08 маршрута web-roadmap.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-08">
+  <meta property="og:title" content="Неделя 8: Async JS — promises, event loop, HTTP, API patterns">
+  <meta property="og:url" content="https://krwg.github.io/web-roadmap/w/08.html">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-08">Открыть в приложении маршрута</a> · <a href="../">На главную</a></p>
+    <article class="prose"><h1>Неделя 8: Async JS — promises, event loop, HTTP, API patterns</h1>
+<blockquote>
+<p><strong>Цель недели:</strong> глубоко понять асинхронность в JavaScript, Promises, Event Loop и паттерны работы с API.
+<strong>Литература:</strong> Kyle Simpson «You Don't Know JS: Async &amp; Performance», <a href="https://learn.javascript.ru/promise-basics">learn.javascript.ru: Промисы</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop">MDN Event Loop</a>, <a href="https://javascript.info/event-loop">JavaScript.info: Event loop</a>, <a href="https://www.youtube.com/watch?v=8aGhZQkoFbQ">Philip Roberts: What the heck is the event loop?</a></p>
+<p><strong>Проект недели:</strong> см. <a href="#projects--projects-неделя-8-movie-catalog">docs/projects.md</a>
+<strong>Git:</strong> минимум 1 осмысленный коммит каждый день в <code>learning-log/week-08/</code></p>
+</blockquote>
+<h2 id="week-08-day-1">День 1 (Mon): Асинхронность и Event Loop</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>JavaScript однопоточен: в каждый момент времени выполняется только один фрагмент кода на main thread. Синхронные операции (циклы, тяжёлые вычисления) блокируют интерфейс — кнопки не реагируют, анимации замирают. Асинхронность решает это: долгие задачи (таймеры, сетевые запросы, чтение файлов) делегируются Web APIs браузера, а результат возвращается через колбэки, когда main thread освободится.</p>
+<p>Event Loop — механизм, который координирует выполнение. Call stack выполняет текущий синхронный код. Когда стек пуст, Loop проверяет очереди задач. Сначала выполняются <strong>microtasks</strong> (колбэки Promise: <code>.then</code>, <code>.catch</code>, <code>queueMicrotask</code>), и только потом <strong>macrotasks</strong> (<code>setTimeout</code>, <code>setInterval</code>, I/O). Поэтому <code>Promise.resolve().then(...)</code> всегда выполнится раньше <code>setTimeout(fn, 0)</code> — даже с нулевой задержкой.</p>
+<p>Классическая ловушка — думать, что <code>setTimeout(fn, 0)</code> выполнится «сразу». На самом деле он попадёт в macrotask queue и дождётся завершения всего синхронного кода и всех microtasks. Понимание этого порядка — основа отладки «почему console.log выводится не в том порядке, который я ожидал». Визуализатор <a href="http://latentflip.com/loupe/">Loupe</a> помогает увидеть движение задач по очередям.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/intro">learn.javascript.ru: Введение: колбэки</a>
+- <a href="https://javascript.info/event-loop">javascript.info: Event loop</a>
+- <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop">MDN: Event Loop</a>
+- <a href="http://latentflip.com/loupe/">Loupe — визуализация Event Loop</a></p>
+<p><strong>Ключевая мысль:</strong> microtasks (Promise) всегда опережают macrotasks (setTimeout) — запомни это правило, и половина async-багов исчезнет.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Предскажи порядок вывода 5 задач с <code>console.log</code>, <code>setTimeout</code>, <code>Promise.resolve().then</code></li>
+<li>Проверь в браузере, объясни через Event Loop</li>
+<li>Нарисуй диаграмму выполнения в блокноте</li>
+<li>Пройди 10+ примеров на <a href="https://javascript.info/event-loop">javascript.info/event-loop</a></li>
+<li>Запиши правило: microtasks перед macrotasks</li>
+<li>Добавь <code>queueMicrotask</code> в пример — сравни с <code>Promise.resolve().then</code></li>
+<li>Сохрани конспект Event Loop в <code>week-08/notes.md</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Могу предсказать порядок вывода в 4 из 5 примеров
+- [ ] Понимаю разницу microtask и macrotask
+- [ ] Есть конспект Event Loop своими словами</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Предскажи порядок вывода 5 задач с <code>console.log</code>, <code>setTimeout</code>, <code>Promise.resolve().then</code></li>
+<li>Проверь в браузере, объясни через Event Loop</li>
+<li>Нарисуй диаграмму выполнения в блокноте</li>
+<li>Пройди 10+ примеров на <a href="https://javascript.info/event-loop">javascript.info/event-loop</a></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 1: event loop basics"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Думать, что <code>setTimeout(0)</code> выполняется мгновенно</li>
+<li>Блокировка main thread тяжёлыми вычислениями — UI замрёт</li>
+<li>Бесконечная рекурсия Promise.then — microtask starvation</li>
+</ul>
+<h2 id="week-08-day-2">День 2 (Tue): Promises — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Promise — объект-обёртка над результатом асинхронной операции, который ещё неизвестен. У Promise три состояния: <code>pending</code> (ожидание), <code>fulfilled</code> (успех) и <code>rejected</code> (ошибка). Переход из pending возможен только один раз — после resolve или reject состояние не меняется. Это делает Promise предсказуемым контрактом: либо данные, либо ошибка.</p>
+<p>Создание: <code>new Promise((resolve, reject) =&gt; { ... })</code>. Потребление: <code>.then(onFulfilled)</code> для успеха, <code>.catch(onRejected)</code> для ошибок, <code>.finally(onFinally)</code> для cleanup в любом случае (скрыть loader, сбросить флаг загрузки). Каждый <code>.then</code> возвращает <strong>новый</strong> Promise — поэтому цепочки <code>.then().then().catch()</code> читаются сверху вниз без «callback hell» вложенных функций.</p>
+<p>Если <code>.then</code>-колбэк возвращает значение, следующий <code>.then</code> получит его. Если возвращает Promise, следующий <code>.then</code> дождётся его разрешения. Один <code>.catch</code> в конце цепочки перехватит reject из любого предыдущего звена. <code>Promise.all([p1, p2])</code> запускает несколько Promise параллельно и ждёт все — но один reject роняет весь результат.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/promise-basics">learn.javascript.ru: Промисы</a>
+- <a href="https://learn.javascript.ru/promise-chaining">learn.javascript.ru: Цепочка промисов</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise">MDN: Promise</a></p>
+<p><strong>Ключевая мысль:</strong> Promise — это цепочка, а не вложенность; <code>.then</code> возвращает новый Promise, и один <code>.catch</code> обслуживает всю цепочку.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Оберни <code>setTimeout</code> в функцию <code>delay(ms)</code> → Promise</li>
+<li>Цепочка: delay(1000) → «Шаг 1» → delay(500) → «Шаг 2»</li>
+<li><code>fetch</code> перепиши на <code>.then</code> без async/await</li>
+<li>Обработай reject: fetch несуществующего URL + catch</li>
+<li><code>Promise.all</code> — загрузи posts и users параллельно</li>
+<li>Добавь <code>.finally</code> для сброса loading state</li>
+<li>Верни значение из <code>.then</code> и прочитай его в следующем <code>.then</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Цепочка then без callback hell
+- [ ] Ошибки ловятся в catch
+- [ ] Promise.all для параллельных запросов</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Оберни <code>setTimeout</code> в функцию <code>delay(ms)</code> → Promise</li>
+<li>Цепочка: delay(1000) → «Шаг 1» → delay(500) → «Шаг 2»</li>
+<li><code>fetch</code> перепиши на <code>.then</code> без async/await</li>
+<li>Обработай reject: fetch несуществующего URL + catch</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 2: promises chaining"</code></li>
+</ul>
+<h2 id="week-08-day-3">День 3 (Wed): async/await</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p><code>async/await</code> — синтаксический сахар над Promise, делающий асинхронный код похожим на синхронный. Функция с ключевым словом <code>async</code> всегда возвращает Promise: даже <code>return 42</code> превратится в <code>Promise.resolve(42)</code>. Ключевое слово <code>await</code> можно использовать только внутри <code>async</code>-функции — оно приостанавливает выполнение <strong>только этой функции</strong>, отдавая управление Event Loop. Main thread при этом не блокируется.</p>
+<p>Вместо <code>.catch</code> в цепочке используй <code>try/catch</code> вокруг <code>await</code>:</p>
+<pre><code class="language-js">try {
+  const data = await fetchJson(url);
+} catch (err) {
+  showError(err.message);
+}
+</code></pre>
+<p>Главная ловушка — последовательный <code>await</code> в цикле: <code>for (const id of ids) { await fetch(id) }</code> выполнит N запросов по очереди. Если запросы независимы, собери массив Promise и дождись всех: <code>await Promise.all(ids.map(id =&gt; fetch(id)))</code>. В ES-модулях доступен top-level <code>await</code> — можно писать <code>const config = await fetch('/config.json')</code> прямо в <code>main.js</code> без обёртки.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/async-await">learn.javascript.ru: Async/await</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Statements/async_function">MDN: async function</a>
+- <a href="https://javascript.info/async-await">javascript.info: Async/await</a></p>
+<p><strong>Ключевая мысль:</strong> <code>await</code> не блокирует браузер — он лишь ставит на паузу текущую async-функцию, пока Promise не разрешится.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Рефакторинг fetch-функций на async/await</li>
+<li>Функция <code>loadUserWithPosts(userId)</code> — user, затем его posts</li>
+<li>Параллельная загрузка 3 endpoints через <code>Promise.all</code> + await</li>
+<li>try/catch с понятным сообщением для пользователя</li>
+<li>Async IIFE для top-level await в модуле</li>
+<li>Сравни время: последовательный vs параллельный await (console.time)</li>
+<li>Оберни api-слой недели 7 в async/await</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Весь API-слой на async/await
+- [ ] Параллельные запросы не последовательные без причины
+- [ ] try/catch на каждом публичном API-вызове</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Рефакторинг fetch-функций на async/await</li>
+<li>Функция <code>loadUserWithPosts(userId)</code> — user, затем его posts</li>
+<li>Параллельная загрузка 3 endpoints через <code>Promise.all</code> + await</li>
+<li>try/catch с понятным сообщением для пользователя</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 3: async await refactor"</code></li>
+</ul>
+<h2 id="week-08-day-4">День 4 (Thu): HTTP углублённо</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>HTTP — протокол обмена сообщениями между клиентом и сервером. Каждый запрос состоит из метода, URL, заголовков и опционального тела. Ответ содержит статус-код, заголовки и тело. Методы несут семантику: GET читает ресурс (идемпотентен, кэшируем), POST создаёт новый, PUT/PATCH обновляют, DELETE удаляет. Понимание семантики помогает проектировать API и правильно обрабатывать ответы.</p>
+<p>Статус-коды сгруппированы: 1xx — информация, 2xx — успех (200 OK, 201 Created, 204 No Content), 3xx — перенаправление, 4xx — ошибка клиента (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found), 5xx — ошибка сервера. Для UI важно различать 401 («войдите в систему») и 403 («у вас нет прав») — пользователю нужны разные сообщения.</p>
+<p>Заголовки передают метаданные: <code>Content-Type</code> описывает формат тела, <code>Authorization</code> — токен доступа, <code>Cache-Control</code> и <code>ETag</code> управляют кэшированием. CORS настраивается <strong>на сервере</strong> через заголовки вроде <code>Access-Control-Allow-Origin</code>. «Непростые» запросы (нестандартные заголовки, методы кроме GET/POST) вызывают preflight — браузер сначала отправит OPTIONS и спросит разрешение.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/HTTP/Overview">MDN: HTTP Overview</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/HTTP/CORS">MDN: CORS</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/HTTP/Status">MDN: HTTP response status codes</a></p>
+<p><strong>Ключевая мысль:</strong> HTTP-метод + статус-код + заголовки — это язык, на котором клиент и сервер договариваются о результате операции.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>В Network изучи headers реального запроса к API</li>
+<li>Реализуй wrapper <code>api.get/post/put/delete</code> с базовым URL</li>
+<li>Добавь заголовок <code>Content-Type: application/json</code> автоматически</li>
+<li>Маппинг статусов в ошибки: <code>ApiError</code> с полем <code>status</code></li>
+<li>Обработай 401 — сообщение «Требуется авторизация»</li>
+<li>Класс <code>ApiError extends Error</code> с <code>status</code> и <code>body</code></li>
+<li>Логируй failed requests в console с status и url</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] API wrapper переиспользуемый
+- [ ] Разные HTTP-ошибки — разные сообщения UI
+- [ ] Понимаю CORS на уровне «почему fetch заблокирован»</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>В Network изучи headers реального запроса к API</li>
+<li>Реализуй wrapper <code>api.get/post/put/delete</code> с базовым URL</li>
+<li>Добавь заголовок <code>Content-Type: application/json</code> автоматически</li>
+<li>Маппинг статусов в ошибки: <code>ApiError</code> с полем <code>status</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 4: http api wrapper"</code></li>
+</ul>
+<h2 id="week-08-day-5">День 5 (Fri): Паттерны работы с API</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Работа с API в production выходит за рамки простого <code>fetch(url)</code>. Пагинация делит большие наборы данных на страницы: offset/limit (<code>?page=2&amp;limit=20</code>) прост в реализации, но нестабилен при вставках новых записей; cursor-based пагинация (<code>?after=lastId</code>) надёжнее для лент и поиска. Retry с exponential backoff повторяет упавший запрос с растущей задержкой (1с, 2с, 4с), не перегружая сервер при временных сбоях.</p>
+<p>Race condition возникает, когда быстрый новый запрос завершается раньше старого, но старый ответ приходит последним и перезаписывает актуальные данные. Решения: <code>AbortController</code> (отменить предыдущий fetch) или счётчик/request id (игнорировать устаревший ответ). Request deduplication не запускает второй идентичный запрос, пока первый ещё в полёте — полезно для кэширования в памяти.</p>
+<p>Паттерн stale-while-revalidate: сначала покажи кэшированные данные (мгновенный отклик), затем обнови фоном. Skeleton UI резервирует место под контент во время загрузки, снижая layout shift (CLS). Эти приёмы превращают «голый fetch» в устойчивый клиентский слой данных.</p>
+<p><strong>Читать:</strong>
+- <a href="https://jsonapi.org/format/#fetching-pagination">JSON:API — Pagination</a>
+- <a href="https://web.dev/articles/optimize-lcp">web.dev: Optimize LCP</a> — skeleton и perceived performance
+- <a href="https://developer.mozilla.org/ru/docs/Web/API/AbortController">MDN: AbortController</a></p>
+<p><strong>Ключевая мысль:</strong> надёжный API-клиент обрабатывает не только успех, но и повторы, гонки запросов, пагинацию и кэширование.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Пагинация постов: кнопка «Загрузить ещё» с cursor (id последнего)</li>
+<li>Retry: 3 попытки с задержкой 1s, 2s, 4s при сетевой ошибке</li>
+<li>In-memory cache Map: повторный запрос того же URL — из кэша</li>
+<li>Skeleton UI на время загрузки, контент без layout shift</li>
+<li>Отмена устаревшего ответа: race condition при быстром поиске</li>
+<li>Реализуй <code>fetchWithRetry(url, options, maxRetries)</code></li>
+<li>Дедупликация: не запускай второй identical fetch, пока первый pending</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Retry реализован
+- [ ] Нет race condition в поиске
+- [ ] Pagination работает без дубликатов</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Пагинация постов: кнопка «Загрузить ещё» с cursor (id последнего)</li>
+<li>Retry: 3 попытки с задержкой 1s, 2s, 4s при сетевой ошибке</li>
+<li>In-memory cache Map: повторный запрос того же URL — из кэша</li>
+<li>Skeleton UI на время загрузки, контент без layout shift</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 5: api patterns retry pagination"</code></li>
+</ul>
+<h2 id="week-08-day-6">День 6 (Sat): Promise utilities</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Помимо базового <code>Promise.all</code>, в JavaScript есть набор утилит для разных сценариев. <code>Promise.allSettled</code> ждёт завершения <strong>всех</strong> Promise и возвращает массив <code>{ status, value/reason }</code> — идеально, когда нужны результаты нескольких независимых API, даже если часть упала. <code>Promise.race</code> отдаёт результат первого завершившегося Promise — удобно для timeout-обёртки. <code>Promise.any</code> возвращает первый успешный, игнорируя reject (если все упали — <code>AggregateError</code>).</p>
+<p><code>Promise.all</code> работает по принципу fail-fast: один reject ломает весь результат. Используй его, когда все данные обязательны (загрузка профиля + настроек одновременно). <code>Promise.allSettled</code> — когда частичный успех допустим (дашборд с виджетами от разных сервисов). Timeout через race: <code>Promise.race([fetch(url), delay(5000).then(() =&gt; Promise.reject('timeout'))])</code>.</p>
+<p>Необработанный reject (<code>unhandledrejection</code>) — сигнал, что где-то забыли <code>.catch</code> или <code>try/catch</code>. В production повесь глобальный listener <code>window.addEventListener('unhandledrejection', ...)</code> для логирования. <code>for await...of</code> позволяет последовательно обрабатывать асинхронные итерируемые источники без гонки параллельных запросов.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled">MDN: Promise.allSettled()</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise/race">MDN: Promise.race()</a>
+- <a href="https://learn.javascript.ru/promise-api">learn.javascript.ru: Promise API</a></p>
+<p><strong>Ключевая мысль:</strong> выбирай Promise-утилиту по сценарию — all для «всё или ничего», allSettled для «что получилось», race для таймаутов.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Загрузи 5 URL через <code>Promise.allSettled</code>, покажи успешные и failed</li>
+<li>Timeout wrapper: <code>withTimeout(promise, 5000)</code> через <code>Promise.race</code></li>
+<li>Последовательная обработка массива URL без Promise.all (for await)</li>
+<li>Глобальный <code>unhandledrejection</code> listener — логирование</li>
+<li>Рефакторинг dashboard недели 7 с новыми паттернами</li>
+<li>Сравни <code>Promise.all</code> vs <code>allSettled</code> на массиве с одним failed URL</li>
+<li>Добавь timeout 10s на все fetch в api wrapper</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] allSettled и race использованы по назначению
+- [ ] Timeout на долгие запросы
+- [ ] Нет unhandled promise rejections в Console</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Загрузи 5 URL через <code>Promise.allSettled</code>, покажи успешные и failed</li>
+<li>Timeout wrapper: <code>withTimeout(promise, 5000)</code> через <code>Promise.race</code></li>
+<li>Последовательная обработка массива URL без Promise.all (for await)</li>
+<li>Глобальный <code>unhandledrejection</code> listener — логирование</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 6: promise utilities timeout"</code></li>
+</ul>
+<h2 id="week-08-day-7">День 7 (Sun): Асинхронная архитектура</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Movie Catalog</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Асинхронная архитектура приложения определяет, как слои общаются между собой. API-слой возвращает данные или бросает типизированную ошибку (<code>ApiError</code> со статусом) — он не знает о DOM и не решает, показать спиннер или toast. UI-слой подписывается на состояние и рендерит соответствующий экран. Между ними — слой состояния с явными фазами: <code>idle | loading | success | error | empty</code>.</p>
+<p>Явная state machine убирает «зависшие» экраны: в каждый момент UI находится ровно в одном состоянии, и переходы предсказуемы (loading → success или loading → error). Простой pub/sub (<code>createAsyncState</code> с <code>subscribe</code>/<code>setState</code>) даёт реактивность без фреймворка — задел на React hooks. При тестировании async-кода fetch можно подменить mock-функцией, возвращающей фиксированный Promise.</p>
+<p>На следующих неделях TypeScript добавит <code>Promise&lt;T&gt;</code> как контракт: async-функция документирует, какой тип данных вернётся. Сейчас зафиксируй принцип: асинхронность — это не только синтаксис, а разделение ответственности между запросом, состоянием и отображением.</p>
+<p><strong>Читать:</strong>
+- <a href="https://javascript.info/promise-basics">javascript.info: Промисы</a>
+- <a href="https://www.patterns.dev/vanilla/observer-pattern/">patterns.dev: Observer Pattern</a>
+- <a href="https://www.typescriptlang.org/docs/handbook/2/generics.html">TypeScript Handbook: Generics</a> — подготовка к неделе 10</p>
+<p><strong>Ключевая мысль:</strong> async-архитектура — это явные состояния UI и чёткие границы между api, state и render.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Реализуй хук-подобный паттерн <code>createAsyncState()</code> — subscribe на изменения</li>
+<li>UI автоматически реагирует на idle/loading/success/error</li>
+<li>Интегрируй в проект «Каталог фильмов» (OMDb или TMDB free tier / mock)</li>
+<li>Поиск + детали фильма + избранное в localStorage</li>
+<li>Code review своего async-кода по чеклисту</li>
+<li>Empty state: «Ничего не найдено» при пустом результате поиска</li>
+<li>Тег <code>week-08-done</code> на финальном коммите</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Явные состояния async-операций в UI
+- [ ] api / state / ui разделены
+- [ ] Проект работает без ошибок в Console</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Реализуй хук-подобный паттерн <code>createAsyncState()</code> — subscribe на изменения</li>
+<li>UI автоматически реагирует на idle/loading/success/error</li>
+<li>Интегрируй в проект «Каталог фильмов» (OMDb или TMDB free tier / mock)</li>
+<li>Поиск + детали фильма + избранное в localStorage</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 08 day 7: movie catalog final"</code></li>
+</ul>
+<h2 id="week-08-project">Проект недели</h2>
+<p><strong>Каталог фильмов</strong> — async SPA с поиском, деталями, избранным и robust error handling.</p>
+<p>Подробное описание: <a href="#projects--projects-неделя-8-movie-catalog">docs/projects.md — Неделя 8</a></p>
+<p>API: OMDb (<a href="http://www.omdbapi.com/">omdbapi.com</a>) или mock JSON server.</p>
+<p><strong>Критерии проекта:</strong>
+- [ ] async/await + api wrapper + retry/timeout
+- [ ] Состояния loading/error/empty/data
+- [ ] Promise.all для параллельной загрузки деталей
+- [ ] Избранное в localStorage, синхронизация с UI
+- [ ] Папка <code>week-08/</code> с README и скриншотом
+- [ ] Поиск по названию с debounce и отменой устаревших запросов
+- [ ] Карточка фильма: постер, год, рейтинг, описание
+- [ ] Избранное: add/remove, persist, отдельная вкладка или секция
+- [ ] Тег <code>week-08-done</code> на финальном коммите</p>
+<h2 id="week-08-review">Ревью-чеклист</h2>
+<ul>
+<li>Объясни Event Loop на примере setTimeout + Promise?</li>
+<li>Разница Promise.all и Promise.allSettled?</li>
+<li>Когда await блокирует UI, а когда нет?</li>
+<li>Что такое CORS и кто его настраивает?</li>
+<li>Как отменить fetch-запрос?</li>
+</ul>
+<h2 id="week-08-review">Проверь себя</h2>
+<details>
+<summary>Что должно получиться к концу недели?</summary>
+
+Работающий проект **Movie Catalog** в `learning-log/week-08/`, осмысленная Git-история, тег `week-08-done`.
+
+</details>
+
+<details>
+<summary>Главный навык недели одной фразой?</summary>
+
+Async/await, HTTP, работа с REST API
+
+</details>
+
+<details>
+<summary>Можно ли пропустить день?</summary>
+
+Нет — дни связаны. В **лайт-режиме** сократи практику до MVP, но теорию и Git-коммит не пропускай.
+
+</details></article>
+  </main>
+  <script>if (location.hash) location.replace('../' + location.hash);</script>
+</body>
+</html>

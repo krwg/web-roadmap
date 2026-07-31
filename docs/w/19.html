@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Неделя 19: Node.js + Express REST API · web-roadmap</title>
+  <meta name="description" content="Node.js — неделя 19 маршрута web-roadmap.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-19">
+  <meta property="og:title" content="Неделя 19: Node.js + Express REST API">
+  <meta property="og:url" content="https://krwg.github.io/web-roadmap/w/19.html">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-19">Открыть в приложении маршрута</a> · <a href="../">На главную</a></p>
+    <article class="prose"><h1>Неделя 19: Node.js + Express REST API</h1>
+<blockquote>
+<p><strong>Цель недели:</strong> построить REST API на JavaScript в среде Node.js с Express и PostgreSQL.
+<strong>Литература:</strong> <a href="https://nodejs.org/en/docs">Node.js Docs</a>, <a href="https://expressjs.com/en/guide/routing.html">Express Guide</a>, <a href="https://node-postgres.com/">node-postgres</a>
+<strong>Проект недели:</strong> <a href="#projects--projects-неделя-19-express-notes-api">Express Notes API</a> — layered Express API, Zod, PostgreSQL, Postman collection.
+<strong>Git:</strong> папка <code>learning-log/week-19/</code>, ветки <code>feature/routes</code>, <code>feature/pg</code>; тег <code>week-19-done</code>.</p>
+</blockquote>
+<h2 id="week-19-day-127">День 127 (Пн): Node.js — среда и модули</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Node.js — среда выполнения JavaScript вне браузера. Нет DOM и <code>window</code>, зато есть <code>process</code>, встроенные модули и npm-экосистема. Backend на Node разделяет язык с фронтендом — один TypeScript/JavaScript на обе стороны, но runtime другой: event loop libuv, не браузерный.</p>
+<p>CommonJS (<code>require</code>) vs ES Modules (<code>import</code>) — выбери <code>"type": "module"</code> в <code>package.json</code> для современного стиля. <code>import.meta.url</code> + <code>fileURLToPath</code> заменяют <code>__dirname</code> в ESM. Встроенные модули: <code>fs</code>, <code>path</code>, <code>http</code>. <code>process.argv</code> — аргументы CLI, <code>process.env</code> — переменные окружения.</p>
+<p>npm управляет зависимостями: <code>package.json</code>, semver, <code>node_modules</code>. npm scripts (<code>"greet": "node scripts/greet.js"</code>) — стандартный способ запуска задач. <code>.gitignore</code>: <code>node_modules</code>, <code>.env</code>. <code>fs.promises</code> вместо callback — async/await без callback hell.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://nodejs.org/en/learn/getting-started/introduction-to-nodejs">Node.js Introduction</a></li>
+<li><a href="https://nodejs.org/api/esm.html">ES Modules</a></li>
+<li><a href="https://nodejs.org/api/fs.html#promises-api">fs.promises</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> Node — JS без браузера; ESM + fs.promises — современный baseline.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>mkdir notes-api &amp;&amp; npm init -y</code>, добавь <code>"type": "module"</code></li>
+<li>CLI: <code>node scripts/greet.js --name=Alex</code> (parse <code>process.argv</code>)</li>
+<li>Чтение/запись <code>notes.json</code> через <code>fs.promises</code></li>
+<li><code>path.join</code>, <code>import.meta.url</code> для путей к файлам данных</li>
+<li>npm script <code>"greet": "node scripts/greet.js"</code></li>
+<li><code>.gitignore</code>: <code>node_modules</code>, <code>.env</code>, <code>dist</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] ES modules (import/export)
+- [ ] fs.promises, не callback fs.readFile
+- [ ] npm script <code>"greet"</code> работает</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>mkdir notes-api &amp;&amp; npm init -y</code>, добавь <code>"type": "module"</code></li>
+<li>CLI: <code>node scripts/greet.js --name=Alex</code> (parse <code>process.argv</code>)</li>
+<li>Чтение/запись <code>notes.json</code> через <code>fs.promises</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 127: Node ESM setup and file CLI"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>require() в ESM project — SyntaxError</li>
+<li>Относительные пути без path.join — ломается на Windows</li>
+</ul>
+<hr>
+<h2 id="week-19-day-128">День 128 (Вт): Асинхронность в Node</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Асинхронность — сердце Node. Эволюция: callback → Promise → async/await. Event loop libuv обрабатывает I/O неблокирующе, но синхронный <code>fs.readFileSync</code> в сервере заморозит все запросы — используй async API. <code>await</code> без <code>try/catch</code> — необработанный rejection.</p>
+<p>EventEmitter (<code>on</code>, <code>emit</code>, <code>once</code>) — основа многих Node API и паттерн pub/sub. <code>process.on('unhandledRejection')</code> ловит забытые rejections — настрой в entry point. <code>util.promisify</code> оборачивает legacy callback API в Promise — для понимания, не для нового кода.</p>
+<p>File watcher на <code>notes.json</code> учит реагировать на изменения; SIGINT корректно останавливает watcher. <code>Promise.all</code> читает три файла параллельно. Замер sync vs async на 10 файлах — наглядная демонстрация блокировки main thread.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick">Event Loop</a></li>
+<li><a href="https://nodejs.org/api/events.html">EventEmitter</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function">async/await (MDN)</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> не блокируй event loop; await + try/catch на каждом I/O.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Перепиши file I/O на async/await с try/catch</li>
+<li>File watcher: логирует изменения <code>notes.json</code>, останавливается на SIGINT</li>
+<li>Промисификация: <code>const readFile = promisify(fs.readFile)</code> — для понимания legacy</li>
+<li>Обработка <code>unhandledRejection</code> и <code>uncaughtException</code> в entry point</li>
+<li>Параллельное чтение 3 файлов через <code>Promise.all</code></li>
+<li>Замер: sync <code>readFileSync</code> vs async на 10 файлах — почувствуй блокировку</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Нет callback hell — только async/await
+- [ ] Watcher корректно останавливается (SIGINT)
+- [ ] try/catch вокруг await</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Перепиши file I/O на async/await с try/catch</li>
+<li>File watcher: логирует изменения <code>notes.json</code>, останавливается на SIGINT</li>
+<li>Промисификация: <code>const readFile = promisify(fs.readFile)</code> — для понимания legacy</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 128: async file watcher and error handling"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Забытый await — Promise вместо данных</li>
+<li>Синхронный <code>fs.readFileSync</code> в сервере — блокирует event loop</li>
+</ul>
+<hr>
+<h2 id="week-19-day-129">День 129 (Ср): Express — REST API основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Express — минималистичный HTTP-фреймворк поверх Node <code>http</code>. <code>app.get/post/put/delete</code> маппят метод + путь на handler. <code>req.params</code> — path params, <code>req.query</code> — query string, <code>req.body</code> — JSON после <code>express.json()</code> middleware. Без body parser <code>req.body</code> будет <code>undefined</code> — классическая ловушка.</p>
+<p>HTTP semantics: 200 OK, 201 Created, 204 No Content (DELETE без body), 400 Bad Request, 404 Not Found. Раздели <code>app.js</code> (конфигурация, middleware, routes) и <code>server.js</code> (<code>listen</code>) — app экспортируется для тестов. <code>nodemon</code> автоперезапускает в dev.</p>
+<p>CRUD <code>/api/notes</code> с хранением в JSON-файле — мост к PostgreSQL завтра. Единый формат ответа <code>{ data }</code> или <code>{ error: { message } }</code> упрощает фронтенд. RESTful URLs: существительные, не глаголы.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://expressjs.com/en/starter/hello-world.html">Express Hello World</a></li>
+<li><a href="https://expressjs.com/en/api.html#express.json">express.json()</a></li>
+<li><a href="https://expressjs.com/en/guide/routing.html">Express Routing</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> express.json() обязателен; app отдельно от server — тестируемость.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>npm install express</code>, <code>src/app.js</code>, <code>src/server.js</code></li>
+<li>CRUD <code>/api/notes</code> — хранение в JSON-файле через fs</li>
+<li><code>GET /api/notes/:id</code> — 404 если нет (<code>res.status(404).json(...)</code>)</li>
+<li><code>npm install -D nodemon</code>, script <code>"dev": "nodemon src/server.js"</code></li>
+<li>Проверь все методы через curl или Thunder Client</li>
+<li>Единый формат ответа: <code>{ data }</code> или <code>{ error: { message } }</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] express.json() подключён
+- [ ] RESTful URLs и методы
+- [ ] 201 на POST, 204 на DELETE</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>npm install express</code>, <code>src/app.js</code>, <code>src/server.js</code></li>
+<li>CRUD <code>/api/notes</code> — хранение в JSON-файле через fs</li>
+<li><code>GET /api/notes/:id</code> — 404 если нет (<code>res.status(404).json(...)</code>)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 129: Express CRUD notes in-memory JSON"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>POST без body parser — req.body undefined</li>
+<li>Один огромный app.js — разбей на routes</li>
+</ul>
+<hr>
+<h2 id="week-19-day-130">День 130 (Чт): Middleware, валидация, ошибки</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Middleware в Express — функции <code>(req, res, next)</code> в цепочке. Порядок критичен: logger → <code>express.json()</code> → routes → 404 handler → error middleware (4 аргумента: <code>err, req, res, next</code>). <code>next()</code> передаёт управление дальше; <code>next(err)</code> — в error handler.</p>
+<p>Zod валидирует body с TypeScript inference: <code>title</code> min 1 символ, <code>body</code> optional. При ошибке — 400 с <code>zodError.flatten()</code>. Centralized error handler возвращает JSON <code>{ error: { code, message } }</code> — единый контракт для клиента. morgan логирует HTTP-запросы в dev.</p>
+<p>404 handler для неизвестных routes — последний middleware перед error handler. Custom logger с duration (Date.now до/после) дополняет morgan. Error middleware без 4 параметров Express не распознает — не вызовется.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://expressjs.com/en/guide/using-middleware.html">Writing middleware</a></li>
+<li><a href="https://zod.dev/">Zod</a></li>
+<li><a href="https://github.com/expressjs/morgan">morgan</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> порядок middleware; Zod на входе, error handler на выходе цепочки.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Logger middleware: method, url, duration (Date.now до/после)</li>
+<li>Zod schema для Note: <code>title</code> min 1, <code>body</code> optional string</li>
+<li>Centralized error handler — JSON <code>{ error: { code, message } }</code></li>
+<li>400 при validation error с деталями Zod (<code>zodError.flatten()</code>)</li>
+<li>404 handler для неизвестных routes (<code>app.use((req,res) =&gt; ...)</code>)</li>
+<li>morgan <code>'dev'</code> format в development</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Все ошибки проходят через error middleware
+- [ ] Zod на POST и PUT
+- [ ] morgan или custom logger</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Logger middleware: method, url, duration (Date.now до/после)</li>
+<li>Zod schema для Note: <code>title</code> min 1, <code>body</code> optional string</li>
+<li>Centralized error handler — JSON <code>{ error: { code, message } }</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 130: Zod validation and error middleware"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Забытый <code>next(err)</code> — зависший request</li>
+<li>Error middleware без 4 параметров — не вызывается</li>
+</ul>
+<hr>
+<h2 id="week-19-day-131">День 131 (Пт): Express + PostgreSQL</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~50м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~20м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p><code>node-postgres</code> (<code>pg</code>) — драйвер PostgreSQL для Node. <code>Pool</code> переиспользует соединения под нагрузкой; <code>new Client()</code> на каждый запрос — антипаттерн. <code>pool.query('SELECT * FROM notes WHERE id = $1', [id])</code> — placeholders <code>$1, $2</code> защищают от SQL injection.</p>
+<p><code>DATABASE_URL=postgresql://user:pass@host:5432/db</code> из <code>.env</code> через dotenv. Prisma — ORM-альтернатива (обзор); на этой неделе raw <code>pg</code> учит SQL и placeholders. Graceful shutdown: <code>pool.end()</code> на SIGTERM.</p>
+<p>Перепиши notes API с JSON-файла на таблицу <code>notes(id, title, body, created_at)</code>. <code>schema.sql</code> + migrate script. Все запросы только через <code>pool.query</code> с массивом параметров — template strings в SQL запрещены.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://node-postgres.com/">node-postgres</a></li>
+<li><a href="https://node-postgres.com/features/pooling">Connection Pooling</a></li>
+<li><a href="https://github.com/motdotla/dotenv">dotenv</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> Pool, не Client; <code>$1</code> placeholders — единственный безопасный способ.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>npm install pg dotenv</code></li>
+<li><code>src/db/pool.js</code> — Pool из <code>DATABASE_URL</code>, тест <code>SELECT NOW()</code></li>
+<li>Перепиши notes API на таблицу <code>notes(id, title, body, created_at)</code></li>
+<li><code>schema.sql</code> + <code>scripts/migrate.js</code> или <code>npm run db:migrate</code></li>
+<li><code>seed.sql</code> с 5 тестовыми заметками</li>
+<li>Все запросы через <code>pool.query('... WHERE id = $1', [id])</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Pool, не Client на каждый запрос
+- [ ] Параметризованные запросы ($1, $2)
+- [ ] dotenv, <code>.env.example</code></p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>npm install pg dotenv</code></li>
+<li><code>src/db/pool.js</code> — Pool из <code>DATABASE_URL</code>, тест <code>SELECT NOW()</code></li>
+<li>Перепиши notes API на таблицу <code>notes(id, title, body, created_at)</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 131: Express notes with PostgreSQL pool"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>SQL injection через template strings — только placeholders</li>
+<li>Pool не закрывается при shutdown — graceful exit</li>
+</ul>
+<hr>
+<h2 id="week-19-day-132">День 132 (Сб): Структура проекта и роутеры</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~50м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Express Router модульно группирует маршруты: <code>notes.routes.js</code> монтируется с prefix <code>/api/notes</code>. Layered architecture: routes (тонкие) → controllers (HTTP) → services (бизнес-логика) → db (SQL). Бизнес-логика в route handler не тестируется — вынеси в service.</p>
+<p><code>dotenv</code> загружает secrets из <code>.env</code>; <code>NODE_ENV=development|production</code> меняет поведение (morgan 'dev' vs 'combined'). Health check <code>GET /api/health</code> возвращает <code>{ status, db: 'ok'|'down', uptime }</code> — нужен для Docker и мониторинга. 503 если БД недоступна.</p>
+<p>Graceful shutdown: SIGTERM → <code>server.close()</code> → <code>pool.end()</code>. <code>package-lock.json</code> в git — воспроизводимые сборки. README описывает слои папок — onboarding нового разработчика.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://expressjs.com/en/guide/routing.html#express-router">Express Router</a></li>
+<li><a href="https://github.com/motdotla/dotenv">dotenv</a></li>
+<li><a href="https://expressjs.com/en/advanced/healthcheck-graceful-shutdown.html">Graceful Shutdown</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> routes тонкие, logic в services; health check — контракт с инфраструктурой.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Структура: <code>src/routes/</code>, <code>controllers/</code>, <code>services/</code>, <code>db/pool.js</code></li>
+<li>Вынеси логику из routes в controller/service</li>
+<li><code>GET /api/health</code> — <code>{ status, db: 'ok'|'down', uptime }</code></li>
+<li>Router <code>notes.routes.js</code> → controller <code>notes.controller.js</code> → service <code>notes.service.js</code></li>
+<li>Graceful shutdown: SIGTERM → close server → pool.end()</li>
+<li>README: структура папок с описанием слоёв</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Routes тонкие — только маршрутизация
+- [ ] Service переиспользуется из controller
+- [ ] health check возвращает 503 если DB down</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Структура: <code>src/routes/</code>, <code>controllers/</code>, <code>services/</code>, <code>db/pool.js</code></li>
+<li>Вынеси логику из routes в controller/service</li>
+<li><code>GET /api/health</code> — <code>{ status, db: 'ok'|'down', uptime }</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 132: layered architecture and health check"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Бизнес-логика в route handler — не тестируется</li>
+<li>Циклические импорты между modules</li>
+</ul>
+<hr>
+<h2 id="week-19-day-133">День 133 (Вс): Ревью Node.js и сравнение с FastAPI</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Ревью недели — сравнение двух backend-стеков, которые ты теперь знаешь. FastAPI: автодоки, Pydantic, async, Python ecosystem. Express: минимализм, npm, один язык с React. Для I/O-bound оба отличны; CPU-bound тяжёлая работа чаще уходит в Python или отдельный worker.</p>
+<p>npm scripts best practices: <code>start</code> (production), <code>dev</code> (nodemon), <code>test</code>, <code>db:migrate</code>. Postman collection — демо и ручное QA. Skeleton <code>auth.routes.js</code> — мост к неделе 20. <code>npm audit</code> показывает уязвимости в зависимостях.</p>
+<p>Сравнительная таблица FastAPI vs Express по 10 критериям учит аргументировать выбор стека. Express Notes API — parity с Library REST API недели 18: те же статусы, формат ошибок, layered structure. Тег <code>week-19-done</code>.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.npmjs.com/cli/v10/using-npm/scripts">npm scripts</a></li>
+<li><a href="https://expressjs.com/">Express vs Fastify (обзор)</a></li>
+<li><a href="https://docs.npmjs.com/cli/v10/commands/npm-audit">npm audit</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> Express и FastAPI решают одну задачу разными инструментами — выбор по команде и экосистеме.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Сравнительная таблица: FastAPI (нед.18) vs Express — 10 критериев в <code>docs/compare.md</code></li>
+<li>Postman collection для Express API — export JSON</li>
+<li>README с curl примерами для всех endpoints</li>
+<li>Skeleton: <code>src/routes/auth.routes.js</code> с заглушками register/login</li>
+<li><code>npm audit</code> — отчёт об уязвимостях</li>
+<li>Финальный smoke test: CRUD notes через API</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] README полный (install, env, run, test)
+- [ ] Сравнительная таблица в docs
+- [ ] <code>npm start</code> и <code>npm run dev</code> работают</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Сравнительная таблица: FastAPI (нед.18) vs Express — 10 критериев в <code>docs/compare.md</code></li>
+<li>Postman collection для Express API — export JSON</li>
+<li>README с curl примерами для всех endpoints</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 133: docs, Postman, auth skeleton"</code></li>
+<li>Поставь тег: <code>git tag week-19-done</code></li>
+</ul>
+<hr>
+<h2 id="week-19-project">Проект недели</h2>
+<p><strong>Express Notes API</strong> с PostgreSQL. Спецификация: <a href="#projects--projects-неделя-19-express-notes-api">docs/projects.md — неделя 19</a>.</p>
+<h3>Структура</h3>
+<pre><code>week-19/
+├── src/
+│   ├── app.js
+│   ├── server.js
+│   ├── routes/
+│   ├── controllers/
+│   ├── services/
+│   ├── db/
+│   └── middleware/
+├── schema.sql
+├── docs/
+│   ├── postman-collection.json
+│   └── compare.md
+├── package.json
+├── .env.example
+└── README.md
+</code></pre>
+<h3>Функции</h3>
+<ol>
+<li>Full CRUD <code>/api/notes</code></li>
+<li>Zod validation, error middleware, request logging (morgan)</li>
+<li>Layered architecture: routes → controllers → services → db</li>
+<li>PostgreSQL + migrations + seed</li>
+<li>Health check, graceful shutdown, Postman collection</li>
+</ol>
+<h3>Критерии проекта</h3>
+<ul>
+<li class="task"><input type="checkbox" disabled> Production-like структура папок</li>
+<li class="task"><input type="checkbox" disabled> Все SQL через <code>pool.query</code> с placeholders</li>
+<li class="task"><input type="checkbox" disabled> Graceful shutdown (SIGTERM) закрывает pool</li>
+<li class="task"><input type="checkbox" disabled> Health endpoint возвращает статус БД</li>
+<li class="task"><input type="checkbox" disabled> Postman collection покрывает все endpoints</li>
+<li class="task"><input type="checkbox" disabled> Стиль API согласован с FastAPI проектом недели 18 (статусы, формат ошибок)</li>
+<li class="task"><input type="checkbox" disabled> Тег <code>week-19-done</code></li>
+</ul>
+<h2 id="week-19-ревью-чеклист">Ревью-чеклист</h2>
+<ul>
+<li>Node vs Browser JS — 3 главных отличия?</li>
+<li>Что делает middleware <code>next()</code>?</li>
+<li>Зачем connection pool вместо одного client?</li>
+<li>Как валидировать body в Express?</li>
+<li>ESM vs CommonJS — что выбрал и почему?</li>
+</ul>
+<h2 id="week-19-review">Проверь себя</h2>
+<details>
+<summary>Что должно получиться к концу недели?</summary>
+
+Работающий проект **Express Notes API** в `learning-log/week-19/`, осмысленная Git-история, тег `week-19-done`.
+
+</details>
+
+<details>
+<summary>Главный навык недели одной фразой?</summary>
+
+Node.js + Express layered API
+
+</details>
+
+<details>
+<summary>Можно ли пропустить день?</summary>
+
+Нет — дни связаны. В **лайт-режиме** сократи практику до MVP, но теорию и Git-коммит не пропускай.
+
+</details></article>
+  </main>
+  <script>if (location.hash) location.replace('../' + location.hash);</script>
+</body>
+</html>

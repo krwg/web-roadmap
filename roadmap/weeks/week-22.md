@@ -12,8 +12,8 @@
 ## День 148 (Пн): Планирование DevHub Capstone
 <a id="week-22-day-148"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~1ч теория · ~3.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1.5ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **DevHub Capstone**
 
 ### Теория
@@ -32,7 +32,7 @@ Scope control критичен: 7 дней, фиксированный MVP из 
 
 **Ключевая мысль:** PLAN.md фиксирует scope; два backend одновременно — ловушка недели.
 
-### Практика
+### Практика (полный трек)
 1. Прочитай [весь раздел capstone](../../docs/projects.md#неделя-22--devhub-capstone-финальный) и выпиши чеклист MVP (9 пунктов из projects.md)
 2. Выбери backend: FastAPI (нед. 18) или Express (нед. 19) — один основной стек
 3. User stories: минимум 10 штук (auth, tasks, notes, dashboard, profile, API, security, tests, docs)
@@ -48,9 +48,18 @@ Scope control критичен: 7 дней, фиксированный MVP из 
 - [ ] ER-диаграмма и API list в repo
 - [ ] Repo создан, ветка `main` + strategy feature branches
 
+### Практика (лайт / MVP)
+1. Прочитай [весь раздел capstone](../../docs/projects.md#неделя-22--devhub-capstone-финальный) и выпиши чеклист MVP (9 пунктов из projects.md)
+2. Выбери backend: FastAPI (нед. 18) или Express (нед. 19) — один основной стек
+3. User stories: минимум 10 штук (auth, tasks, notes, dashboard, profile, API, security, tests, docs)
+4. ER-диаграмма: `users`, `tasks`, `notes`, `tags`, `note_tags` — ≥ 5 сущностей со связями
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.
 
 ### Git
 - Закоммить изменения дня: `git add week-22-capstone/` → `git commit -m "week 22 day 148: DevHub planning PLAN.md and ER diagram"`
@@ -64,8 +73,8 @@ Scope control критичен: 7 дней, фиксированный MVP из 
 ## День 149 (Вт): Backend DevHub
 <a id="week-22-day-149"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~1ч теория · ~3.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1.5ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **DevHub Capstone**
 
 ### Теория
@@ -84,7 +93,7 @@ Backend DevHub — layered API: routers → services → repositories → Postgr
 
 **Ключевая мысль:** backend capstone = CRUD + schema + seed + OpenAPI до auth layer.
 
-### Практика
+### Практика (полный трек)
 1. Инициализируй `backend/` — FastAPI или Express по выбору из дня 148
 2. Модели/таблицы: `users`, `tasks`, `notes`, `tags`, `note_tags` (many-to-many)
 3. CRUD `/api/v1/tasks`: title, priority, status, deadline, `user_id` FK
@@ -100,9 +109,18 @@ Backend DevHub — layered API: routers → services → repositories → Postgr
 - [ ] OpenAPI/Swagger актуален
 - [ ] Seed выполняется одной командой
 
+### Практика (лайт / MVP)
+1. Инициализируй `backend/` — FastAPI или Express по выбору из дня 148
+2. Модели/таблицы: `users`, `tasks`, `notes`, `tags`, `note_tags` (many-to-many)
+3. CRUD `/api/v1/tasks`: title, priority, status, deadline, `user_id` FK
+4. CRUD `/api/v1/notes`: title, body (markdown), tags, search query param
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-22-capstone/backend/` → `git commit -m "week 22 day 149: DevHub backend models and CRUD API"`
@@ -116,8 +134,8 @@ Backend DevHub — layered API: routers → services → repositories → Postgr
 ## День 150 (Ср): Frontend DevHub (React + TypeScript)
 <a id="week-22-day-150"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~1ч теория · ~3.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1.5ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **DevHub Capstone**
 
 ### Теория
@@ -136,7 +154,7 @@ Frontend DevHub собирает навыки Portfolio SPA (нед. 13) и Reac
 
 **Ключевая мысль:** один `api.ts`, три UI-состояния, shared components — фронтенд capstone в миниатюре.
 
-### Практика
+### Практика (полный трек)
 1. `npm create vite@latest frontend -- --template react-ts`
 2. React Router: Layout + routes `/dashboard`, `/tasks`, `/notes`, `/profile`
 3. `services/api.ts` — typed fetch wrapper (пока без auth token)
@@ -152,9 +170,18 @@ Frontend DevHub собирает навыки Portfolio SPA (нед. 13) и Reac
 - [ ] TypeScript strict, нет `any` в api layer
 - [ ] Loading и error states на всех data-fetching страницах
 
+### Практика (лайт / MVP)
+1. `npm create vite@latest frontend -- --template react-ts`
+2. React Router: Layout + routes `/dashboard`, `/tasks`, `/notes`, `/profile`
+3. `services/api.ts` — typed fetch wrapper (пока без auth token)
+4. **Dashboard:** статистика задач (виджеты), placeholder для GitHub repos или погоды
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.
 
 ### Git
 - Закоммить изменения дня: `git add week-22-capstone/frontend/` → `git commit -m "week 22 day 150: DevHub React TS pages and API client"`
@@ -168,8 +195,8 @@ Frontend DevHub собирает навыки Portfolio SPA (нед. 13) и Reac
 ## День 151 (Чт): Auth — JWT end-to-end
 <a id="week-22-day-151"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~3.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1.5ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **DevHub Capstone**
 
 ### Теория
@@ -188,7 +215,7 @@ E2E manual test: register → login → create task → logout → login → tas
 
 **Ключевая мысль:** auth — сквозной слой; user_id только из verified JWT.
 
-### Практика
+### Практика (полный трек)
 1. Backend auth: register, login, JWT middleware на все protected routes
 2. Привяжи tasks и notes к `user_id` из token — миграция если нужно
 3. React: `/login`, `/register` pages; `AuthProvider` + `useAuth()`
@@ -204,9 +231,18 @@ E2E manual test: register → login → create task → logout → login → tas
 - [ ] 401 без token, 403 на чужие ресурсы
 - [ ] `SECURITY.md` начат
 
+### Практика (лайт / MVP)
+1. Backend auth: register, login, JWT middleware на все protected routes
+2. Привяжи tasks и notes к `user_id` из token — миграция если нужно
+3. React: `/login`, `/register` pages; `AuthProvider` + `useAuth()`
+4. Protected routes — redirect на `/login` без token
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.
 
 ### Git
 - Закоммить изменения дня: `git add week-22-capstone/` → `git commit -m "week 22 day 151: DevHub JWT auth frontend backend"`
@@ -220,8 +256,8 @@ E2E manual test: register → login → create task → logout → login → tas
 ## День 152 (Пт): Docker — локальный full-stack
 <a id="week-22-day-152"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~3.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1.5ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **DevHub Capstone**
 
 ### Теория
@@ -240,7 +276,7 @@ README «запуск за 5 команд»: clone → copy `.env` → `docker c
 
 **Ключевая мысль:** docker compose — часть MVP; `VITE_API_URL` для docker network, не localhost.
 
-### Практика
+### Практика (полный трек)
 1. `docker-compose.yml`: postgres + backend + frontend (nginx)
 2. Backend Dockerfile, Frontend multi-stage Dockerfile
 3. Healthcheck на db (`pg_isready`) и backend (`/api/health`)
@@ -256,9 +292,18 @@ README «запуск за 5 команд»: clone → copy `.env` → `docker c
 - [ ] `ARCHITECTURE.md` с диаграммой
 - [ ] README local setup ≤ 5 команд
 
+### Практика (лайт / MVP)
+1. `docker-compose.yml`: postgres + backend + frontend (nginx)
+2. Backend Dockerfile, Frontend multi-stage Dockerfile
+3. Healthcheck на db (`pg_isready`) и backend (`/api/health`)
+4. Entrypoint: wait-for-db → migrate → seed → start
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.
 
 ### Git
 - Закоммить изменения дня: `git add week-22-capstone/` → `git commit -m "week 22 day 152: DevHub docker-compose and ARCHITECTURE.md"`
@@ -272,8 +317,8 @@ README «запуск за 5 команд»: clone → copy `.env` → `docker c
 ## День 153 (Сб): Тесты и CI
 <a id="week-22-day-153"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~3ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1.5ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **DevHub Capstone**
 
 ### Теория
@@ -292,7 +337,7 @@ Test DB isolation — postgres service в CI или SQLite in-memory; не produ
 
 **Ключевая мысль:** CI green — критерий сдачи; тесты на auth и isolation обязательны.
 
-### Практика
+### Практика (полный трек)
 1. Backend pytest: auth (register, login, 401), tasks CRUD, notes CRUD, 403 cross-user — ≥ 15 тестов
 2. Frontend Vitest: Login form, ProtectedRoute, TaskList, NoteEditor — ≥ 12 тестов
 3. ESLint + `npm run lint` в frontend; ruff или flake8 в backend (опционально)
@@ -307,9 +352,18 @@ Test DB isolation — postgres service в CI или SQLite in-memory; не produ
 - [ ] ESLint без ошибок (или задокументированные исключения)
 - [ ] Auth flow покрыт тестами
 
+### Практика (лайт / MVP)
+1. Backend pytest: auth (register, login, 401), tasks CRUD, notes CRUD, 403 cross-user — ≥ 15 тестов
+2. Frontend Vitest: Login form, ProtectedRoute, TaskList, NoteEditor — ≥ 12 тестов
+3. ESLint + `npm run lint` в frontend; ruff или flake8 в backend (опционально)
+4. `.github/workflows/ci.yml`: job `backend` (postgres service, pytest) + job `frontend` (vitest, lint)
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.
 
 ### Git
 - Закоммить изменения дня: `git add week-22-capstone/` → `git commit -m "week 22 day 153: DevHub tests and GitHub Actions CI"`
@@ -323,8 +377,8 @@ Test DB isolation — postgres service в CI или SQLite in-memory; не produ
 ## День 154 (Вс): Deploy, портфолио и финальное ревью
 <a id="week-22-day-154"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~1ч теория · ~3.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1.5ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **DevHub Capstone**
 
 ### Теория
@@ -344,7 +398,7 @@ Free tier cold start 30–60 сек — документируй. Забытый
 
 **Ключевая мысль:** deploy + FINAL_REVIEW + profile README — три грани финиша capstone.
 
-### Практика
+### Практика (полный трек)
 1. **Deploy backend:** Render/Railway — connect repo, `DATABASE_URL` + `JWT_SECRET`
 2. **Deploy DB:** managed PostgreSQL, run migrations + seed
 3. **Deploy frontend:** Vercel — root `frontend/`, `VITE_API_URL` = production API URL
@@ -362,9 +416,19 @@ Free tier cold start 30–60 сек — документируй. Забытый
 - [ ] GitHub profile README обновлён со ссылками на все 22 проекта
 - [ ] README DevHub — demo link, docker setup, architecture, tests
 
+### Практика (лайт / MVP)
+1. **Deploy backend:** Render/Railway — connect repo, `DATABASE_URL` + `JWT_SECRET`
+2. **Deploy DB:** managed PostgreSQL, run migrations + seed
+3. **Deploy frontend:** Vercel — root `frontend/`, `VITE_API_URL` = production API URL
+4. Update CORS — добавь Vercel domain
+5. Проверь live demo: HTTPS, register → login → CRUD
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-22-capstone/` → `git commit -m "week 22 day 154: DevHub deploy portfolio FINAL_REVIEW"`

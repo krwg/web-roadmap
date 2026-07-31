@@ -8,8 +8,8 @@
 ## День 141 (Пн): Связка Frontend + Backend
 <a id="week-21-day-141"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Task Manager Docker**
 
 ### Теория
@@ -28,7 +28,7 @@ Full-stack начинается там, где фронтенд и бэкенд 
 
 **Ключевая мысль:** CORS — согласие сервера; `VITE_` prefix обязателен для клиентских env.
 
-### Практика
+### Практика (полный трек)
 1. React Dashboard (нед.14) или Secure Notes (нед.20) → fetch к Express/FastAPI API
 2. `.env`: `VITE_API_URL=http://localhost:3000` (или 8000 для FastAPI)
 3. CORS: allow `http://localhost:5173` в dev, credentials если нужны cookies
@@ -41,9 +41,17 @@ Full-stack начинается там, где фронтенд и бэкенд 
 - [ ] CORS настроен — нет ошибки в browser console
 - [ ] `.env.example` для обоих проектов
 
+### Практика (лайт / MVP)
+1. React Dashboard (нед.14) или Secure Notes (нед.20) → fetch к Express/FastAPI API
+2. `.env`: `VITE_API_URL=http://localhost:3000` (или 8000 для FastAPI)
+3. CORS: allow `http://localhost:5173` в dev, credentials если нужны cookies
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-21/` → `git commit -m "week 21 day 141: frontend backend CORS integration"`
@@ -57,8 +65,8 @@ Full-stack начинается там, где фронтенд и бэкенд 
 ## День 142 (Вт): Единый API-контракт и обработка ошибок
 <a id="week-21-day-142"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Task Manager Docker**
 
 ### Теория
@@ -77,7 +85,7 @@ API contract — общий язык фронтенда и бэкенда. OpenA
 
 **Ключевая мысль:** один api module; loading/error/empty — не опциональный UX.
 
-### Практика
+### Практика (полный трек)
 1. `services/api.ts` — единый fetch wrapper с error parsing и auth header
 2. Все страницы: loading spinner, error message + retry button, empty state
 3. Toast при успешном create/update/delete (или inline feedback)
@@ -90,9 +98,17 @@ API contract — общий язык фронтенда и бэкенда. OpenA
 - [ ] Network error показывает понятное сообщение
 - [ ] 4xx/5xx обрабатываются по-разному
 
+### Практика (лайт / MVP)
+1. `services/api.ts` — единый fetch wrapper с error parsing и auth header
+2. Все страницы: loading spinner, error message + retry button, empty state
+3. Toast при успешном create/update/delete (или inline feedback)
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-21/` → `git commit -m "week 21 day 142: API client loading error states"`
@@ -106,8 +122,8 @@ API contract — общий язык фронтенда и бэкенда. OpenA
 ## День 143 (Ср): Docker — основы
 <a id="week-21-day-143"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Task Manager Docker**
 
 ### Теория
@@ -126,7 +142,7 @@ Docker упаковывает приложение с зависимостями
 
 **Ключевая мысль:** image = шаблон, container = процесс; слои Dockerfile — про скорость сборки.
 
-### Практика
+### Практика (полный трек)
 1. Dockerfile для backend: `node:20-alpine` или `python:3.12-slim`
 2. COPY package files → install deps → COPY source → EXPOSE port → CMD
 3. `docker build -t task-api .` и `docker run -p 3000:3000 --env-file .env task-api`
@@ -139,9 +155,17 @@ Docker упаковывает приложение с зависимостями
 - [ ] .dockerignore исключает node_modules
 - [ ] Container стартует и отвечает на /health
 
+### Практика (лайт / MVP)
+1. Dockerfile для backend: `node:20-alpine` или `python:3.12-slim`
+2. COPY package files → install deps → COPY source → EXPOSE port → CMD
+3. `docker build -t task-api .` и `docker run -p 3000:3000 --env-file .env task-api`
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.
 
 ### Git
 - Закоммить изменения дня: `git add week-21/` → `git commit -m "week 21 day 143: backend Dockerfile"`
@@ -155,8 +179,8 @@ Docker упаковывает приложение с зависимостями
 ## День 144 (Чт): Docker для frontend и PostgreSQL
 <a id="week-21-day-144"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Task Manager Docker**
 
 ### Теория
@@ -175,7 +199,7 @@ Official `postgres:16` image: env `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRE
 
 **Ключевая мысль:** в docker network хост БД — имя service, не localhost.
 
-### Практика
+### Практика (полный трек)
 1. Frontend Dockerfile: stage 1 `npm run build`, stage 2 `nginx:alpine` + COPY dist
 2. `docker run -d --name pg -e POSTGRES_PASSWORD=pass -v pgdata:/var/lib/postgresql/data postgres:16`
 3. Backend container подключается к postgres по hostname (вручную: `--link` или host.docker.internal)
@@ -188,9 +212,17 @@ Official `postgres:16` image: env `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRE
 - [ ] Postgres data сохраняется после restart container
 - [ ] Backend видит DB по hostname `db` (в compose network)
 
+### Практика (лайт / MVP)
+1. Frontend Dockerfile: stage 1 `npm run build`, stage 2 `nginx:alpine` + COPY dist
+2. `docker run -d --name pg -e POSTGRES_PASSWORD=pass -v pgdata:/var/lib/postgresql/data postgres:16`
+3. Backend container подключается к postgres по hostname (вручную: `--link` или host.docker.internal)
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.
 
 ### Git
 - Закоммить изменения дня: `git add week-21/` → `git commit -m "week 21 day 144: frontend nginx and postgres containers"`
@@ -204,8 +236,8 @@ Official `postgres:16` image: env `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRE
 ## День 145 (Пт): docker-compose — multi-service
 <a id="week-21-day-145"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Task Manager Docker**
 
 ### Теория
@@ -224,24 +256,32 @@ Smoke test: open frontend → login → create task → refresh → persists. He
 
 **Ключевая мысль:** compose + healthcheck + volumes = воспроизводимый full-stack локально.
 
-### Практика
+### Практика (полный трек)
 1. `docker-compose.yml`:
-   - `db` (postgres:16 + volume `pgdata` + healthcheck)
-   - `backend` (build ./backend, ports 3000, depends_on db healthy)
-   - `frontend` (build ./frontend, ports 8080:80)
 2. `DATABASE_URL=postgresql://user:pass@db:5432/tasks` в backend env
 3. `docker compose up --build` — всё стартует одной командой
 4. Seed script в backend entrypoint или отдельный `init` service
 5. Проверь smoke: open frontend → login → create task
+   - `db` (postgres:16 + volume `pgdata` + healthcheck)
+   - `backend` (build ./backend, ports 3000, depends_on db healthy)
+   - `frontend` (build ./frontend, ports 8080:80)
 
 **Критерии:**
 - [ ] Одна команда поднимает 3 сервиса
 - [ ] Данные PG в named volume `pgdata`
 - [ ] depends_on + healthcheck db
 
+### Практика (лайт / MVP)
+1. `docker-compose.yml`:
+2. `DATABASE_URL=postgresql://user:pass@db:5432/tasks` в backend env
+3. `docker compose up --build` — всё стартует одной командой
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.
 
 ### Git
 - Закоммить изменения дня: `git add week-21/` → `git commit -m "week 21 day 145: docker-compose three services"`
@@ -255,8 +295,8 @@ Smoke test: open frontend → login → create task → refresh → persists. He
 ## День 146 (Сб): Dev vs Prod конфигурация
 <a id="week-21-day-146"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~1ч теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Task Manager Docker**
 
 ### Теория
@@ -275,7 +315,7 @@ Smoke test: open frontend → login → create task → refresh → persists. He
 
 **Ключевая мысль:** dev/prod compose — разные файлы, одна документация в README.
 
-### Практика
+### Практика (полный трек)
 1. `docker-compose.dev.yml` — mount source, hot reload, exposed debug ports
 2. `docker-compose.prod.yml` — optimized builds, no volume mounts
 3. README: `docker compose up` (dev) vs `docker compose -f docker-compose.prod.yml up`
@@ -288,9 +328,17 @@ Smoke test: open frontend → login → create task → refresh → persists. He
 - [ ] Seed data появляется после первого `up`
 - [ ] Логи доступны через compose logs
 
+### Практика (лайт / MVP)
+1. `docker-compose.dev.yml` — mount source, hot reload, exposed debug ports
+2. `docker-compose.prod.yml` — optimized builds, no volume mounts
+3. README: `docker compose up` (dev) vs `docker compose -f docker-compose.prod.yml up`
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.
 
 ### Git
 - Закоммить изменения дня: `git add week-21/` → `git commit -m "week 21 day 146: dev prod compose configs"`
@@ -304,8 +352,8 @@ Smoke test: open frontend → login → create task → refresh → persists. He
 ## День 147 (Вс): E2E smoke test и ревью архитектуры
 <a id="week-21-day-147"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Task Manager Docker**
 
 ### Теория
@@ -324,7 +372,7 @@ Smoke test — минимальный путь пользователя, не п
 
 **Ключевая мысль:** smoke test + architecture diagram — входной билет в capstone неделю.
 
-### Практика
+### Практика (полный трек)
 1. Smoke checklist в `SMOKE_TEST.md`: compose up → open app → login → CRUD task → refresh → persists
 2. Mermaid diagram в README: frontend, backend, db, volumes
 3. Замер cold start `docker compose up --build` — запиши время
@@ -337,9 +385,17 @@ Smoke test — минимальный путь пользователя, не п
 - [ ] Mermaid diagram в README
 - [ ] Все env vars в `.env.example`
 
+### Практика (лайт / MVP)
+1. Smoke checklist в `SMOKE_TEST.md`: compose up → open app → login → CRUD task → refresh → persists
+2. Mermaid diagram в README: frontend, backend, db, volumes
+3. Замер cold start `docker compose up --build` — запиши время
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.
 
 ### Git
 - Закоммить изменения дня: `git add week-21/` → `git commit -m "week 21 day 147: smoke test and architecture diagram"`

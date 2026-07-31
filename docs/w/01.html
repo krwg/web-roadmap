@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Неделя 1: HTML — структура, семантика, формы, a11y · web-roadmap</title>
+  <meta name="description" content="HTML — неделя 01 маршрута web-roadmap.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-01">
+  <meta property="og:title" content="Неделя 1: HTML — структура, семантика, формы, a11y">
+  <meta property="og:url" content="https://krwg.github.io/web-roadmap/w/01.html">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-01">Открыть в приложении маршрута</a> · <a href="../">На главную</a></p>
+    <article class="prose"><h1>Неделя 1: HTML — структура, семантика, формы, a11y</h1>
+<blockquote>
+<p><strong>Цель недели:</strong> научиться создавать валидные, семантические HTML-страницы с формами и базовой доступностью — и <strong>с первого дня</strong> вести код в Git.
+<strong>Проект недели:</strong> <a href="#projects--projects-неделя-1-portfolio-landing">Portfolio Landing</a> — 3 страницы, форма, a11y ≥ 90.
+<strong>Git:</strong> репозиторий <code>learning-log</code> создаётся в <strong>день 1</strong>; первый коммит — <code>index.html</code>. К концу недели ≥ 7 коммитов, тег <code>week-01-done</code>.</p>
+</blockquote>
+<h3>Литература (обязательно + по желанию)</h3>
+<table>
+<thead>
+<tr>
+<th>Приоритет</th>
+<th>Источник</th>
+<th>Главы / разделы</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>★★★</td>
+<td>Ионетт Дакетт «HTML и CSS»</td>
+<td>гл. 1–6</td>
+</tr>
+<tr>
+<td>★★★</td>
+<td><a href="https://developer.mozilla.org/ru/docs/Learn/HTML">MDN Learn HTML</a></td>
+<td>весь трек</td>
+</tr>
+<tr>
+<td>★★</td>
+<td><a href="https://web.dev/learn/html">web.dev Learn HTML</a></td>
+<td>семантика, формы</td>
+</tr>
+<tr>
+<td>★★</td>
+<td>Scott Chacon «Pro Git»</td>
+<td><a href="https://git-scm.com/book/ru/v2">гл. 1–2</a> — основы и коммиты</td>
+</tr>
+<tr>
+<td>★</td>
+<td><a href="https://web.archive.org/web/20240000000000*/http://html5doctor.com/">HTML5 Doctor (архив)</a></td>
+<td>семантические элементы</td>
+</tr>
+<tr>
+<td>★</td>
+<td><a href="https://www.a11yproject.com/checklist/">A11y Project Checklist</a></td>
+<td>доступность</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="week-01-day-0">День 0 (до понедельника): Git и GitHub — подготовка</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~35м теория · ~1.5ч практика · ~10м Git · ~15м ревью<br>
+<strong>Время (лайт):</strong> ~15м теория · ~40м практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+<p>Если Git уже установлен и аккаунт GitHub есть — пройди чеклист и переходи к дню 1.</p>
+</blockquote>
+<h3>Теория</h3>
+<p>Система контроля версий (VCS) решает проблему, с которой каждый разработчик сталкивается рано: «что я менял, когда и зачем?». Без VCS папка проекта превращается в <code>index_final_v3_REAL.html</code>. Git хранит не отдельные патчи, а <strong>снимки</strong> всего проекта в момент коммита — как фотография комнаты, а не список «переставили стул на 3 см влево». Это позволяет мгновенно откатиться к любому состоянию, сравнить две версии и работать параллельно в ветках.</p>
+<p>Рабочий процесс Git строится вокруг трёх зон. <strong>Working directory</strong> — файлы на диске, которые ты редактируешь прямо сейчас. Команда <code>git add</code> переносит выбранные изменения в <strong>staging</strong> (индекс) — зону подготовки: «вот это точно войдёт в следующий коммит». <code>git commit</code> фиксирует снимок staging в <strong>repository</strong> — локальной базе истории. Мысленная модель: черновик на столе → выбранные листы в папку «на подпись» → подписанный документ в архив.</p>
+<p>GitHub — это удалённое зеркало репозитория плюс социальная платформа. Публичный <code>learning-log</code> с осмысленной историей коммитов — живое портфолио: рекрутер видит не только код, но и то, как ты думаешь и работаешь.</p>
+<p><strong>Ключевая мысль:</strong> коммит — это именованный снимок проекта, а не просто «сохранить файл».</p>
+<p><strong>Читать:</strong>
+- <a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control">Pro Git: Введение</a> — зачем VCS: история, откат, ветки</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Установи <a href="https://git-scm.com/downloads">Git</a>, проверь: <code>git --version</code></li>
+<li>Настрой имя и email (они попадут в каждый коммит):</li>
+<li>Создай аккаунт на <a href="https://github.com/">GitHub</a> если нет</li>
+<li>Создай <strong>пустой</strong> публичный репозиторий <code>learning-log</code> (без README — добавишь локально)</li>
+<li>Склонируй репозиторий <a href="https://github.com/krwg/learning-log">learning-log</a> (кнопка Code → HTTPS)</li>
+<li>Создай <code>.gitignore</code> в корне:</li>
+<li>Первый коммит инфраструктуры:
+   <code>bash
+   git config --global user.name "Твоё Имя"
+   git config --global user.email "you@example.com"</code>
+   <code>.DS_Store
+   Thumbs.db
+   .env
+   *.log
+   node_modules/</code>
+   <code>bash
+   cd learning-log
+   git add .gitignore
+   git commit -m "chore: init learning-log with gitignore"
+   git push -u origin main</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] <code>git status</code> работает в папке <code>learning-log</code>
+- [ ] Репозиторий виден на GitHub
+- [ ] <code>.gitignore</code> закоммичен</p>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<hr>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Установи <a href="https://git-scm.com/downloads">Git</a>, проверь: <code>git --version</code></li>
+<li>Настрой имя и email (они попадут в каждый коммит):</li>
+<li>Создай аккаунт на <a href="https://github.com/">GitHub</a> если нет</li>
+<li>Создай <strong>пустой</strong> публичный репозиторий <code>learning-log</code> (без README — добавишь локально)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h2 id="week-01-day-1">День 1 (Mon): Структура документа, первый index.html, первый коммит страницы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1.5ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~35м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>HTML — это не язык оформления, а язык <strong>смысла</strong>. Когда браузер получает <code>.html</code>, он парсит разметку и строит <strong>DOM-дерево</strong> (Document Object Model) — живую структуру узлов в памяти. Представь генеалогическое древо: корень <code>&lt;html&gt;</code>, ветви <code>&lt;head&gt;</code> и <code>&lt;body&gt;</code>, листья — текст и элементы. CSS и JavaScript позже «цепляются» к этому дереву. Разметка описывает, <em>что</em> это за контент, а не <em>как</em> он выглядит.</p>
+<p>Каждый документ начинается с <code>&lt;!DOCTYPE html&gt;</code>, который переключает браузер в standards mode — предсказуемое поведение вёрстки. Без DOCTYPE старые браузеры могут включить quirks mode и интерпретировать CSS иначе. В <code>&lt;head&gt;</code> живут метаданные: кодировка (<code>charset</code>), viewport для мобильных, заголовок вкладки. В <code>&lt;body&gt;</code> — всё, что видит пользователь.</p>
+<p>Элементы делятся на <strong>блочные</strong> и <strong>строчные</strong>. Блочные (<code>p</code>, <code>h1</code>, <code>ul</code>) занимают всю ширину строки и начинаются с новой линии — как абзацы в книге. Строчные (<code>span</code>, <code>a</code>, <code>img</code>) текут внутри строки, как слова в предложении. Заголовки <code>h1</code>–<code>h6</code> задают <strong>иерархию</strong> разделов, а не размер шрифта: один логический <code>h1</code> на страницу, затем <code>h2</code> для подразделов. Прыжок с <code>h1</code> сразу на <code>h3</code> — как оглавление, где после главы 1 идёт 1.3 без главы 2.</p>
+<p>Атрибуты дополняют теги: <code>id</code> — уникальный якорь (один на страницу), <code>class</code> — группа для стилей, <code>href</code> и <code>src</code> — адреса ссылок и ресурсов. У <code>img</code> атрибут <code>alt</code> обязателен, если картинка несёт смысл — иначе скринридер и поисковик не поймут, что на изображении.</p>
+<p><strong>Ключевая мысль:</strong> HTML описывает структуру и смысл; браузер из неё строит DOM-дерево.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/HTML/Introduction_to_HTML">MDN: Введение в HTML</a> — разметка описывает смысл, браузер строит DOM-дерево</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>В <code>learning-log</code> создай папку <code>week-01/</code></li>
+<li>Файл <code>week-01/index.html</code> — корректный DOCTYPE, <code>lang="ru"</code>, <code>meta charset="UTF-8"</code>, <code>viewport</code></li>
+<li>Секции: шапка с именем, <code>nav</code> из 3 якорных ссылок (<code>#about</code>, <code>#skills</code>, <code>#contact</code>)</li>
+<li>Блоки «О себе», «Навыки» (<code>ul</code>), «Контакты» (<code>p</code> + ссылка <code>mailto:</code>)</li>
+<li>Изображение-аватар с осмысленным <code>alt</code>; внешняя ссылка GitHub с <code>target="_blank"</code> <code>rel="noopener noreferrer"</code></li>
+<li>Live Server → DevTools → Elements: найди DOM-узлы, соответствующие тегам</li>
+<li><a href="https://validator.w3.org/">validator.w3.org</a> — 0 errors</li>
+<li>В <code>week-01/README.md</code> — 3 предложения: что за страница, как открыть локально</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Валидный HTML
+- [ ] Один <code>h1</code>, логичные <code>h2</code>
+- [ ] У <code>img</code> есть <code>alt</code></p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>В <code>learning-log</code> создай папку <code>week-01/</code></li>
+<li>Файл <code>week-01/index.html</code> — корректный DOCTYPE, <code>lang="ru"</code>, <code>meta charset="UTF-8"</code>, <code>viewport</code></li>
+<li>Секции: шапка с именем, <code>nav</code> из 3 якорных ссылок (<code>#about</code>, <code>#skills</code>, <code>#contact</code>)</li>
+<li>Блоки «О себе», «Навыки» (<code>ul</code>), «Контакты» (<code>p</code> + ссылка <code>mailto:</code>)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">cd learning-log
+git add week-01/index.html week-01/README.md
+git commit -m &quot;week 01 day 1: first portfolio index.html with semantic sections&quot;
+git push
+</code></pre>
+<p>Это твой <strong>первый коммит кода</strong> — зафиксируй дату в <code>journal.md</code> (создай в корне, если ещё нет).</p>
+<h3>Ловушки</h3>
+<ul>
+<li>Пропуск DOCTYPE → непредсказуемая вёрстка в старых браузерах</li>
+<li><code>h3</code> сразу после <code>h1</code> без <code>h2</code> — плохой document outline</li>
+<li><code>div</code> внутри <code>p</code> — невалидная вложенность</li>
+</ul>
+<hr>
+<h2 id="week-01-day-2">День 2 (Tue): Семантическая разметка</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Семантика в HTML — это выбор тега, который точно описывает <strong>роль</strong> элемента, а не просто «коробку для стилей». <code>&lt;div&gt;</code> ничего не говорит о содержимом; <code>&lt;nav&gt;</code> явно объявляет: здесь навигация. Браузер, скринридер и поисковик читают эту разметку и строят карту страницы. Пользователь с программой чтения с экрана может прыгнуть сразу к <code>main</code>, минуя шапку и меню — если ты их правильно разметил.</p>
+<p><strong>Landmark-элементы</strong> — ориентиры на странице: <code>header</code> (шапка), <code>nav</code> (меню), <code>main</code> (основной уникальный контент), <code>footer</code> (подвал). На странице должен быть ровно один <code>main</code>. <code>nav</code> — только для навигационных ссылок, не для любого списка ссылок в тексте. Страница с семантической разметкой читается логично даже без CSS — это хороший тест: отключи стили и проверь, понятна ли структура.</p>
+<p><code>section</code> группирует тематически связанный контент с заголовком (блок «О себе», «Навыки»). <code>article</code> — самодостаточная единица: пост в блоге, карточка товара, новость — то, что можно вынести в RSS отдельно. <code>aside</code> — боковое дополнение к основному потоку: виджет «сейчас изучаю», реклама, сноски. Пара <code>figure</code> + <code>figcaption</code> связывает иллюстрацию с подписью; элемент <code>time</code> с атрибутом <code>datetime</code> даёт машиночитаемую дату для календарей и микроразметки.</p>
+<p><strong>Ключевая мысль:</strong> правильный тег — это документация для людей и машин; <code>div</code> — последний выбор, не первый.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Glossary/Semantics">MDN: Семантика</a> — тег несёт смысл для браузера, скринридера, SEO</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Рефакторинг <code>index.html</code>: убери «суп из div», введи <code>header</code>, <code>nav</code>, <code>main</code>, <code>section</code>, <code>footer</code></li>
+<li><code>article</code> — мини-пост «Почему я учу веб» с <code>time</code></li>
+<li><code>aside</code> — список «Сейчас изучаю: HTML, Git»</li>
+<li>HeadingsMap или DevTools Accessibility — проверь outline</li>
+<li>Сравни diff в Git: <code>git diff</code> до коммита — видишь только структурные изменения?</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Один <code>main</code> на страницу
+- [ ] <code>nav</code> только для навигации
+- [ ] Структура читается без CSS</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Рефакторинг <code>index.html</code>: убери «суп из div», введи <code>header</code>, <code>nav</code>, <code>main</code>, <code>section</code>, <code>footer</code></li>
+<li><code>article</code> — мини-пост «Почему я учу веб» с <code>time</code></li>
+<li><code>aside</code> — список «Сейчас изучаю: HTML, Git»</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">git add week-01/index.html
+git commit -m &quot;week 01 day 2: refactor to semantic landmarks and article&quot;
+git push
+</code></pre>
+<hr>
+<h2 id="week-01-day-3">День 3 (Wed): Ссылки, изображения, медиа</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Многостраничный сайт связывается <strong>ссылками</strong> и <strong>путями к ресурсам</strong>. Относительные пути (<code>./about.html</code>, <code>../images/photo.jpg</code>) привязаны к структуре папок проекта, а не к домену — перенеси папку на другой хостинг, и ссылки продолжат работать. Абсолютные URL с доменом (например <code>example.com/page</code>) нужны для внешних ресурсов. Якорные ссылки (<code>#section-id</code>) прыгают к элементу с соответствующим <code>id</code> на той же странице.</p>
+<p>Изображения — отдельная дисциплина доступности и производительности. Атрибут <code>alt</code> описывает смысл картинки для тех, кто её не видит. Декоративное изображение получает <code>alt=""</code> (пустой), чтобы скринридер его пропустил. Не дублируй текст из <code>figcaption</code> в <code>alt</code> — это раздражает при озвучивании дважды. Атрибут <code>loading="lazy"</code> откладывает загрузку картинок ниже первого экрана, ускоряя начальную отрисовку. Пара <code>srcset</code> + <code>sizes</code> позволяет браузеру выбрать подходящий размер файла под экран — меньше трафика на мобильном.</p>
+<p>Видео встраивается тегом <code>&lt;video&gt;</code> с <code>controls</code> для панели управления и <code>poster</code> — превью до воспроизведения. Текст внутри тега — fallback для старых браузеров: «Ваш браузер не поддерживает видео».</p>
+<p><strong>Ключевая мысль:</strong> <code>alt</code> — не украшение, а часть контента; пустой <code>alt</code> уместен только для декора.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/HTML/Multimedia_and_embedding/Images_in_HTML">MDN: Изображения в HTML</a>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images">MDN: Responsive images</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>week-01/about.html</code>, <code>week-01/gallery.html</code> — единый <code>header</code>/<code>nav</code>/<code>footer</code></li>
+<li>Относительные ссылки между страницами + якоря <code>#section-id</code></li>
+<li>Галерея 4+ <code>figure</code> с WebP/JPG, lazy loading</li>
+<li>Одно <code>video</code> с <code>poster</code> (короткий клип о себе или placeholder)</li>
+<li>Lighthouse Accessibility на <code>index.html</code></li>
+<li>Обнови <code>nav</code> на всех страницах — активная страница через <code>aria-current="page"</code> на текущей ссылке</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Нет битых ссылок
+- [ ] Внешние ссылки с <code>rel="noopener noreferrer"</code>
+- [ ] <code>aria-current</code> на активном пункте nav</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>week-01/about.html</code>, <code>week-01/gallery.html</code> — единый <code>header</code>/<code>nav</code>/<code>footer</code></li>
+<li>Относительные ссылки между страницами + якоря <code>#section-id</code></li>
+<li>Галерея 4+ <code>figure</code> с WebP/JPG, lazy loading</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">git add week-01/
+git commit -m &quot;week 01 day 3: multi-page site with gallery and media&quot;
+git push
+</code></pre>
+<hr>
+<h2 id="week-01-day-4">День 4 (Thu): Формы — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Форма — мост между пользователем и сервером: собирает ввод и отправляет его. Даже на статическом сайте без бэкенда форма полезна для изучения: можно увидеть в DevTools → Network, какие данные ушли бы при submit. Атрибут <code>action</code> задаёт URL назначения; без него отправка идёт на текущий адрес страницы.</p>
+<p>Связка <code>label[for="field-id"]</code> + <code>input[id="field-id"]</code> — фундамент доступности форм. Клик по подписи фокусирует поле: удобно на мобильном и критично для пользователей скринридеров. Атрибут <code>name</code> на каждом поле — ключ, под которым значение попадёт в данные формы при отправке. Без <code>name</code> поле просто игнорируется.</p>
+<p>Группировка через <code>fieldset</code> и <code>legend</code> объединяет связанные поля (например, radio-кнопки) с общим заголовком. У radio-кнопок в одной группе должен быть <strong>одинаковый</strong> <code>name</code> — иначе браузер не поймёт, что выбор взаимоисключающий. Внимание к типам кнопок: <code>button</code> без <code>type</code> внутри формы по умолчанию ведёт себя как <code>submit</code> и отправляет форму. Для обычной кнопки явно укажи <code>type="button"</code>.</p>
+<p><strong>Ключевая мысль:</strong> каждое поле — с видимым <code>label</code>; <code>name</code> — имя данных при отправке.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/en-US/docs/Learn/Forms/Your_first_form">MDN: Your first form</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>На <code>contact.html</code> — форма: имя, email, тема (<code>select</code>), сообщение (<code>textarea</code>)</li>
+<li>Radio «Способ связи», checkbox «Согласие» с <code>required</code></li>
+<li>Каждое поле с видимым <code>label</code></li>
+<li><code>fieldset</code>/<code>legend</code> для группы radio</li>
+<li>Submit — посмотри в DevTools → Network что ушло бы (или закрой форму <code>onsubmit="return false"</code> для статики)</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Все поля с labels
+- [ ] Radio с общим <code>name</code>
+- [ ] <code>email</code> type даёт нативную валидацию</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>На <code>contact.html</code> — форма: имя, email, тема (<code>select</code>), сообщение (<code>textarea</code>)</li>
+<li>Radio «Способ связи», checkbox «Согласие» с <code>required</code></li>
+<li>Каждое поле с видимым <code>label</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">git add week-01/contact.html week-01/
+git commit -m &quot;week 01 day 4: contact form with labels and fieldsets&quot;
+git push
+</code></pre>
+<hr>
+<h2 id="week-01-day-5">День 5 (Fri): Валидация форм</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>HTML5 принёс <strong>встроенную валидацию</strong> — браузер проверяет поля до отправки без единой строки JavaScript. Атрибуты <code>required</code>, <code>minlength</code>, <code>pattern</code>, <code>type="email"</code> задают правила; при нарушении submit блокируется, и браузер показывает подсказку. За кулисами работает Constraint Validation API: у каждого поля есть объект <code>validity</code> со флагами (<code>valueMissing</code>, <code>patternMismatch</code> и др.) и свойство <code>validationMessage</code> с текстом ошибки.</p>
+<p>В CSS псевдокласс <code>:invalid</code> позволяет подсветить проблемное поле — но осторожно: поле считается <code>:invalid</code> и до первого ввода, если оно <code>required</code>. Часто комбинируют с <code>:user-invalid</code> или вешают стили после попытки submit. Атрибут <code>placeholder</code> — серый текст-подсказка внутри поля, который <strong>исчезает</strong> при вводе. Он не заменяет <code>label</code>: пользователь, начав печатать, уже не видит, что от него хотели. <code>datalist</code> даёт выпадающие подсказки, но не ограничивает ввод — в отличие от <code>select</code>.</p>
+<p>Клиентская валидация — удобство и ранняя обратная связь, но не защита: злоумышленник обойдёт её за секунду. На сервере проверять всё равно обязательно.</p>
+<p><strong>Ключевая мысль:</strong> <code>placeholder</code> — подсказка, <code>label</code> — подпись; не путай их роли.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/Forms/Form_validation">MDN: Form validation</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Форма регистрации на отдельной секции или <code>register.html</code></li>
+<li>Пароль <code>minlength="8"</code>, логин <code>pattern="[A-Za-z0-9_]{3,20}"</code></li>
+<li>Два <code>fieldset</code>: «Личные данные», «Учётные данные»</li>
+<li><code>datalist</code> для города (5+ городов)</li>
+<li>Тест: пустая отправка, неверный email, короткий пароль — браузер блокирует</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Нативная валидация без JS
+- [ ] <code>placeholder</code> не единственная подпись
+- [ ] Понятные <code>title</code> у полей с <code>pattern</code></p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Форма регистрации на отдельной секции или <code>register.html</code></li>
+<li>Пароль <code>minlength="8"</code>, логин <code>pattern="[A-Za-z0-9_]{3,20}"</code></li>
+<li>Два <code>fieldset</code>: «Личные данные», «Учётные данные»</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">git add week-01/
+git commit -m &quot;week 01 day 5: registration form with HTML5 validation&quot;
+git push
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>Две кнопки submit в одной форме</li>
+<li><code>type="number"</code> для телефона — лучше <code>type="tel"</code></li>
+</ul>
+<hr>
+<h2 id="week-01-day-6">День 6 (Sat): Доступность (a11y)</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~30м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Доступность (accessibility, a11y) — это не «галочка для инвалидов», а качество интерфейса для всех: плохой контраст мешает читать при ярком солнце, а чёткая навигация с клавиатуры спасает, когда мышь сломалась. Фреймворк <strong>POUR</strong> задаёт четыре принципа: контент должен быть <strong>воспринимаем</strong> (Perceivable), <strong>управляем</strong> (Operable), <strong>понятен</strong> (Understandable) и <strong>устойчив</strong> к разным технологиям (Robust).</p>
+<p>Клавиатурная навигация — базовый тест. Порядок Tab следует порядку элементов в DOM, а не визуальному расположению на экране. Не ставь положительный <code>tabindex</code> без веской причины — это ломает естественный порядок. <strong>Skip link</strong> — первая фокусируемая ссылка «Перейти к содержимому», ведущая к <code>#main-content</code>; пользователь скринридера не слушает меню на каждой странице заново.</p>
+<p>Контраст текста и фона по WCAG AA — минимум <strong>4.5:1</strong> для обычного текста и <strong>3:1</strong> для крупного. Проверяй через WebAIM Contrast Checker, а не «на глаз». ARIA-атрибуты (<code>aria-label</code>, <code>role</code>) дополняют HTML, когда нативного элемента нет — но <strong>первое правило ARIA</strong>: не используй ARIA, если подходит обычный тег (<code>button</code> вместо <code>div</code> с <code>role="button"</code>).</p>
+<p><strong>Ключевая мысль:</strong> если страницу нельзя пройти Tab-ом — она недоступна, даже с идеальным дизайном.</p>
+<p><strong>Читать:</strong>
+- <a href="https://web.dev/learn/accessibility">web.dev: Learn Accessibility</a> — POUR: Perceivable, Operable, Understandable, Robust</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Пройди все страницы только Tab/Enter/Space</li>
+<li>Skip-link в начале <code>body</code> на каждой странице</li>
+<li><a href="https://webaim.org/resources/contrastchecker/">WebAIM Contrast Checker</a> — исправь слабый контраст (временный inline style допустим)</li>
+<li>Lighthouse a11y ≥ 90 на <code>index.html</code></li>
+<li>Запиши в <code>week-01/A11Y.md</code> — 5 найденных проблем и как исправил</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Skip-link работает
+- [ ] Видимый <code>:focus-visible</code> на ссылках
+- [ ] Lighthouse ≥ 90</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Пройди все страницы только Tab/Enter/Space</li>
+<li>Skip-link в начале <code>body</code> на каждой странице</li>
+<li><a href="https://webaim.org/resources/contrastchecker/">WebAIM Contrast Checker</a> — исправь слабый контраст (временный inline style допустим)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">git add week-01/
+git commit -m &quot;week 01 day 6: accessibility fixes and A11Y audit doc&quot;
+git push
+</code></pre>
+<hr>
+<h2 id="week-01-day-7">День 7 (Sun): Таблицы, метаданные, проект недели</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>HTML-таблицы предназначены для <strong>табличных данных</strong> — расписания, сравнения, статистики. В 1990-х ими верстали макеты целых сайтов; сегодня для layout есть CSS Grid и Flexbox, а таблица для вёрстки — антипаттерн: скринридер зачитывает «строка 3, столбец 2» там, где пользователь ждёт заголовок статьи. Правильная таблица: <code>caption</code> (заголовок), <code>thead</code> с <code>th scope="col"</code>, <code>tbody</code> с <code>td</code>. Атрибут <code>scope</code> связывает заголовок с колонкой или строкой.</p>
+<p>Метаданные в <code>&lt;head&gt;</code> влияют на то, как страницу видят извне. <code>title</code> — заголовок вкладки и сниппет в поиске. <code>meta name="description"</code> — краткое описание для Google. Open Graph-теги (<code>og:title</code>, <code>og:image</code>) управляют превью при шаринге в Telegram или LinkedIn: без них мессенджер подставит случайный текст. Favicon — иконка вкладки: <code>link rel="icon"</code> с PNG 32×32 или SVG для чёткости на Retina.</p>
+<p><strong>Ключевая мысль:</strong> таблица = данные с заголовками; для сетки страницы — CSS, не <code>&lt;table&gt;</code>.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/HTML/Tables">MDN: Tables</a> — <code>th scope="col|row"</code>, <code>caption</code></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Таблица «План обучения» (неделя, тема, статус) на <code>index.html</code></li>
+<li>Уникальные <code>title</code> и <code>description</code> на каждой странице</li>
+<li>OG-теги на главной, favicon</li>
+<li>Финальный прогон W3C + Lighthouse на всех HTML</li>
+<li><strong>Собери проект недели</strong> — чеклист ниже</li>
+<li><code>notes.md</code> в <code>week-01/</code>: 5 правил хорошего HTML своими словами</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Таблица с <code>thead</code>/<code>tbody</code>/<code>th</code>
+- [ ] Все страницы валидны
+- [ ] Проект недели выполнен</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Таблица «План обучения» (неделя, тема, статус) на <code>index.html</code></li>
+<li>Уникальные <code>title</code> и <code>description</code> на каждой странице</li>
+<li>OG-теги на главной, favicon</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">git add week-01/
+git commit -m &quot;week 01 day 7: tables, meta, favicon, week project complete&quot;
+git tag -a week-01-done -m &quot;Portfolio Landing complete&quot;
+git push &amp;&amp; git push --tags
+</code></pre>
+<hr>
+<h2 id="week-01-проект-недели-portfolio-landing">Проект недели: Portfolio Landing</h2>
+<p>Полное ТЗ: <a href="#projects--projects-неделя-1-portfolio-landing">docs/projects.md#неделя-1--portfolio-landing</a></p>
+<p><strong>Итоговые требования:</strong>
+- 3+ связанные страницы, единая навигация с <code>aria-current</code>
+- Форма контакта + форма регистрации с валидацией
+- Галерея, таблица навыков/плана, skip-links
+- Lighthouse a11y ≥ 90, W3C 0 errors
+- <code>week-01/README.md</code> со скриншотом и инструкцией запуска
+- ≥ 7 коммитов за неделю, тег <code>week-01-done</code></p>
+<p><strong>Критерии проекта:</strong>
+- [ ] Демо можно открыть через Live Server или GitHub Pages
+- [ ] Рекрутер понимает структуру без объяснений
+- [ ] <code>git log --oneline week-01/</code> показывает осмысленную историю</p>
+<h2 id="week-01-review">Ревью-чеклист</h2>
+<ul>
+<li>Объясняю разницу <code>div</code> vs <code>section</code> vs <code>article</code>?</li>
+<li>Знаю, когда <code>alt=""</code> уместен?</li>
+<li>Связал <code>label[for]</code> с полем?</li>
+<li>Настроил Git и сделал первый коммит <code>index.html</code> в день 1?</li>
+<li>Могу проверить страницу валидатором и Lighthouse без подсказок?</li>
+</ul>
+<h2 id="week-01-review">Проверь себя</h2>
+<details>
+<summary>Что должно получиться к концу недели?</summary>
+
+Работающий проект **Portfolio Landing** в `learning-log/week-01/`, осмысленная Git-история, тег `week-01-done`.
+
+</details>
+
+<details>
+<summary>Главный навык недели одной фразой?</summary>
+
+Валидный семантический HTML с формами и базовой доступностью
+
+</details>
+
+<details>
+<summary>Можно ли пропустить день?</summary>
+
+Нет — дни связаны. В **лайт-режиме** сократи практику до MVP, но теорию и Git-коммит не пропускай.
+
+</details></article>
+  </main>
+  <script>if (location.hash) location.replace('../' + location.hash);</script>
+</body>
+</html>
