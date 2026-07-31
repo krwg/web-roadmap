@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Неделя 4: Git Advanced, GitHub workflow, DevTools · web-roadmap</title>
+  <meta name="description" content="Git advanced — неделя 04 маршрута web-roadmap.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-04">
+  <meta property="og:title" content="Неделя 4: Git Advanced, GitHub workflow, DevTools">
+  <meta property="og:url" content="https://krwg.github.io/web-roadmap/w/04.html">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-04">Открыть в приложении маршрута</a> · <a href="../">На главную</a></p>
+    <article class="prose"><h1>Неделя 4: Git Advanced, GitHub workflow, DevTools</h1>
+<blockquote>
+<p><strong>Цель недели:</strong> углубить Git (ветки, merge, rebase, PR), оформить learning-log как OSS-проект, освоить DevTools.
+<strong>Предусловие:</strong> Git с <a href="#week-01">недели 1</a> — репозиторий <code>learning-log</code> уже существует, ежедневные коммиты — привычка.
+<strong>Литература:</strong> Scott Chacon, Ben Straub «Pro Git» (<a href="https://git-scm.com/book/ru/v2">git-scm.com/book</a>), <a href="https://docs.github.com/ru">GitHub Docs</a>, <a href="https://developer.chrome.com/docs/devtools/">Chrome DevTools Docs</a>, <a href="https://www.conventionalcommits.org/ru/">Conventional Commits</a>, <a href="https://ohshitgit.com/">Oh Shit, Git!?!</a> — экстренные сценарии</p>
+<p><strong>Проект недели:</strong> см. <a href="#projects--projects-неделя-4-oss-workflow-kit">docs/projects.md</a>
+<strong>Git:</strong> минимум 1 осмысленный коммит каждый день в <code>learning-log/week-04/</code></p>
+</blockquote>
+<h2 id="week-04-day-1">День 1 (Mon): Git — ревизия основ + <code>git log</code> как инструмент</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Перед углублением в ветки стоит закрепить фундамент: Git отслеживает три <strong>состояния</strong> каждого файла — изменён (modified), проиндексирован (staged), зафиксирован (committed). Каждый коммит получает уникальный SHA-хеш — «отпечаток» снимка. <code>git log --oneline --graph --all</code> показывает историю как дерево решений, а не список сохранений.</p>
+<p><code>git show &lt;hash&gt;</code> раскрывает конкретный коммит: автор, дата, diff. <code>git diff</code> — разница между working directory и staging; <code>git diff --staged</code> — что войдёт в следующий коммит. Это инструменты <strong>расследования</strong>: «что я наменял и зачем?».</p>
+<p><strong>Conventional Commits</strong> — соглашение об именовании: <code>feat:</code>, <code>fix:</code>, <code>docs:</code>, <code>chore:</code>. Префикс сразу говорит тип изменения; в будущем из таких сообщений автогенерируется CHANGELOG. Хорошее сообщение отвечает на вопрос «зачем», а не «что нажал».</p>
+<p><strong>Ключевая мысль:</strong> <code>git log</code> — дневник решений; осмысленные сообщения коммитов = документация для будущего себя.</p>
+<p><strong>Читать:</strong>
+- <a href="https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository">Pro Git: Основы</a> — три состояния, SHA коммитов
+- <a href="https://www.conventionalcommits.org/ru/">Conventional Commits</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>В <code>learning-log</code> выполни <code>git log --oneline -15</code> — опиши в <code>week-04/REFLECTION.md</code> паттерн своих сообщений</li>
+<li>Исправь 2 слабых commit message через <code>git rebase -i HEAD~3</code> <strong>только если ещё не пушил</strong>; иначе — лучше не переписывать историю</li>
+<li>Добавь в корень <code>learning-log</code> расширенный <code>.gitignore</code> (OS, IDE, env, build)</li>
+<li>Разбей незакоммиченные правки week-03 на 2 атомарных коммита через staging</li>
+<li><code>git blame week-03/index.html</code> — кто и когда менял строку (это ты — привыкай к прослеживаемости)</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Репозиторий инициализирован, секреты не в git
+- [ ] Минимум 3 коммита с понятными сообщениями
+- [ ] <code>git status</code> чист после коммита</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>В <code>learning-log</code> выполни <code>git log --oneline -15</code> — опиши в <code>week-04/REFLECTION.md</code> паттерн своих сообщений</li>
+<li>Исправь 2 слабых commit message через <code>git rebase -i HEAD~3</code> <strong>только если ещё не пушил</strong>; иначе — лучше не переписывать историю</li>
+<li>Добавь в корень <code>learning-log</code> расширенный <code>.gitignore</code> (OS, IDE, env, build)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 1: git init and first commits"</code></li>
+</ul>
+<h2 id="week-04-day-2">День 2 (Tue): Ветки, слияние и конфликты</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Ветка в Git — просто <strong>указатель</strong> на коммит. Создать ветку дёшево: <code>git switch -c feature/header</code> ответвляет от текущего состояния, и ты работаешь изолированно, не ломая <code>main</code>. Когда фича готова — <strong>слияние</strong> (merge) переносит изменения обратно.</p>
+<p><strong>Fast-forward merge</strong> возможен, если <code>main</code> не получил новых коммитов с момента ответвления: указатель <code>main</code> просто «перепрыгнет» на конец feature-ветки. Иначе Git создаёт <strong>merge commit</strong> — коммит с двумя родителями. <code>git merge --no-ff</code> принудительно создаёт merge commit даже при возможности ff — сохраняет видимость ветки в истории.</p>
+<p><strong>Конфликт</strong> возникает, когда одна и та же строка изменена в обеих ветках. Git вставляет маркеры <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> — ты вручную выбираешь итог, <code>git add</code>, <code>git commit</code>. Конфликт — не катастрофа, а диалог между версиями. <code>git stash</code> временно прячет незакоммиченные правки, если нужно срочно переключить ветку.</p>
+<p><strong>Ключевая мысль:</strong> ветка — дешёвый черновик; merge — слияние черновика с основной линией.</p>
+<p><strong>Читать:</strong>
+- <a href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">Pro Git: Ветвление</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Создай ветку <code>feature/dark-theme</code>, добавь тёмную тему</li>
+<li>Вернись на <code>main</code>, измени тот же файл — спровоцируй конфликт</li>
+<li>Смержи ветку, разреши конфликт вручную</li>
+<li>Попрактикуй <code>git stash</code> при переключении веток с незакоммиченными правками</li>
+<li>Нарисуй схему веток после всех операций</li>
+<li>Сравни <code>git merge --no-ff</code> и fast-forward — посмотри историю</li>
+<li>После разрешения конфликта проверь, что сайт работает</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Конфликт разрешён осознанно, не удалён «всё чужое»
+- [ ] История показывает merge (или осознанный ff)
+- [ ] Понимаю разницу между branch и commit</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Создай ветку <code>feature/dark-theme</code>, добавь тёмную тему</li>
+<li>Вернись на <code>main</code>, измени тот же файл — спровоцируй конфликт</li>
+<li>Смержи ветку, разреши конфликт вручную</li>
+<li>Попрактикуй <code>git stash</code> при переключении веток с незакоммиченными правками</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 2: branches merge conflicts"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Коммит в detached HEAD — изменения не на ветке</li>
+<li><code>git add .</code> без проверки — случайно добавил .env</li>
+<li>Разрешение конфликта без тестирования — сломанный код в main</li>
+</ul>
+<h2 id="week-04-day-3">День 3 (Wed): GitHub и удалённый workflow</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Локальный Git — половина workflow. <strong>Remote</strong> (обычно <code>origin</code> на GitHub) — копия репозитория на сервере. <code>git push</code> публикует коммиты; <code>git pull</code> забирает чужие и сливает с твоими. Флаг <code>-u</code> при первом push связывает локальную ветку с удалённой — дальше достаточно <code>git push</code>.</p>
+<p><strong>Pull Request</strong> — запрос на слияние ветки с описанием изменений. Даже в solo-проекте PR учит дисциплине review: ты смотришь diff глазами «чужого» разработчика до merge. Стратегии merge на GitHub: обычный merge, squash (все коммиты ветки → один), rebase. Squash даёт чистую линейную историю <code>main</code>.</p>
+<p><strong>Issues</strong> — трекер задач: баг, улучшение, идея. Коммит с <code>fix #12</code> в сообщении автоматически закрывает issue №12. Fork + upstream — паттерн open source: форкаешь чужой репозиторий, вносишь правки, открываешь PR в оригинал.</p>
+<p><strong>Ключевая мысль:</strong> GitHub = remote + социальный слой; PR — разговор о коде до попадания в main.</p>
+<p><strong>Читать:</strong>
+- <a href="https://docs.github.com/ru/get-started/start-your-journey/hello-world">GitHub: Hello World</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Создай репозиторий на GitHub (public), подключи remote</li>
+<li>Запушь <code>main</code>, создай ветку <code>feature/readme</code>, добавь README.md</li>
+<li>Открой Pull Request с описанием изменений</li>
+<li>Смержи PR через GitHub UI (Squash or Merge — изучи разницу)</li>
+<li>Создай Issue с багом или улучшением, закрой через коммит <code>fix: ...</code></li>
+<li>Клонируй репозиторий в другую папку — убедись, что clone работает</li>
+<li>Добавь в README badges (build, license) — заготовка под неделю</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Код на GitHub, локальный и remote синхронизированы
+- [ ] Минимум 1 PR с описанием
+- [ ] README содержит название, описание, как запустить</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Создай репозиторий на GitHub (public), подключи remote</li>
+<li>Запушь <code>main</code>, создай ветку <code>feature/readme</code>, добавь README.md</li>
+<li>Открой Pull Request с описанием изменений</li>
+<li>Смержи PR через GitHub UI (Squash or Merge — изучи разницу)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 3: github remote and PR"</code></li>
+</ul>
+<h2 id="week-04-day-4">День 4 (Thu): DevTools — Elements и Console</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Chrome DevTools — рентген твоей страницы. Панель <strong>Elements</strong> показывает живое DOM-дерево: кликни на узел — увидишь применённые стили, box model, flex/grid overlay. Вкладка <strong>Styles</strong> перечисляет все CSS-правила с указанием файла и строки; перечёркнутое свойство проиграло в каскаде — ищи победителя выше. <strong>Computed</strong> — итоговые вычисленные значения после каскада, наследования и браузерных дефолтов.</p>
+<p>Live-редактирование CSS в DevTools — быстрый эксперимент: подобрал отступ — перенеси в файл. Flex/Grid overlay рисует треки и gap поверх страницы — не гадай, смотри. В <strong>Console</strong> <code>$0</code> — ссылка на элемент, выбранный в Elements; мост между визуальным и программным исследованием.</p>
+<p><code>console.log</code> — базовый вывод; <code>console.table</code> — таблица для массивов объектов; <code>console.group</code> — группировка связанных логов. Уровни <code>warn</code> и <code>error</code> выделяются визуально и фильтруются.</p>
+<p><strong>Ключевая мысль:</strong> Styles — «кто перебил?», Computed — «что в итоге?»; overlay — «как устроена сетка?».</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.chrome.com/docs/devtools/overview">Chrome DevTools: Overview</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Открой лендинг, исследуй box model каждой секции в Elements</li>
+<li>Включи flex/grid overlay для layout-контейнеров</li>
+<li>Найди и исправь «лишний» margin через live edit, перенеси в CSS-файл</li>
+<li>В Console: выбери элемент, измени текст через <code>$0.textContent</code></li>
+<li>Добавь <code>console.log</code> в будущий JS-файл (заготовка) — проверь вывод</li>
+<li>Используй <code>console.table</code> для массива объектов (заготовка данных)</li>
+<li>Найди перечёркнутое свойство в Styles — объясни, почему оно не применилось</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Умею найти источник стиля в панели Styles (файл и строка)
+- [ ] Использовал flex/grid overlay
+- [ ] Знаю разницу Computed vs Styles</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Открой лендинг, исследуй box model каждой секции в Elements</li>
+<li>Включи flex/grid overlay для layout-контейнеров</li>
+<li>Найди и исправь «лишний» margin через live edit, перенеси в CSS-файл</li>
+<li>В Console: выбери элемент, измени текст через <code>$0.textContent</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 4: devtools elements console"</code></li>
+</ul>
+<h2 id="week-04-day-5">День 5 (Fri): DevTools — Network, Sources, Performance</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Панель <strong>Network</strong> показывает каждый HTTP-запрос при загрузке страницы: URL, статус, размер, время. <strong>Waterfall</strong> — диаграмма «кто за кем»: видно, что блокирует рендер (тяжёлые картинки, синхронные скрипты). Статусы: <strong>200</strong> OK, <strong>304</strong> Not Modified (из кэша), <strong>404</strong> Not Found. При разработке включай <strong>Disable cache</strong>, иначе видишь устаревшие файлы.</p>
+<p><strong>Sources</strong> — отладка JavaScript: breakpoint останавливает выполнение в точке; step over/into проходят по строкам; watch expressions следят за переменными. <strong>Performance</strong> записывает профиль: FPS, long tasks, jank при скролле. <strong>Lighthouse</strong> в DevTools — аудит Performance, Accessibility, Best Practices с конкретными рекомендациями.</p>
+<p>Вкладка <strong>Application</strong> — хранилища браузера: Local Storage, Cookies, Service Workers (обзор на будущее). Тяжёлый ресурс в Network — первый кандидат на оптимизацию: сжатие, WebP, lazy loading.</p>
+<p><strong>Ключевая мысль:</strong> Network waterfall — карта загрузки; Lighthouse — чеклист перед сдачей.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.chrome.com/docs/devtools/network">Chrome DevTools: Network</a>
+- <a href="https://developer.chrome.com/docs/devtools/performance">Chrome DevTools: Performance</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Перезагрузи страницу с Network open — проанализируй waterfall</li>
+<li>Найди самый тяжёлый ресурс, оптимизируй (сжатие изображения)</li>
+<li>Запусти Lighthouse, сохрани отчёт, исправь 2+ замечания</li>
+<li>В Sources поставь breakpoint (на inline script или будущий JS)</li>
+<li>Запиши Performance profile при скролле — есть ли jank?</li>
+<li>Отфильтруй Network по CSS/JS — оцени общий вес страницы</li>
+<li>Проверь Application → Local Storage (пока пусто — заготовка под неделю 7)</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Понимаю статусы 200, 304, 404 в Network
+- [ ] Lighthouse score улучшен после правок
+- [ ] Умею ставить breakpoint и читать call stack</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Перезагрузи страницу с Network open — проанализируй waterfall</li>
+<li>Найди самый тяжёлый ресурс, оптимизируй (сжатие изображения)</li>
+<li>Запусти Lighthouse, сохрани отчёт, исправь 2+ замечания</li>
+<li>В Sources поставь breakpoint (на inline script или будущий JS)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 5: devtools network performance"</code></li>
+</ul>
+<h2 id="week-04-day-6">День 6 (Sat): Workflow разработчика</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Workflow — это привычки, которые масштабируются от solo до команды. <strong>GitHub Flow</strong> — простейший: <code>main</code> всегда deployable, каждая фича в ветке → PR → merge. Git Flow сложнее (develop, release) — избыточен для учебных проектов. <strong>Trunk-Based</strong> — короткоживущие ветки, частые merge в main — для зрелых команд с CI.</p>
+<p><strong>Conventional Commits</strong> (<code>feat:</code>, <code>fix:</code>, <code>docs:</code>) — единый язык сообщений; из них генерируется CHANGELOG. <strong>Pre-commit checklist</strong>: <code>git diff</code> глазами ревьюера, нет ли <code>.env</code> в staging, страница открывается, Lighthouse не упал. Prettier убирает споры о форматировании — один <code>.prettierrc</code> на проект.</p>
+<p>VS Code Git panel, diff view, GitLens — ускоряют ежедневную работу. Code review — не придирка, а передача знаний: даже self-review перед push ловит опечатки и лишние файлы.</p>
+<p><strong>Ключевая мысль:</strong> GitHub Flow + Conventional Commits + self-review = профессиональный минимум.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.conventionalcommits.org/ru/">Conventional Commits</a>
+- <a href="https://docs.github.com/ru/get-started/using-github/github-flow">GitHub Flow</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Переименуй последние коммиты сообщениями в стиле Conventional Commits (если нужно — <code>git rebase</code> осторожно или новые коммиты)</li>
+<li>Настрой Prettier в VS Code, отформатируй CSS/HTML</li>
+<li>Создай PR template в <code>.github/pull_request_template.md</code></li>
+<li>Проведи self-review: открой diff последнего PR глазами ревьюера</li>
+<li>Составь личный чеклист перед каждым push (5 пунктов)</li>
+<li>Добавь <code>.prettierrc</code> с базовыми настройками (semi, singleQuote)</li>
+<li>Напиши CHANGELOG.md с секцией для недель 1–4</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Коммиты следуют единому стилю сообщений
+- [ ] Prettier настроен и применён
+- [ ] Есть PR template или чеклист в заметках</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Переименуй последние коммиты сообщениями в стиле Conventional Commits (если нужно — <code>git rebase</code> осторожно или новые коммиты)</li>
+<li>Настрой Prettier в VS Code, отформатируй CSS/HTML</li>
+<li>Создай PR template в <code>.github/pull_request_template.md</code></li>
+<li>Проведи self-review: открой diff последнего PR глазами ревьюера</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 6: conventional commits prettier"</code></li>
+</ul>
+<h2 id="week-04-day-7">День 7 (Sun): Интеграция и практика</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Инструменты <strong>расследования истории</strong>: <code>git log</code> — хронология; <code>git diff</code> — разница между состояниями; <code>git show</code> — один коммит целиком; <code>git blame</code> — кто и когда изменил каждую строку файла. Blame не для поиска виноватых, а для понимания контекста: «зачем эта строка появилась?».</p>
+<p>Отмена изменений — два разных инструмента. <code>git revert &lt;hash&gt;</code> создаёт <strong>новый</strong> коммит, отменяющий старый — безопасно для shared <code>main</code>, история не переписывается. <code>git reset --hard</code> откатывает указатель ветки — <strong>переписывает</strong> историю; только на локальных ветках, никогда на запушенном main без согласования.</p>
+<p><strong>GitHub Pages</strong> публикует статику из ветки <code>gh-pages</code> или через Actions — бесплатный live demo для портфолио. <code>git clone</code> в новую папку — тест: «смогу ли я развернуть проект с нуля?» — must-have перед сдачей.</p>
+<p><strong>Ключевая мысль:</strong> <code>revert</code> — безопасная отмена; <code>reset --hard</code> — только локально; clone — финальный тест переносимости.</p>
+<p><strong>Читать:</strong>
+- <a href="https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things">Pro Git: Отмена изменений</a>
+- <a href="https://docs.github.com/ru/pages">GitHub Pages</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Клонируй свой репозиторий в новую папку — проверь, что всё работает</li>
+<li>Найди автора строки через <code>git blame</code> для одного CSS-файла</li>
+<li>Задеплой лендинг на GitHub Pages (branch <code>gh-pages</code> или Actions)</li>
+<li>Проверь live URL в DevTools Network и Lighthouse</li>
+<li>Напиши <code>CONTRIBUTING.md</code> с правилами коммитов и веток</li>
+<li>Добавь LICENSE (MIT) и обнови README со скриншотами недель 1–3</li>
+<li>Поставь тег <code>week-04-done</code> на финальный коммит</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Сайт доступен по публичному URL
+- [ ] Clone → open работает без ручных правок
+- [ ] CONTRIBUTING.md или раздел в README описывает workflow</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Клонируй свой репозиторий в новую папку — проверь, что всё работает</li>
+<li>Найди автора строки через <code>git blame</code> для одного CSS-файла</li>
+<li>Задеплой лендинг на GitHub Pages (branch <code>gh-pages</code> или Actions)</li>
+<li>Проверь live URL в DevTools Network и Lighthouse</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 7: github pages contributing"</code></li>
+</ul>
+<h2 id="week-04-project">Проект недели</h2>
+<p><strong>Open-source мини-проект</strong> — публичный репозиторий с лендингом, полным Git-историей и деплоем.</p>
+<p>Подробное описание: <a href="#projects--projects-неделя-4-oss-workflow-kit">docs/projects.md — Неделя 4</a></p>
+<p>Требования:
+- Минимум 10 коммитов, 2+ ветки, 1 merged PR
+- README, .gitignore, LICENSE (MIT)
+- GitHub Pages или аналог — live demo
+- CONTRIBUTING.md с Conventional Commits</p>
+<p><strong>Критерии проекта:</strong>
+- [ ] История коммитов читаема и атомарна
+- [ ] PR с описанием и self-review
+- [ ] Live demo работает
+- [ ] Нет секретов и лишних файлов в репозитории
+- [ ] README с badges, скриншотами проектов недель 1–3
+- [ ] ≥ 2 feature-ветки, осознанный выбор merge vs rebase
+- [ ] CHANGELOG.md с записями по Conventional Commits
+- [ ] GitHub Pages деплоит week-03 лендинг по публичному URL
+- [ ] Тег <code>week-04-done</code> на финальном коммите</p>
+<h2 id="week-04-review">Ревью-чеклист</h2>
+<ul>
+<li>В чём разница <code>git add</code>, <code>git commit</code>, <code>git push</code>?</li>
+<li>Как отменить последний коммит, не потеряв изменения?</li>
+<li>Что показывает <code>git log --oneline --graph</code>?</li>
+<li>Как найти, какой CSS-файл задаёт конкретное свойство в DevTools?</li>
+<li>Могу ли я объяснить flow: branch → commit → push → PR → merge?</li>
+</ul>
+<h2 id="week-04-review">Проверь себя</h2>
+<details>
+<summary>Что должно получиться к концу недели?</summary>
+
+Работающий проект **OSS Workflow Kit** в `learning-log/week-04/`, осмысленная Git-история, тег `week-04-done`.
+
+</details>
+
+<details>
+<summary>Главный навык недели одной фразой?</summary>
+
+Профессиональный Git-workflow и DevTools
+
+</details>
+
+<details>
+<summary>Можно ли пропустить день?</summary>
+
+Нет — дни связаны. В **лайт-режиме** сократи практику до MVP, но теорию и Git-коммит не пропускай.
+
+</details></article>
+  </main>
+  <script>if (location.hash) location.replace('../' + location.hash);</script>
+</body>
+</html>

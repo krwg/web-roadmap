@@ -5,8 +5,10 @@
   const PAGE_IDS = Object.keys(ROUTES.pages || {});
   const SEARCH_INDEX = window.SEARCH_INDEX || [];
   const PROGRESS_KEY = 'web-roadmap-progress';
+  const DAY_PROGRESS_KEY = 'web-roadmap-day-progress';
   const READING_KEY = 'web-roadmap-reading';
   const LAST_ROUTE_KEY = 'web-roadmap-last-route';
+  const TOTAL_DAYS = 154; // 22*7; week-00 tracked separately in day map
 
   const weekCache = {};
   let currentRoute = '';
@@ -74,13 +76,46 @@
     link.setAttribute('data-route', last.route);
   }
 
+  function getDayProgress() {
+    try { return JSON.parse(localStorage.getItem(DAY_PROGRESS_KEY) || '{}'); }
+    catch { return {}; }
+  }
+  function setDayDone(dayId, done) {
+    const p = getDayProgress();
+    if (done) p[dayId] = Date.now(); else delete p[dayId];
+    localStorage.setItem(DAY_PROGRESS_KEY, JSON.stringify(p));
+    updateProgressUI();
+  }
+  function exportProgress() {
+    return JSON.stringify({
+      weeks: getProgress(),
+      days: getDayProgress(),
+      exportedAt: new Date().toISOString(),
+      version: 1,
+    }, null, 2);
+  }
+  function importProgress(json) {
+    const data = typeof json === 'string' ? JSON.parse(json) : json;
+    if (data.weeks) localStorage.setItem(PROGRESS_KEY, JSON.stringify(data.weeks));
+    if (data.days) localStorage.setItem(DAY_PROGRESS_KEY, JSON.stringify(data.days));
+    updateProgressUI();
+    updateCards();
+  }
+
   function updateProgressUI() {
     const p = getProgress();
-    const done = WEEK_IDS.filter(w => p[w]).length;
+    const days = getDayProgress();
+    const doneWeeks = WEEK_IDS.filter(w => p[w]).length;
+    const doneDays = Object.keys(days).length;
     const el = $('#progress-fill');
     const label = $('#progress-label');
-    if (el) el.style.width = `${(done / WEEK_IDS.length) * 100}%`;
-    if (label) label.textContent = `Ваш прогресс: ${done} / ${WEEK_IDS.length}`;
+    const weekRatio = WEEK_IDS.length ? doneWeeks / WEEK_IDS.length : 0;
+    const dayRatio = Math.min(1, doneDays / TOTAL_DAYS);
+    const ratio = Math.max(weekRatio, dayRatio * 0.85);
+    if (el) el.style.width = `${ratio * 100}%`;
+    if (label) {
+      label.textContent = `Прогресс: ${doneWeeks}/${WEEK_IDS.length} нед. · ${doneDays} дн. отмечено`;
+    }
   }
 
   function updateCards() {
@@ -191,16 +226,41 @@
     const title = $('#doc-page-title');
     const tocEl = $('#doc-toc');
     const content = $('#doc-content');
-    if (title) title.textContent = data.fullTitle || data.title;
+    const pageTitle = data.fullTitle || data.title;
+    if (title) title.textContent = pageTitle;
+    document.title = `${pageTitle} · web-roadmap`;
     if (tocEl) tocEl.innerHTML = buildToc(data.toc, routeId);
     if (content) {
       content.innerHTML = `<div class="prose">${data.html}</div>`;
       highlightCode(content);
       setupTocScroll(content, routeId);
       setupDayNav(data.toc, routeId);
+      setupDayCheckboxes(content, routeId, data.toc);
     }
     updateMarkDoneBtn(routeId);
     updateLessonNext(routeId);
+  }
+
+  function setupDayCheckboxes(content, routeId, toc) {
+    if (!/^week-\d{2}$/.test(routeId) || !toc) return;
+    const days = getDayProgress();
+    toc.filter(t => t.id.includes('-day-')).forEach(t => {
+      const heading = content.querySelector(`#${CSS.escape(t.id)}`) || content.querySelector(`[id="${t.id}"]`);
+      if (!heading || heading.querySelector('.day-done-btn')) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'day-done-btn';
+      const done = !!days[t.id];
+      btn.textContent = done ? 'День ✓' : 'Отметить день';
+      btn.setAttribute('aria-pressed', done ? 'true' : 'false');
+      btn.addEventListener('click', () => {
+        const now = !getDayProgress()[t.id];
+        setDayDone(t.id, now);
+        btn.textContent = now ? 'День ✓' : 'Отметить день';
+        btn.setAttribute('aria-pressed', now ? 'true' : 'false');
+      });
+      heading.appendChild(btn);
+    });
   }
 
   function setupTocScroll(content, routeId) {
@@ -278,6 +338,7 @@
     if (routeId === 'home') {
       showView('home');
       currentRoute = 'home';
+      document.title = 'web-roadmap — Full-Stack за 22 недели';
       updateCards();
       updateResumeBanner();
       return;
@@ -413,6 +474,9 @@
   initPhaseFilters();
   initBurger();
   route();
+
+  // Optional progress sync: copy/paste JSON via console helpers
+  window.webRoadmapProgress = { export: exportProgress, import: importProgress };
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});

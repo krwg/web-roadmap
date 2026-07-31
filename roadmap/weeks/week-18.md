@@ -8,8 +8,8 @@
 ## День 120 (Пн): SQLAlchemy — модели и сессии
 <a id="week-18-day-120"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Library REST API**
 
 ### Теория
@@ -28,7 +28,7 @@ SQLAlchemy 2.0 — современный ORM для Python. DeclarativeBase, `M
 
 **Ключевая мысль:** ORM model ≠ API schema; сессия — граница транзакции.
 
-### Практика
+### Практика (полный трек)
 1. Проект `library-api`, venv, `pip install sqlalchemy psycopg2-binary python-dotenv`
 2. Модели `Author`, `Book` с one-to-many relationship
 3. `database.py`: engine, SessionLocal, `get_db()` generator с yield
@@ -41,9 +41,17 @@ SQLAlchemy 2.0 — современный ORM для Python. DeclarativeBase, `M
 - [ ] relationship двусторонний с back_populates
 - [ ] Таблицы создаются в PostgreSQL
 
+### Практика (лайт / MVP)
+1. Проект `library-api`, venv, `pip install sqlalchemy psycopg2-binary python-dotenv`
+2. Модели `Author`, `Book` с one-to-many relationship
+3. `database.py`: engine, SessionLocal, `get_db()` generator с yield
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-18/` → `git commit -m "week 18 day 120: SQLAlchemy models and init_db"`
@@ -57,8 +65,8 @@ SQLAlchemy 2.0 — современный ORM для Python. DeclarativeBase, `M
 ## День 121 (Вт): CRUD через ORM и запросы
 <a id="week-18-day-121"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~1ч теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Library REST API**
 
 ### Теория
@@ -77,7 +85,7 @@ N+1 problem: цикл по авторам + `author.books` внутри гене
 
 **Ключевая мысль:** N+1 лечится eager loading; `select()` API — стандарт SQLAlchemy 2.0.
 
-### Практика
+### Практика (полный трек)
 1. CRUD: `create_author`, `get_authors`, `update_book`, `delete_book`
 2. Запрос: все книги автора с join через relationship или explicit join
 3. Пагинация: `get_books(page=1, size=20)`
@@ -90,9 +98,17 @@ N+1 problem: цикл по авторам + `author.books` внутри гене
 - [ ] N+1 продемонстрирован и исправлен
 - [ ] Пагинация работает
 
+### Практика (лайт / MVP)
+1. CRUD: `create_author`, `get_authors`, `update_book`, `delete_book`
+2. Запрос: все книги автора с join через relationship или explicit join
+3. Пагинация: `get_books(page=1, size=20)`
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-18/` → `git commit -m "week 18 day 121: ORM CRUD and N+1 fix"`
@@ -106,8 +122,8 @@ N+1 problem: цикл по авторам + `author.books` внутри гене
 ## День 122 (Ср): FastAPI — первый API
 <a id="week-18-day-122"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Library REST API**
 
 ### Теория
@@ -126,7 +142,7 @@ FastAPI — ASGI-фреймворк с автоматической валида
 
 **Ключевая мысль:** type hints + Pydantic = валидация и docs из коробки; response_model защищает API.
 
-### Практика
+### Практика (полный трек)
 1. `main.py`: FastAPI app, `GET /health` → `{"status": "ok"}`
 2. In-memory CRUD для `Note` (id, title, body) — без БД пока
 3. Pydantic: `NoteCreate`, `NoteRead`, `NoteUpdate` (все поля optional)
@@ -139,9 +155,17 @@ FastAPI — ASGI-фреймворк с автоматической валида
 - [ ] Response model отделён от create model
 - [ ] `uvicorn --reload` работает
 
+### Практика (лайт / MVP)
+1. `main.py`: FastAPI app, `GET /health` → `{"status": "ok"}`
+2. In-memory CRUD для `Note` (id, title, body) — без БД пока
+3. Pydantic: `NoteCreate`, `NoteRead`, `NoteUpdate` (все поля optional)
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-18/` → `git commit -m "week 18 day 122: FastAPI in-memory notes API"`
@@ -155,8 +179,8 @@ FastAPI — ASGI-фреймворк с автоматической валида
 ## День 123 (Чт): Dependency Injection и подключение БД
 <a id="week-18-day-123"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Library REST API**
 
 ### Теория
@@ -175,7 +199,7 @@ Pydantic schemas `AuthorCreate` / `AuthorRead` отделяют вход и вы
 
 **Ключевая мысль:** одна DB session на request через Depends; HTTPException — явные ошибки API.
 
-### Практика
+### Практика (полный трек)
 1. Подключи SQLAlchemy к FastAPI через `Depends(get_db)`
 2. `GET /authors`, `POST /authors`, `GET /authors/{id}`
 3. 404 если author не найден — `HTTPException`
@@ -188,9 +212,17 @@ Pydantic schemas `AuthorCreate` / `AuthorRead` отделяют вход и вы
 - [ ] HTTPException с detail message
 - [ ] Endpoints покрывают CRUD authors
 
+### Практика (лайт / MVP)
+1. Подключи SQLAlchemy к FastAPI через `Depends(get_db)`
+2. `GET /authors`, `POST /authors`, `GET /authors/{id}`
+3. 404 если author не найден — `HTTPException`
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-18/` → `git commit -m "week 18 day 123: FastAPI DI and authors endpoints"`
@@ -204,8 +236,8 @@ Pydantic schemas `AuthorCreate` / `AuthorRead` отделяют вход и вы
 ## День 124 (Пт): Полный REST API «Библиотека»
 <a id="week-18-day-124"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Library REST API**
 
 ### Теория
@@ -224,7 +256,7 @@ REST — соглашения, не протокол. URL — существит
 
 **Ключевая мысль:** REST = ресурсы + HTTP semantics; 409 для нарушения бизнес-правил.
 
-### Практика
+### Практика (полный трек)
 1. Роутеры: `routers/authors.py`, `books.py`, `loans.py`
 2. CRUD для books и loans с Pydantic validation
 3. `POST /loans` — проверка: книга доступна? иначе 409
@@ -237,9 +269,17 @@ REST — соглашения, не протокол. URL — существит
 - [ ] Бизнес-правило: нельзя выдать уже выданную книгу → 409
 - [ ] Swagger актуален
 
+### Практика (лайт / MVP)
+1. Роутеры: `routers/authors.py`, `books.py`, `loans.py`
+2. CRUD для books и loans с Pydantic validation
+3. `POST /loans` — проверка: книга доступна? иначе 409
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-18/` → `git commit -m "week 18 day 124: full library REST routers"`
@@ -253,8 +293,8 @@ REST — соглашения, не протокол. URL — существит
 ## День 125 (Сб): Тестирование API и обработка ошибок
 <a id="week-18-day-125"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Library REST API**
 
 ### Теория
@@ -273,7 +313,7 @@ Global exception handlers: `IntegrityError` → 409, generic → 500 без stac
 
 **Ключевая мысль:** изолированная test DB; тесты на auth, 404, 409 — не только happy path.
 
-### Практика
+### Практика (полный трек)
 1. `pip install pytest httpx`
 2. Тесты: create author, get 404, create loan conflict → 409
 3. `conftest.py` — fixture test client + test db (rollback после теста)
@@ -286,9 +326,17 @@ Global exception handlers: `IntegrityError` → 409, generic → 500 без stac
 - [ ] Test DB изолирована от dev
 - [ ] `pytest -v` в README
 
+### Практика (лайт / MVP)
+1. `pip install pytest httpx`
+2. Тесты: create author, get 404, create loan conflict → 409
+3. `conftest.py` — fixture test client + test db (rollback после теста)
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-18/` → `git commit -m "week 18 day 125: pytest suite and error handlers"`
@@ -302,8 +350,8 @@ Global exception handlers: `IntegrityError` → 409, generic → 500 без stac
 ## День 126 (Вс): Ревью и документация API
 <a id="week-18-day-126"></a>
 
-> **Время (полный):** ~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью  
-> **Время (лайт):** ~45м теория · ~1.5ч практика (MVP) · ~15м Git  
+> **Время (полный):** ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью  
+> **Время (лайт):** ~25м теория · ~1ч практика (MVP) · ~10м Git  
 > **Связь с проектом:** шаг к **Library REST API**
 
 ### Теория
@@ -322,7 +370,7 @@ OpenAPI schema FastAPI генерирует из type hints и Pydantic — docs
 
 **Ключевая мысль:** документация API — часть deliverable; OpenAPI из кода, не из Word.
 
-### Практика
+### Практика (полный трек)
 1. README: архитектура, запуск, env vars, примеры curl
 2. `.env.example`: `DATABASE_URL`, `APP_ENV=development`
 3. Export Postman collection JSON в `docs/postman/`
@@ -335,9 +383,17 @@ OpenAPI schema FastAPI генерирует из type hints и Pydantic — docs
 - [ ] Структура проекта понятна новому разработчику
 - [ ] `docker run postgres` документирован
 
+### Практика (лайт / MVP)
+1. README: архитектура, запуск, env vars, примеры curl
+2. `.env.example`: `DATABASE_URL`, `APP_ENV=development`
+3. Export Postman collection JSON в `docs/postman/`
+
+> Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.
+
+
 ### Если застрял
 
-Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.
+Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.
 
 ### Git
 - Закоммить изменения дня: `git add week-18/` → `git commit -m "week 18 day 126: API docs and Postman collection"`

@@ -519,6 +519,24 @@ a:focus-visible, button:focus-visible, .btn:focus-visible {
   margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border);
 }
 
+.prose h2 .day-done-btn {
+  margin-left: 12px;
+  vertical-align: middle;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.prose h2 .day-done-btn[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
 /* Search */
 .search-overlay {
   position: fixed; inset: 0; z-index: 400;

@@ -2,7 +2,29 @@
 
 Формат основан на [Keep a Changelog](https://keepachangelog.com/).
 
-## [1.2.3] — 2026-07-08
+## [1.2.3] — 2026-08-01
+
+### Fixed
+- TOC дней на сайте: якоря переносятся на `<h2 id>`, day-nav снова работает
+- Ссылки на `projects.md#…` → `#projects--projects-…` (больше не `#projects#…`)
+- `getting-started`: создание **своего** пустого `learning-log`, не clone автора
+- week-00: убраны AI-хвосты, уникальные якоря дней, честные часы
+- Версии выровнены на **1.2.3** (README, week-meta, сайт)
+
+### Added
+- Лайт / полный: два блока практики на день (`rebalance-weeks.py`)
+- Пересчёт часов дня по объёму теории и практики (не копипаст 1.5+2.5)
+- Разнообразные «Если застрял» по теме дня
+- Расширенные ТЗ проектов 6 / 8 / 14 / 18 (+ лайт DoD у capstone)
+- Reference stubs: `docs/reference-stubs/week-{06,08,14,18,22}/`
+- Прогресс по дням + `window.webRoadmapProgress.export/import` для sync
+- Prerender URL: `docs/w/NN.html` + `sitemap.xml`
+- SEO: `og:type`, Twitter card, canonical
+
+### Changed
+- Homepage: вместо «скоро» — ссылки на старт / каталог проектов / capstone
+
+## [1.2.3] — 2026-07-08 (patch notes retained)
 
 ### Fixed
 - CI link-check: обновлены битые URL (React Router v6, MDN, SQLBolt, DOM Enlightenment → архив)

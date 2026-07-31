@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.2.3",
   "projects": {
     "01": "Portfolio Landing",
     "02": "Styled Blog Post",
@@ -26,5 +26,6 @@
   },
   "time_full": "~1.5ч теория · ~2.5ч практика · ~15м Git · ~1ч ревью",
   "time_light": "~45м теория · ~1.5ч практика (MVP) · ~15м Git",
-  "stuck_default": "Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода."
+  "stuck_default": "Застрял >20 мин — остановись. Нарисуй схему на бумаге, сделай минимальный пример в отдельном файле `playground.*`, не копируй готовое решение. ИИ — только объяснить концепцию без кода.",
+  "note": "Per-day times are computed by scripts/rebalance-weeks.py; time_full/time_light are legacy fallbacks only."
 }

@@ -76,20 +76,11 @@ MD = markdown.Markdown(
 )
 
 
-def fix_links(body: str) -> str:
-    body = re.sub(r'href="\.\./weeks/week-(\d{2})\.md[^"]*"', r'href="#week-\1"', body)
-    body = re.sub(r'href="weeks/week-(\d{2})\.md[^"]*"', r'href="#week-\1"', body)
-    body = re.sub(
-        r'href="\.\./\.\./docs/([^"#]+)(#[^"]*)?"',
-        lambda m: f'href="#{page_slug_from_path(m.group(1))}{m.group(2) or ""}"',
-        body,
-    )
-    body = re.sub(
-        r'href="\.\./([^"#]+)(#[^"]*)?"',
-        r'href="https://github.com/krwg/web-roadmap/blob/main/roadmap/\1\2"',
-        body,
-    )
-    return body
+def heading_slug(text: str) -> str:
+    text = re.sub(r"<[^>]+>", "", text).strip().lower()
+    text = re.sub(r"[^\w\-а-яё0-9]+", "-", text, flags=re.I)
+    text = re.sub(r"-{2,}", "-", text)
+    return text.strip("-")[:48] or "section"
 
 
 def page_slug_from_path(path: str) -> str:
@@ -105,7 +96,69 @@ def page_slug_from_path(path: str) -> str:
     return mapping.get(path, path.replace("/", "-").replace(".md", ""))
 
 
-def md_to_html(text: str) -> str:
+def fix_links(body: str) -> str:
+    body = re.sub(r'href="\.\./weeks/week-(\d{2})\.md[^"]*"', r'href="#week-\1"', body)
+    body = re.sub(r'href="weeks/week-(\d{2})\.md[^"]*"', r'href="#week-\1"', body)
+
+    def docs_link(m: re.Match) -> str:
+        path = m.group(1)
+        frag = m.group(2) or ""
+        route = page_slug_from_path(path)
+        if not frag:
+            return f'href="#{route}"'
+        slug = heading_slug(frag.lstrip("#"))
+        return f'href="#{route}--{route}-{slug}"'
+
+    body = re.sub(
+        r'href="(?:\.\./)+docs/([^"#]+\.md)(#[^"]*)?"',
+        docs_link,
+        body,
+    )
+    body = re.sub(
+        r'href="\.\./([^"#]+)(#[^"]*)?"',
+        r'href="https://github.com/krwg/web-roadmap/blob/main/roadmap/\1\2"',
+        body,
+    )
+    return body
+
+
+def normalize_heading_ids(html_body: str, prefix: str) -> str:
+    """Move day anchors onto <h2 id="..."> (markdown emits h2 then empty <p><a id>)."""
+    # IMPORTANT: do not use DOTALL on (.*?) inside h2 — backtracking would skip to a later empty anchor.
+    html_body = re.sub(
+        r"<h2([^>]*)>(.*?)</h2>\s*<p>\s*<a id=\"([^\"]+)\"></a>\s*</p>",
+        r'<h2\1 id="\3">\2</h2>',
+        html_body,
+        flags=re.I,
+    )
+    html_body = re.sub(
+        r"<a id=\"([^\"]+)\"></a>\s*<h2([^>]*)>(.*?)</h2>",
+        r'<h2\2 id="\1">\3</h2>',
+        html_body,
+        flags=re.I,
+    )
+
+    def stamp_section(label_re: str, sid: str, html: str) -> str:
+        pattern = re.compile(
+            rf"<h2([^>]*)>([^<]*{label_re}[^<]*)</h2>",
+            re.I,
+        )
+
+        def repl(m: re.Match) -> str:
+            attrs = m.group(1)
+            if re.search(r"\bid=", attrs):
+                return m.group(0)
+            return f'<h2{attrs} id="{sid}">{m.group(2)}</h2>'
+
+        return pattern.sub(repl, html, count=1)
+
+    html_body = stamp_section(r"Проект недели", f"{prefix}-project", html_body)
+    html_body = stamp_section(r"Проверь себя", f"{prefix}-review", html_body)
+    html_body = stamp_section(r"Ревью", f"{prefix}-review", html_body)
+    return html_body
+
+
+def md_to_html(text: str, prefix: str = "") -> str:
     text = re.sub(r"```mermaid\n(.*?)```", r'<pre class="mermaid">\1</pre>', text, flags=re.DOTALL)
     MD.reset()
     body = MD.convert(text)
@@ -116,33 +169,43 @@ def md_to_html(text: str) -> str:
         r'<pre><code class="language-\1">',
         body,
     )
-    return fix_links(body)
+    body = fix_links(body)
+    if prefix:
+        body = normalize_heading_ids(body, prefix)
+    return body
 
 
 def extract_toc(html_body: str, prefix: str) -> list[dict]:
-    toc = []
-    for m in re.finditer(r'<a id="([^"]+)"></a>\s*', html_body):
-        aid = m.group(1)
-        after = html_body[m.end() : m.end() + 200]
-        h = re.search(r"<h2[^>]*>(.*?)</h2>", after, re.DOTALL)
-        if h:
-            label = re.sub(r"<[^>]+>", "", h.group(1)).strip()
-            toc.append({"id": aid, "label": label[:60]})
-    for m in re.finditer(r"<h2[^>]*>(.*?)</h2>", html_body, re.DOTALL):
-        label = re.sub(r"<[^>]+>", "", m.group(1)).strip()
-        if "Проект недели" in label:
-            toc.append({"id": f"{prefix}-project", "label": "Проект недели"})
-        elif "Проверь себя" in label:
-            toc.append({"id": f"{prefix}-review", "label": "Проверь себя"})
-        elif "Ревью" in label:
-            toc.append({"id": f"{prefix}-review", "label": label[:40]})
-    seen = set()
-    out = []
+    toc: list[dict] = []
+    for m in re.finditer(r"<h2([^>]*)>(.*?)</h2>", html_body, re.I):
+        attrs, inner = m.group(1), m.group(2)
+        label = re.sub(r"<[^>]+>", "", inner).strip()
+        id_m = re.search(r'\bid="([^"]+)"', attrs)
+        if id_m:
+            aid = id_m.group(1)
+        else:
+            aid = f"{prefix}-{heading_slug(label)}"
+        toc.append({"id": aid, "label": label[:60]})
+
+    seen: set[str] = set()
+    out: list[dict] = []
     for t in toc:
-        if t["id"] not in seen:
-            seen.add(t["id"])
-            out.append(t)
+        if t["id"] in seen:
+            continue
+        seen.add(t["id"])
+        out.append(t)
     return out
+
+
+def ensure_all_h2_ids(html_body: str, prefix: str) -> str:
+    def repl(m: re.Match) -> str:
+        attrs, inner = m.group(1), m.group(2)
+        if re.search(r"\bid=", attrs):
+            return m.group(0)
+        label = re.sub(r"<[^>]+>", "", inner).strip()
+        return f'<h2{attrs} id="{prefix}-{heading_slug(label)}">{inner}</h2>'
+
+    return re.sub(r"<h2([^>]*)>(.*?)</h2>", repl, html_body, flags=re.I)
 
 
 def strip_text(html_body: str, limit: int = 200) -> str:
@@ -154,16 +217,12 @@ def strip_text(html_body: str, limit: int = 200) -> str:
 def build_week_json(num: str, title: str) -> dict:
     path = WEEKS_DIR / f"week-{num}.md"
     raw = path.read_text(encoding="utf-8")
-    html_body = md_to_html(raw)
     rid = f"week-{num}"
-    h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html_body, re.DOTALL)
+    html_body = md_to_html(raw, prefix=rid)
+    html_body = ensure_all_h2_ids(html_body, rid)
+    h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html_body, re.DOTALL | re.I)
     full = re.sub(r"<[^>]+>", "", h1.group(1)).strip() if h1 else f"Неделя {num}: {title}"
     toc = extract_toc(html_body, rid)
-    if not toc:
-        for m in re.finditer(r"<h2[^>]*>(.*?)</h2>", html_body, re.DOTALL):
-            label = re.sub(r"<[^>]+>", "", m.group(1)).strip()
-            slug = re.sub(r"[^\w\-]+", "-", label.lower())[:40]
-            toc.append({"id": f"{rid}-{slug}", "label": label[:50]})
     return {
         "id": rid,
         "title": title,
@@ -177,14 +236,23 @@ def build_week_json(num: str, title: str) -> dict:
 def build_page_json(page_id: str, rel_path: str, title: str) -> dict:
     path = ROOT / rel_path
     raw = path.read_text(encoding="utf-8")
-    html_body = md_to_html(raw)
+    html_body = md_to_html(raw, prefix=page_id)
+    # Ensure h2 ids match link scheme used by fix_links
+    def ensure_h2_ids(html: str) -> str:
+        def repl(m: re.Match) -> str:
+            attrs, inner = m.group(1), m.group(2)
+            if re.search(r"\bid=", attrs):
+                return m.group(0)
+            label = re.sub(r"<[^>]+>", "", inner).strip()
+            sid = f"{page_id}-{heading_slug(label)}"
+            return f'<h2{attrs} id="{sid}">{inner}</h2>'
+
+        return re.sub(r"<h2([^>]*)>(.*?)</h2>", repl, html, flags=re.DOTALL | re.I)
+
+    html_body = ensure_h2_ids(html_body)
     h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html_body, re.DOTALL)
     full = re.sub(r"<[^>]+>", "", h1.group(1)).strip() if h1 else title
-    toc = []
-    for m in re.finditer(r"<h2[^>]*>(.*?)</h2>", html_body, re.DOTALL):
-        label = re.sub(r"<[^>]+>", "", m.group(1)).strip()
-        slug = re.sub(r"[^\w\-а-яё]+", "-", label.lower(), flags=re.I)[:40]
-        toc.append({"id": f"{page_id}-{slug}", "label": label[:60]})
+    toc = extract_toc(html_body, page_id)
     return {
         "id": page_id,
         "title": title,
@@ -278,6 +346,11 @@ def write_index(search_index: list, routes: dict) -> None:
   <meta property="og:description" content="От первого index.html до production full-stack.">
   <meta property="og:image" content="https://krwg.github.io/web-roadmap/assets/og-cover.png">
   <meta property="og:url" content="https://krwg.github.io/web-roadmap/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="web-roadmap — Full-Stack за 22 недели">
+  <meta name="twitter:description" content="22 недели, 22 проекта, Git с первого дня.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
@@ -336,7 +409,7 @@ def write_index(search_index: list, routes: dict) -> None:
             <div class="progress-panel">
               <div class="label" id="progress-label">Ваш прогресс: 0 / 23</div>
               <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
-              <div class="hint">Отмечайте недели на карточках или внутри урока</div>
+              <div class="hint">Отмечайте недели и дни внутри урока — прогресс хранится локально</div>
             </div>
             <div class="cta-row">
               <a class="btn btn-primary" href="#week-00" data-route="week-00">Начать обучение</a>
@@ -436,17 +509,17 @@ def write_index(search_index: list, routes: dict) -> None:
           <div class="section-inner">
             <div class="section-head">
               <h2>Портфолио learning-log</h2>
-              <p class="sub">Автор проходит маршрут параллельно — здесь будут реальные проекты.</p>
+              <p class="sub">Ведите свой публичный репозиторий с первой недели — это и есть портфолио для рекрутера.</p>
             </div>
             <div class="examples-grid">
-              <a class="example-card" href="https://github.com/krwg/learning-log" target="_blank" rel="noopener">
-                <div class="tag">week-01</div><h4>Portfolio Landing</h4><small>скоро</small>
+              <a class="example-card" href="#start" data-route="start">
+                <div class="tag">старт</div><h4>Создать learning-log</h4><small>пустой репо под вашим аккаунтом</small>
               </a>
-              <a class="example-card" href="https://github.com/krwg/learning-log" target="_blank" rel="noopener">
-                <div class="tag">week-14</div><h4>React Dashboard</h4><small>скоро</small>
+              <a class="example-card" href="#projects" data-route="projects">
+                <div class="tag">22+</div><h4>Каталог проектов</h4><small>ТЗ, MVP и DoD по неделям</small>
               </a>
-              <a class="example-card" href="https://github.com/krwg/learning-log" target="_blank" rel="noopener">
-                <div class="tag">week-22</div><h4>DevHub Capstone</h4><small>скоро</small>
+              <a class="example-card" href="#week-22" data-route="week-22">
+                <div class="tag">week-22</div><h4>DevHub Capstone</h4><small>финальный full-stack</small>
               </a>
             </div>
           </div>
@@ -612,9 +685,57 @@ def build() -> None:
 
     routes = {"weeks": week_routes, "pages": page_routes}
     write_index(search_index, routes)
+    write_prerender_pages(week_routes)
+    write_sitemap(week_routes, page_routes)
 
     idx_size = (DOCS / "index.html").stat().st_size // 1024
     print(f"Built site: index.html ({idx_size} KB), {len(WEEKS_META)} weeks, {len(PAGES)} pages")
+
+
+def write_prerender_pages(week_routes: dict) -> None:
+    """Static shareable URLs: /w/01.html → content + canonical to hash SPA."""
+    out = DOCS / "w"
+    out.mkdir(parents=True, exist_ok=True)
+    for num, title, _ in WEEKS_META:
+        data = json.loads((OUT_WEEKS / f"{num}.json").read_text(encoding="utf-8"))
+        route = f"week-{num}"
+        page = f"""<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{html.escape(data['fullTitle'])} · web-roadmap</title>
+  <meta name="description" content="{html.escape(title)} — неделя {num} маршрута web-roadmap.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#{route}">
+  <meta property="og:title" content="{html.escape(data['fullTitle'])}">
+  <meta property="og:url" content="https://krwg.github.io/web-roadmap/w/{num}.html">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#{route}">Открыть в приложении маршрута</a> · <a href="../">На главную</a></p>
+    <article class="prose">{data['html']}</article>
+  </main>
+  <script>if (location.hash) location.replace('../' + location.hash);</script>
+</body>
+</html>"""
+        (out / f"{num}.html").write_text(page, encoding="utf-8")
+
+
+def write_sitemap(week_routes: dict, page_routes: dict) -> None:
+    urls = ["https://krwg.github.io/web-roadmap/"]
+    for num, _, _ in WEEKS_META:
+        urls.append(f"https://krwg.github.io/web-roadmap/w/{num}.html")
+    for pid in page_routes:
+        urls.append(f"https://krwg.github.io/web-roadmap/#{pid}")
+    body = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ]
+    for u in urls:
+        body.append(f"  <url><loc>{html.escape(u)}</loc></url>")
+    body.append("</urlset>")
+    (DOCS / "sitemap.xml").write_text("\n".join(body) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

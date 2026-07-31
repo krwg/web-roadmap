@@ -5,7 +5,7 @@
 | Параметр | Значение |
 |----------|----------|
 | Длительность | **22 недели** (154 дня) |
-| Нагрузка | **6–7 часов в день** |
+| Нагрузка | **~5–7 ч/день** (полный) или **~3–4 ч** (лайт) |
 | Проекты | **22 недельных** + **1 capstone** (неделя 22) |
 | Итог | Junior full-stack portfolio + понимание стека |
 
@@ -23,12 +23,14 @@
 ### Быстрый старт Git
 
 ```bash
-# 1. GitHub → New repository → learning-log (public, без README)
-git clone https://github.com/krwg/learning-log.git
+# 1. GitHub → New repository → learning-log
+#    Public, БЕЗ README / .gitignore / license (пустой репозиторий под вашим аккаунтом)
+
+git clone https://github.com/<ваш-логин>/learning-log.git
 cd learning-log
 
 # 2. .gitignore
-echo -e ".DS_Store\nThumbs.db\n.env\nnode_modules/\n*.log" > .gitignore
+echo -e ".DS_Store\nThumbs.db\n.env\nnode_modules/\n*.log\n.venv/" > .gitignore
 git add .gitignore
 git commit -m "chore: init learning-log"
 git push -u origin main
@@ -41,6 +43,7 @@ git commit -m "week 01 day 1: first portfolio index.html"
 git push
 ```
 
+Не клонируйте чужой `learning-log`: портфолио должно быть с вашей историей коммитов.
 ### Правила коммитов
 
 | Правило | Пример |
@@ -121,3 +124,17 @@ Pomodoro: **50 мин работа / 10 мин отдых**.
 2. [roadmap/weeks/week-01.md](../roadmap/weeks/week-01.md)
 
 Сайт: [krwg.github.io/web-roadmap](https://krwg.github.io/web-roadmap/) — оглавление по дням, поиск, прогресс, шпаргалки.
+
+
+---
+
+## Прогресс на сайте
+
+На [сайте маршрута](https://krwg.github.io/web-roadmap/) отмечайте **недели** и **дни**. Данные в `localStorage` браузера.
+
+Экспорт / импорт (синхронизация между устройствами вручную) — в консоли DevTools:
+
+```js
+copy(webRoadmapProgress.export())           // скопировать JSON
+webRoadmapProgress.import(/* вставьте JSON */)
+```
