@@ -37,7 +37,7 @@
 <p><strong>Ключевая мысль:</strong> внешний CSS + селекторы по классу — основа поддерживаемых стилей, и сегодняшняя практика с <code>:hover</code>/<code>:focus-visible</code>/<code>:nth-child()</code> — это тренировка думать в терминах «состояние + класс», а не «id под каждый частный случай».</p>
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Learn/CSS/First_steps">MDN: CSS first steps</a> — inline, <code>&lt;style&gt;</code>, внешний файл</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Создай <code>styles.css</code> и подключи к HTML из недели 1</li>
 <li>Стилизуй навигацию: базовый вид, <code>:hover</code>, <code>:focus-visible</code></li>
@@ -51,7 +51,7 @@
 - [ ] CSS вынесен во внешний файл, нет inline-стилей в HTML
 - [ ] Использованы минимум 3 типа селекторов
 - [ ] Состояния <code>:hover</code> и <code>:focus-visible</code> различимы</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Создай <code>styles.css</code> и подключи к HTML из недели 1</li>
 <li>Стилизуй навигацию: базовый вид, <code>:hover</code>, <code>:focus-visible</code></li>
@@ -61,7 +61,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
 <h3>Git</h3>
 <ul>
@@ -84,7 +84,7 @@
 <p><strong>Ключевая мысль:</strong> каскад — не баг, а механизм разрешения конфликтов; специфичность — его валюта, и сегодняшняя практика с ручным вычислением специфичности трёх селекторов — тренировка читать эту «валюту» без обращения к DevTools.</p>
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Learn/CSS/Building_blocks/Cascade_and_inheritance">MDN: Cascade and inheritance</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Создай конфликт специфичности: стилизуй <code>p</code> тремя способами, предскажи результат</li>
 <li>Проверь предсказание в браузере, зафиксируй в комментарии CSS</li>
@@ -98,7 +98,7 @@
 - [ ] Могу объяснить, какое правило победит в конфликте
 - [ ] Нет <code>!important</code> без веской причины
 - [ ] Наследование используется осознанно</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Создай конфликт специфичности: стилизуй <code>p</code> тремя способами, предскажи результат</li>
 <li>Проверь предсказание в браузере, зафиксируй в комментарии CSS</li>
@@ -108,7 +108,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <ul>
@@ -137,7 +137,7 @@
 <p><strong>Ключевая мысль:</strong> <code>border-box</code> + понимание margin collapse = контроль над размерами без магии, а не жонглирование случайными пикселями до тех пор, пока «не встанет на место».</p>
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Learn/CSS/Building_blocks/The_box_model">MDN: Box model</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Нарисуй на бумаге box model для карточки, затем сверстай её</li>
 <li>Примени <code>box-sizing: border-box</code> глобально через <code>*, *::before, *::after</code></li>
@@ -151,7 +151,7 @@
 - [ ] <code>border-box</code> подключён глобально
 - [ ] Карточки визуально одинаковой ширины при разном padding
 - [ ] Понимаю разницу <code>inline</code> vs <code>inline-block</code></p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Нарисуй на бумаге box model для карточки, затем сверстай её</li>
 <li>Примени <code>box-sizing: border-box</code> глобально через <code>*, *::before, *::after</code></li>
@@ -161,7 +161,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -185,7 +185,7 @@
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Learn/CSS/Styling_text">MDN: Typography</a>
 - <a href="https://web.dev/learn/css/typography">web.dev: Learn Typography</a> — вертикальный ритм</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Подключи пару шрифтов (заголовки + текст) через Google Fonts</li>
 <li>Задай базовый <code>font-size: 16px</code>, <code>line-height: 1.6</code> для <code>body</code></li>
@@ -199,7 +199,7 @@
 - [ ] Текст читаем на мобильном и десктопе
 - [ ] Не более 2–3 семейств шрифтов на странице
 - [ ] <code>line-height</code> задан для основного текста</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Подключи пару шрифтов (заголовки + текст) через Google Fonts</li>
 <li>Задай базовый <code>font-size: 16px</code>, <code>line-height: 1.6</code> для <code>body</code></li>
@@ -209,7 +209,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <ul>
@@ -232,7 +232,7 @@
 <p><strong>Ключевая мысль:</strong> <code>rgba</code> для полупрозрачного фона, <code>opacity</code> — когда прозрачным должен быть весь блок целиком, а системная палитра сегодня — фундамент для темизации завтра.</p>
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Web/CSS/color_value">MDN color</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Создай hero-секцию с градиентным фоном и полупрозрачным оверлеем</li>
 <li>Стилизуй кнопки: обычное, hover, active состояния с плавным переходом цвета</li>
@@ -246,7 +246,7 @@
 - [ ] Контраст текста соответствует WCAG AA
 - [ ] Градиент не мешает читаемости
 - [ ] Кнопки имеют distinct states</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Создай hero-секцию с градиентным фоном и полупрозрачным оверлеем</li>
 <li>Стилизуй кнопки: обычное, hover, active состояния с плавным переходом цвета</li>
@@ -256,7 +256,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
 <h3>Git</h3>
 <ul>
@@ -279,7 +279,7 @@
 <p><strong>Ключевая мысль:</strong> CSS-переменные — живые токены, которые наследуются и меняются в runtime, и именно поэтому они, а не hex-коды в каждом правиле, — правильный фундамент дизайн-системы.</p>
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Web/CSS/Using_CSS_custom_properties">MDN: Using CSS custom properties</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Вынеси палитру в <code>:root</code>: primary, secondary, text, bg, border</li>
 <li>Переведи все цвета страницы на <code>var(--...)</code> </li>
@@ -293,7 +293,7 @@
 - [ ] Нет «магических» hex-значений вне <code>:root</code>
 - [ ] Тёмная тема работает через переопределение переменных
 - [ ] Есть fallback у критичных <code>var()</code></p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Вынеси палитру в <code>:root</code>: primary, secondary, text, bg, border</li>
 <li>Переведи все цвета страницы на <code>var(--...)</code> </li>
@@ -303,7 +303,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <ul>
@@ -326,7 +326,7 @@
 <p><strong>Ключевая мысль:</strong> <code>rem</code> для масштабируемости, <code>clamp()</code> для плавной адаптивности без десятка breakpoints — и то, и другое станет рабочим инструментом уже завтра, на первом дне недели про Flexbox.</p>
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Learn/CSS/Building_blocks/Values_and_units">MDN: CSS values and units</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Переведи все <code>font-size</code> на <code>rem</code> (база 16px в <code>html</code>)</li>
 <li>Отступы секций задай через <code>rem</code> или spacing-переменные</li>
@@ -340,7 +340,7 @@
 - [ ] Размеры шрифтов в <code>rem</code>, не в произвольных <code>px</code>
 - [ ] Страница выглядит цельно: палитра, типографика, отступы
 - [ ] Lighthouse Performance ≥ 85 на статике</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Переведи все <code>font-size</code> на <code>rem</code> (база 16px в <code>html</code>)</li>
 <li>Отступы секций задай через <code>rem</code> или spacing-переменные</li>
@@ -350,7 +350,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>

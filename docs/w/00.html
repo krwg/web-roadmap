@@ -36,7 +36,7 @@
 <p>Частая ошибка новичков — писать код без Git «чтобы не тратить время на настройку», откладывая репозиторий «на потом, когда будет что показать». Тогда первые недели прогресса нигде не задокументированы. Такая же ошибка — отлаживать вёрстку методом «поменял файл — обновил страницу — посмотрел», хотя Elements с редактированием стилей на лету делает это быстрее.</p>
 <p><strong>Ключевая мысль:</strong> стабильная среда важнее скорости «сразу писать код» — сегодняшняя практика единственный раз в маршруте посвящена только настройке, чтобы дальше ничего не отвлекало от обучения.</p>
 <p><strong>Читать:</strong> <a href="#start">Как начать</a> — таблица инструментов.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Установи <strong>VS Code</strong>, <strong>Chrome</strong> (или Chromium), <strong>Git</strong></li>
 <li>В VS Code: Live Server, GitLens, ESLint, Prettier, Error Lens</li>
@@ -44,7 +44,7 @@
 <li>Node.js LTS можно поставить сейчас или перед неделей 11; Python — перед 15; Docker — перед 21</li>
 <li>Открой DevTools (F12 / ⌥⌘I) → Elements, Console, Network — кликни по каждой вкладке</li>
 </ol>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>VS Code + Git + Chrome</li>
 <li>Live Server + одно расширение на выбор</li>
@@ -53,7 +53,7 @@
 <blockquote>
 <p>Лайт-DoD: редактор, браузер с DevTools и Git установлены.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Установка зависла — перезапусти установщик, проверь PATH (<code>echo $PATH</code> / «Переменные среды» на Windows). Git «не найден» после установки — закрой и открой терминал заново.</p>
 <hr>
 <h2 id="week-00-day-0-2">День 0.2: GitHub и свой learning-log</h2>
@@ -69,7 +69,7 @@
 <p>Почему это важно для всего маршрута: начиная с недели 1 каждый день заканчивается коммитом в эту же папку. Если репозиторий настроен неправильно сегодня — с чужой историей или без <code>.gitignore</code> — проблему придётся решать посреди недели 1, отвлекаясь от HTML.</p>
 <p>Частое заблуждение — думать, что показывать портфолио стоит только после «идеального» результата, поэтому можно закоммитить всё одним большим коммитом в конце. На деле частые маленькие коммиты с понятными сообщениями (<code>feat: add contact form</code>, а не <code>fix</code>) сами по себе сигнал профессионализма — и заметны раньше, чем содержимое кода.</p>
 <p><strong>Ключевая мысль:</strong> репозиторий появляется до первой строки HTML — сегодняшняя практика это подтверждает: вы создаёте <code>learning-log</code>, <code>.gitignore</code> и <code>README.md</code> ещё до того, как напишете хоть один тег.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Аккаунт GitHub (если нет) + 2FA по возможности</li>
 <li><strong>New repository</strong> → имя <code>learning-log</code> → Public → <strong>без</strong> README / .gitignore / license</li>
@@ -89,7 +89,7 @@ git push -u origin main
 <ol start="5">
 <li>Создайте минимальный <code>README.md</code>: название, цель («прохожу web-roadmap»), ссылка на https://github.com/krwg/web-roadmap — закоммитьте</li>
 </ol>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Создать пустой <code>learning-log</code> под своим аккаунтом</li>
 <li>Clone → <code>.gitignore</code> → первый push</li>
@@ -97,7 +97,7 @@ git push -u origin main
 <blockquote>
 <p>Лайт-DoD: репозиторий виден на github.com/ваш-логин/learning-log</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p><code>Permission denied</code> / auth — используйте HTTPS + <a href="https://github.com/settings/tokens">Personal Access Token</a> или GitHub CLI (<code>gh auth login</code>). Ветка называется <code>master</code> вместо <code>main</code> — переименуйте: <code>git branch -M main</code>.</p>
 <hr>
 <h2 id="week-00-day-0-3">День 0.3: Как учиться по маршруту</h2>
@@ -145,7 +145,7 @@ git push -u origin main
 <p><strong>Читать:</strong>
 - <a href="https://github.com/krwg/web-roadmap/blob/main/roadmap/introduction.md">Введение</a>
 - <a href="#projects">Каталог 22 проектов</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Прочитай introduction и обзор проектов</li>
 <li>В <code>learning-log</code> создай <code>journal.md</code> — цель на 22 недели одним абзацем</li>
@@ -153,12 +153,12 @@ git push -u origin main
 <li>Выбери трек (полный / лайт) и запиши выбор в journal</li>
 <li>Коммит: <code>chore: add learning journal</code></li>
 </ol>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Прочитай introduction (хотя бы разделы «для кого» и «как устроен день»)</li>
 <li><code>journal.md</code> с целью + закладка на сайт</li>
 </ol>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не знаете, полный или лайт — начните лайт на 3 дня. Если стабильно укладываетесь с запасом — переключитесь на полный со следующей недели.</p>
 <hr>
 <h2 id="week-00-два-трека-нагрузки">Два трека нагрузки</h2>

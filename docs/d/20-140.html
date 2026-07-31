@@ -32,7 +32,7 @@
 <li><a href="https://pypi.org/project/pip-audit/">pip-audit</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> CI + security audit — часть Definition of Done, не «после деплоя».</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>.github/workflows/ci.yml</code>: <code>pytest</code> + <code>vitest run</code> на push</li>
 <li><code>npm audit</code> и <code>pip audit</code> — отчёт в <code>security-audit.md</code></li>
@@ -45,7 +45,7 @@
 - [ ] CI workflow файл в <code>.github/workflows/</code>
 - [ ] npm audit — нет critical без комментария
 - [ ] Auth flow задокументирован</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>.github/workflows/ci.yml</code>: <code>pytest</code> + <code>vitest run</code> на push</li>
 <li><code>npm audit</code> и <code>pip audit</code> — отчёт в <code>security-audit.md</code></li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>

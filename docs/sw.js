@@ -1,4 +1,4 @@
-const CACHE = 'web-roadmap-v4';
+const CACHE = 'web-roadmap-v5';
 const ASSETS = [
   './',
   'index.html',

@@ -32,7 +32,7 @@
 <li><a href="https://docs.python.org/3/library/dataclasses.html">@dataclass</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> композиция чаще наследования; dataclass — для данных, class — для поведения.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>SavingsAccount</code> с <code>interest_rate</code>, метод <code>apply_interest()</code> через <code>super()</code></li>
 <li><code>Portfolio</code> содержит <code>list[Account]</code> — композиция, не наследование</li>
@@ -45,7 +45,7 @@
 - [ ] <code>super().__init__()</code> в дочернем классе
 - [ ] Portfolio не наследует Account — композиция
 - [ ] dataclass с валидацией суммы &gt; 0</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>SavingsAccount</code> с <code>interest_rate</code>, метод <code>apply_interest()</code> через <code>super()</code></li>
 <li><code>Portfolio</code> содержит <code>list[Account]</code> — композиция, не наследование</li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>

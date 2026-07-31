@@ -31,7 +31,7 @@
 - <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise/race">MDN: Promise.race()</a>
 - <a href="https://learn.javascript.ru/promise-api">learn.javascript.ru: Promise API</a></p>
 <p><strong>Ключевая мысль:</strong> выбирай Promise-утилиту по сценарию — all для «всё или ничего», allSettled для «что получилось», race для таймаутов.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Загрузи 5 URL через <code>Promise.allSettled</code>, покажи успешные и failed</li>
 <li>Timeout wrapper: <code>withTimeout(promise, 5000)</code> через <code>Promise.race</code></li>
@@ -45,7 +45,7 @@
 - [ ] allSettled и race использованы по назначению
 - [ ] Timeout на долгие запросы
 - [ ] Нет unhandled promise rejections в Console</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Загрузи 5 URL через <code>Promise.allSettled</code>, покажи успешные и failed</li>
 <li>Timeout wrapper: <code>withTimeout(promise, 5000)</code> через <code>Promise.race</code></li>
@@ -55,7 +55,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>

@@ -11,7 +11,10 @@
   const DAY_PROGRESS_KEY = 'web-roadmap-day-progress';
   const READING_KEY = 'web-roadmap-reading';
   const LAST_ROUTE_KEY = 'web-roadmap-last-route';
+  const TRACK_KEY = 'web-roadmap-track';
+  const QUIZ_KEY = 'web-roadmap-quiz';
   const TOTAL_DAYS = 154;
+  const DAY_INDEX = ROUTES.dayIndex || [];
 
   const weekCache = {};
   let currentRoute = '';
@@ -25,6 +28,48 @@
     return `<span class="material-symbols-outlined" aria-hidden="true">${name}</span>`;
   }
 
+  function getTrackMode() {
+    const v = localStorage.getItem(TRACK_KEY);
+    return v === 'lite' ? 'lite' : 'full';
+  }
+  function setTrackMode(mode) {
+    localStorage.setItem(TRACK_KEY, mode === 'lite' ? 'lite' : 'full');
+    syncTrackChips();
+    applyTrackFilter(document);
+  }
+  function syncTrackChips() {
+    const mode = getTrackMode();
+    $$('[data-track-mode]').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-track-mode') === mode);
+    });
+    document.body.dataset.track = mode;
+  }
+  function applyTrackFilter(root = document) {
+    const mode = getTrackMode();
+    $$('.practice-track', root).forEach(el => {
+      const track = el.getAttribute('data-track');
+      el.hidden = mode === 'lite' ? track === 'full' : track === 'lite';
+    });
+  }
+
+  function getQuizProgress() {
+    try { return JSON.parse(localStorage.getItem(QUIZ_KEY) || '{}'); }
+    catch { return {}; }
+  }
+  function setQuizScore(weekId, score, total) {
+    const p = getQuizProgress();
+    p[weekId] = { score, total, ts: Date.now() };
+    localStorage.setItem(QUIZ_KEY, JSON.stringify(p));
+  }
+
+  function findNextIncomplete() {
+    const days = getDayProgress();
+    for (const d of DAY_INDEX) {
+      if (!days[d.id]) return d;
+    }
+    return null;
+  }
+
   function getProgress() {
     try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); }
     catch { return {}; }
@@ -36,6 +81,7 @@
     updateProgressUI();
     updateCards();
     updateResumeBanner();
+    renderProgressMap();
   }
   function toggleWeekDone(id) {
     const p = getProgress();
@@ -66,7 +112,24 @@
     const metaEl = $('#resume-meta');
     if (!banner || !link) return;
 
+    const next = findNextIncomplete();
     const last = getLastRoute();
+
+    if (next) {
+      banner.hidden = false;
+      if (titleEl) titleEl.textContent = 'Продолжить обучение';
+      if (metaEl) metaEl.textContent = `${next.weekTitle}: ${next.label}`;
+      link.href = `#${next.week}--${next.id}`;
+      link.setAttribute('data-route', next.week);
+      const cta = $('#cta-start');
+      if (cta) {
+        cta.textContent = 'Продолжить';
+        cta.href = `#${next.week}--${next.id}`;
+        cta.setAttribute('data-route', next.week);
+      }
+      return;
+    }
+
     if (!last?.route) {
       banner.hidden = true;
       return;
@@ -74,15 +137,44 @@
 
     const weekTitle = ROUTES.weeks?.[last.route] || last.title || last.route;
     banner.hidden = false;
-    if (titleEl) titleEl.textContent = 'Продолжить обучение';
-    if (metaEl) {
-      metaEl.textContent = last.anchor
-        ? `${weekTitle} · ${last.anchor.replace(/^week-\d{2}-/, '').replace(/-/g, ' ')}`
-        : weekTitle;
-    }
+    if (titleEl) titleEl.textContent = 'Курс пройден — повторить';
+    if (metaEl) metaEl.textContent = weekTitle;
     const hash = last.anchor ? `${last.route}--${last.anchor}` : last.route;
     link.href = `#${hash}`;
     link.setAttribute('data-route', last.route);
+  }
+
+  function renderProgressMap() {
+    const grid = $('#progress-map-grid');
+    const sub = $('#progress-map-sub');
+    if (!grid) return;
+    const daysDone = getDayProgress();
+    const weeksDone = getProgress();
+    const byWeek = {};
+    DAY_INDEX.forEach(d => {
+      if (!byWeek[d.week]) byWeek[d.week] = [];
+      byWeek[d.week].push(d);
+    });
+    const next = findNextIncomplete();
+    let stuckLabel = next ? `Следующий шаг: ${next.weekTitle} · ${next.label}` : 'Все дни отмечены — можно ревьюить слабые места';
+    if (sub) sub.textContent = stuckLabel;
+
+    grid.innerHTML = WEEK_IDS.map(wid => {
+      const days = byWeek[wid] || [];
+      const doneCount = days.filter(d => daysDone[d.id]).length;
+      const weekDone = !!weeksDone[wid];
+      const title = ROUTES.weeks?.[wid] || wid;
+      const dots = days.map(d => {
+        const done = !!daysDone[d.id];
+        const isNext = next && next.id === d.id;
+        return `<a class="pmap-dot${done ? ' done' : ''}${isNext ? ' next' : ''}" href="#${wid}--${d.id}" data-route="${wid}" title="${d.label}"></a>`;
+      }).join('');
+      return `<div class="pmap-week${weekDone ? ' week-done' : ''}">
+        <a class="pmap-title" href="#${wid}" data-route="${wid}">${wid.replace('week-', '')}. ${title}</a>
+        <div class="pmap-dots">${dots || '<span class="pmap-empty">—</span>'}</div>
+        <span class="pmap-meta">${doneCount}/${days.length || '—'}</span>
+      </div>`;
+    }).join('');
   }
 
   function getDayProgress() {
@@ -94,21 +186,43 @@
     if (done) p[dayId] = Date.now(); else delete p[dayId];
     localStorage.setItem(DAY_PROGRESS_KEY, JSON.stringify(p));
     updateProgressUI();
+    updateResumeBanner();
+    renderProgressMap();
   }
   function exportProgress() {
     return JSON.stringify({
       weeks: getProgress(),
       days: getDayProgress(),
+      quizzes: getQuizProgress(),
+      track: getTrackMode(),
       exportedAt: new Date().toISOString(),
-      version: 1,
+      version: 2,
+    }, null, 2);
+  }
+  function exportLearningLogPayload() {
+    const next = findNextIncomplete();
+    return JSON.stringify({
+      schema: 'web-roadmap/learning-log-progress',
+      version: 2,
+      exportedAt: new Date().toISOString(),
+      track: getTrackMode(),
+      resume: next ? { week: next.week, day: next.id, label: next.label } : null,
+      weeks: getProgress(),
+      days: getDayProgress(),
+      quizzes: getQuizProgress(),
+      tip: 'Положите этот файл в learning-log/progress.json и коммитьте раз в неделю.',
     }, null, 2);
   }
   function importProgress(json) {
     const data = typeof json === 'string' ? JSON.parse(json) : json;
     if (data.weeks) localStorage.setItem(PROGRESS_KEY, JSON.stringify(data.weeks));
     if (data.days) localStorage.setItem(DAY_PROGRESS_KEY, JSON.stringify(data.days));
+    if (data.quizzes) localStorage.setItem(QUIZ_KEY, JSON.stringify(data.quizzes));
+    if (data.track) setTrackMode(data.track);
     updateProgressUI();
     updateCards();
+    updateResumeBanner();
+    renderProgressMap();
   }
 
   function updateProgressUI() {
@@ -392,6 +506,86 @@
     container.appendChild(script);
   }
 
+  function renderQuizBlock(quizzes, weekId) {
+    if (!quizzes?.length) return '';
+    const saved = getQuizProgress()[weekId];
+    const header = saved
+      ? `<p class="quiz-saved">Прошлый результат: ${saved.score}/${saved.total}</p>`
+      : '';
+    const items = quizzes.map((q, qi) => {
+      const opts = (q.options || []).map((o, oi) =>
+        `<button type="button" class="quiz-opt" data-q="${qi}" data-o="${oi}" data-ok="${o.ok ? '1' : '0'}">${o.t}</button>`
+      ).join('');
+      return `<div class="quiz-item" data-qi="${qi}">
+        <p class="quiz-q"><span class="quiz-num">${qi + 1}</span> ${q.q}</p>
+        <div class="quiz-opts">${opts}</div>
+        <p class="quiz-feedback" hidden></p>
+      </div>`;
+    }).join('');
+    return `<div class="quiz-block" data-week="${weekId}">
+      <h3 class="quiz-title">${icon('quiz')} Интерактивный тест</h3>
+      <p class="quiz-hint">Выберите ответ — feedback сразу. Можно пройти заново.</p>
+      ${header}
+      ${items}
+      <div class="quiz-score" hidden></div>
+      <button type="button" class="btn btn-ghost btn-sm quiz-reset" hidden>Пройти снова</button>
+    </div>`;
+  }
+
+  function setupQuizzes(root, weekId, quizzes) {
+    const block = root.querySelector('.quiz-block');
+    if (!block || !quizzes?.length) return;
+    const state = quizzes.map(() => null);
+    const scoreEl = block.querySelector('.quiz-score');
+    const resetBtn = block.querySelector('.quiz-reset');
+
+    function finishIfDone() {
+      if (state.some(s => s === null)) return;
+      const score = state.filter(Boolean).length;
+      setQuizScore(weekId, score, quizzes.length);
+      if (scoreEl) {
+        scoreEl.hidden = false;
+        scoreEl.textContent = `Итого: ${score} / ${quizzes.length}`;
+        scoreEl.className = 'quiz-score ' + (score === quizzes.length ? 'perfect' : score >= quizzes.length * 0.7 ? 'good' : 'retry');
+      }
+      if (resetBtn) resetBtn.hidden = false;
+    }
+
+    block.addEventListener('click', e => {
+      const btn = e.target.closest('.quiz-opt');
+      if (!btn || btn.disabled) return;
+      const qi = +btn.dataset.q;
+      const ok = btn.dataset.ok === '1';
+      const item = block.querySelector(`.quiz-item[data-qi="${qi}"]`);
+      if (!item || state[qi] !== null) return;
+      state[qi] = ok;
+      item.querySelectorAll('.quiz-opt').forEach(b => {
+        b.disabled = true;
+        if (b.dataset.ok === '1') b.classList.add('correct');
+        if (b === btn && !ok) b.classList.add('wrong');
+      });
+      const fb = item.querySelector('.quiz-feedback');
+      const explain = quizzes[qi].explain || '';
+      if (fb) {
+        fb.hidden = false;
+        fb.className = 'quiz-feedback ' + (ok ? 'ok' : 'bad');
+        fb.textContent = (ok ? 'Верно. ' : 'Неверно. ') + explain;
+      }
+      finishIfDone();
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      const wrap = block.parentElement;
+      if (!wrap) return;
+      const fresh = renderQuizBlock(quizzes, weekId);
+      const tmp = document.createElement('div');
+      tmp.innerHTML = fresh;
+      const next = tmp.firstElementChild;
+      block.replaceWith(next);
+      setupQuizzes(wrap, weekId, quizzes);
+    });
+  }
+
   function renderWeekHub(data, routeId) {
     const sections = lessonSections(data);
     const daysDone = getDayProgress();
@@ -433,6 +627,7 @@
       if (content) {
         content.innerHTML = `<div class="prose lesson-prose">${data.html}</div>`;
         highlightCode(content);
+        applyTrackFilter(content);
       }
       updateMarkDoneBtn(routeId);
       updateMarkDayBtn(null);
@@ -441,15 +636,14 @@
       const bar = $('#lesson-next');
       if (bar) bar.hidden = true;
       loadGiscus(null);
-      $('#comments-block').hidden = true;
+      const comments = $('#comments-block');
+      if (comments) comments.hidden = true;
       window.scrollTo(0, 0);
       return;
     }
 
-    // Week: open specific lesson or hub
     let section = anchor ? sections.find(s => s.id === anchor) : null;
     if (!section && !anchor && sections.length) {
-      // Default: first day (separate page UX) — redirect hash
       const first = sections.find(s => s.kind === 'day') || sections[0];
       if (first && location.hash !== `#${routeId}--${first.id}`) {
         history.replaceState(null, '', `#${routeId}--${first.id}`);
@@ -459,7 +653,6 @@
     }
 
     if (!section) {
-      // Hub fallback
       if (title) title.textContent = pageTitle;
       document.title = `${pageTitle} · web-roadmap`;
       if (subtitle) {
@@ -468,7 +661,10 @@
       }
       updateBreadcrumb(data.title || pageTitle, { label: 'Оглавление' });
       if (tocEl) tocEl.innerHTML = buildToc(sections, routeId, '');
-      if (content) content.innerHTML = renderWeekHub(data, routeId);
+      if (content) {
+        content.innerHTML = renderWeekHub(data, routeId);
+        applyTrackFilter(content);
+      }
       updateMarkDoneBtn(routeId);
       updateMarkDayBtn(null);
       updateGithubToolbar(routeId, '', data);
@@ -491,11 +687,14 @@
     updateBreadcrumb(data.title || pageTitle, section);
     if (tocEl) tocEl.innerHTML = buildToc(sections, routeId, section.id);
     if (content) {
-      const intro = section.kind === 'day' && data.introHtml && sections[0]?.id === section.id
-        ? '' // keep day clean; intro only on hub
-        : '';
-      content.innerHTML = `<div class="prose lesson-prose">${intro}${html}</div>`;
+      let body = html;
+      if (section.kind === 'review' && data.quizzes?.length) {
+        body = html + renderQuizBlock(data.quizzes, routeId);
+      }
+      content.innerHTML = `<div class="prose lesson-prose">${body}</div>`;
       highlightCode(content);
+      applyTrackFilter(content);
+      if (section.kind === 'review') setupQuizzes(content, routeId, data.quizzes || []);
     }
     updateMarkDoneBtn(routeId);
     updateMarkDayBtn(section);
@@ -528,6 +727,7 @@
       document.title = 'web-roadmap — Full-Stack за 22 недели';
       updateCards();
       updateResumeBanner();
+      renderProgressMap();
       return;
     }
 
@@ -623,7 +823,6 @@
   }
 
   function initGithubFeatures() {
-    // Live star count
     fetch(`https://api.github.com/repos/${REPO}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
@@ -636,22 +835,34 @@
       })
       .catch(() => {});
 
-    $('#progress-export-btn')?.addEventListener('click', async () => {
+    async function copyProgress() {
       const json = exportProgress();
       try {
         await navigator.clipboard.writeText(json);
-        alert('Прогресс скопирован в буфер. Сохраните в learning-log/progress.json');
+        alert('Прогресс скопирован. Сохраните в learning-log/progress.json');
       } catch {
-        const blob = new Blob([json], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'web-roadmap-progress.json';
-        a.click();
+        downloadText('web-roadmap-progress.json', json);
       }
+    }
+
+    function downloadText(name, text) {
+      const blob = new Blob([text], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    $$('#progress-export-btn').forEach(btn => btn.addEventListener('click', copyProgress));
+
+    $('#export-learning-log-btn')?.addEventListener('click', () => {
+      downloadText('progress.json', exportLearningLogPayload());
+      alert('Скачан progress.json — положите в learning-log/ и сделайте коммит.\nИли создайте private gist на gist.github.com и вставьте JSON.');
     });
 
     const fileInput = $('#progress-import-file');
-    $('#progress-import-btn')?.addEventListener('click', () => fileInput?.click());
+    $$('#progress-import-btn').forEach(btn => btn.addEventListener('click', () => fileInput?.click()));
     fileInput?.addEventListener('change', async () => {
       const file = fileInput.files?.[0];
       if (!file) return;
@@ -672,6 +883,15 @@
       } catch {
         prompt('Скопируйте:', cmd);
       }
+    });
+  }
+
+  function initTrackToggle() {
+    syncTrackChips();
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('[data-track-mode]');
+      if (!btn) return;
+      setTrackMode(btn.getAttribute('data-track-mode'));
     });
   }
 
@@ -701,11 +921,13 @@
   updateProgressUI();
   updateCards();
   updateResumeBanner();
+  renderProgressMap();
   initSearch();
   initReadingMode();
   initPhaseFilters();
   initBurger();
   initGithubFeatures();
+  initTrackToggle();
   route();
 
   window.webRoadmapProgress = { export: exportProgress, import: importProgress };

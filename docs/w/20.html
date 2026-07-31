@@ -40,7 +40,7 @@
 <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">OWASP Password Storage</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> hash + salt через bcrypt; одинаковые сообщения об ошибке login — против enumeration.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Таблица <code>users(id, email UNIQUE, password_hash, created_at)</code></li>
 <li>Express: <code>POST /auth/register</code>, <code>POST /auth/login</code></li>
@@ -53,7 +53,7 @@
 - [ ] Пароль никогда не логируется и не возвращается в JSON
 - [ ] Дубликат email → 409
 - [ ] Неверный пароль → 401 (не 404)</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Таблица <code>users(id, email UNIQUE, password_hash, created_at)</code></li>
 <li>Express: <code>POST /auth/register</code>, <code>POST /auth/login</code></li>
@@ -62,7 +62,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -94,7 +94,7 @@
 <li><a href="https://python-jose.readthedocs.io/">python-jose</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> JWT — подписанный контракт, не шифрование; user_id только из verified token.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Login возвращает <code>{ access_token, token_type: "bearer", expires_in }</code></li>
 <li>Middleware <code>authenticateToken</code> — verify JWT, <code>req.user = { id, email }</code></li>
@@ -107,7 +107,7 @@
 - [ ] JWT_SECRET в .env, не в коде
 - [ ] Expired token → 401
 - [ ] user_id из token, не из body/query</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Login возвращает <code>{ access_token, token_type: "bearer", expires_in }</code></li>
 <li>Middleware <code>authenticateToken</code> — verify JWT, <code>req.user = { id, email }</code></li>
@@ -116,7 +116,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -148,7 +148,7 @@
 <li><a href="https://github.com/express-rate-limit/express-rate-limit">express-rate-limit</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> безопасность — слои: hash, JWT, rate limit, headers, CORS, audit.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Rate limit на <code>/auth/login</code>: 5 попыток / 15 мин per IP</li>
 <li><code>helmet()</code> в Express; FastAPI — security headers middleware (обзор)</li>
@@ -161,7 +161,7 @@
 - [ ] Rate limiting работает (429 Too Many Requests)
 - [ ] Helmet headers в response (проверь <code>curl -I</code>)
 - [ ] Чеклист OWASP заполнен в <code>security-audit.md</code></p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Rate limit на <code>/auth/login</code>: 5 попыток / 15 мин per IP</li>
 <li><code>helmet()</code> в Express; FastAPI — security headers middleware (обзор)</li>
@@ -170,7 +170,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>
@@ -202,7 +202,7 @@
 <li><a href="https://github.com/ladjs/supertest">supertest</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> тестируй auth, 403 cross-user и 401 без token — не только happy path.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Тесты auth: register success, duplicate email 409, login, wrong password 401</li>
 <li>Fixture: test user + valid token в <code>Authorization</code> header</li>
@@ -215,7 +215,7 @@
 - [ ] <code>pytest</code> все зелёные
 - [ ] Тесты не зависят от порядка выполнения
 - [ ] conftest.py с test database</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Тесты auth: register success, duplicate email 409, login, wrong password 401</li>
 <li>Fixture: test user + valid token в <code>Authorization</code> header</li>
@@ -224,7 +224,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <ul>
@@ -256,7 +256,7 @@
 <li><a href="https://testing-library.com/docs/user-event/intro/">userEvent</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> RTL — «как пользователь видит»; mock fetch, не implementation details.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom @testing-library/user-event</code></li>
 <li>Тест: Login form — submit вызывает API с email/password</li>
@@ -269,7 +269,7 @@
 - [ ] <code>vitest run</code> проходит
 - [ ] Тесты ищут по role/label, не по className
 - [ ] ≥ 8 unit/component тестов</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom @testing-library/user-event</code></li>
 <li>Тест: Login form — submit вызывает API с email/password</li>
@@ -278,7 +278,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -310,7 +310,7 @@
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">MDN — HTTP Authentication</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> auth flow end-to-end — контракт между Context, api wrapper и protected routes.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>React (Vite + TS): Login/Register pages с валидацией форм</li>
 <li><code>AuthContext</code> + <code>useAuth()</code> hook</li>
@@ -323,7 +323,7 @@
 - [ ] Full flow: register → login → access protected → logout
 - [ ] 401 от API → redirect login
 - [ ] Token не в URL query string</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>React (Vite + TS): Login/Register pages с валидацией форм</li>
 <li><code>AuthContext</code> + <code>useAuth()</code> hook</li>
@@ -332,7 +332,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
@@ -364,7 +364,7 @@
 <li><a href="https://pypi.org/project/pip-audit/">pip-audit</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> CI + security audit — часть Definition of Done, не «после деплоя».</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>.github/workflows/ci.yml</code>: <code>pytest</code> + <code>vitest run</code> на push</li>
 <li><code>npm audit</code> и <code>pip audit</code> — отчёт в <code>security-audit.md</code></li>
@@ -377,7 +377,7 @@
 - [ ] CI workflow файл в <code>.github/workflows/</code>
 - [ ] npm audit — нет critical без комментария
 - [ ] Auth flow задокументирован</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>.github/workflows/ci.yml</code>: <code>pytest</code> + <code>vitest run</code> на push</li>
 <li><code>npm audit</code> и <code>pip audit</code> — отчёт в <code>security-audit.md</code></li>
@@ -386,7 +386,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>

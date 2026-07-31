@@ -32,7 +32,7 @@
 <li><a href="https://use-the-index-luke.com/">Use The Index, Luke</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> индекс — trade-off read vs write; EXPLAIN — единственный честный ответ «почему медленно».</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Таблица <code>books</code> с 10 000+ строк (скрипт <code>scripts/generate_books.sql</code>)</li>
 <li><code>EXPLAIN ANALYZE SELECT * FROM books WHERE title LIKE 'Python%'</code> — без индекса</li>
@@ -45,7 +45,7 @@
 - [ ] Индекс создан на колонке поиска
 - [ ] EXPLAIN показывает Index Scan (или объясни почему Seq Scan)
 - [ ] Записаны выводы в <code>notes/indexes.md</code></p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Таблица <code>books</code> с 10 000+ строк (скрипт <code>scripts/generate_books.sql</code>)</li>
 <li><code>EXPLAIN ANALYZE SELECT * FROM books WHERE title LIKE 'Python%'</code> — без индекса</li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>

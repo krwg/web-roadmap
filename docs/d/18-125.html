@@ -32,7 +32,7 @@
 <li><a href="https://www.python-httpx.org/">httpx</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> изолированная test DB; тесты на auth, 404, 409 — не только happy path.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>pip install pytest httpx</code></li>
 <li>Тесты: create author, get 404, create loan conflict → 409</li>
@@ -45,7 +45,7 @@
 - [ ] ≥ 8 pytest тестов, все проходят
 - [ ] Test DB изолирована от dev
 - [ ] <code>pytest -v</code> в README</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>pip install pytest httpx</code></li>
 <li>Тесты: create author, get 404, create loan conflict → 409</li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>

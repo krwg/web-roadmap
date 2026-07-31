@@ -32,7 +32,7 @@
 <li><a href="https://expressjs.com/en/advanced/healthcheck-graceful-shutdown.html">Graceful Shutdown</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> routes тонкие, logic в services; health check — контракт с инфраструктурой.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Структура: <code>src/routes/</code>, <code>controllers/</code>, <code>services/</code>, <code>db/pool.js</code></li>
 <li>Вынеси логику из routes в controller/service</li>
@@ -45,7 +45,7 @@
 - [ ] Routes тонкие — только маршрутизация
 - [ ] Service переиспользуется из controller
 - [ ] health check возвращает 503 если DB down</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Структура: <code>src/routes/</code>, <code>controllers/</code>, <code>services/</code>, <code>db/pool.js</code></li>
 <li>Вынеси логику из routes в controller/service</li>
@@ -54,7 +54,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>

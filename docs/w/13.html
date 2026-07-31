@@ -42,7 +42,7 @@
 <li><a href="https://reactrouter.com/6.28.0/hooks/use-navigate">useNavigate</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> SPA-навигация — смена компонентов без перезагрузки; для внутренних ссылок — <code>Link</code>, не <code>&lt;a&gt;</code>.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>npm install react-router-dom</code> в <code>learning-log/week-13/</code></li>
 <li>Страницы: <code>/</code> Home, <code>/about</code> About, <code>/contact</code> Contact</li>
@@ -64,7 +64,7 @@
 <p>[ ] Layout оборачивает все маршруты</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>npm install react-router-dom</code> в <code>learning-log/week-13/</code></li>
 <li>Страницы: <code>/</code> Home, <code>/about</code> About, <code>/contact</code> Contact</li>
@@ -74,7 +74,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -116,7 +116,7 @@ git commit -m &quot;week-13 day-85: React Router, Layout и 404&quot;
 <li><a href="https://reactrouter.com/6.28.0/hooks/use-location">useLocation</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> путь описывает «где», query — «как показать»; параметры маршрута всегда строки.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>/blog</code> — список постов, <code>/blog/:slug</code> — детальная страница</li>
 <li>Данные постов — mock JSON или JSONPlaceholder</li>
@@ -138,7 +138,7 @@ git commit -m &quot;week-13 day-85: React Router, Layout и 404&quot;
 <p>[ ] Breadcrumbs обновляются при навигации</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>/blog</code> — список постов, <code>/blog/:slug</code> — детальная страница</li>
 <li>Данные постов — mock JSON или JSONPlaceholder</li>
@@ -148,7 +148,7 @@ git commit -m &quot;week-13 day-85: React Router, Layout и 404&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -190,7 +190,7 @@ git commit -m &quot;week-13 day-86: динамические маршруты и
 <li><a href="https://testing-library.com/docs/react-testing-library/api/#renderhook">renderHook (Testing Library)</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> custom hook извлекает логику, а не UI; правила хуков обязательны внутри него.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Реализуй <code>useLocalStorage</code> с JSON parse/stringify</li>
 <li><code>useFetch(url)</code> — возвращает <code>{ data, loading, error, refetch }</code></li>
@@ -212,7 +212,7 @@ git commit -m &quot;week-13 day-86: динамические маршруты и
 <p>[ ] <code>useDebounce</code> уменьшает количество фильтраций</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Реализуй <code>useLocalStorage</code> с JSON parse/stringify</li>
 <li><code>useFetch(url)</code> — возвращает <code>{ data, loading, error, refetch }</code></li>
@@ -222,7 +222,7 @@ git commit -m &quot;week-13 day-86: динамические маршруты и
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -264,7 +264,7 @@ git commit -m &quot;week-13 day-87: useLocalStorage, useFetch и useDebounce&quo
 <li><a href="https://react.dev/learn/passing-data-deeply-with-context#before-you-use-context">Context — Caveats</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> Context — для редко меняющихся глобальных данных; разделяй провайдеры и мемоизируй value.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>ThemeContext</code>: <code>theme</code>, <code>toggleTheme</code>, CSS-класс <code>dark</code> на <code>&lt;html&gt;</code></li>
 <li><code>UserContext</code>: имя пользователя, setName — форма в Settings</li>
@@ -286,7 +286,7 @@ git commit -m &quot;week-13 day-87: useLocalStorage, useFetch и useDebounce&quo
 <p>[ ] Default value в createContext для dev-подсказок</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>ThemeContext</code>: <code>theme</code>, <code>toggleTheme</code>, CSS-класс <code>dark</code> на <code>&lt;html&gt;</code></li>
 <li><code>UserContext</code>: имя пользователя, setName — форма в Settings</li>
@@ -296,7 +296,7 @@ git commit -m &quot;week-13 day-87: useLocalStorage, useFetch и useDebounce&quo
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -338,7 +338,7 @@ git commit -m &quot;week-13 day-88: ThemeContext и UserContext&quot;
 <li><a href="https://reactrouter.com/6.28.0/hooks/use-navigate">useNavigate</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> protected route проверяет сессию на уровне маршрута; persist в storage переживает перезагрузку.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>AuthContext</code> с <code>user</code>, <code>login</code>, <code>logout</code> (mock, без реального API)</li>
 <li><code>ProtectedRoute</code> — children или <code>&lt;Navigate to="/login" /&gt;</code></li>
@@ -360,7 +360,7 @@ git commit -m &quot;week-13 day-88: ThemeContext и UserContext&quot;
 <p>[ ] Login form — controlled inputs</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>AuthContext</code> с <code>user</code>, <code>login</code>, <code>logout</code> (mock, без реального API)</li>
 <li><code>ProtectedRoute</code> — children или <code>&lt;Navigate to="/login" /&gt;</code></li>
@@ -370,7 +370,7 @@ git commit -m &quot;week-13 day-88: ThemeContext и UserContext&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -413,7 +413,7 @@ git commit -m &quot;week-13 day-89: AuthContext и protected routes&quot;
 <li><a href="https://react.dev/reference/react/lazy">React.lazy</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> оптимизируй после профилирования; lazy routes уменьшают начальный bundle.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Реорганизуй проект недели по папкам</li>
 <li>Lazy-load страницу <code>/admin</code> с fallback-спиннером</li>
@@ -435,7 +435,7 @@ git commit -m &quot;week-13 day-89: AuthContext и protected routes&quot;
 <p>[ ] Понятная структура папок</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Реорганизуй проект недели по папкам</li>
 <li>Lazy-load страницу <code>/admin</code> с fallback-спиннером</li>
@@ -445,7 +445,7 @@ git commit -m &quot;week-13 day-89: AuthContext и protected routes&quot;
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
@@ -486,7 +486,7 @@ git commit -m &quot;week-13 day-90: lazy routes, useMemo и структура&q
 <li><a href="https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary">Error Boundaries</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> выбор инструмента state — по частоте изменений и глубине дерева, не «всё в Context».</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Добавь простой Error Boundary вокруг <code>&lt;Routes&gt;</code></li>
 <li>Пройди чеклист своего многостраничного приложения</li>
@@ -508,7 +508,7 @@ git commit -m &quot;week-13 day-90: lazy routes, useMemo и структура&q
 <p>[ ] Git commit за каждый день недели</p>
 </li>
 </ul>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Добавь простой Error Boundary вокруг <code>&lt;Routes&gt;</code></li>
 <li>Пройди чеклист своего многостраничного приложения</li>
@@ -518,7 +518,7 @@ git commit -m &quot;week-13 day-90: lazy routes, useMemo и структура&q
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">

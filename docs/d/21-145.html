@@ -32,7 +32,7 @@
 <li><a href="https://docs.docker.com/compose/reference/">docker compose CLI</a></li>
 </ul>
 <p><strong>Ключевая мысль:</strong> compose + healthcheck + volumes = воспроизводимый full-stack локально.</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li><code>docker-compose.yml</code>:</li>
 <li><code>DATABASE_URL=postgresql://user:pass@db:5432/tasks</code> в backend env</li>
@@ -47,7 +47,7 @@
 - [ ] Одна команда поднимает 3 сервиса
 - [ ] Данные PG в named volume <code>pgdata</code>
 - [ ] depends_on + healthcheck db</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li><code>docker-compose.yml</code>:</li>
 <li><code>DATABASE_URL=postgresql://user:pass@db:5432/tasks</code> в backend env</li>
@@ -56,7 +56,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>

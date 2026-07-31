@@ -39,7 +39,7 @@
 <p><strong>Читать:</strong>
 - <a href="https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository">Pro Git: Основы</a> — три состояния, SHA коммитов
 - <a href="https://www.conventionalcommits.org/ru/">Conventional Commits</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>В <code>learning-log</code> выполни <code>git log --oneline -15</code> — опиши в <code>week-04/REFLECTION.md</code> паттерн своих сообщений</li>
 <li>Исправь 2 слабых commit message через <code>git rebase -i HEAD~3</code> <strong>только если ещё не пушил</strong>; иначе — лучше не переписывать историю</li>
@@ -51,7 +51,7 @@
 - [ ] Репозиторий инициализирован, секреты не в git
 - [ ] Минимум 3 коммита с понятными сообщениями
 - [ ] <code>git status</code> чист после коммита</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>В <code>learning-log</code> выполни <code>git log --oneline -15</code> — опиши в <code>week-04/REFLECTION.md</code> паттерн своих сообщений</li>
 <li>Исправь 2 слабых commit message через <code>git rebase -i HEAD~3</code> <strong>только если ещё не пушил</strong>; иначе — лучше не переписывать историю</li>
@@ -60,7 +60,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
@@ -83,7 +83,7 @@
 <p><strong>Ключевая мысль:</strong> ветка — дешёвый черновик; merge — слияние черновика с основной линией.</p>
 <p><strong>Читать:</strong>
 - <a href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">Pro Git: Ветвление</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Создай ветку <code>feature/dark-theme</code>, добавь тёмную тему</li>
 <li>Вернись на <code>main</code>, измени тот же файл — спровоцируй конфликт</li>
@@ -97,7 +97,7 @@
 - [ ] Конфликт разрешён осознанно, не удалён «всё чужое»
 - [ ] История показывает merge (или осознанный ff)
 - [ ] Понимаю разницу между branch и commit</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Создай ветку <code>feature/dark-theme</code>, добавь тёмную тему</li>
 <li>Вернись на <code>main</code>, измени тот же файл — спровоцируй конфликт</li>
@@ -107,7 +107,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -136,7 +136,7 @@
 <p><strong>Ключевая мысль:</strong> GitHub = remote + социальный слой; PR — разговор о коде до попадания в main.</p>
 <p><strong>Читать:</strong>
 - <a href="https://docs.github.com/ru/get-started/start-your-journey/hello-world">GitHub: Hello World</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Создай репозиторий на GitHub (public), подключи remote</li>
 <li>Запушь <code>main</code>, создай ветку <code>feature/readme</code>, добавь README.md</li>
@@ -150,7 +150,7 @@
 - [ ] Код на GitHub, локальный и remote синхронизированы
 - [ ] Минимум 1 PR с описанием
 - [ ] README содержит название, описание, как запустить</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Создай репозиторий на GitHub (public), подключи remote</li>
 <li>Запушь <code>main</code>, создай ветку <code>feature/readme</code>, добавь README.md</li>
@@ -160,7 +160,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>
@@ -183,7 +183,7 @@
 <p><strong>Ключевая мысль:</strong> Styles — «кто перебил?», Computed — «что в итоге?»; overlay — «как устроена сетка?».</p>
 <p><strong>Читать:</strong>
 - <a href="https://developer.chrome.com/docs/devtools/overview">Chrome DevTools: Overview</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Открой лендинг, исследуй box model каждой секции в Elements</li>
 <li>Включи flex/grid overlay для layout-контейнеров</li>
@@ -197,7 +197,7 @@
 - [ ] Умею найти источник стиля в панели Styles (файл и строка)
 - [ ] Использовал flex/grid overlay
 - [ ] Знаю разницу Computed vs Styles</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Открой лендинг, исследуй box model каждой секции в Elements</li>
 <li>Включи flex/grid overlay для layout-контейнеров</li>
@@ -207,7 +207,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -231,7 +231,7 @@
 <p><strong>Читать:</strong>
 - <a href="https://developer.chrome.com/docs/devtools/network">Chrome DevTools: Network</a>
 - <a href="https://developer.chrome.com/docs/devtools/performance">Chrome DevTools: Performance</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Перезагрузи страницу с Network open — проанализируй waterfall</li>
 <li>Найди самый тяжёлый ресурс, оптимизируй (сжатие изображения)</li>
@@ -245,7 +245,7 @@
 - [ ] Понимаю статусы 200, 304, 404 в Network
 - [ ] Lighthouse score улучшен после правок
 - [ ] Умею ставить breakpoint и читать call stack</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Перезагрузи страницу с Network open — проанализируй waterfall</li>
 <li>Найди самый тяжёлый ресурс, оптимизируй (сжатие изображения)</li>
@@ -255,7 +255,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -279,7 +279,7 @@
 <p><strong>Читать:</strong>
 - <a href="https://www.conventionalcommits.org/ru/">Conventional Commits</a>
 - <a href="https://docs.github.com/ru/get-started/using-github/github-flow">GitHub Flow</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Переименуй последние коммиты сообщениями в стиле Conventional Commits (если нужно — <code>git rebase</code> осторожно или новые коммиты)</li>
 <li>Настрой Prettier в VS Code, отформатируй CSS/HTML</li>
@@ -293,7 +293,7 @@
 - [ ] Коммиты следуют единому стилю сообщений
 - [ ] Prettier настроен и применён
 - [ ] Есть PR template или чеклист в заметках</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Переименуй последние коммиты сообщениями в стиле Conventional Commits (если нужно — <code>git rebase</code> осторожно или новые коммиты)</li>
 <li>Настрой Prettier в VS Code, отформатируй CSS/HTML</li>
@@ -303,7 +303,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
@@ -327,7 +327,7 @@
 <p><strong>Читать:</strong>
 - <a href="https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things">Pro Git: Отмена изменений</a>
 - <a href="https://docs.github.com/ru/pages">GitHub Pages</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Клонируй свой репозиторий в новую папку — проверь, что всё работает</li>
 <li>Найди автора строки через <code>git blame</code> для одного CSS-файла</li>
@@ -341,7 +341,7 @@
 - [ ] Сайт доступен по публичному URL
 - [ ] Clone → open работает без ручных правок
 - [ ] CONTRIBUTING.md или раздел в README описывает workflow</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Клонируй свой репозиторий в новую папку — проверь, что всё работает</li>
 <li>Найди автора строки через <code>git blame</code> для одного CSS-файла</li>
@@ -351,7 +351,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>

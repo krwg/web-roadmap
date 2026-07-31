@@ -37,7 +37,7 @@
 <p><strong>Ключевая мысль:</strong> объект — словарь по ссылке; spread копирует поверхностно, не глубоко.</p>
 <p><strong>Читать:</strong>
 - <a href="https://learn.javascript.ru/object">learn.javascript.ru: Объекты</a> — литералы, свойства, методы</p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Объект <code>user</code> с полями name, email, age — чтение и изменение</li>
 <li>Метод <code>user.greet()</code> — function внутри объекта</li>
@@ -51,7 +51,7 @@
 - [ ] Объект с минимум одним методом
 - [ ] Использованы keys/values/entries
 - [ ] Понимаю shallow vs deep copy (на уровне концепции)</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Объект <code>user</code> с полями name, email, age — чтение и изменение</li>
 <li>Метод <code>user.greet()</code> — function внутри объекта</li>
@@ -61,7 +61,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
 <h3>Git</h3>
 <ul>
@@ -84,7 +84,7 @@
 <p><strong>Ключевая мысль:</strong> spread для merge и иммутабельного update; rest для «всё кроме».</p>
 <p><strong>Читать:</strong>
 - <a href="https://learn.javascript.ru/destructuring-assignment">learn.javascript.ru: Деструктурирующее присваивание</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Функция <code>printUser({name, email, role = 'user'})</code> — деструктуризация параметров</li>
 <li>Объедини настройки: <code>const config = {...defaults, ...userConfig}</code></li>
@@ -98,7 +98,7 @@
 - [ ] Деструктуризация в параметрах функций
 - [ ] Spread для иммутабельного обновления объекта
 - [ ] Rest для исключения полей</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Функция <code>printUser({name, email, role = 'user'})</code> — деструктуризация параметров</li>
 <li>Объедини настройки: <code>const config = {...defaults, ...userConfig}</code></li>
@@ -108,7 +108,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -138,7 +138,7 @@
 <p><strong>Читать:</strong>
 - <a href="https://learn.javascript.ru/dom-nodes">learn.javascript.ru: DOM-дерево</a>
 - <a href="https://developer.mozilla.org/ru/docs/Web/API/Document_Object_Model">MDN DOM</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Подключи JS к лендингу, выбери заголовок и измени <code>textContent</code></li>
 <li>По клику на кнопку меняй класс <code>theme-dark</code> на <code>document.documentElement</code></li>
@@ -152,7 +152,7 @@
 - [ ] Используется <code>querySelector</code>, не устаревшие методы без причины
 - [ ] <code>textContent</code> для текста, не <code>innerHTML</code> с пользовательскими данными
 - [ ] Элементы создаются через DOM API, не строками HTML</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Подключи JS к лендингу, выбери заголовок и измени <code>textContent</code></li>
 <li>По клику на кнопку меняй класс <code>theme-dark</code> на <code>document.documentElement</code></li>
@@ -162,7 +162,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
 <h3>Git</h3>
 <ul>
@@ -185,7 +185,7 @@
 <p><strong>Ключевая мысль:</strong> bubbling — основа делегирования; <code>preventDefault</code> ≠ <code>stopPropagation</code>.</p>
 <p><strong>Читать:</strong>
 - <a href="https://learn.javascript.ru/introduction-browser-events">learn.javascript.ru: Введение в события</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Кнопка «Наверх» — плавный скролл (пока <code>window.scrollTo</code>, событие click)</li>
 <li>Форма: <code>submit</code> → <code>preventDefault()</code>, вывод данных в Console</li>
@@ -199,7 +199,7 @@
 - [ ] <code>preventDefault</code> на форме предотвращает перезагрузку
 - [ ] Event delegation на списке
 - [ ] Именованные handler-функции для removeEventListener</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Кнопка «Наверх» — плавный скролл (пока <code>window.scrollTo</code>, событие click)</li>
 <li>Форма: <code>submit</code> → <code>preventDefault()</code>, вывод данных в Console</li>
@@ -209,7 +209,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
@@ -232,7 +232,7 @@
 <p><strong>Ключевая мысль:</strong> UI = состояние + DOM; ARIA синхронизирует визуал со скринридером.</p>
 <p><strong>Читать:</strong>
 - <a href="https://learn.javascript.ru/default-browser-action">learn.javascript.ru: Действия браузера</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Аккордеон: 3 секции, открыта одна; клик переключает</li>
 <li>Табы: панели контента показываются по активному табу</li>
@@ -246,7 +246,7 @@
 - [ ] Аккордеон и табы работают без библиотек
 - [ ] Модалка закрывается по Escape и клику вне
 - [ ] ARIA-атрибуты на интерактивных элементах</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Аккордеон: 3 секции, открыта одна; клик переключает</li>
 <li>Табы: панели контента показываются по активному табу</li>
@@ -256,7 +256,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
 <h3>Git</h3>
 <ul>
@@ -279,7 +279,7 @@
 <p><strong>Ключевая мысль:</strong> <code>input</code> для live-валидации; ошибки у поля, не в alert; <code>setCustomValidity</code> для своих правил.</p>
 <p><strong>Читать:</strong>
 - <a href="https://learn.javascript.ru/forms-controls">learn.javascript.ru: Формы, элементы управления</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Валидация формы регистрации перед отправкой</li>
 <li>Live-валидация email при <code>input</code></li>
@@ -293,7 +293,7 @@
 - [ ] HTML5 + JS валидация работают вместе
 - [ ] Ошибки понятны и привязаны к полям
 - [ ] Форма не сабмитится при невалидных данных</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Валидация формы регистрации перед отправкой</li>
 <li>Live-валидация email при <code>input</code></li>
@@ -303,7 +303,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <ul>
@@ -326,7 +326,7 @@
 <p><strong>Ключевая мысль:</strong> data отдельно от DOM; <code>render*</code> — мост; fragment — batch insert без лишних reflow.</p>
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/ru/docs/Web/API/DocumentFragment">MDN: DocumentFragment</a></p>
-<h3>Практика (полный трек)</h3>
+<section class="practice-track practice-full" data-track="full"><h3>Практика (полный трек)</h3>
 <ol>
 <li>Оживи лендинг: тёмная тема, мобильное меню, плавный скролл к секциям</li>
 <li>Фильтр портфолио: кнопки категорий скрывают/показывают карточки</li>
@@ -340,7 +340,7 @@
 - [ ] Минимум 5 интерактивных фич
 - [ ] Код структурирован: utils, dom, app
 - [ ] Нет ошибок в Console при типичном сценарии</p>
-<h3>Практика (лайт / MVP)</h3>
+</section><section class="practice-track practice-lite" data-track="lite"><h3>Практика (лайт / MVP)</h3>
 <ol>
 <li>Оживи лендинг: тёмная тема, мобильное меню, плавный скролл к секциям</li>
 <li>Фильтр портфолио: кнопки категорий скрывают/показывают карточки</li>
@@ -350,7 +350,7 @@
 <blockquote>
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
-<h3>Если застрял</h3>
+</section><h3>Если застрял</h3>
 <p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
 <h3>Git</h3>
 <ul>
