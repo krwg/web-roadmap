@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 119 (Вс): Ревью SQL и подготовка к ORM · SQL · web-roadmap</title>
+  <meta name="description" content="День 119 (Вс): Ревью SQL и подготовка к ORM — неделя 17.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-17--week-17-day-119">
+  <meta http-equiv="refresh" content="0;url=../#week-17--week-17-day-119">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-17--week-17-day-119">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-17-day-119">День 119 (Вс): Ревью SQL и подготовка к ORM</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~1ч теория · ~2.5ч практика · ~10м Git · ~40м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library Database</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Ревью SQL закрепляет фундамент перед ORM на неделе 18. ACID: Atomicity (всё или ничего), Consistency (инварианты БД), Isolation (параллельные транзакции не мешают), Durability (commit переживает сбой). Транзакции — не абстракция, а гарантия при переводе денег или выдаче книги.</p>
+<p>Views — сохранённые запросы; stored procedures — логика внутри БД (обзор). Isolation levels (read committed, serializable) влияют на фантомные чтения — на junior достаточно знать, что они существуют. SQL Style Guide делает запросы читаемыми для команды.</p>
+<p>ORM (SQLAlchemy) маппит таблицы на классы Python: меньше boilerplate SQL, но риск N+1 и «магических» запросов. Понимание raw SQL остаётся обязательным для отладки и оптимизации. Установи <code>sqlalchemy fastapi uvicorn</code> в venv — старт недели 18.</p>
+<p>Ментальная модель ACID — это четыре независимых обещания, которые транзакция даёт тебе как разработчику, и их стоит держать в голове как чек-лист перед любой операцией с деньгами или запасами: Atomicity — операция либо выполнится целиком, либо не выполнится вовсе, без промежуточного «наполовину»; Consistency — база данных переходит из одного валидного состояния в другое, не нарушая constraints; Isolation — параллельные транзакции не видят «грязных» промежуточных изменений друг друга; Durability — после commit данные переживут даже сбой питания.</p>
+<p>Это не абстракция ради экзамена: <code>session.commit()</code> / <code>session.rollback()</code> в SQLAlchemy (неделя 18) и <code>pool.query('COMMIT')</code> в Express (неделя 19) опираются ровно на эти же гарантии — ORM не отменяет необходимости понимать ACID, а лишь делает транзакционную границу менее заметной в коде, из-за чего баги «забыл закоммитить» или «два запроса пересеклись» стали чаще, а не реже.</p>
+<p>Частое заблуждение выпускников этой недели — думать, что после перехода на ORM сырой SQL больше не понадобится. На практике чтение <code>EXPLAIN</code>-плана, отладка неожиданно медленного ORM-запроса или написание сложной агрегации, которую ORM выразить неудобно, — всё это требует свободного владения SQL, которое ты наработал за эту неделю. Финализация <code>queries.sql</code> с 15+ запросами в практике дня — это не формальность для проекта, а последняя проверка того, что фундамент действительно прочный перед тем, как он будет частично скрыт слоем абстракции. Views и stored procedures стоит знать хотя бы на уровне «это существует и для чего»: view — это именованный сохранённый запрос, который можно использовать как обычную таблицу для чтения, а stored procedure переносит часть логики внутрь самой СУБД — оба инструмента встречаются в legacy-системах, и способность их прочитать пригодится раньше, чем способность написать с нуля.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://sqlbolt.com/">SQLBolt</a></li>
+<li><a href="https://www.postgresql.org/docs/current/tutorial-transactions.html">ACID (PostgreSQL)</a></li>
+<li><a href="https://www.sqlstyle.guide/">SQL Style Guide</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> SQL — база; ORM — удобство поверх, не замена понимания JOIN и индексов.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Пройди 15 уроков SQLBolt без подсказок — отметь слабые темы</li>
+<li>Напиши 5 сложных запросов: JOIN + агрегат + HAVING + ORDER BY</li>
+<li>Ответь письменно: «INNER vs LEFT JOIN» с примерами из библиотеки</li>
+<li>Запрос «кто не вернул книгу» — просроченные loans</li>
+<li>Установи <code>pip install sqlalchemy fastapi uvicorn</code> в venv</li>
+<li>Финализируй <code>queries.sql</code> — 15+ запросов для проекта</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] 5 сложных запросов с JOIN и агрегатами
+- [ ] Ответы на «INNER vs LEFT JOIN» письменно
+- [ ] venv готов для недели 18</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Пройди 15 уроков SQLBolt без подсказок — отметь слабые темы</li>
+<li>Напиши 5 сложных запросов: JOIN + агрегат + HAVING + ORDER BY</li>
+<li>Ответь письменно: «INNER vs LEFT JOIN» с примерами из библиотеки</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-17/</code> → <code>git commit -m "week 17 day 119: SQL review and 15 queries"</code></li>
+<li>Поставь тег: <code>git tag week-17-done</code></li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-17--week-17-day-119');</script>
+</body>
+</html>

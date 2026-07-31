@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 130 (Чт): Middleware, валидация, ошибки · Node.js · web-roadmap</title>
+  <meta name="description" content="День 130 (Чт): Middleware, валидация, ошибки — неделя 19.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-19--week-19-day-130">
+  <meta http-equiv="refresh" content="0;url=../#week-19--week-19-day-130">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-19--week-19-day-130">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-19-day-130">День 130 (Чт): Middleware, валидация, ошибки</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Express Notes API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Middleware в Express — функции <code>(req, res, next)</code> в цепочке. Порядок критичен: logger → <code>express.json()</code> → routes → 404 handler → error middleware (4 аргумента: <code>err, req, res, next</code>). <code>next()</code> передаёт управление дальше; <code>next(err)</code> — в error handler.</p>
+<p>Zod валидирует body с TypeScript inference: <code>title</code> min 1 символ, <code>body</code> optional. При ошибке — 400 с <code>zodError.flatten()</code>. Centralized error handler возвращает JSON <code>{ error: { code, message } }</code> — единый контракт для клиента. morgan логирует HTTP-запросы в dev.</p>
+<p>404 handler для неизвестных routes — последний middleware перед error handler. Custom logger с duration (Date.now до/после) дополняет morgan. Error middleware без 4 параметров Express не распознает — не вызовется.</p>
+<p>Ментальная модель порядка middleware — фильтры кофемашины: если поставить фильтр валидации до того, как вода (тело запроса) прошла через парсер (<code>express.json()</code>), фильтр получит пустоту вместо данных и либо пропустит мусор, либо сломается непредсказуемо. Порядок регистрации middleware в Express — это не стилистическое предпочтение, а часть логики приложения: <code>express.json()</code> обязан идти раньше любого middleware, читающего <code>req.body</code>.</p>
+<p>Формат централизованной ошибки <code>{ error: { code, message } }</code>, который ты вводишь сегодня, — не изобретение с нуля: это прямая параллель <code>HTTPException</code> + <code>response_model</code> из FastAPI на прошлой неделе. Оба стека решают одну и ту же задачу — дать фронтенду предсказуемый, единообразный контракт ошибок независимо от того, какой именно endpoint и какая причина сбоя. Сравнение этих двух подходов в конце недели наглядно покажет, что архитектурная идея важнее конкретного синтаксиса фреймворка.</p>
+<p>Частое и коварное заблуждение — думать, что любую функцию с <code>(req, res, next)</code> можно превратить в обработчик ошибок, если просто вызвать её после остальных. Express распознаёт error-middleware исключительно по количеству аргументов — ровно четыре: <code>(err, req, res, next)</code>. Функция с тремя параметрами, даже поставленная в конце цепочки, никогда не будет вызвана как error handler — это тихая, трудноуловимая ошибка, потому что сам код не падает, просто ошибки остаются необработанными. Вторая ошибка — забыть вызвать <code>next(err)</code> в обычном middleware при перехвате исключения, из-за чего запрос «зависает» без ответа клиенту. <code>morgan</code> в режиме <code>'dev'</code> дополняет ручной логгер: он выводит метод, путь, статус-код и время ответа компактной цветной строкой, что удобно при локальной разработке, тогда как <code>'combined'</code>-формат ближе к тому, что нужно собирать в продакшен-логах.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://expressjs.com/en/guide/using-middleware.html">Writing middleware</a></li>
+<li><a href="https://zod.dev/">Zod</a></li>
+<li><a href="https://github.com/expressjs/morgan">morgan</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> порядок middleware; Zod на входе, error handler на выходе цепочки.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Logger middleware: method, url, duration (Date.now до/после)</li>
+<li>Zod schema для Note: <code>title</code> min 1, <code>body</code> optional string</li>
+<li>Centralized error handler — JSON <code>{ error: { code, message } }</code></li>
+<li>400 при validation error с деталями Zod (<code>zodError.flatten()</code>)</li>
+<li>404 handler для неизвестных routes (<code>app.use((req,res) =&gt; ...)</code>)</li>
+<li>morgan <code>'dev'</code> format в development</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Все ошибки проходят через error middleware
+- [ ] Zod на POST и PUT
+- [ ] morgan или custom logger</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Logger middleware: method, url, duration (Date.now до/после)</li>
+<li>Zod schema для Note: <code>title</code> min 1, <code>body</code> optional string</li>
+<li>Centralized error handler — JSON <code>{ error: { code, message } }</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-19/</code> → <code>git commit -m "week 19 day 130: Zod validation and error middleware"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Забытый <code>next(err)</code> — зависший request</li>
+<li>Error middleware без 4 параметров — не вызывается</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-19--week-19-day-130');</script>
+</body>
+</html>

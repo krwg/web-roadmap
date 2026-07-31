@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 124 (Пт): Полный REST API «Библиотека» · FastAPI · web-roadmap</title>
+  <meta name="description" content="День 124 (Пт): Полный REST API «Библиотека» — неделя 18.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-18--week-18-day-124">
+  <meta http-equiv="refresh" content="0;url=../#week-18--week-18-day-124">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-18--week-18-day-124">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-18-day-124">День 124 (Пт): Полный REST API «Библиотека»</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library REST API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>REST — соглашения, не протокол. URL — существительные (<code>/books</code>), HTTP verbs — действия (GET читать, POST создать, PUT/PATCH обновить, DELETE удалить). GET, PUT, DELETE идемпотентны: повторный запрос даёт тот же эффект. POST — нет (каждый создаёт новый ресурс).</p>
+<p><code>APIRouter</code> модульно группирует endpoints: <code>routers/authors.py</code>, prefix <code>/api/v1</code>, tags для Swagger. Пагинация в едином формате: <code>{ items, total, page, size }</code>. Фильтрация через query: <code>?status=active&amp;search=python</code>. Версионирование <code>/api/v1</code> защищает фронтенд от breaking changes.</p>
+<p>Бизнес-правила в API: нельзя выдать уже выданную книгу → 409 Conflict, не 500. Глаголы в URL (<code>/getAuthors</code>) — антипаттерн. Отсутствие валидации FK — 500 вместо понятного 404.</p>
+<p>Ментальная модель REST: URL — это витрина магазина с существительными на ценниках (<code>/books</code>, <code>/authors</code>), а HTTP-глагол — это то, что ты делаешь с товаром на этой витрине (посмотреть — GET, положить в корзину — POST, поменять — PUT/PATCH, убрать — DELETE). Действие никогда не должно быть зашито в само название полки; если тянет написать <code>/getBooks</code> или <code>/createAuthor</code>, это сигнал, что мышление соскользнуло с ресурсов на процедуры.</p>
+<p>Структура <code>routers/authors.py</code>, <code>books.py</code>, <code>loans.py</code> с общим префиксом <code>/api/v1</code>, которую ты собираешь сегодня, — прямой аналог того, что ты построишь в Express на неделе 19 через <code>routes/</code>, <code>controllers/</code>, <code>services/</code>: разные языки, одна и та же архитектурная идея модульного разделения по ресурсам. Сравнение этих двух реализаций в конце месяца станет наглядным доказательством, что архитектурное мышление важнее конкретного фреймворка.</p>
+<p>Частое заблуждение — трактовать любое нарушение бизнес-правила (книга уже выдана, лимит займов исчерпан) как ошибку сервера и возвращать 500. На деле это ожидаемая, предсказуемая ситуация в доменной логике, и правильный ответ — 409 Conflict с понятным сообщением, которое фронтенд может показать пользователю осмысленно. Вторая распространённая ошибка — не проверять существование внешнего ключа перед вставкой (например, <code>author_id</code>, которого нет), из-за чего клиент получает малопонятную 500-ю ошибку от БД вместо контролируемого 404 или 400 от приложения. Версионирование через префикс <code>/api/v1</code> — ещё одна деталь, которую легко недооценить: она защищает уже подключившийся фронтенд от breaking changes, когда через несколько месяцев понадобится изменить форму ответа — старые клиенты продолжат работать с <code>/api/v1</code>, пока новые постепенно переходят на <code>/api/v2</code>.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://fastapi.tiangolo.com/tutorial/bigger-applications/">FastAPI Bigger Applications</a></li>
+<li><a href="https://restfulapi.net/">REST API Tutorial</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods">HTTP Methods</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> REST = ресурсы + HTTP semantics; 409 для нарушения бизнес-правил.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Роутеры: <code>routers/authors.py</code>, <code>books.py</code>, <code>loans.py</code></li>
+<li>CRUD для books и loans с Pydantic validation</li>
+<li><code>POST /loans</code> — проверка: книга доступна? иначе 409</li>
+<li><code>GET /books?author_id=1&amp;search=python</code> — фильтрация</li>
+<li>Подключи роутеры в <code>main.py</code> с prefix <code>/api/v1</code></li>
+<li>Обнови Swagger — все endpoints сгруппированы по тегам</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] APIRouter + prefix <code>/api/v1</code>
+- [ ] Бизнес-правило: нельзя выдать уже выданную книгу → 409
+- [ ] Swagger актуален</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Роутеры: <code>routers/authors.py</code>, <code>books.py</code>, <code>loans.py</code></li>
+<li>CRUD для books и loans с Pydantic validation</li>
+<li><code>POST /loans</code> — проверка: книга доступна? иначе 409</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-18/</code> → <code>git commit -m "week 18 day 124: full library REST routers"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Глаголы в URL: <code>/getAuthors</code> — не REST</li>
+<li>Отсутствие валидации foreign key — 500 вместо 404</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-18--week-18-day-124');</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 145 (Пт): docker-compose — multi-service · Docker · web-roadmap</title>
+  <meta name="description" content="День 145 (Пт): docker-compose — multi-service — неделя 21.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-21--week-21-day-145">
+  <meta http-equiv="refresh" content="0;url=../#week-21--week-21-day-145">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-21--week-21-day-145">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-21-day-145">День 145 (Пт): docker-compose — multi-service</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>docker-compose оркестрирует multi-service приложение одним файлом. Services: <code>db</code>, <code>backend</code>, <code>frontend</code>; networks связывают их; volumes persist data. <code>depends_on</code> задаёт порядок старта, но не готовность БД — добавь healthcheck <code>pg_isready</code> и <code>condition: service_healthy</code>.</p>
+<p><code>DATABASE_URL=postgresql://user:pass@db:5432/tasks</code> — hostname <code>db</code> из имени service. <code>docker compose up --build</code> — одна команда для всего стека. <code>docker compose down -v</code> удаляет volumes — осторожно, потеряешь данные. Seed в entrypoint или init service.</p>
+<p>Smoke test: open frontend → login → create task → refresh → persists. Healthchecks на db и <code>/api/health</code> на backend — обязательны для надёжного старта. Эта структура monorepo — прямой задел для DevHub capstone.</p>
+<p>Ментальная модель: docker-compose.yml — это партитура для оркестра из нескольких контейнеров, где каждый service — отдельный музыкант, а networks и volumes — то, что позволяет им играть вместе и не терять данные между выступлениями. <code>depends_on</code> говорит Docker только порядок запуска процессов, а не готовность приложения внутри — Postgres-контейнер стартует за миллисекунды, но самому PostgreSQL нужны секунды на инициализацию, поэтому без healthcheck backend может упасть с connection refused при первом старте.</p>
+<p>Конкретный пример: <code>condition: service_healthy</code> вместе с <code>pg_isready</code> в healthcheck заставляет Docker дождаться реальной готовности БД принимать соединения, а не просто факта, что контейнер запущен — это разница между «процесс существует» и «процесс готов работать», критичная для надёжного <code>docker compose up</code> без ручных перезапусков. Частое заблуждение — «<code>docker compose down</code> безопасен всегда» — но флаг <code>-v</code> удаляет volumes вместе с данными, и разработчики теряли демо-данные перед показом проекта именно так. Инфраструктура из трёх сервисов с healthcheck, которую ты собираешь сегодня, — это практически готовый <code>docker-compose.yml</code> для DevHub capstone (неделя 22, день 152), где добавится только auth layer и production-нюансы.</p>
+<p>Для продакшена важно понимать разницу между healthcheck и readiness: даже здоровый (<code>healthy</code>) контейнер может быть временно не готов принимать нагрузку (например, прогревает кеш) — в managed-оркестраторах вроде Kubernetes это два разных сигнала (liveness/readiness probes), но идея та же самая, что и в compose healthcheck: не отправляй трафик туда, где сервис формально жив, но фактически ещё не готов отвечать корректно. Эта идея пригодится и за пределами Docker — в любой системе с несколькими зависимыми сервисами.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.docker.com/compose/compose-file/">Compose file reference</a></li>
+<li><a href="https://docs.docker.com/compose/how-tos/startup-order/">depends_on with healthcheck</a></li>
+<li><a href="https://docs.docker.com/compose/reference/">docker compose CLI</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> compose + healthcheck + volumes = воспроизводимый full-stack локально.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>docker-compose.yml</code>:</li>
+<li><code>DATABASE_URL=postgresql://user:pass@db:5432/tasks</code> в backend env</li>
+<li><code>docker compose up --build</code> — всё стартует одной командой</li>
+<li>Seed script в backend entrypoint или отдельный <code>init</code> service</li>
+<li>Проверь smoke: open frontend → login → create task
+   - <code>db</code> (postgres:16 + volume <code>pgdata</code> + healthcheck)
+   - <code>backend</code> (build ./backend, ports 3000, depends_on db healthy)
+   - <code>frontend</code> (build ./frontend, ports 8080:80)</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Одна команда поднимает 3 сервиса
+- [ ] Данные PG в named volume <code>pgdata</code>
+- [ ] depends_on + healthcheck db</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>docker-compose.yml</code>:</li>
+<li><code>DATABASE_URL=postgresql://user:pass@db:5432/tasks</code> в backend env</li>
+<li><code>docker compose up --build</code> — всё стартует одной командой</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-21/</code> → <code>git commit -m "week 21 day 145: docker-compose three services"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Backend стартует до готовности PG — connection refused (healthcheck/retry)</li>
+<li><code>docker compose down -v</code> — удаляет данные (осторожно)</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-21--week-21-day-145');</script>
+</body>
+</html>

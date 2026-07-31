@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 138 (Пт): Тестирование frontend — Vitest · Auth &amp; tests · web-roadmap</title>
+  <meta name="description" content="День 138 (Пт): Тестирование frontend — Vitest — неделя 20.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-20--week-20-day-138">
+  <meta http-equiv="refresh" content="0;url=../#week-20--week-20-day-138">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-20--week-20-day-138">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-20-day-138">День 138 (Пт): Тестирование frontend — Vitest</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Secure Notes</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Vitest — test runner, нативный для Vite-проектов, API совместим с Jest. React Testing Library (RTL) тестирует поведение с точки зрения пользователя: <code>getByRole</code>, <code>getByLabelText</code>, не <code>getByClassName</code>. <code>userEvent</code> симулирует реальные клики и ввод с клавиатуры.</p>
+<p>Mock <code>fetch</code> через <code>vi.fn()</code> или <code>global.fetch = vi.fn().mockResolvedValue(...)</code> изолирует компоненты от API. Тестируй: Login submit шлёт credentials, ProtectedRoute редиректит без token, NotesList рендерит mock data, login 401 показывает ошибку. <code>vi.mock()</code> для модулей.</p>
+<p>≥ 8 component tests. <code>vitest run</code> в CI. Тестирование internal state вместо visible behavior — хрупкие тесты. Cleanup mocks в <code>afterEach</code> — иначе тесты влияют друг на друга.</p>
+<p>Ментальная модель React Testing Library — «тестируй как пользователь, а не как разработчик»: пользователь не знает про internal state или имена CSS-классов, он видит кнопки, лейблы и текст на экране. Поэтому <code>getByRole</code> и <code>getByLabelText</code> устойчивее к рефакторингу компонента, чем <code>getByClassName</code> или проверка state напрямую. Для junior frontend-позиции это стандарт индустрии — большинство современных React-команд требуют RTL-подход в тестах.</p>
+<p>Конкретный пример: если ты тестируешь <code>wrapper.state.isLoggedIn === true</code> вместо того, что видно на экране («Welcome» текст появился), рефакторинг компонента с useState на useReducer сломает тест, хотя поведение для пользователя не изменилось — это и есть хрупкий тест. Частое заблуждение — «чем больше моков, тем лучше изолирован тест» — избыточный mocking скрывает реальные баги интеграции; мокай только внешние границы (fetch, роутер), а не внутреннюю логику компонента. Компонентные тесты Login/ProtectedRoute/NotesList, которые ты пишешь сегодня, — прямой шаблон для тестов TaskList и NoteEditor в DevHub capstone (неделя 22, день 153), где потребуется уже ≥12 таких тестов.</p>
+<p>Для продакшена связка Vitest + RTL особенно ценна на команде из нескольких frontend-разработчиков: когда кто-то меняет структуру JSX компонента ради рефакторинга, тесты, написанные через <code>getByRole</code>, продолжают проходить, а тесты через <code>querySelector('.btn-submit')</code> ломаются от простого переименования CSS-класса — разница напрямую влияет на то, сколько времени команда тратит на «починку зелёных тестов» после каждого рефакторинга вместо реальной разработки функциональности. Именно поэтому RTL стала де-факто стандартом тестирования React-компонентов в индустрии, а не просто одной из многих альтернатив — это первое, что спросят про фронтенд-тестирование на техническом собеседовании junior-разработчика.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://vitest.dev/guide/">Vitest</a></li>
+<li><a href="https://testing-library.com/docs/react-testing-library/intro/">React Testing Library</a></li>
+<li><a href="https://testing-library.com/docs/user-event/intro/">userEvent</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> RTL — «как пользователь видит»; mock fetch, не implementation details.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom @testing-library/user-event</code></li>
+<li>Тест: Login form — submit вызывает API с email/password</li>
+<li>Тест: Protected route redirect на <code>/login</code> без token</li>
+<li>Mock API: register success, login 401 показывает ошибку</li>
+<li>Тест NotesList — рендерит заметки из mock response</li>
+<li><code>npm test</code> / <code>vitest run</code> в package.json scripts</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] <code>vitest run</code> проходит
+- [ ] Тесты ищут по role/label, не по className
+- [ ] ≥ 8 unit/component тестов</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom @testing-library/user-event</code></li>
+<li>Тест: Login form — submit вызывает API с email/password</li>
+<li>Тест: Protected route redirect на <code>/login</code> без token</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-20/</code> → <code>git commit -m "week 20 day 138: Vitest auth and notes components"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Тестирование state вместо behavior — хрупкие тесты</li>
+<li>Забытый mock cleanup — тесты влияют друг на друга</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-20--week-20-day-138');</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 94 (Ср): Tasks — CRUD и фильтрация · Frontend SPA · web-roadmap</title>
+  <meta name="description" content="День 94 (Ср): Tasks — CRUD и фильтрация — неделя 14.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-14--week-14-day-94">
+  <meta http-equiv="refresh" content="0;url=../#week-14--week-14-day-94">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-14--week-14-day-94">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-14-day-94">День 94 (Ср): Tasks — CRUD и фильтрация</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Страница Tasks — сердце Dashboard: здесь проверяется, насколько чисто организован state. Custom hook <code>useTasks</code> становится единственным источником правды: и Dashboard, и <code>/tasks</code> читают одни данные через один hook (или Context-обёртку над ним). Дублирование логики в двух страницах — прямой путь к багам.</p>
+<p>CRUD в React всегда иммутабелен: <code>setTasks(prev =&gt; [...prev, newTask])</code>, toggle через <code>map</code>, delete через <code>filter</code>. Фильтры и сортировка — derived state от <code>tasks</code> + <code>filter</code> + <code>sortBy</code>, а не отдельные копии списка. Стабильный <code>key={task.id}</code> обязателен: <code>key={index}</code> ломает фокус и анимации при удалении.</p>
+<p>Расширенная модель (приоритет, дедлайн) учит проектировать типы заранее. Просроченные задачи — вычисляемое свойство: <code>deadline &lt; today</code>. Поиск с debounce (hook из недели 13) снижает нагрузку при больших списках. Persist в <code>localStorage</code> через hook сохраняет данные между сессиями.</p>
+<p>Мысленная модель <code>useTasks</code>: это единственная «таблица данных» в приложении, а Dashboard и страница <code>/tasks</code> — просто разные «представления» (views) над одной и той же таблицей, как в базе данных. Ни одна страница не имеет своей копии задач — обе читают из одного hook (напрямую или через Context-обёртку), поэтому изменение в одном месте немедленно видно в другом без ручной синхронизации.</p>
+<p>Эта архитектура станет буквальным шаблоном для будущей интеграции с backend (недели 21–22): внутри <code>useTasks</code> вызовы <code>localStorage.setItem</code> заменятся на <code>fetch('/api/tasks', { method: 'POST' })</code>, а интерфейс хука — <code>{ tasks, addTask, toggleTask, removeTask }</code> — может остаться прежним. Компоненты, которые уже используют этот hook, не заметят разницы. Именно поэтому важно спроектировать интерфейс хука чисто уже сейчас, на учебном localStorage-варианте.</p>
+<p>Конкретный пример иммутабельного обновления: <code>toggleTask(id)</code> должен делать <code>setTasks(prev =&gt; prev.map(t =&gt; t.id === id ? { ...t, done: !t.done } : t))</code>, а не искать задачу и менять <code>task.done = true</code> напрямую. Прямая мутация не только не вызовет ререндер сама по себе, но и незаметно «протухнет» производный state на Dashboard (день 93), который вычисляет статистику из этого же массива — на первый взгляд обновление вроде бы произошло (объект действительно изменился в памяти), но React не увидит новой ссылки и не перерисует использующие эти данные компоненты.</p>
+<p>Частое заблуждение — относиться к <code>key={index}</code> как к безобидной формальности, лишь бы убрать warning в консоли. На самом деле при удалении задачи из середины списка все последующие элементы «сдвигают» свои индексы, и React из-за неправильного key может сопоставить старый DOM-узел не с той задачей — в лёгких случаях это просто визуальный глюк, а в более сложных, где <code>TodoItem</code> содержит <code>&lt;input&gt;</code> в режиме редактирования, это приводит к потере фокуса или к тому, что текст редактируется не в той строке, в которой видит пользователь. Стабильный <code>key={task.id}</code> из практики дня — не стилистическая рекомендация, а прямая защита от этого класса багов.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key">React — Keys</a></li>
+<li><a href="https://react.dev/learn/updating-arrays-in-state">React — Updating arrays in state</a></li>
+<li><a href="https://react.dev/learn/you-might-not-need-an-effect">You Might Not Need an Effect</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> один <code>useTasks</code> на всё приложение; фильтры — derived state, не копия списка.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Страница <code>/tasks</code>: форма добавления, список, фильтры (all/active/done)</li>
+<li>Редактирование inline или modal</li>
+<li>Приоритет (цветовая метка) и дедлайн</li>
+<li>Сортировка: по дате, приоритету</li>
+<li>Поиск по тексту задачи — filter + debounce</li>
+<li><code>useTasks</code> hook с persist в localStorage</li>
+<li>Подсветка просроченных задач (deadline &lt; today)</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] CRUD полностью работает, persist в localStorage</p>
+</li>
+<li>
+<p>[ ] Фильтры не ломают редактирование</p>
+</li>
+<li>
+<p>[ ] <code>key</code> стабильный (id), не index</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Страница <code>/tasks</code>: форма добавления, список, фильтры (all/active/done)</li>
+<li>Редактирование inline или modal</li>
+<li>Приоритет (цветовая метка) и дедлайн</li>
+<li>Сортировка: по дате, приоритету</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-14
+
+git add src/hooks/useTasks.ts src/pages/Tasks.tsx
+
+git commit -m &quot;week-14 day-94: useTasks, CRUD и фильтры&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p><code>key={index}</code> при удалении — скачки фокуса и баги</p>
+</li>
+<li>
+<p>Дублирование логики tasks в Dashboard и Tasks page</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-14--week-14-day-94');</script>
+</body>
+</html>

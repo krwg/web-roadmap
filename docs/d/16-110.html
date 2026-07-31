@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 110 (Пт): pathlib и работа с файловой системой · Python OOP · web-roadmap</title>
+  <meta name="description" content="День 110 (Пт): pathlib и работа с файловой системой — неделя 16.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-16--week-16-day-110">
+  <meta http-equiv="refresh" content="0;url=../#week-16--week-16-day-110">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-16--week-16-day-110">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-16-day-110">День 110 (Пт): pathlib и работа с файловой системой</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p><code>pathlib.Path</code> — объектный API для путей вместо конкатенации строк и <code>os.path.join</code>. Оператор <code>/</code> склеивает кроссплатформенно: <code>Path('data') / 'tasks.db'</code>. <code>read_text()</code>, <code>write_text()</code>, <code>exists()</code>, <code>glob('*.py')</code>, <code>rglob('**/*.py')</code> покрывают 90% задач с файловой системой.</p>
+<p><code>Path(__file__).parent</code> даёт каталог скрипта — надёжнее относительных путей от cwd, который меняется при запуске из другой папки. <code>shutil.copy</code>, <code>move</code>, <code>rmtree</code> — операции над деревом. Context manager <code>with path.open()</code> гарантирует закрытие файла.</p>
+<p>Скрипт <code>organize.py</code> сортирует файлы по расширению — практика обхода директорий. <code>--dry-run</code> показывает план без изменений — хорошая привычка для деструктивных операций. <code>PermissionError</code> на системных файлах логируй, не падай целиком.</p>
+<p>Ментальная модель: <code>Path</code> — не строка, а объект-значение, описывающий <em>местоположение</em>, а не сам файл. Операции над ним (<code>/</code>, <code>.parent</code>, <code>.suffix</code>) собирают новый путь, не трогая диск, пока явно не вызван <code>read_text()</code>, <code>write_text()</code> или <code>unlink()</code>. Это разделение «описать путь» и «выполнить операцию с файлом» снижает риск случайных побочных эффектов по сравнению со строковой конкатенацией <code>os.path.join</code>.</p>
+<p>Почему это пригодится дальше: путь к SQLite-файлу проекта этой недели (<code>data/tasks.db</code>), путь к статике в FastAPI-приложении недели 18, путь к файлу конфигурации в Express на неделе 19 — везде нужен надёжный якорь <code>Path(__file__).parent</code>, который не зависит от того, откуда запущен скрипт. Привычка мыслить путями как объектами, а не строками, переносится в любой стек, включая <code>pathlib</code>-аналоги в других языках.</p>
+<p>Частое заблуждение — думать, что <code>path.write_text()</code> или <code>shutil.move()</code> создадут промежуточные папки автоматически: если родительской директории нет, операция упадёт с <code>FileNotFoundError</code>, и нужно явно вызвать <code>path.parent.mkdir(parents=True, exist_ok=True)</code>. Ещё одна типичная ошибка — полагаться на относительные пути от текущей директории запуска (<code>Path('data/tasks.db')</code>), которая меняется в зависимости от того, откуда вызван скрипт — отсюда обязательность <code>--dry-run</code> в практике: он заставляет сначала увидеть реальные абсолютные пути, прежде чем что-то удалять или перемещать. Это тот же принцип «сначала покажи план, потом выполняй», который применяется в миграциях БД и деплой-скриптах: возможность безопасно посмотреть, что <em>произойдёт</em>, без реального изменения состояния — признак зрелого инструмента, а не только учебного скрипта. Отдельно стоит отметить <code>glob('*.py')</code> против <code>rglob('**/*.py')</code>: первый ищет только в текущей папке, второй — рекурсивно во всех вложенных, и путаница между ними — частая причина «скрипт ничего не находит», хотя нужные файлы явно есть где-то в дереве проекта.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.python.org/3/library/pathlib.html">pathlib</a></li>
+<li><a href="https://docs.python.org/3/library/shutil.html">shutil</a></li>
+<li><a href="https://docs.python.org/3/library/argparse.html">argparse</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> <code>Path(__file__).parent</code> — якорь для путей; pathlib вместо строк.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Скрипт <code>organize.py</code> — сортирует файлы по расширению в подпапки</li>
+<li>Рекурсивный поиск <code>*.py</code> через <code>rglob</code></li>
+<li>Подсчёт размера директории в MB</li>
+<li>Флаг <code>--dry-run</code>: показать план без перемещения</li>
+<li>Обработка <code>PermissionError</code> и логирование пропущенных файлов</li>
+<li>Подготовь <code>data/</code> для SQLite БД проекта недели</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Только pathlib, не <code>os.path</code> (кроме env vars)
+- [ ] Dry-run режим работает
+- [ ] Обработка PermissionError</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Скрипт <code>organize.py</code> — сортирует файлы по расширению в подпапки</li>
+<li>Рекурсивный поиск <code>*.py</code> через <code>rglob</code></li>
+<li>Подсчёт размера директории в MB</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-16/</code> → <code>git commit -m "week 16 day 110: pathlib organize script"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li><code>path.write_text()</code> перезаписывает без confirm — сделай backup</li>
+<li>Относительные пути зависят от cwd — используй <code>Path(__file__).parent</code></li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-16--week-16-day-110');</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 4 (Thu): События и состояние (useState) · React basics · web-roadmap</title>
+  <meta name="description" content="День 4 (Thu): События и состояние (useState) — неделя 11.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-11--week-11-day-4">
+  <meta http-equiv="refresh" content="0;url=../#week-11--week-11-day-4">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-11--week-11-day-4">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-11-day-4">День 4 (Thu): События и состояние (useState)</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Интерактивность в React начинается с <code>useState</code> — hook, дающий компоненту «память». <code>const [count, setCount] = useState(0)</code> возвращает текущее значение и функцию обновления. Вызов <code>setCount</code> планирует ререндер компонента с новым значением. State — это снимок на момент рендера: если вызвать <code>setCount(count + 1)</code> три раза подряд в одном обработчике, счётчик увеличится на 1, не на 3. Для последовательных обновлений используй функциональную форму: <code>setCount(c =&gt; c + 1)</code>.</p>
+<p>Обновления state должны быть <strong>иммутабельными</strong>: вместо <code>todos.push(item)</code> пиши <code>setTodos([...todos, item])</code>; вместо <code>todo.done = true</code> — <code>setTodos(todos.map(t =&gt; t.id === id ? { ...t, done: true } : t))</code>. React сравнивает ссылки — мутация не вызовет ререндер. Controlled input связывает <code>&lt;input value={text} onChange={e =&gt; setText(e.target.value)} /&gt;</code> — React state единственный источник правды для значения поля.</p>
+<p>Несколько <code>useState</code> предпочтительнее одного большого объекта state — проще обновлять отдельные поля. Derived values (счётчик активных задач) вычисляй из state при рендере, а не храни в отдельном <code>useState</code>. Batching: React объединяет несколько <code>setState</code> в одном обработчике события в один ререндер.</p>
+<p>Мысленная модель <code>useState</code> — стикер на холодильнике, который React перечитывает перед каждым рендером, а не переменная, которую можно менять на лету: вызов <code>setCount(5)</code> не меняет <code>count</code> немедленно в текущей функции — он говорит React «на следующем рендере напиши на стикере 5», и только тогда компонент увидит новое значение. Именно поэтому <code>console.log(count)</code> сразу после <code>setCount(count + 1)</code> в том же обработчике покажет старое значение — стикер ещё не переписан.</p>
+<p>Иммутабельные обновления state — не просто стилистическая рекомендация, а требование механизма React: reconciliation (день 3 этой недели) сравнивает <strong>ссылки</strong> на объекты между рендерами для оптимизации, и мутация <code>todo.done = true</code> не создаёт новую ссылку, поэтому React может решить, что ничего не изменилось, и пропустить ререндер, оставив UI визуально устаревшим при внутренне изменённых данных. Этот же принцип иммутабельности потребуется в Redux, Zustand и других state-менеджерах, которые встретятся дальше в карьере.</p>
+<p>Частое заблуждение — думать, что несколько вызовов <code>setState</code> в одном обработчике происходят мгновенно и последовательно: <code>setCount(count + 1); setCount(count + 1); setCount(count + 1)</code> при <code>count = 0</code> даст <code>count = 1</code>, а не <code>3</code>, потому что все три вызова читают одно и то же значение <code>count</code> из замыкания текущего рендера (см. неделю 9 про замыкания — прямое применение той темы). Чтобы получить <code>3</code>, нужна функциональная форма: <code>setCount(c =&gt; c + 1)</code> трижды — каждый вызов получает актуальное промежуточное значение. Это ключевая проверка в задании 1 практики («счётчик с useState»).</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/state-a-components-memory">react.dev: State: A Component's Memory</a>
+- <a href="https://react.dev/learn/adding-interactivity">react.dev: Adding Interactivity</a>
+- <a href="https://react.dev/learn/queueing-a-series-of-state-updates">react.dev: Queueing a Series of State Updates</a></p>
+<p><strong>Ключевая мысль:</strong> state обновляй иммутабельно; функциональный апдейт <code>setX(x =&gt; ...)</code> даёт актуальное значение при batching.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Счётчик в <code>Hero</code> с <code>useState</code></li>
+<li>Controlled input: <code>value</code> + <code>onChange</code> для поля новой задачи</li>
+<li>Добавление задачи в массив через immutable update</li>
+<li>Toggle done: <code>todos.map(t =&gt; t.id === id ? {...t, done: !t.done} : t)</code></li>
+<li>Удаление через <code>filter</code></li>
+<li>Счётчик «активных» задач — derived из state, не отдельный useState</li>
+<li>Добавь <code>createdAt: Date.now()</code> при создании задачи</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Все inputs controlled</p>
+</li>
+<li>
+<p>[ ] State обновляется иммутабельно</p>
+</li>
+<li>
+<p>[ ] Нет прямой мутации массива todos</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Счётчик в <code>Hero</code> с <code>useState</code></li>
+<li>Controlled input: <code>value</code> + <code>onChange</code> для поля новой задачи</li>
+<li>Добавление задачи в массив через immutable update</li>
+<li>Toggle done: <code>todos.map(t =&gt; t.id === id ? {...t, done: !t.done} : t)</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add src/components/todo/
+
+git commit -m &quot;week-11 day-04: useState, CRUD задач и controlled input&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-11--week-11-day-4');</script>
+</body>
+</html>

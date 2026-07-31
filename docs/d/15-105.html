@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 105 (Вс): Ревью основ Python · Python · web-roadmap</title>
+  <meta name="description" content="День 105 (Вс): Ревью основ Python — неделя 15.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-15--week-15-day-105">
+  <meta http-equiv="refresh" content="0;url=../#week-15--week-15-day-105">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-15--week-15-day-105">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-15-day-105">День 105 (Вс): Ревью основ Python</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Expense Tracker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Ревью недели закрепляет фундамент перед CLI Expense Tracker. PEP 8 — не догма, а общий язык: snake_case для функций и переменных, 79–88 символов в строке, два пустых ряда между top-level определениями. <code>python -m py_compile file.py</code> проверяет синтаксис без запуска.</p>
+<p>Сравни Python с JavaScript: отступы вместо <code>{}</code>, <code>None</code> вместо <code>null</code>, иная truthiness, явный <code>self</code> в методах. HackerRank/Codewars на Easy уровне тренируют синтаксис вне контекста проекта. Шпаргалка list vs tuple vs dict vs set — шпаргалка на всю карьеру.</p>
+<p>CLI Expense Tracker объединяет всё: venv, модули, JSON persist, rich для таблиц, валидацию ввода. README с примерами команд — обязателен. Осмысленные коммиты за 7 дней и тег <code>week-15-done</code> завершают неделю.</p>
+<p>Мысленная модель PEP 8: это не эстетическое предпочтение, а общий словарь, снижающий когнитивную нагрузку при чтении чужого (и своего же, через месяц) кода. Когда весь код в индустрии более-менее следует одним соглашениям (snake_case, отступы, пустые строки между определениями), разработчик тратит меньше усилий на «расшифровку» стиля и больше — на понимание логики. Это станет заметно уже при работе в команде или ревью чужого pull request.</p>
+<p>Явное сравнение Python и JavaScript, предложенное сегодня, помогает не «смешать» две ментальные модели в одну кашу, а держать их четко разделёнными: явный <code>self</code> первым параметром метода в Python — это осознанный дизайн (в отличие от неявного и местами запутанного <code>this</code> в JS, зависящего от способа вызова функции), и понимание этой разницы предотвращает перенос интуиции о <code>this</code>/биндинге туда, где она не работает.</p>
+<p>Конкретный пример пользы практики на HackerRank/Codewars именно сейчас: задачи вне контекста проекта тренируют синтаксис и стандартную библиотеку (<code>sorted</code>, <code>Counter</code>, slicing) в чистом виде, без сопутствующей сложности организации файлов — это как оттачивание отдельных технических приёмов гитариста гаммами, отдельно от разучивания целой песни, коей является Expense Tracker.</p>
+<p>Частое заблуждение — считать PEP 8 «чисто косметическим» и откладывать форматирование на «потом», а также думать, что раз JavaScript уже знаком, Python-специфичные особенности (truthiness, mutable defaults, <code>is</code> vs <code>==</code>, единый <code>self</code>) не заслуживают отдельного внимания и «разберутся по ходу». На практике именно эти синтаксические различия — источник большинства мелких, но раздражающих багов у разработчиков, переходящих с JS на Python, а рефакторинг телефонной книги по PEP 8 в практике сегодняшнего дня — не формальность, а шанс закрепить оба набора привычек до того, как начнётся более сложный <strong>CLI Expense Tracker</strong>, где путаница между двумя языковыми моделями будет стоить дороже времени на исправление.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://peps.python.org/pep-0008/">PEP 8</a></li>
+<li><a href="https://docs.python.org/3/tutorial/">Python Tutorial</a></li>
+<li><a href="https://www.hackerrank.com/domains/python">HackerRank Python</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> Python-проект = venv + модули + persist + README; стиль PEP 8 с первого коммита.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Реши 10 задач на <a href="https://www.hackerrank.com/domains/python">HackerRank Python</a> (Easy)</li>
+<li>Рефакторинг телефонной книги по PEP 8</li>
+<li>Напиши шпаргалку: list vs tuple vs dict vs set</li>
+<li>Начни скелет <strong>CLI Expense Tracker</strong> — <code>expense_tracker/</code></li>
+<li><code>notes/python-structures.md</code> — шпаргалка структур</li>
+<li>Прогони <code>python -m py_compile</code> на всех модулях</li>
+<li>Тег <code>week-15-done</code></li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] 10 задач HackerRank решены</p>
+</li>
+<li>
+<p>[ ] Код проходит <code>python -m py_compile</code> без ошибок</p>
+</li>
+<li>
+<p>[ ] Шпаргалка в <code>notes/python-structures.md</code></p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Реши 10 задач на <a href="https://www.hackerrank.com/domains/python">HackerRank Python</a> (Easy)</li>
+<li>Рефакторинг телефонной книги по PEP 8</li>
+<li>Напиши шпаргалку: list vs tuple vs dict vs set</li>
+<li>Начни скелет <strong>CLI Expense Tracker</strong> — <code>expense_tracker/</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-15
+
+git add notes/ expense_tracker/
+
+git commit -m &quot;week-15 day-105: HackerRank, PEP 8 и Expense Tracker скелет&quot;
+
+</code></pre>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-15--week-15-day-105');</script>
+</body>
+</html>

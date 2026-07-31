@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 7 (Sun): Единицы измерения и финальная стилизация · CSS основы · web-roadmap</title>
+  <meta name="description" content="День 7 (Sun): Единицы измерения и финальная стилизация — неделя 02.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-02--week-02-day-7">
+  <meta http-equiv="refresh" content="0;url=../#week-02--week-02-day-7">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-02--week-02-day-7">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-02-day-7">День 7 (Sun): Единицы измерения и финальная стилизация</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Styled Blog Post</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Единицы измерения в CSS делятся на <strong>абсолютные</strong> и <strong>относительные</strong>. <code>px</code> — фиксированный пиксель, предсказуем, но не масштабируется с настройками пользователя. <code>rem</code> привязан к <code>font-size</code> элемента <code>html</code> (обычно 16px): <code>1.5rem</code> = 24px при базе 16. Измени <code>font-size</code> на <code>html</code> — весь интерфейс пропорционально вырастет. <code>em</code> привязан к <code>font-size</code> <strong>родителя</strong> — во вложенных элементах может неожиданно «раздуваться».</p>
+<p><code>%</code> — доля от родителя; <code>vw</code>/<code>vh</code> — процент viewport; <code>ch</code> — ширина символа «0», идеален для <code>max-width</code> текстовых колонок. Функция <code>clamp(min, preferred, max)</code> даёт <strong>fluid typography</strong> без media queries: <code>clamp(1.5rem, 4vw, 3rem)</code> — заголовок плавно растёт между мобильным и десктопом.</p>
+<p>Правило: <code>font-size</code> и spacing — в <code>rem</code>; <code>em</code> — для локальных отступов относительно компонента (padding кнопки); <code>px</code> — для тонких границ (<code>border: 1px</code>).</p>
+<p>Мысленная модель: <code>px</code> — это линейка с фиксированной длиной, <code>rem</code> — это линейка, которая растягивается или сжимается вместе с базовыми настройками устройства. Пользователь с ослабленным зрением, увеличивший размер шрифта в настройках браузера до 20px, увидит пропорционально увеличенный интерфейс на <code>rem</code>-based вёрстке — и «сломанный», не увеличивающийся текст на <code>px</code>-based.</p>
+<p>Почему это важно дальше: неделя 3 целиком построена на адаптивности через Flexbox, Grid и <code>clamp()</code> — без уверенного понимания <code>rem</code> vs <code>em</code> vs <code>vw</code> сегодня, попытки построить fluid-дизайн завтра превратятся в подбор чисел методом тыка. Это последний день недели 2 — именно сегодняшняя финальная стилизация проверяет, насколько цельно всё сложилось: токены, типографика, box model, единицы.</p>
+<p>Конкретный пример: <code>padding: 1em</code> на кнопке с <code>font-size: 1.2rem</code> внутри карточки с увеличенным текстом даст больший отступ, чем такая же кнопка в обычном месте страницы — потому что <code>em</code> считается от <strong>текущего</strong>, а не корневого размера шрифта. Это иногда используют осознанно (отступы масштабируются вместе с текстом компонента), а иногда — источник необъяснимого «съехавшего» паддинга.</p>
+<p>Частое заблуждение — считать <code>vw</code> универсальной заменой <code>rem</code> для адаптивного текста. Чистый <code>font-size: 4vw</code> без <code>clamp()</code> на очень широких экранах (4K-мониторы) может дать нечитаемо огромный текст, а на очень узких — нечитаемо мелкий: <code>vw</code> без ограничителей масштабируется линейно и бесконечно, что и решает <code>clamp(min, preferred, max)</code>, задавая границы разумного диапазона.</p>
+<p><strong>Ключевая мысль:</strong> <code>rem</code> для масштабируемости, <code>clamp()</code> для плавной адаптивности без десятка breakpoints — и то, и другое станет рабочим инструментом уже завтра, на первом дне недели про Flexbox.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Learn/CSS/Building_blocks/Values_and_units">MDN: CSS values and units</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Переведи все <code>font-size</code> на <code>rem</code> (база 16px в <code>html</code>)</li>
+<li>Отступы секций задай через <code>rem</code> или spacing-переменные</li>
+<li>Заголовок hero сделай через <code>clamp(1.5rem, 4vw, 3rem)</code></li>
+<li>Полностью стилизуй лендинг недели 1 — он должен выглядеть профессионально</li>
+<li>Прогони Lighthouse Best Practices и исправь замечания</li>
+<li>Проверь масштабирование: увеличь <code>font-size</code> на <code>html</code> до 20px — всё должно пропорционально вырасти</li>
+<li>Создай <code>week-02/</code> с блог-постом — финальная сборка проекта недели</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Размеры шрифтов в <code>rem</code>, не в произвольных <code>px</code>
+- [ ] Страница выглядит цельно: палитра, типографика, отступы
+- [ ] Lighthouse Performance ≥ 85 на статике</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Переведи все <code>font-size</code> на <code>rem</code> (база 16px в <code>html</code>)</li>
+<li>Отступы секций задай через <code>rem</code> или spacing-переменные</li>
+<li>Заголовок hero сделай через <code>clamp(1.5rem, 4vw, 3rem)</code></li>
+<li>Полностью стилизуй лендинг недели 1 — он должен выглядеть профессионально</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 02 day 7: rem clamp final styling"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-02--week-02-day-7');</script>
+</body>
+</html>

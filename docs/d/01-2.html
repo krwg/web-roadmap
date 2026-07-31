@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 2 (Tue): Семантическая разметка · HTML · web-roadmap</title>
+  <meta name="description" content="День 2 (Tue): Семантическая разметка — неделя 01.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-01--week-01-day-2">
+  <meta http-equiv="refresh" content="0;url=../#week-01--week-01-day-2">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-01--week-01-day-2">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-01-day-2">День 2 (Tue): Семантическая разметка</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Семантика в HTML — это выбор тега, который точно описывает <strong>роль</strong> элемента, а не просто «коробку для стилей». <code>&lt;div&gt;</code> ничего не говорит о содержимом; <code>&lt;nav&gt;</code> явно объявляет: здесь навигация. Браузер, скринридер и поисковик читают эту разметку и строят карту страницы. Пользователь с программой чтения с экрана может прыгнуть сразу к <code>main</code>, минуя шапку и меню — если ты их правильно разметил.</p>
+<p><strong>Landmark-элементы</strong> — ориентиры на странице: <code>header</code> (шапка), <code>nav</code> (меню), <code>main</code> (основной уникальный контент), <code>footer</code> (подвал). На странице должен быть ровно один <code>main</code>. <code>nav</code> — только для навигационных ссылок, не для любого списка ссылок в тексте. Страница с семантической разметкой читается логично даже без CSS — это хороший тест: отключи стили и проверь, понятна ли структура.</p>
+<p><code>section</code> группирует тематически связанный контент с заголовком (блок «О себе», «Навыки»). <code>article</code> — самодостаточная единица: пост в блоге, карточка товара, новость — то, что можно вынести в RSS отдельно. <code>aside</code> — боковое дополнение к основному потоку: виджет «сейчас изучаю», реклама, сноски. Пара <code>figure</code> + <code>figcaption</code> связывает иллюстрацию с подписью; элемент <code>time</code> с атрибутом <code>datetime</code> даёт машиночитаемую дату для календарей и микроразметки.</p>
+<p>Мысленная модель: представь страницу как здание с указателями. <code>header</code> — вывеска у входа, <code>nav</code> — карта этажей у лифта, <code>main</code> — сам этаж с содержимым, <code>aside</code> — информационный стенд в коридоре, <code>footer</code> — табличка на выходе. Указатели помогают ориентироваться даже тому, кто не видит всё здание целиком — например, идёт по нему на ощупь, как скринридер идёт по DOM.</p>
+<p>Почему это важно дальше: на неделе 6 ты добавишь JavaScript, который будет искать элементы по структуре страницы (<code>document.querySelector('main')</code>, обработчики на <code>nav a</code>), а на неделях с React — компоненты будут возвращать именно такую семантическую разметку. Если сегодня привыкнуть мыслить landmark-ами, а не «div с классом wrapper», работа с фреймворками пойдёт быстрее.</p>
+<p>Пример: <code>&lt;div class="post"&gt;&lt;div class="post-title"&gt;Заголовок&lt;/div&gt;&lt;div class="post-date"&gt;1 августа&lt;/div&gt;&lt;/div&gt;</code> технически работает, но <code>&lt;article&gt;&lt;h2&gt;Заголовок&lt;/h2&gt;&lt;time datetime="2026-08-01"&gt;1 августа&lt;/time&gt;&lt;/article&gt;</code> даёт браузеру и поисковику готовую структуру поста без единой строчки JS.</p>
+<p>Частое заблуждение — использовать <code>section</code> для любого визуального блока с отступом. <code>section</code> уместен только когда у контента есть собственный заголовок и он тематически целостен; блок для чисто визуального разделения (например, обёртка для центрирования) так и остаётся <code>div</code>. Сегодня в практике ты рефакторишь вчерашний <code>index.html</code> именно с этим фильтром: «у этого блока есть заголовок и смысл, или это просто обёртка для стилей?»</p>
+<p><strong>Ключевая мысль:</strong> правильный тег — это документация для людей и машин; <code>div</code> — последний выбор, не первый.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Glossary/Semantics">MDN: Семантика</a> — тег несёт смысл для браузера, скринридера, SEO</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Рефакторинг <code>index.html</code>: убери «суп из div», введи <code>header</code>, <code>nav</code>, <code>main</code>, <code>section</code>, <code>footer</code></li>
+<li><code>article</code> — мини-пост «Почему я учу веб» с <code>time</code></li>
+<li><code>aside</code> — список «Сейчас изучаю: HTML, Git»</li>
+<li>HeadingsMap или DevTools Accessibility — проверь outline</li>
+<li>Сравни diff в Git: <code>git diff</code> до коммита — видишь только структурные изменения?</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Один <code>main</code> на страницу
+- [ ] <code>nav</code> только для навигации
+- [ ] Структура читается без CSS</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Рефакторинг <code>index.html</code>: убери «суп из div», введи <code>header</code>, <code>nav</code>, <code>main</code>, <code>section</code>, <code>footer</code></li>
+<li><code>article</code> — мини-пост «Почему я учу веб» с <code>time</code></li>
+<li><code>aside</code> — список «Сейчас изучаю: HTML, Git»</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">git add week-01/index.html
+git commit -m &quot;week 01 day 2: refactor to semantic landmarks and article&quot;
+git push
+</code></pre>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-01--week-01-day-2');</script>
+</body>
+</html>

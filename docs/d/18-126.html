@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 126 (Вс): Ревью и документация API · FastAPI · web-roadmap</title>
+  <meta name="description" content="День 126 (Вс): Ревью и документация API — неделя 18.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-18--week-18-day-126">
+  <meta http-equiv="refresh" content="0;url=../#week-18--week-18-day-126">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-18--week-18-day-126">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-18-day-126">День 126 (Вс): Ревью и документация API</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library REST API</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>OpenAPI schema FastAPI генерирует из type hints и Pydantic — docs всегда синхронны с кодом, если ты дисциплинирован. README capstone-уровня: архитектура слоёв (routes → crud → models → db), env vars, curl-примеры, запуск postgres через docker. Postman collection — ручное тестирование для демо.</p>
+<p>12 Factor App: config через environment, не hardcode. <code>.env.example</code> без секретов. Mermaid-диаграмма слоёв в README помогает объяснить проект за 2 минуты. Логирование через <code>logging</code> module: INFO в production, DEBUG в dev.</p>
+<p>Финальный прогон: <code>pytest</code>, <code>uvicorn</code>, ручная проверка Swagger. Library REST API — шаблон для Express на нед. 19 и DevHub на нед. 22. Тег <code>week-18-done</code> завершает первый production-like Python backend.</p>
+<p>Ментальная модель для ревью-дня: README и OpenAPI-документация — это витрина твоего проекта. Первые две минуты, которые незнакомый разработчик (или нанимающий менеджер) проводит с репозиторием, определяют, доверяет ли он остальному коду. Хорошо структурированный README с архитектурной диаграммой и curl-примерами говорит «этот человек умеет думать о других разработчиках», даже если он ни разу не прочитает исходники.</p>
+<p>Дисциплина документирования, которую ты закрепляешь сегодня — env vars, архитектура слоёв, инструкции запуска, — это не разовая задача для этого проекта: ты буквально повторишь тот же набор артефактов для Express-проекта на неделе 19 и для capstone DevHub на неделе 22, так что сегодняшний README становится шаблоном, который экономит время трижды.</p>
+<p>Частое заблуждение — считать, что автоматически сгенерированный Swagger (<code>/docs</code>) полностью заменяет README. Swagger прекрасно показывает <em>что</em> доступно (endpoints, схемы, параметры), но не объясняет <em>как</em> поднять проект с нуля — какие переменные окружения нужны, как накатить миграции, откуда взять seed-данные и в каком порядке запускать команды. Именно поэтому оба артефакта нужны вместе, и критерий «структура проекта понятна новому разработчику» проверяется человеком, а не автогенерацией. Логирование через стандартный модуль <code>logging</code> (а не <code>print</code>) — ещё одна деталь взросления проекта: <code>INFO</code> в продакшене и <code>DEBUG</code> в разработке позволяют управлять шумом логов без правки кода, просто переменной окружения. Принцип 12 Factor App («конфигурация через переменные окружения, а не хардкод») — ещё одна деталь, которая перестаёт быть абстрактной рекомендацией и становится практическим требованием, как только проект нужно развернуть в контейнере: <code>.env.example</code> документирует, какие переменные обязательны, не раскрывая ни одного реального секрета.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://fastapi.tiangolo.com/features/#automatic-docs">OpenAPI</a></li>
+<li><a href="https://12factor.net/config">12 Factor App</a></li>
+<li><a href="https://mermaid.js.org/">Mermaid</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> документация API — часть deliverable; OpenAPI из кода, не из Word.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>README: архитектура, запуск, env vars, примеры curl</li>
+<li><code>.env.example</code>: <code>DATABASE_URL</code>, <code>APP_ENV=development</code></li>
+<li>Export Postman collection JSON в <code>docs/postman/</code></li>
+<li>Mermaid-диаграмма слоёв: routes → crud → models → db</li>
+<li>curl-примеры для всех основных endpoints в README</li>
+<li>Финальный прогон: <code>pytest</code>, <code>uvicorn</code>, Swagger manual check</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] curl примеры для всех основных endpoints
+- [ ] Структура проекта понятна новому разработчику
+- [ ] <code>docker run postgres</code> документирован</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>README: архитектура, запуск, env vars, примеры curl</li>
+<li><code>.env.example</code>: <code>DATABASE_URL</code>, <code>APP_ENV=development</code></li>
+<li>Export Postman collection JSON в <code>docs/postman/</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-18/</code> → <code>git commit -m "week 18 day 126: API docs and Postman collection"</code></li>
+<li>Поставь тег: <code>git tag week-18-done</code></li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-18--week-18-day-126');</script>
+</body>
+</html>

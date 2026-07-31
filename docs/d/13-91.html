@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 91 (Вс): Ревью паттернов React · Router &amp; Context · web-roadmap</title>
+  <meta name="description" content="День 91 (Вс): Ревью паттернов React — неделя 13.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-13--week-13-day-91">
+  <meta http-equiv="refresh" content="0;url=../#week-13--week-13-day-91">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-13--week-13-day-91">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-13-day-91">День 91 (Вс): Ревью паттернов React</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio SPA</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>За семь дней ты собрал многостраничное SPA с роутингом, глобальным state и переиспользуемыми хуками. Полезно явно сравнить инструменты: локальный state для UI формы, lifting state когда нужно двум соседям, custom hook для логики, Context для редких глобальных данных, внешний store (Zustand/Redux) — когда Context разрастается.</p>
+<p>Error Boundary ловит ошибки рендеринга в дочерних компонентах и показывает fallback вместо белого экрана. Оберни <code>&lt;Routes&gt;</code> или отдельные страницы, чтобы сбой на <code>/blog/:slug</code> не убивал всё приложение. Boundary не ловит ошибки в event handlers и async-коде — только синхронный render.</p>
+<p>Перед деплоем проверь client-side routing: хостинг должен отдавать <code>index.html</code> на все пути. Portfolio SPA — витрина навыков недели: осмысленные коммиты за 7 дней, preview URL, README с картой маршрутов. Скелет Dashboard на неделю 14 логично начать с тех же паттернов Layout + Context + hooks.</p>
+<p>Мысленная модель для выбора инструмента state — это шкала по двум осям: сколько компонентов читают/меняют значение и как часто оно меняется. Локальный <code>useState</code> — для UI одного компонента (открыт ли dropdown). Lifting state up — когда двум-трём соседям на одном уровне нужно одно значение (неделя 12, день 83). Context — когда значение нужно широко по дереву, но меняется редко (тема, сессия). Внешний store (Zustand, Redux, Jotai) — когда часто меняющихся глобальных данных становится много и Context начинает вызывать заметные лишние ререндеры. Эта шкала — не догма, а рабочий чеклист, который стоит прогонять в голове при старте каждой новой фичи.</p>
+<p>Именно это умение станет решающим на неделе 14 при проектировании Dashboard (задачи — в custom hook или Context? тема — в Context, а фильтр списка — локальный useState?), а затем и в любом будущем проекте, включая приложения с backend, где к этой шкале добавится ещё один вопрос — что хранить на клиенте, а что запрашивать заново с сервера.</p>
+<p>Конкретный пример выбора: поле поиска, фильтрующее список внутри одной страницы, — это локальный state или, максимум, lifting state между двумя соседними компонентами; заворачивать его в Context было бы избыточно и создало бы недокументированную глобальную связь там, где хватило бы пропса.</p>
+<p>Частое заблуждение — считать, что «чем более глобально хранится состояние, тем безопаснее и удобнее», и по умолчанию тянуть данные в Context «на всякий случай», даже если ими пользуется один компонент. Другое похожее заблуждение — думать, что Error Boundary ловит вообще любые ошибки; на деле она перехватывает только синхронные ошибки рендеринга дочерних компонентов и не ловит исключения в обработчиках событий или внутри <code>async</code> кода (там нужен обычный <code>try/catch</code>). Оба заблуждения важно развеять перед финализацией Portfolio SPA: Error Boundary в практике дня оборачивает именно <code>&lt;Routes&gt;</code>, чтобы сбой рендера одной страницы (например, из-за некорректных данных <code>:slug</code>) не обрушивал всё приложение целиком, а не как универсальная страховка от любых ошибок.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://react.dev/learn#faq">React FAQ</a></li>
+<li><a href="https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary">Error Boundaries</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> выбор инструмента state — по частоте изменений и глубине дерева, не «всё в Context».</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Добавь простой Error Boundary вокруг <code>&lt;Routes&gt;</code></li>
+<li>Пройди чеклист своего многостраничного приложения</li>
+<li>Запиши ответы: «Когда Context, когда custom hook, когда lifting state?»</li>
+<li>Подготовь skeleton для Dashboard (неделя 14)</li>
+<li>Финализируй <strong>Portfolio SPA</strong> — все маршруты и hooks</li>
+<li>Deploy preview на Vercel/Netlify</li>
+<li>Тег <code>week-13-done</code></li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Error Boundary ловит ошибку в дочернем компоненте</p>
+</li>
+<li>
+<p>[ ] Написан план страниц Dashboard: /, /tasks, /weather, /settings</p>
+</li>
+<li>
+<p>[ ] Git commit за каждый день недели</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Добавь простой Error Boundary вокруг <code>&lt;Routes&gt;</code></li>
+<li>Пройди чеклист своего многостраничного приложения</li>
+<li>Запиши ответы: «Когда Context, когда custom hook, когда lifting state?»</li>
+<li>Подготовь skeleton для Dashboard (неделя 14)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-13
+
+git add .
+
+git commit -m &quot;week-13 day-91: Error Boundary и Portfolio SPA deploy&quot;
+
+</code></pre>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-13--week-13-day-91');</script>
+</body>
+</html>

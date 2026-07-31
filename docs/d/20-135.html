@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 135 (Вт): JWT — выдача и проверка токенов · Auth &amp; tests · web-roadmap</title>
+  <meta name="description" content="День 135 (Вт): JWT — выдача и проверка токенов — неделя 20.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-20--week-20-day-135">
+  <meta http-equiv="refresh" content="0;url=../#week-20--week-20-day-135">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-20--week-20-day-135">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-20-day-135">День 135 (Вт): JWT — выдача и проверка токенов</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Secure Notes</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>JWT (JSON Web Token) — компактный способ передавать claims между клиентом и сервером. Структура: header.payload.signature. Подпись (HMAC SHA256) гарантирует целостность; payload base64-decodable — не клади пароли и PII. Стандарт передачи: <code>Authorization: Bearer &lt;token&gt;</code>.</p>
+<p>Access token TTL 15min–1h; refresh token — отдельный долгоживущий механизм (обзор). <code>JWT_SECRET</code> в <code>.env</code> — минимум 32 случайных байта; при утечке — rotate немедленно. Payload: <code>sub</code> (user id), <code>exp</code>, <code>iat</code>. Явно указывай <code>algorithm: 'HS256'</code> — алгоритм <code>none</code> — уязвимость.</p>
+<p>Middleware <code>authenticateToken</code> verify JWT и кладёт <code>req.user = { id, email }</code>. Protected routes читают <code>user_id</code> из token, не из body/query — иначе IDOR. Expired token → 401. Тест с TTL 1 секунда проверяет expiration.</p>
+<p>Ментальная модель: JWT — это подписанная справка, а не запечатанный конверт. Любой может прочитать payload через base64-decode (проверь на jwt.io), но подделать подпись без секрета невозможно — поэтому в payload никогда не кладут пароли, номера карт или другие секреты, только неконфиденциальные claims вроде user id и роли. На собеседованиях junior-разработчиков часто путают JWT с session cookie: JWT stateless (сервер ничего не хранит, просто проверяет подпись), а session требует хранилища на сервере — эта разница определяет, как система масштабируется горизонтально.</p>
+<p>Конкретный пример уязвимости: если backend принимает <code>algorithm: none</code> или не проверяет alg вообще, атакующий может подделать токен с любым payload и получить admin-доступ — это реальная категория уязвимостей, встречавшаяся в популярных JWT-библиотеках. Частое заблуждение — «раз токен подписан, значит зашифрован и безопасен для любых данных» — на деле подпись гарантирует только целостность, не конфиденциальность. Middleware, который ты пишешь сегодня, — это тот же паттерн защищённых маршрутов, который в неделе 22 (день 151) масштабируется на весь DevHub: <code>req.user</code> из verified JWT, а не из тела запроса, закрывает целый класс IDOR-уязвимостей.</p>
+<p>Для продакшена короткий TTL access token (15 минут–1 час) — не паранойя, а ограничение окна атаки: если токен украли через XSS или перехват трафика, он бесполезен уже через час. Полноценный refresh-token механизм с ротацией — тема отдельного, более продвинутого модуля, но важно понимать саму идею уже сейчас: access token — расходный материал, а не постоянный пропуск, который выдаётся один раз и живёт вечно.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://jwt.io/introduction">JWT Introduction</a></li>
+<li><a href="https://github.com/auth0/node-jsonwebtoken">jsonwebtoken</a></li>
+<li><a href="https://python-jose.readthedocs.io/">python-jose</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> JWT — подписанный контракт, не шифрование; user_id только из verified token.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Login возвращает <code>{ access_token, token_type: "bearer", expires_in }</code></li>
+<li>Middleware <code>authenticateToken</code> — verify JWT, <code>req.user = { id, email }</code></li>
+<li>Protected: <code>GET /api/notes</code> только с valid token</li>
+<li>401 без token, 403 при доступе к чужим данным (user_id из token)</li>
+<li>Expired token test — измени TTL на 1 сек для проверки</li>
+<li>Явно укажи algorithm: <code>algorithm: 'HS256'</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] JWT_SECRET в .env, не в коде
+- [ ] Expired token → 401
+- [ ] user_id из token, не из body/query</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Login возвращает <code>{ access_token, token_type: "bearer", expires_in }</code></li>
+<li>Middleware <code>authenticateToken</code> — verify JWT, <code>req.user = { id, email }</code></li>
+<li>Protected: <code>GET /api/notes</code> только с valid token</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-20/</code> → <code>git commit -m "week 20 day 135: JWT middleware and protected routes"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Алгоритм <code>none</code> — всегда указывай algorithm explicitly</li>
+<li>Sensitive data в JWT payload — payload base64-decodable</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-20--week-20-day-135');</script>
+</body>
+</html>

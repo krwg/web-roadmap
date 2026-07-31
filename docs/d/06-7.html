@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 7 (Sun): DOM-проект — интерактивный лендинг · DOM · web-roadmap</title>
+  <meta name="description" content="День 7 (Sun): DOM-проект — интерактивный лендинг — неделя 06.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-06--week-06-day-7">
+  <meta http-equiv="refresh" content="0;url=../#week-06--week-06-day-7">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-06--week-06-day-7">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-06-day-7">День 7 (Sun): DOM-проект — интерактивный лендинг</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DOM Todo App</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Зрелое DOM-приложение разделяет <strong>слои</strong>. Data layer — массив задач, чистые функции <code>addTask</code>, <code>toggleTask</code>; не знает о HTML. DOM layer — <code>renderTasks(tasks)</code>, <code>renderFilters()</code>; читает data, обновляет дерево. App layer — связывает события с изменением data и вызовом render. Базовый MVC без фреймворка.</p>
+<p><code>DocumentFragment</code> — контейнер в памяти: наполни список элементами, один <code>append</code> fragment — <strong>один reflow</strong> вместо N. Производительность: кэшируй DOM-ссылки; не читай <code>offsetHeight</code> и не пиши <code>style</code> вперемешку (layout thrashing). <code>requestAnimationFrame</code> — обзор для плавных анимаций чисел и скролла.</p>
+<p>Функции <code>render*</code> — единая точка отрисовки: изменил data → вызвал <code>renderTasks()</code> → DOM синхронизирован. Todo App недели — CRUD через DOM, delegation на списке, фильтры, без <code>innerHTML</code> для user input.</p>
+<p><strong>Ментальная модель:</strong> разделение на data layer и DOM layer — это разделение «что происходит» и «как это выглядит». Данные (массив задач) — источник истины, независимый от экрана; DOM — просто их визуальное отражение в конкретный момент. Каждое изменение проходит по циклу: меняем данные → вызываем один и тот же <code>render*</code> → DOM обновляется целиком по актуальным данным, а не точечными правками в разных местах кода.</p>
+<p><strong>Почему это важно дальше:</strong> этот цикл «данные → render → DOM» — упрощённая версия того, как работает React и другие декларативные фреймворки: там ты тоже описываешь UI как функцию от состояния, а библиотека сама решает, что обновить на экране. Освоив паттерн вручную сейчас, ты поймёшь, зачем вообще нужен React, когда дойдёшь до него.</p>
+<p><strong>Пример:</strong> без разделения слоёв удаление задачи выглядело бы как ручной поиск нужного <code>&lt;li&gt;</code> в DOM и его удаление в нескольких разных обработчиках. С разделением: <code>removeTask(id)</code> меняет только массив данных, а единственный вызов <code>renderTasks()</code> перерисовывает список целиком — на 50 задач и на 5000 логика одна и та же, разница только в производительности, которую решает <code>DocumentFragment</code>.</p>
+<p><strong>Частое заблуждение:</strong> новички считают частые обращения к <code>innerHTML</code> для вставки списка «более простым» способом, чем <code>render*</code> с DOM API — код действительно короче, но при user input (например, названии задачи) это открывает XSS, а также требует полной пересборки строки при каждом малейшем изменении. Итоговый Todo App должен использовать <code>createElement</code>/<code>append</code> внутри <code>renderTasks()</code>, что и проверяют критерии сегодняшней практики.</p>
+<p><strong>Ключевая мысль:</strong> data отдельно от DOM; <code>render*</code> — мост; fragment — batch insert без лишних reflow.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/API/DocumentFragment">MDN: DocumentFragment</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Оживи лендинг: тёмная тема, мобильное меню, плавный скролл к секциям</li>
+<li>Фильтр портфолио: кнопки категорий скрывают/показывают карточки</li>
+<li>Счётчик «осталось мест» с анимацией числа</li>
+<li>Рефакторинг: вынеси DOM-операции в функции <code>render*</code></li>
+<li>Протестируй весь UI с клавиатуры</li>
+<li>Собери Todo App: add, delete, toggle, filter — без innerHTML для input</li>
+<li>Финальный коммит и тег <code>week-06-done</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Минимум 5 интерактивных фич
+- [ ] Код структурирован: utils, dom, app
+- [ ] Нет ошибок в Console при типичном сценарии</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Оживи лендинг: тёмная тема, мобильное меню, плавный скролл к секциям</li>
+<li>Фильтр портфолио: кнопки категорий скрывают/показывают карточки</li>
+<li>Счётчик «осталось мест» с анимацией числа</li>
+<li>Рефакторинг: вынеси DOM-операции в функции <code>render*</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 06 day 7: dom todo app final"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-06--week-06-day-7');</script>
+</body>
+</html>

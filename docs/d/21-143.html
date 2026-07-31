@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 143 (Ср): Docker — основы · Docker · web-roadmap</title>
+  <meta name="description" content="День 143 (Ср): Docker — основы — неделя 21.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-21--week-21-day-143">
+  <meta http-equiv="refresh" content="0;url=../#week-21--week-21-day-143">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-21--week-21-day-143">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-21-day-143">День 143 (Ср): Docker — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Docker упаковывает приложение с зависимостями в воспроизводимый образ. Image — неизменяемый шаблон (слои); container — запущенный экземпляр. Dockerfile: <code>FROM node:20-alpine</code>, <code>WORKDIR</code>, <code>COPY package*.json</code>, <code>RUN npm ci</code>, <code>COPY .</code>, <code>EXPOSE</code>, <code>CMD</code>. Layer caching: сначала зависимости, потом код — быстрее rebuild.</p>
+<p><code>.dockerignore</code> исключает <code>node_modules</code>, <code>.git</code>, <code>.env</code> из build context. <code>docker build -t task-api .</code> и <code>docker run -p 3000:3000 --env-file .env task-api</code>. Multi-stage builds (обзор): build stage + slim runtime. <code>curl localhost:3000/api/health</code> с хоста проверяет container.</p>
+<p>Не копируй весь проект до <code>npm ci</code> — инвалидируешь cache. Root user в container — для prod consider non-root (обзор). Документируй docker commands в README.</p>
+<p>Ментальная модель: Dockerfile — рецепт, image — испечённый и замороженный пирог по рецепту, container — кусок этого пирога у тебя на тарелке прямо сейчас, который можно есть (запускать), выбросить и отрезать заново. Слои Dockerfile кешируются построчно сверху вниз, поэтому порядок инструкций — это оптимизация скорости сборки, а не просто стиль. Для junior-разработчика Docker — это уже не «плюс», а базовое требование в большинстве вакансий 2026 года: почти любая современная инфраструктура (Kubernetes, ECS, Render, Railway) ожидает готовый Docker image.</p>
+<p>Конкретный пример цены ошибки: если скопировать весь проект (<code>COPY . .</code>) до <code>npm ci</code>, то любое изменение в исходном коде инвалидирует кеш зависимостей — пересборка занимает минуты вместо секунд при каждом маленьком изменении кода. Частое заблуждение новичков — «Docker — это как виртуальная машина» — на деле контейнеры используют namespaces и cgroups ядра хоста, а не эмулируют железо, поэтому стартуют за миллисекунды, а не минуты, и делят ядро ОС с хостом. Dockerfile для backend, который ты пишешь сегодня, станет первым сервисом в <code>docker-compose.yml</code> (день 145), а затем — основой Docker-инфраструктуры DevHub capstone (неделя 22, день 152), где та же логика слоёв применится уже к production-сборке.</p>
+<p>Для продакшена размер образа тоже имеет значение: <code>node:20-alpine</code> весит десятки мегабайт против сотен у полного <code>node:20</code>, а меньший образ быстрее скачивается при деплое и содержит меньше поверхности для атак (меньше системных пакетов — меньше потенциальных CVE). Привычка сразу выбирать slim/alpine базовые образы, а не «full», экономит время и деньги на облачном биллинге по трафику и storage в масштабе реальной инфраструктуры.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.docker.com/get-started/overview/">Docker Overview</a></li>
+<li><a href="https://docs.docker.com/reference/dockerfile/">Dockerfile reference</a></li>
+<li><a href="https://docs.docker.com/build/building/context/#dockerignore-files">.dockerignore</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> image = шаблон, container = процесс; слои Dockerfile — про скорость сборки.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Dockerfile для backend: <code>node:20-alpine</code> или <code>python:3.12-slim</code></li>
+<li>COPY package files → install deps → COPY source → EXPOSE port → CMD</li>
+<li><code>docker build -t task-api .</code> и <code>docker run -p 3000:3000 --env-file .env task-api</code></li>
+<li>Проверь <code>/health</code> с хоста: <code>curl localhost:3000/api/health</code></li>
+<li><code>.dockerignore</code>: node_modules, .git, .env, <strong>pycache</strong></li>
+<li>Задокументируй команды в README</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Image собирается без ошибок
+- [ ] .dockerignore исключает node_modules
+- [ ] Container стартует и отвечает на /health</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Dockerfile для backend: <code>node:20-alpine</code> или <code>python:3.12-slim</code></li>
+<li>COPY package files → install deps → COPY source → EXPOSE port → CMD</li>
+<li><code>docker build -t task-api .</code> и <code>docker run -p 3000:3000 --env-file .env task-api</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-21/</code> → <code>git commit -m "week 21 day 143: backend Dockerfile"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>COPY всего проекта до npm ci — layer cache invalidation</li>
+<li>root user в container — для prod consider non-root (обзор)</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-21--week-21-day-143');</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 4 (Thu): Работа с публичными API · Modules &amp; API · web-roadmap</title>
+  <meta name="description" content="День 4 (Thu): Работа с публичными API — неделя 07.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-07--week-07-day-4">
+  <meta http-equiv="refresh" content="0;url=../#week-07--week-07-day-4">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-07--week-07-day-4">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-07-day-4">День 4 (Thu): Работа с публичными API</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Notes Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Публичные REST API организуют данные вокруг ресурсов — сущностей вроде «пользователь», «пост» или «город». URL описывает <em>что</em> запрашиваешь (<code>/users/42</code>), а HTTP-метод — <em>какое действие</em> выполняешь (GET — прочитать, POST — создать). Ответ сервера сопровождается статус-кодом: 200 — успех, 201 — создано, 400 — ошибка клиента, 404 — не найдено, 500 — ошибка сервера. Умение читать статус и тело ответа — базовый навык интеграции.</p>
+<p>Параметры запроса передаются в query string: <code>?q=moscow&amp;page=2</code>. Спецсимволы и пробелы кодируй через <code>URLSearchParams</code>, а не вручную — иначе поиск по «New York» сломается. Перед интеграцией изучи документацию API: какие endpoints доступны, какие поля обязательны, есть ли лимиты на количество запросов (rate limiting). OpenAPI/Swagger-спецификация — стандартный формат, где всё это описано машиночитаемо.</p>
+<p>CORS (Cross-Origin Resource Sharing) — механизм безопасности браузера. Если твой сайт на <code>localhost:5500</code>, а API на другом домене, браузер спросит сервер: «разрешён ли этот origin?». Если сервер не вернёт нужные заголовки (<code>Access-Control-Allow-Origin</code>), fetch заблокируется — это не баг твоего кода, а политика браузера. API-ключи в production-коде на клиенте видны всем — для секретных ключей нужен backend-прокси.</p>
+<p><strong>Ментальная модель:</strong> REST API удобно представлять как каталог товаров в магазине с чёткой системой адресов: URL — это адрес полки (<code>/users/42</code> — полка «пользователь номер 42»), а HTTP-метод — действие с этой полкой (GET — посмотреть, POST — положить новое, DELETE — убрать). Такая единообразная адресация позволяет, не читая документацию каждого конкретного API с нуля, догадаться о структуре по аналогии с уже знакомыми.</p>
+<p><strong>Почему это важно дальше:</strong> реальные проекты почти всегда строятся вокруг стороннего или собственного API — умение быстро прочитать документацию, понять доступные endpoints и правильно интерпретировать статус-коды экономит часы отладки. CORS — это то, с чем ты гарантированно столкнёшься, как только начнёшь подключать любой внешний сервис, и важно сразу понимать: ошибка CORS в консоли означает «сервер не разрешил», а не «код неправильный».</p>
+<p><strong>Пример:</strong> запрос погоды для города с пробелом в названии — <code>fetch('https://api.example.com/weather?city=' + encodeURIComponent('Нижний Новгород'))</code> или через <code>URLSearchParams</code>: <code>const params = new URLSearchParams({ city: 'Нижний Новгород' }); fetch('https://api.example.com/weather?' + params)</code>. Без кодирования пробел и кириллица в URL могут сломать запрос или интерпретироваться сервером неправильно.</p>
+<p><strong>Частое заблуждение:</strong> новички, столкнувшись с ошибкой CORS в консоли, пытаются «исправить» её в своём JS-коде — но CORS настраивается <strong>на сервере</strong>, а не на клиенте, и обойти его на фронтенде штатными средствами невозможно (и не нужно, это защита пользователя). Если сервер действительно не поддерживает CORS для твоего случая, единственный легитимный вариант — свой backend-прокси, который сегодняшняя практика пока не требует, но важно понимать причину ограничения.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/HTTP/CORS">MDN: CORS</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/HTTP/Overview">MDN: HTTP Overview</a>
+- <a href="https://open-meteo.com/en/docs">Open-Meteo API</a></p>
+<p><strong>Ключевая мысль:</strong> интеграция с API начинается с чтения документации и понимания HTTP-семантики, а не с написания fetch.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Погода: <a href="https://open-meteo.com/">Open-Meteo API</a> — без ключа</li>
+<li>Форма поиска города → fetch → отображение температуры и иконки</li>
+<li>Пагинация: загрузи страницы постов JSONPlaceholder по кнопке «Ещё»</li>
+<li>Обработай 404 и сетевую ошибку разными сообщениями</li>
+<li>Дебаг запросов в DevTools → Network</li>
+<li>GitHub Users API: поиск по логину — заготовка для проекта</li>
+<li>Документируй используемые endpoints в комментарии <code>api.js</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Реальный API интегрирован в UI
+- [ ] Пользователь видит понятные сообщения об ошибках
+- [ ] Network panel использован для отладки</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Погода: <a href="https://open-meteo.com/">Open-Meteo API</a> — без ключа</li>
+<li>Форма поиска города → fetch → отображение температуры и иконки</li>
+<li>Пагинация: загрузи страницы постов JSONPlaceholder по кнопке «Ещё»</li>
+<li>Обработай 404 и сетевую ошибку разными сообщениями</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 07 day 4: public apis weather github"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-07--week-07-day-4');</script>
+</body>
+</html>

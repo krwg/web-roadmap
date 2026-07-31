@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 100 (Вт): Условия, циклы, comprehensions · Python · web-roadmap</title>
+  <meta name="description" content="День 100 (Вт): Условия, циклы, comprehensions — неделя 15.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-15--week-15-day-100">
+  <meta http-equiv="refresh" content="0;url=../#week-15--week-15-day-100">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-15--week-15-day-100">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-15-day-100">День 100 (Вт): Условия, циклы, comprehensions</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Expense Tracker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Условия и циклы — скелет любой программы. <code>if/elif/else</code> опирается на truthiness: пустой список <code>[]</code>, строка <code>""</code>, ноль <code>0</code> и <code>None</code> — falsy. Это отличается от JavaScript, где только некоторые значения falsy. Циклы <code>for</code> итерируют по итерируемым объектам; <code>while</code> — пока условие истинно; <code>break</code> и <code>continue</code> управляют потоком.</p>
+<p><code>range(n)</code> генерирует последовательность без создания списка в памяти. <code>enumerate(items)</code> даёт пары (индекс, элемент) — идиоматичнее, чем <code>for i in range(len(items))</code>. <code>zip(a, b)</code> объединяет два списка попарно. У цикла <code>for</code> есть необязательный <code>else</code>, выполняющийся, если не было <code>break</code> — редкий, но полезный приём.</p>
+<p>List comprehension <code>[x**2 for x in range(10) if x % 2 == 0]</code> компактно строит список. Не увлекайся вложенностью — читаемость важнее одной строки. Walrus <code>:=</code> (3.8+) присваивает в выражении. Не изменяй список во время итерации по нему — пропустишь элементы.</p>
+<p>Мысленная модель list comprehension: это декларативное «что» вместо императивного «как». Обычный цикл <code>for</code> описывает пошаговый процесс («иди по каждому элементу, проверяй условие, добавляй в новый список»); comprehension <code>[x**2 for x in range(10) if x % 2 == 0]</code> описывает сразу результат — «список квадратов чётных чисел от 0 до 9» — и читается почти как математическая нотация множества. Это не просто короче — это другой способ мышления о трансформации данных, который окажется повсюду в реальном Python-коде: обработка данных, фильтрация запросов к БД в Django ORM использует концептуально похожий стиль.</p>
+<p>Понимание truthiness критично именно потому, что ты уже знаком с JavaScript и подсознательно можешь перенести не те правила: в Python <code>0</code>, <code>0.0</code>, <code>""</code>, <code>[]</code>, <code>{}</code>, <code>None</code> и <code>False</code> — falsy, всё остальное — truthy, и в этом Python на самом деле почти как JS. Но есть тонкость: в JS <code>NaN</code> тоже falsy, а в Python отдельного «falsy NaN» с таким поведением нет — сравнения устроены иначе, и полагаться на интуицию из JS без проверки документации рискованно.</p>
+<p>Конкретный пример: проверка пустого списка задач <code>if not tasks:</code> — идиоматичный Python, эквивалентный по смыслу <code>if (tasks.length === 0)</code> в JS, но синтаксически основанный именно на truthiness пустой коллекции, а не на явном сравнении длины.</p>
+<p>Частое заблуждение — писать <code>if tasks == []:</code> вместо <code>if not tasks:</code>, что технически работает, но не идиоматично и не сработает единообразно для других falsy-коллекций (<code>{}</code>, <code>set()</code>). Ещё одна ошибка, специфичная для новичков с опытом в JS, — изменять список прямо во время итерации по нему (<code>for item in items: items.remove(item)</code>), что в Python приводит к пропуску элементов из-за сдвига индексов внутри итератора, а не к очевидной ошибке — именно это явно указано в «Ловушках» дня и стоит проверить на практике при написании FizzBuzz и задач с comprehension.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions">List comprehensions</a></li>
+<li><a href="https://docs.python.org/3/tutorial/controlflow.html">More control flow</a></li>
+<li><a href="https://docs.python.org/3/library/stdtypes.html#truth-value-testing">Truth Value Testing</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> comprehension — сахар над циклом; <code>is</code> vs <code>==</code> — разные вещи для объектов.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>FizzBuzz 1–100</li>
+<li>Таблица умножения 10×10 через nested loops</li>
+<li>Список квадратов чётных чисел 0–20 через comprehension</li>
+<li>Игра «Угадай число» с ограничением попыток</li>
+<li><code>fizzbuzz.py</code> с функцией <code>fizzbuzz(n) -&gt; list[str]</code></li>
+<li>Dict comprehension: <code>{x: x**2 for x in range(10)}</code></li>
+<li>Подсчёт гласных в строке через <code>for</code> и <code>in</code></li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] FizzBuzz выводит корректно</p>
+</li>
+<li>
+<p>[ ] Хотя бы 2 задачи через comprehension</p>
+</li>
+<li>
+<p>[ ] <code>while</code> с условием выхода, не <code>while True</code> без break</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>FizzBuzz 1–100</li>
+<li>Таблица умножения 10×10 через nested loops</li>
+<li>Список квадратов чётных чисел 0–20 через comprehension</li>
+<li>Игра «Угадай число» с ограничением попыток</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-15
+
+git add fizzbuzz.py exercises/
+
+git commit -m &quot;week-15 day-100: FizzBuzz, циклы и comprehensions&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Изменение списка во время итерации по нему — пропуск элементов</p>
+</li>
+<li>
+<p><code>is</code> vs <code>==</code> для сравнения строк и чисел</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-15--week-15-day-100');</script>
+</body>
+</html>

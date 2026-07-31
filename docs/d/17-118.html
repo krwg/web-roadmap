@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 118 (Сб): SQLite/PostgreSQL из Python · SQL · web-roadmap</title>
+  <meta name="description" content="День 118 (Сб): SQLite/PostgreSQL из Python — неделя 17.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-17--week-17-day-118">
+  <meta http-equiv="refresh" content="0;url=../#week-17--week-17-day-118">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-17--week-17-day-118">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-17-day-118">День 118 (Сб): SQLite/PostgreSQL из Python</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library Database</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Приложение общается с БД через драйвер. Встроенный <code>sqlite3</code> использует placeholders <code>?</code>; <code>psycopg2</code> / <code>psycopg3</code> для PostgreSQL — <code>%s</code>. Никогда не вставляй пользовательский ввод в SQL через f-string — это SQL injection. Только параметризованные запросы: <code>cursor.execute('SELECT * FROM books WHERE id = %s', (book_id,))</code>.</p>
+<p>Context manager <code>with conn:</code> коммитит при успехе и откатывает при исключении. <code>DATABASE_URL</code> из <code>.env</code> через <code>python-dotenv</code> — 12-factor config. Connection pool (в веб-приложении) переиспользует соединения под нагрузкой; в CLI достаточно одного подключения на операцию.</p>
+<p>Абстракция репозитория с методами <code>fetch_all</code>, <code>execute</code> позволяет переключать SQLite и PostgreSQL флагом <code>--db</code>. Скрипт миграции sqlite → postgres учит переносу данных между СУБД. Забытый <code>conn.commit()</code> — изменения не сохранятся.</p>
+<p>Ментальная модель: плейсхолдер (<code>?</code> или <code>%s</code>) — это форма с чётко заданными полями для заполнения, которую драйвер сначала отправляет в СУБД как <em>шаблон</em>, а данные передаёт отдельно как <em>значения</em>. СУБД никогда не интерпретирует значения как код — в отличие от f-строки, где пользовательский ввод буквально дописывается в текст SQL-запроса, и злоумышленник может вставить туда <code>'; DROP TABLE users; --</code> вместо ожидаемого имени.</p>
+<p>Абстракция репозитория, которую ты пишешь сегодня (<code>fetch_all</code>, <code>execute</code> с переключением <code>--db</code>), — не учебная условность: это прямой предшественник паттерна Repository/CRUD-слоя в SQLAlchemy на неделе 18 и <code>Pool.query()</code> в Express на неделе 19 — везде задача одна и та же: изолировать SQL от бизнес-логики и гарантировать безопасные параметризованные запросы.</p>
+<p>Частое заблуждение — думать, что <code>with conn:</code> в психопг2 закрывает и само соединение: на самом деле контекстный менеджер отвечает только за транзакцию — коммитит при успешном выходе или откатывает при исключении, но соединение остаётся открытым и должно быть закрыто отдельно (<code>conn.close()</code> или отдельный <code>with</code>). Вторая типичная ошибка — забыть <code>conn.commit()</code> при работе без контекстного менеджера: запрос выполнится, <code>SELECT</code> после него в той же сессии покажет изменения, но после перезапуска приложения данные окажутся «потерянными», потому что физически не были записаны на диск. Полезная привычка на будущее: заворачивать операции записи в <code>with conn:</code> или явный <code>try/except/finally</code> с <code>rollback()</code> в случае ошибки — тот же паттерн, который через несколько дней превратится в <code>session</code> SQLAlchemy с автоматическим управлением транзакцией на уровне ORM.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.python.org/3/library/sqlite3.html">sqlite3</a></li>
+<li><a href="https://www.psycopg.org/docs/">psycopg2</a></li>
+<li><a href="https://pypi.org/project/python-dotenv/">python-dotenv</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> placeholders — не опция, а требование безопасности; commit явный или через context manager.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Расширь CLI Task Manager (нед.16): опция <code>--db postgres</code> vs sqlite</li>
+<li><code>DATABASE_URL</code> из <code>.env</code> через <code>python-dotenv</code></li>
+<li>Репозиторий с методами <code>fetch_all</code>, <code>execute</code> для обеих БД</li>
+<li>Скрипт миграции sqlite → postgres (<code>migrate_to_pg.py</code>)</li>
+<li>3 операции в <code>library_cli.py</code>: список книг, добавить заём, вернуть книгу</li>
+<li>Все запросы — только placeholders</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Нет SQL injection — только placeholders
+- [ ] <code>with conn:</code> или try/finally close
+- [ ] <code>.env.example</code> с DATABASE_URL</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Расширь CLI Task Manager (нед.16): опция <code>--db postgres</code> vs sqlite</li>
+<li><code>DATABASE_URL</code> из <code>.env</code> через <code>python-dotenv</code></li>
+<li>Репозиторий с методами <code>fetch_all</code>, <code>execute</code> для обеих БД</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-17/</code> → <code>git commit -m "week 17 day 118: Python psycopg2 library CLI"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>f-string в SQL: <code>f"SELECT * FROM users WHERE name = '{name}'"</code> — injection</li>
+<li>Забытый <code>conn.commit()</code> — изменения не сохраняются</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-17--week-17-day-118');</script>
+</body>
+</html>

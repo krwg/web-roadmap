@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 3 (Wed): Прототипы и наследование · JS advanced · web-roadmap</title>
+  <meta name="description" content="День 3 (Wed): Прототипы и наследование — неделя 09.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-09--week-09-day-3">
+  <meta http-equiv="refresh" content="0;url=../#week-09--week-09-day-3">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-09--week-09-day-3">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-09-day-3">День 3 (Wed): Прототипы и наследование</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Library System</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Наследование в JavaScript реализовано через цепочку прототипов, а не через классы в классическом ООП-смысле. Каждый объект имеет внутреннюю ссылку <code>[[Prototype]]</code> (доступна через <code>Object.getPrototypeOf</code> или устаревшее <code>__proto__</code>). При обращении к свойству движок ищет его на самом объекте, затем на прототипе, затем на прототипе прототипа — до <code>null</code>.</p>
+<p>Функции-конструкторы создают объекты через <code>new</code>: <code>new Person('Anna')</code> создаёт объект, привязывает <code>this</code> и устанавливает <code>[[Prototype]]</code> равным <code>Person.prototype</code>. Методы размещают на <code>prototype</code>, чтобы все экземпляры делили одну функцию, а не копировали её. <code>Object.create(proto)</code> создаёт объект с заданным прототипом без конструктора — чистый способ наследования.</p>
+<p><code>instanceof</code> проверяет, есть ли <code>Constructor.prototype</code> в цепочке прототипов объекта — это не проверка «типа» в смысле TypeScript. <code>hasOwnProperty</code> отличает собственные свойства от унаследованных. Классы ES6 (<code>class Person</code>) — синтаксический сахар над этой же моделью; <code>typeof Person === 'function'</code>. Никогда не модифицируй <code>Array.prototype</code> или <code>Object.prototype</code> в production — это ломает чужой код.</p>
+<p>Мысленная модель прототипной цепочки — библиотека с этажами: если нужной книги (свойства) нет на твоей полке (собственный объект), библиотекарь поднимается на этаж выше (прототип) и ищет там, потом ещё выше, и так до последнего этажа (<code>Object.prototype</code>), после которого выше уже ничего нет (<code>null</code>). Поиск свойства в JavaScript устроен именно так — не копированием данных между объектами, а делегированием запроса вверх по цепочке.</p>
+<p>Эта модель объясняет, почему методы размещают на <code>prototype</code>, а не создают заново в каждом экземпляре: 1000 объектов <code>Person</code> не хранят 1000 копий функции <code>greet</code> — все они делегируют вызов одному и тому же методу на <code>Person.prototype</code>, экономя память. Понимание прототипов готовит к завтрашним классам ES6 (<code>class</code> — это просто удобный синтаксис поверх той же модели) и объясняет, почему <code>typeof MyClass === 'function'</code> — классы в JS остаются функциями под капотом.</p>
+<p>Частое заблуждение — думать, что <code>instanceof</code> проверяет «настоящий тип» объекта, как в строго типизированных языках: на самом деле <code>obj instanceof Person</code> лишь проверяет, встречается ли <code>Person.prototype</code> где-то в цепочке прототипов <code>obj</code>, и это можно подделать через <code>Object.create</code>. Конкретный пример из практики дня: <code>Student</code>, созданный через <code>Object.create(Person.prototype)</code>, пройдёт проверку <code>student instanceof Person</code>, даже если ты никогда явно не писал «Student наследует Person» — прототипная цепочка это единственный источник истины, а не namespace или декларация типа.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/prototype-inheritance">learn.javascript.ru: Прототипное наследование</a>
+- <a href="https://learn.javascript.ru/function-prototype">learn.javascript.ru: F.prototype</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Object/create">MDN: Object.create()</a></p>
+<p><strong>Ключевая мысль:</strong> прототипная цепочка — механизм делегирования свойств; <code>class</code> лишь удобная обёртка над ним.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Constructor <code>Person(name)</code> + <code>Person.prototype.greet</code></li>
+<li><code>Student</code> наследует <code>Person</code> через <code>Object.create(Person.prototype)</code></li>
+<li>Проверь цепочку: <code>student instanceof Student</code>, <code>instanceof Person</code></li>
+<li>Добавь метод на <code>Array.prototype</code> — пойми, почему это плохая идея</li>
+<li>Нарисуй prototype chain для своих объектов</li>
+<li>Реализуй <code>inherits(Child, Parent)</code> без <code>class</code> — утилита наследования</li>
+<li>Сравни размер объектов: factory vs constructor — когда что выгоднее</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Наследование без class syntax (хотя бы один пример)</p>
+</li>
+<li>
+<p>[ ] Понимаю разницу <strong>proto</strong> и prototype</p>
+</li>
+<li>
+<p>[ ] Не поллю глобальные прототипы в production-коде</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Constructor <code>Person(name)</code> + <code>Person.prototype.greet</code></li>
+<li><code>Student</code> наследует <code>Person</code> через <code>Object.create(Person.prototype)</code></li>
+<li>Проверь цепочку: <code>student instanceof Student</code>, <code>instanceof Person</code></li>
+<li>Добавь метод на <code>Array.prototype</code> — пойми, почему это плохая идея</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-09
+
+git add day-03-prototypes.js
+
+git commit -m &quot;week-09 day-03: прототипы, Person/Student и inherits&quot;
+
+</code></pre></article>
+  </main>
+  <script>location.replace('../#week-09--week-09-day-3');</script>
+</body>
+</html>

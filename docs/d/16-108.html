@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 108 (Ср): Магические методы и итераторы · Python OOP · web-roadmap</title>
+  <meta name="description" content="День 108 (Ср): Магические методы и итераторы — неделя 16.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-16--week-16-day-108">
+  <meta http-equiv="refresh" content="0;url=../#week-16--week-16-day-108">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-16--week-16-day-108">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-16-day-108">День 108 (Ср): Магические методы и итераторы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Магические методы (dunder) делают объекты «питоничными»: <code>__len__</code> для <code>len(obj)</code>, <code>__getitem__</code> для <code>obj[i]</code>, <code>__contains__</code> для <code>x in obj</code>. Класс <code>Playlist</code> с этими методами ведёт себя как встроенная коллекция — пользователь API не знает о внутреннем <code>list</code>.</p>
+<p>Итератор-протокол: <code>__iter__</code> возвращает объект с <code>__next__</code>, который выдаёт элементы или бросает <code>StopIteration</code>. Generator function с <code>yield</code> — ленивая последовательность: <code>fibonacci(n)</code> не хранит весь ряд в RAM. Generator <code>read_log_lines(path)</code> читает файл построчно — O(1) память на строку.</p>
+<p><code>__eq__</code> определяет равенство; если переопределяешь его и хочешь использовать объекты в <code>set</code>/<code>dict</code>, продумай <code>__hash__</code> (или используй <code>frozen dataclass</code>). <code>__lt__</code> позволяет <code>sorted(transactions)</code> без key-функции.</p>
+<p>Ментальная модель: dunder-методы — это «розетки» единого стандарта Python. Реализуешь <code>__len__</code>, <code>__getitem__</code>, <code>__iter__</code> — и твой объект тут же подключается к экосистеме <code>len()</code>, циклов <code>for</code>, срезов, распаковки, как электроприбор со стандартной вилкой вместо самодельного разъёма. Пользователю <code>Playlist</code> не нужно знать, что внутри <code>list</code> — он просто пишет <code>for track in playlist</code>, как для любой встроенной коллекции.</p>
+<p>Это важно позже: итератор-протокол лежит в основе курсоров баз данных — результат SQL-запроса в SQLAlchemy (неделя 18) и <code>pool.query()</code> в Node (неделя 19) тоже по сути итерируемые последовательности строк. А ленивые generator'ы — прямой путь к обработке данных, которые не помещаются в память целиком: тот же приём понадобится при построчном парсинге логов (день 111) и при потоковой отдаче больших файлов из API.</p>
+<p>Частое заблуждение — думать, что generator можно «перемотать» и пройти повторно: после первого полного обхода <code>for x in fibonacci(10)</code> генератор исчерпан, второй <code>for</code> по тому же объекту ничего не вернёт — нужно создавать новый вызов функции-генератора заново. Также важно не путать <code>__eq__</code> без согласованного <code>__hash__</code>: если переопределить только <code>__eq__</code>, объект по умолчанию становится unhashable, и попытка положить его в <code>set</code> бросит <code>TypeError</code> — это прямо проверяется в критериях практики дня. Хорошее эмпирическое правило: если объект по смыслу — коллекция или последовательность, реализуй <code>__len__</code>/<code>__iter__</code>, а не заставляй пользователя лезть во внутренний атрибут через <code>playlist.tracks</code> — так API остаётся стабильным, даже если внутреннее хранилище позже сменится с <code>list</code> на что-то другое. Generator function с <code>yield</code> стоит воспринимать как функцию, которая «замораживается» после каждого значения и продолжает выполнение ровно с того места, где остановилась, при следующем вызове <code>next()</code> — в этом смысле она куда ближе к сопрограмме, чем к обычной функции, возвращающей единственный результат.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://docs.python.org/3/reference/datamodel.html#emulating-container-types">Emulating container types</a></li>
+<li><a href="https://docs.python.org/3/library/stdtypes.html#iterator-types">Iterator Types</a></li>
+<li><a href="https://docs.python.org/3/tutorial/classes.html#generators">Generators</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> dunder-методы — контракт с Python; generators — ленивость и экономия памяти.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Класс <code>Playlist</code> с <code>__len__</code>, <code>__getitem__</code>, итерацией по трекам</li>
+<li>Generator <code>fibonacci(n)</code> — первые n чисел без списка в памяти</li>
+<li><code>Playlist</code> поддерживает <code>for track in playlist</code> и <code>len(playlist)</code></li>
+<li>Перегрузка <code>==</code> для <code>Transaction</code> по <code>id</code>; проверь поведение в <code>set</code></li>
+<li>Generator <code>read_log_lines(path)</code> — построчное чтение большого файла</li>
+<li>Напиши в <code>notes/dunder.md</code> три dunder-метода и зачем они нужны</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Playlist итерируется в for-loop
+- [ ] Generator не хранит весь ряд Фибоначчи в памяти
+- [ ] <code>__eq__</code> согласован с hash (если используешь в set)</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Класс <code>Playlist</code> с <code>__len__</code>, <code>__getitem__</code>, итерацией по трекам</li>
+<li>Generator <code>fibonacci(n)</code> — первые n чисел без списка в памяти</li>
+<li><code>Playlist</code> поддерживает <code>for track in playlist</code> и <code>len(playlist)</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-16/</code> → <code>git commit -m "week 16 day 108: dunder methods and generators"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li><code>__eq__</code> без <code>__hash__</code> — объект не hashable для set/dict keys</li>
+<li>Бесконечный generator без условия остановки</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-16--week-16-day-108');</script>
+</body>
+</html>

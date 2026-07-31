@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 1 (Mon): localStorage и sessionStorage · Modules &amp; API · web-roadmap</title>
+  <meta name="description" content="День 1 (Mon): localStorage и sessionStorage — неделя 07.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-07--week-07-day-1">
+  <meta http-equiv="refresh" content="0;url=../#week-07--week-07-day-1">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-07--week-07-day-1">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-07-day-1">День 1 (Mon): localStorage и sessionStorage</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Notes Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Web Storage API даёт браузеру простое key-value хранилище, привязанное к origin (протокол + домен + порт). <code>localStorage</code> и <code>sessionStorage</code> работают одинаково по API, но различаются временем жизни: localStorage сохраняет данные между сессиями, а sessionStorage очищается при закрытии вкладки. Оба интерфейса принимают только строки — если нужно сохранить объект или массив, сначала сериализуй его через <code>JSON.stringify</code>, а при чтении восстанови через <code>JSON.parse</code>.</p>
+<p>Основные методы: <code>setItem(key, value)</code>, <code>getItem(key)</code> (возвращает <code>null</code>, если ключа нет), <code>removeItem(key)</code> и <code>clear()</code>. API синхронный: каждая операция выполняется на main thread, поэтому не стоит записывать большие объёмы данных за раз. Типичный лимит — около 5 МБ на origin; при переполнении браузер выбросит <code>QuotaExceededError</code>.</p>
+<p>Для настроек UI (тема, язык, черновики форм) localStorage — естественный выбор. Но это не защищённое хранилище: любой JavaScript на странице (в том числе внедрённый через XSS) может прочитать все ключи. Пароли, JWT и API-ключи в localStorage хранить нельзя. Пользователь или расширение браузера могут вручную изменить значение в DevTools — поэтому <code>JSON.parse</code> всегда оборачивай в <code>try/catch</code> и задавай разумные значения по умолчанию при ошибке.</p>
+<p><strong>Ментальная модель:</strong> localStorage удобно представлять как блокнот, лежащий прямо в браузере пользователя, а не в твоём приложении. Блокнот привязан не к вкладке и не к сессии, а к конкретному origin — открыл тот же сайт неделю спустя, а записи всё ещё там. Но это чужой блокнот: любой скрипт на странице может его читать и писать, поэтому в нём нельзя хранить секреты, только то, что не страшно потерять или показать посторонним.</p>
+<p><strong>Почему это важно дальше:</strong> сегодняшний навык — первый шаг к тому, чтобы приложение «помнило» пользователя без сервера и базы данных. На неделе к проекту Notes Dashboard localStorage станет основным хранилищем заметок, а на будущих неделях с backend ты увидишь, что именно осознание уязвимости localStorage к XSS объясняет, почему токены авторизации в реальных production-приложениях чаще хранят в httpOnly cookie, а не здесь.</p>
+<p><strong>Пример:</strong> сохранение массива задач — <code>localStorage.setItem('tasks', JSON.stringify(tasks))</code>, восстановление — <code>const saved = localStorage.getItem('tasks'); const tasks = saved ? JSON.parse(saved) : []</code>. Проверка <code>saved ?</code> до парсинга защищает от попытки распарсить <code>null</code>, если ключ ещё не создавался — частая причина ошибки при первом запуске приложения.</p>
+<p><strong>Частое заблуждение:</strong> новички думают, что localStorage может хранить объекты и массивы напрямую, и пишут <code>localStorage.setItem('user', user)</code> без <code>JSON.stringify</code>. На деле любое значение молча приводится к строке — объект превратится в бесполезную строку <code>"[object Object]"</code>, из которой ничего не восстановить. Сериализация через JSON — не опция, а обязательный шаг, который отрабатывается в сегодняшней практике на функциях <code>saveState</code>/<code>loadState</code>.</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/API/Window/localStorage">MDN: Window.localStorage</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/API/Web_Storage_API">MDN: Web Storage API</a>
+- <a href="https://web.dev/storage-for-the-web/">web.dev: Storage for the web</a></p>
+<p><strong>Ключевая мысль:</strong> localStorage — удобный кэш для UI-состояния, но не сейф для секретов и не замена серверной базе данных.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Сохрани Todo-список в <code>localStorage</code> при каждом изменении</li>
+<li>При загрузке страницы восстанови задачи из storage</li>
+<li>Кнопка «Очистить всё» — <code>removeItem</code> + обновление UI</li>
+<li>Сохрани тему оформления (light/dark) между сессиями</li>
+<li>Обработай случай битого JSON в <code>getItem</code> (try/catch)</li>
+<li>Создай ключ <code>week-07-notes</code> — заготовка для проекта недели</li>
+<li>Вынеси работу со storage в функции <code>saveState</code> / <code>loadState</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Данные переживают перезагрузку страницы
+- [ ] Объекты сериализуются через JSON
+- [ ] Ошибки парсинга обработаны gracefully</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Сохрани Todo-список в <code>localStorage</code> при каждом изменении</li>
+<li>При загрузке страницы восстанови задачи из storage</li>
+<li>Кнопка «Очистить всё» — <code>removeItem</code> + обновление UI</li>
+<li>Сохрани тему оформления (light/dark) между сессиями</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 07 day 1: localStorage persist"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Хранение паролей и токенов в localStorage — уязвимость XSS</li>
+<li>Забытый <code>JSON.parse</code> — строка <code>"[object Object]"</code></li>
+<li>QuotaExceededError при переполнении — редко, но возможно</li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-07--week-07-day-1');</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 0 (до понедельника): Git и GitHub — подготовка · HTML · web-roadmap</title>
+  <meta name="description" content="День 0 (до понедельника): Git и GitHub — подготовка — неделя 01.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-01--week-01-day-0">
+  <meta http-equiv="refresh" content="0;url=../#week-01--week-01-day-0">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-01--week-01-day-0">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-01-day-0">День 0 (до понедельника): Git и GitHub — подготовка</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~55м теория · ~1.5ч практика · ~10м Git · ~15м ревью<br>
+<strong>Время (лайт):</strong> ~25м теория · ~40м практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio Landing</strong></p>
+<p>Если Git уже установлен и аккаунт GitHub есть — пройди чеклист и переходи к дню 1.</p>
+</blockquote>
+<h3>Теория</h3>
+<p>Система контроля версий (VCS) решает проблему, с которой каждый разработчик сталкивается рано: «что я менял, когда и зачем?». Без VCS папка проекта превращается в <code>index_final_v3_REAL.html</code>. Git хранит не отдельные патчи, а <strong>снимки</strong> всего проекта в момент коммита — как фотография комнаты, а не список «переставили стул на 3 см влево». Это позволяет мгновенно откатиться к любому состоянию, сравнить две версии и работать параллельно в ветках.</p>
+<p>Рабочий процесс Git строится вокруг трёх зон. <strong>Working directory</strong> — файлы на диске, которые ты редактируешь прямо сейчас. Команда <code>git add</code> переносит выбранные изменения в <strong>staging</strong> (индекс) — зону подготовки: «вот это точно войдёт в следующий коммит». <code>git commit</code> фиксирует снимок staging в <strong>repository</strong> — локальной базе истории. Мысленная модель: черновик на столе → выбранные листы в папку «на подпись» → подписанный документ в архив.</p>
+<p>GitHub — это удалённое зеркало репозитория плюс социальная платформа. Публичный <code>learning-log</code> с осмысленной историей коммитов — живое портфолио: рекрутер видит не только код, но и то, как ты думаешь и работаешь.</p>
+<p>Почему это критично для всех следующих 22 недель: каждый день маршрута заканчивается коммитом, и от того, насколько уверенно ты сегодня освоишь <code>add</code> → <code>commit</code> → <code>push</code>, зависит, будет ли Git помогать или пугать всю дорогу. На неделе 6 появятся ветки для фич, дальше — пул-реквесты и код-ревью; без твёрдой базы трёх зон эти темы превращаются в магию вместо инструмента.</p>
+<p>Конкретный пример рабочего цикла: правишь <code>index.html</code>, <code>git status</code> показывает файл как изменённый (working directory), <code>git add index.html</code> переносит его в staging, <code>git commit -m "..."</code> создаёт снимок в истории, <code>git push</code> отправляет его на GitHub — до этого момента изменения видны только тебе локально.</p>
+<p>Частое заблуждение новичков — считать, что <code>git add</code> уже «сохраняет» изменения, и после него можно закрыть терминал. На деле без <code>git commit</code> изменения остаются в staging и никуда не «доезжают»; а без <code>git push</code> коммит остаётся только на твоём компьютере и не появится на GitHub, даже если локально <code>git log</code> показывает его.</p>
+<p><strong>Ключевая мысль:</strong> коммит — это именованный снимок проекта, а не просто «сохранить файл»; сегодняшняя практика — прогнать этот цикл от установки Git до первого <code>git push</code> вручную, чтобы завтра, в день 1, писать <code>index.html</code> и коммитить его уже не задумываясь о механике.</p>
+<p><strong>Читать:</strong>
+- <a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control">Pro Git: Введение</a> — зачем VCS: история, откат, ветки</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Установи <a href="https://git-scm.com/downloads">Git</a>, проверь: <code>git --version</code></li>
+<li>Настрой имя и email (они попадут в каждый коммит):</li>
+<li>Создай аккаунт на <a href="https://github.com/">GitHub</a> если нет</li>
+<li>Создай <strong>пустой</strong> публичный репозиторий <code>learning-log</code> (без README — добавишь локально)</li>
+<li>Склонируй репозиторий <a href="https://github.com/krwg/learning-log">learning-log</a> (кнопка Code → HTTPS)</li>
+<li>Создай <code>.gitignore</code> в корне:</li>
+<li>Первый коммит инфраструктуры:
+   <code>bash
+   git config --global user.name "Твоё Имя"
+   git config --global user.email "you@example.com"</code>
+   <code>.DS_Store
+   Thumbs.db
+   .env
+   *.log
+   node_modules/</code>
+   <code>bash
+   cd learning-log
+   git add .gitignore
+   git commit -m "chore: init learning-log with gitignore"
+   git push -u origin main</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] <code>git status</code> работает в папке <code>learning-log</code>
+- [ ] Репозиторий виден на GitHub
+- [ ] <code>.gitignore</code> закоммичен</p>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<hr>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Установи <a href="https://git-scm.com/downloads">Git</a>, проверь: <code>git --version</code></li>
+<li>Настрой имя и email (они попадут в каждый коммит):</li>
+<li>Создай аккаунт на <a href="https://github.com/">GitHub</a> если нет</li>
+<li>Создай <strong>пустой</strong> публичный репозиторий <code>learning-log</code> (без README — добавишь локально)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote></article>
+  </main>
+  <script>location.replace('../#week-01--week-01-day-0');</script>
+</body>
+</html>

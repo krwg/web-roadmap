@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 2 (Tue): Props и композиция · React basics · web-roadmap</title>
+  <meta name="description" content="День 2 (Tue): Props и композиция — неделя 11.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-11--week-11-day-2">
+  <meta http-equiv="refresh" content="0;url=../#week-11--week-11-day-2">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-11--week-11-day-2">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-11-day-2">День 2 (Tue): Props и композиция</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Props (properties) — единственный способ передать данные от родителя к ребёнку в React. Props <strong>read-only</strong>: дочерний компонент не должен их мутировать. Это основа однонаправленного потока данных (one-way data flow): состояние живёт выше, данные текут вниз через props, события — вверх через callback-функции.</p>
+<p>Деструктуризация в сигнатуре делает код читаемым: <code>function Button({ label, onClick, variant = 'primary' })</code> вместо <code>props.label</code>. Значения по умолчанию задавай прямо в деструктуризации. Специальный prop <code>children</code> — содержимое между открывающим и закрывающим тегами: <code>&lt;Card&gt;Это children&lt;/Card&gt;</code>. Паттерн slot: <code>Card</code> рендерит <code>children</code> внутри своей разметки, а родитель решает, что туда положить.</p>
+<p>Spread props (<code>&lt;Input {...fieldProps} /&gt;</code>) передаёт все свойства объекта разом — удобно, но осторожно: лишние props могут попасть на DOM-элемент и вызвать warning. Props drilling на 1–2 уровня — нормальная практика; Context (неделя 13+) понадобится при глубокой вложенности. В TypeScript каждый компонент получает <code>interface XxxProps</code> с явными типами.</p>
+<p>Мысленная модель props — посылка с товаром, а не пульт дистанционного управления: родитель кладёт в посылку (props) всё, что нужно ребёнку для отображения, и отправляет её вниз, но не может через эту же посылку управлять ребёнком напрямую — единственный способ «получить обратную связь» от ребёнка — это положить в посылку функцию-callback (<code>onClick</code>), которую ребёнок вызовет, если что-то произойдёт. Информация всегда течёт по одному маршруту: данные — вниз, события — вверх.</p>
+<p>Эта дисциплина односторонного потока данных станет критичной уже завтра при работе со списками и на день 5 этой недели, при подъёме состояния (lifting state up): как только в приложении появляется больше двух-трёх компонентов, обменивающихся данными, любое отклонение от «props вниз, callback вверх» превращает приложение в паутину сложно отслеживаемых связей. Паттерн <code>children</code> — первый шаг к композиции, которая в React предпочтительнее наследования компонентов.</p>
+<p>Частое заблуждение — пытаться изменить props изнутри дочернего компонента, например <code>props.disabled = true</code> внутри <code>Button</code>: это не вызовет ошибку синтаксиса, но нарушит контракт React и приведёт к рассинхронизации между тем, что видит родитель, и тем, что реально происходит. Конкретный пример из задания 4 практики — композиция <code>Card</code> внутри <code>Hero</code>, где <code>Hero</code> передаёт в <code>Card</code> не данные напрямую, а готовый JSX через <code>children</code>, что позволяет <code>Card</code> оставаться полностью независимым от содержимого, которое в него положат.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/learn/passing-props-to-a-component">react.dev: Passing Props to a Component</a>
+- <a href="https://react.dev/learn/thinking-in-react">react.dev: Thinking in React</a>
+- <a href="https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/basic_type_example">React TypeScript Cheatsheet: Components</a></p>
+<p><strong>Ключевая мысль:</strong> props — read-only вход компонента; данные вниз, события вверх через callbacks.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>Button</code> с props: <code>variant: 'primary' | 'secondary'</code>, <code>size</code>, <code>disabled</code>, <code>onClick</code></li>
+<li><code>Card</code> с <code>title</code>, <code>children</code>, опциональным <code>footer</code></li>
+<li><code>Avatar</code> с <code>src</code>, <code>alt</code>, <code>size</code> — значения по умолчанию</li>
+<li>Композиция: <code>Card</code> внутри <code>Hero</code>, <code>Button</code> в <code>Card.footer</code></li>
+<li>Задокументируй props через TypeScript interfaces</li>
+<li>Компонент <code>Icon</code> с <code>name</code> и <code>aria-label</code> для a11y</li>
+<li>Story-подобная страница: все варианты Button на одном экране</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Все props типизированы</p>
+</li>
+<li>
+<p>[ ] children используется для композиции</p>
+</li>
+<li>
+<p>[ ] Default props через деструктуризацию</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>Button</code> с props: <code>variant: 'primary' | 'secondary'</code>, <code>size</code>, <code>disabled</code>, <code>onClick</code></li>
+<li><code>Card</code> с <code>title</code>, <code>children</code>, опциональным <code>footer</code></li>
+<li><code>Avatar</code> с <code>src</code>, <code>alt</code>, <code>size</code> — значения по умолчанию</li>
+<li>Композиция: <code>Card</code> внутри <code>Hero</code>, <code>Button</code> в <code>Card.footer</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-11
+
+git add src/components/ui/
+
+git commit -m &quot;week-11 day-02: Button, Card, Avatar и композиция&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Мутация props — запрещено</p>
+</li>
+<li>
+<p><code>key</code> не доступен как prop — отдельный атрибут</p>
+</li>
+<li>
+<p>Пропуск <code>alt</code> на img — a11y регрессия</p>
+</li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-11--week-11-day-2');</script>
+</body>
+</html>

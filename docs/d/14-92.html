@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 92 (Пн): Архитектура и скелет проекта · Frontend SPA · web-roadmap</title>
+  <meta name="description" content="День 92 (Пн): Архитектура и скелет проекта — неделя 14.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-14--week-14-day-92">
+  <meta http-equiv="refresh" content="0;url=../#week-14--week-14-day-92">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-14--week-14-day-92">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-14-day-92">День 92 (Пн): Архитектура и скелет проекта</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Frontend capstone начинается с архитектуры, а не с кода. Прежде чем писать компоненты, зафиксируй страницы (<code>/</code>, <code>/tasks</code>, <code>/weather</code>, <code>/settings</code>), источники данных (localStorage, Context, внешний API) и границы ответственности модулей. Хороший скелет экономит дни рефакторинга на середине недели.</p>
+<p>Vite отделяет переменные окружения по префиксу: только <code>VITE_*</code> попадают в клиентский bundle. API-ключи OpenWeather никогда не хардкодь — <code>import.meta.env.VITE_WEATHER_API_KEY</code> и <code>.env.example</code> без реальных значений. Файл <code>.env</code> в <code>.gitignore</code>, иначе ключ утечёт на GitHub.</p>
+<p>Структура папок: <code>pages/</code> для маршрутов, <code>components/ui/</code> для переиспользуемых кнопок и карточек, <code>hooks/</code> и <code>contexts/</code> для логики, <code>services/</code> для HTTP. Mobile-first CSS с CSS-переменными для темы закладывает адаптив с первого дня. Отдельная папка <code>learning-log/week-14/</code> с чистой git-историей — привычка, которая пригодится в capstone.</p>
+<p>Мысленная модель дня: архитектура — это чертёж здания, а код — это стройка. Ты же не начинаешь строить дом, пока не решил, сколько этажей, где несущие стены и куда идут трубы. Точно так же час, потраченный на <code>ARCHITECTURE.md</code> с описанием страниц, источников данных и границ модулей, экономит дни переписывания кода в середине недели, когда выяснится, что задачи нужны сразу и на Dashboard, и на <code>/tasks</code>, а состояние для них рассовано по разным местам.</p>
+<p>Это особенно критично именно для capstone-проекта такого масштаба: впервые за курс собирается приложение с четырьмя полноценными страницами, внешним API и persist-слоем одновременно. Без предварительного плана велик риск «big ball of mud» — кода, который работает, но настолько запутан, что даже автор через три дня не может быстро найти, где лежит логика фильтрации задач.</p>
+<p>Конкретный пример решения, которое стоит принять именно сегодня, а не на день 94: задачи должны читаться через один <code>useTasks</code> hook (или Context поверх него), которым пользуются и Dashboard (для статистики), и страница <code>/tasks</code> (для CRUD) — если это не зафиксировать заранее, велик соблазн написать <code>useLocalStorage('tasks')</code> в двух местах независимо, а затем удивляться, почему изменения не синхронизируются.</p>
+<p>Частое заблуждение — думать, что <code>.env</code> файл автоматически безопасен просто потому, что не закоммичен явно руками; на самом деле любой файл, случайно не попавший в <code>.gitignore</code> до первого коммита, останется в истории Git навсегда, даже если потом его удалить — поэтому <code>.gitignore</code> с <code>.env</code> нужно создать до, а не после первого <code>git add .</code>. Также важно понимать: <code>VITE_*</code> переменные всё равно оказываются в финальном JS-бандле, видимом любому пользователю в DevTools — это защита от случайного коммита секрета в репозиторий, а не от раскрытия ключа в браузере. Именно поэтому OpenWeather API-ключ, который появится через несколько дней, — не секрет высокого риска, но привычку хранить его через <code>.env.example</code> стоит выработать уже сегодня, при закладке скелета проекта.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://vitejs.dev/guide/env-and-mode.html">Vite — Env Variables</a></li>
+<li><a href="https://reactrouter.com/home">React Router</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries">Mobile-first CSS (MDN)</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> спланируй страницы и state до кода; секреты — только через <code>VITE_*</code> и <code>.env</code>.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>npm create vite@latest week-14 -- --template react-ts</code> в <code>learning-log/</code></li>
+<li>Установи <code>react-router-dom</code>, настрой Layout + 4 маршрута</li>
+<li>Заглушки страниц: Dashboard, Tasks, Weather, Settings</li>
+<li><code>App.css</code> — CSS-переменные для светлой/тёмной темы</li>
+<li><code>.env.example</code> с <code>VITE_WEATHER_API_KEY=</code></li>
+<li>Sidebar + main content area — responsive skeleton</li>
+<li><code>ARCHITECTURE.md</code> — план страниц и state на 1 страницу</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] 4 маршрута с общим Layout</p>
+</li>
+<li>
+<p>[ ] Адаптивная sidebar/nav</p>
+</li>
+<li>
+<p>[ ] <code>.env</code> в <code>.gitignore</code></p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>npm create vite@latest week-14 -- --template react-ts</code> в <code>learning-log/</code></li>
+<li>Установи <code>react-router-dom</code>, настрой Layout + 4 маршрута</li>
+<li>Заглушки страниц: Dashboard, Tasks, Weather, Settings</li>
+<li><code>App.css</code> — CSS-переменные для светлой/тёмной темы</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-14
+
+git add .
+
+git commit -m &quot;week-14 day-92: скелет Dashboard, Layout и 4 маршрута&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>API-ключ в коде — утечка при push на GitHub</p>
+</li>
+<li>
+<p>Монолитный <code>App.jsx</code> на 500 строк — сразу дроби на модули</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-14--week-14-day-92');</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 4 (Thu): Функции · JavaScript · web-roadmap</title>
+  <meta name="description" content="День 4 (Thu): Функции — неделя 05.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-05--week-05-day-4">
+  <meta http-equiv="refresh" content="0;url=../#week-05--week-05-day-4">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-05--week-05-day-4">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-05-day-4">День 4 (Thu): Функции</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Console Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Функция — именованный блок кода, который можно вызывать многократно. <strong>Declaration</strong> (<code>function foo() {}</code>) поднимается (hoisting) — доступна до строки объявления. <strong>Expression</strong> (<code>const foo = function() {}</code>) — нет. <strong>Arrow functions</strong> (<code>const foo = () =&gt; {}</code>) — короткий синтаксис; неявный <code>return</code> при <code>() =&gt; выражение</code> без фигурных скобок.</p>
+<p>Параметры и аргументы: параметры в объявлении, аргументы при вызове. Значения по умолчанию (<code>greeting = 'Привет'</code>) и rest (<code>...numbers</code>) делают сигнатуру гибкой. <strong>Чистая функция</strong> — одинаковый вход всегда даёт одинаковый выход, без побочных эффектов (изменения внешних переменных, DOM, сети). Такие функции проще тестировать и переиспользовать.</p>
+<p>Arrow functions <strong>не имеют своего <code>this</code></strong> — важно для методов объектов (неделя 6). Принцип <strong>SRP</strong> (Single Responsibility): одна функция — одна задача; <code>calculateTotal</code>, не <code>doEverything</code>.</p>
+<p><strong>Ментальная модель:</strong> функция — это маленькая машина: на входе параметры, внутри — чёрный ящик преобразований, на выходе — результат через <code>return</code>. Чистая функция не имеет «утечек» наружу: не трогает глобальные переменные, не меняет DOM, не делает сетевых запросов — только считает и возвращает. Такую машину легко тестировать отдельно от всей программы и переиспользовать где угодно.</p>
+<p><strong>Почему это важно дальше:</strong> буквально весь курс дальше строится на функциях — методы массивов (завтра), обработчики событий (неделя 6), запросы к API (неделя 7). Разделение на маленькие чистые функции с одной ответственностью — это ровно то, что отличает читаемый проект от «одного гигантского файла, в котором страшно что-то менять».</p>
+<p><strong>Пример:</strong> <code>function addToCartAndUpdateUIAndSendAnalytics(item) {...}</code> — это функция с тремя ответственностями сразу, её сложно тестировать и ещё сложнее переиспользовать. Разбив на <code>addToCart(cart, item)</code> (чистая, возвращает новый массив), <code>renderCart(cart)</code> (рисует DOM) и <code>trackEvent(name)</code> (аналитика), получаешь три независимых, понятных куска, каждый из которых можно менять не боясь сломать остальные.</p>
+<p><strong>Частое заблуждение:</strong> новички думают, что arrow function — это просто «более короткий синтаксис» без разницы в поведении. На деле у arrow function нет собственного <code>this</code> — она берёт его из внешнего контекста, что критично для методов объектов и обработчиков событий на неделе 6, где ошибка с <code>this</code> — одна из самых частых причин «код не работает, а ошибки нет». Ещё одна тонкость: неявный <code>return</code> в стрелочной функции работает только без фигурных скобок — стоит добавить <code>{}</code>, и <code>return</code> придётся писать явно, иначе функция вернёт <code>undefined</code>.</p>
+<p><strong>Ключевая мысль:</strong> чистые функции + SRP = код, который можно читать, тестировать и переиспользовать.</p>
+<p><strong>Читать:</strong>
+- <a href="https://learn.javascript.ru/function-basics">learn.javascript.ru: Функции</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Напиши <code>greet(name, greeting = 'Привет')</code> — declaration</li>
+<li>Перепиши как arrow function; сравни поведение <code>this</code> (пока без углубления)</li>
+<li>Функция <code>sum(...numbers)</code> — сумма произвольного числа аргументов</li>
+<li><code>isEven(n)</code>, <code>isPrime(n)</code>, <code>factorial(n)</code> — чистые функции</li>
+<li>Организуй функции в отдельный файл <code>utils.js</code> (подключение пока без modules)</li>
+<li>Добавь JSDoc к <code>factorial</code> — опиши параметр и возврат</li>
+<li>Напиши <code>generateId()</code> — уникальный id на основе <code>Date.now()</code> и случайности</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Минимум 5 переиспользуемых функций
+- [ ] Default parameters и rest использованы
+- [ ] Функции делают одну вещь (SRP)</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Напиши <code>greet(name, greeting = 'Привет')</code> — declaration</li>
+<li>Перепиши как arrow function; сравни поведение <code>this</code> (пока без углубления)</li>
+<li>Функция <code>sum(...numbers)</code> — сумма произвольного числа аргументов</li>
+<li><code>isEven(n)</code>, <code>isPrime(n)</code>, <code>factorial(n)</code> — чистые функции</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 05 day 4: functions and utils"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-05--week-05-day-4');</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 134 (Пн): Аутентификация и хеширование паролей · Auth &amp; tests · web-roadmap</title>
+  <meta name="description" content="День 134 (Пн): Аутентификация и хеширование паролей — неделя 20.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-20--week-20-day-134">
+  <meta http-equiv="refresh" content="0;url=../#week-20--week-20-day-134">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-20--week-20-day-134">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-20-day-134">День 134 (Пн): Аутентификация и хеширование паролей</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Secure Notes</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Authentication отвечает на вопрос «кто ты?» — проверка личности (логин/пароль). Authorization — «что тебе можно?» — права на ресурсы. Не путай: успешный login не означает доступ ко всем endpoints. Пароли никогда не хранятся в plain text, даже в dev-базе.</p>
+<p>bcrypt (Node) и passlib с bcrypt (Python) — adaptive hashing с встроенным salt. Salt rounds 10–12 — баланс безопасность/скорость. При register: validate email → <code>hash(password, 12)</code> → store <code>password_hash</code>. При login: <code>compare(plain, hash)</code>. SHA256 без salt уязвим к rainbow tables.</p>
+<p>Registration flow: дубликат email → 409 Conflict. Login: неверный пароль → 401 Unauthorized с generic message «Invalid credentials» — не раскрывай, существует ли email. Пароль не логируй и не возвращай в JSON response.</p>
+<p>Ментальная модель: хеш пароля — это цифровой отпечаток, а не сейф с ключом. Ты не «открываешь» hash обратно в пароль — bcrypt при login заново хеширует введённый пароль с тем же salt и сравнивает отпечатки. Это принципиально отличает hashing от encryption, где данные можно расшифровать зная ключ. Для junior backend-роли эта тема — почти гарантированный вопрос на собеседовании: «как ты хранишь пароли?» — и неправильный ответ («шифрую AES») сразу выдаёт незрелость. На практике каждая компания, где есть пользователи, должна закрыть этот вопрос в первый день продакшена.</p>
+<p>Классический пример цены ошибки — утечка LinkedIn 2012 года: пароли хранились как unsalted SHA1, и после взлома миллионы паролей были восстановлены за часы перебором по rainbow tables. Частое заблуждение новичков — «добавлю к паролю секретную строку и захеширую SHA256, этого достаточно» — но без cost-фактора (salt rounds) современные GPU перебирают миллиарды SHA256-хешей в секунду, а bcrypt намеренно медленный и настраиваемый. Именно этот механизм регистрации ты сегодня реализуешь в Secure Notes, и тот же код позже переиспользуешь в DevHub capstone (неделя 22, день 151) — прочный фундамент экономит часы отладки в финале роадмапа.</p>
+<p>Для продакшена важна и обратная сторона: слишком высокий cost factor (например, 15+ раундов) замедляет login до заметных пользователю секунд и создаёт нагрузку на CPU при пиковой регистрации — поэтому 10–12 раундов остаётся индустриальным стандартом, а не произвольным числом. Держи это в голове при код-ревью чужого auth-кода: cost factor — не «чем больше, тем безопаснее», а сознательный компромисс между защитой и latency бюджетом сервиса.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://github.com/kelektiv/node.bcrypt.js">bcrypt (Node)</a></li>
+<li><a href="https://passlib.readthedocs.io/">passlib</a></li>
+<li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">OWASP Password Storage</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> hash + salt через bcrypt; одинаковые сообщения об ошибке login — против enumeration.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Таблица <code>users(id, email UNIQUE, password_hash, created_at)</code></li>
+<li>Express: <code>POST /auth/register</code>, <code>POST /auth/login</code></li>
+<li><code>bcrypt.hash(password, 12)</code> при register, <code>bcrypt.compare()</code> при login</li>
+<li>FastAPI параллельно (или выбери один стек): <code>passlib[bcrypt]</code>, <code>CryptContext</code></li>
+<li>Дубликат email → 409 Conflict</li>
+<li>Неверный пароль → 401 Unauthorized</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Пароль никогда не логируется и не возвращается в JSON
+- [ ] Дубликат email → 409
+- [ ] Неверный пароль → 401 (не 404)</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Таблица <code>users(id, email UNIQUE, password_hash, created_at)</code></li>
+<li>Express: <code>POST /auth/register</code>, <code>POST /auth/login</code></li>
+<li><code>bcrypt.hash(password, 12)</code> при register, <code>bcrypt.compare()</code> при login</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-20/</code> → <code>git commit -m "week 20 day 134: register login bcrypt"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>SHA256 без salt для паролей — уязвимо к rainbow tables</li>
+<li>Разные сообщения для «user not found» и «wrong password» — information leak</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-20--week-20-day-134');</script>
+</body>
+</html>

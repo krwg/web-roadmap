@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 6 (Sat): Workflow разработчика · Git advanced · web-roadmap</title>
+  <meta name="description" content="День 6 (Sat): Workflow разработчика — неделя 04.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-04--week-04-day-6">
+  <meta http-equiv="refresh" content="0;url=../#week-04--week-04-day-6">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-04--week-04-day-6">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-04-day-6">День 6 (Sat): Workflow разработчика</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Workflow — это привычки, которые масштабируются от solo до команды. <strong>GitHub Flow</strong> — простейший: <code>main</code> всегда deployable, каждая фича в ветке → PR → merge. Git Flow сложнее (develop, release) — избыточен для учебных проектов. <strong>Trunk-Based</strong> — короткоживущие ветки, частые merge в main — для зрелых команд с CI.</p>
+<p><strong>Conventional Commits</strong> (<code>feat:</code>, <code>fix:</code>, <code>docs:</code>) — единый язык сообщений; из них генерируется CHANGELOG. <strong>Pre-commit checklist</strong>: <code>git diff</code> глазами ревьюера, нет ли <code>.env</code> в staging, страница открывается, Lighthouse не упал. Prettier убирает споры о форматировании — один <code>.prettierrc</code> на проект.</p>
+<p>VS Code Git panel, diff view, GitLens — ускоряют ежедневную работу. Code review — не придирка, а передача знаний: даже self-review перед push ловит опечатки и лишние файлы.</p>
+<p><strong>Ментальная модель:</strong> workflow — это не набор строгих правил, а привычки, которые снижают трение между «я написал код» и «код безопасно попал в основную ветку». Чем больше шагов автоматизировано (Prettier форматирует, PR-шаблон напоминает о чек-листе), тем меньше энергии тратится на рутину и тем больше остаётся на саму задачу.</p>
+<p><strong>Почему это важно дальше:</strong> к этому моменту у тебя уже есть Git, ветки, PR и DevTools по отдельности — сегодня они складываются в единый ежедневный ритуал. Именно такой workflow (feature-ветка → self-review → PR → merge) станет твоей рабочей нормой на всех следующих неделях и в первой работе, поэтому его стоит закрепить как автоматизм, а не разовое упражнение.</p>
+<p><strong>Пример:</strong> перед сегодняшним PR ты открываешь diff и видишь, что случайно закоммитил <code>console.log('test')</code> и файл <code>.DS_Store</code>. Self-review до отправки PR ловит это за 30 секунд — ревьюер (в командной работе) не тратит время на комментарий «убери debug-лог», а видит чистый, готовый к обсуждению код.</p>
+<p><strong>Частое заблуждение:</strong> многие считают Prettier и единый стиль коммитов «формальностью для перфекционистов». На практике споры о форматировании (табы vs пробелы, кавычки) съедают время code review впустую — автоматизация этого убирает бессмысленные дискуссии и оставляет разговор только о логике кода. Аналогично с Conventional Commits: кажется, что префикс <code>feat:</code>/<code>fix:</code> — просто украшение, но именно по нему автоматические инструменты позже соберут CHANGELOG без единой ручной правки. Сегодняшняя практика с настройкой Prettier и PR template закрепляет эту автоматизацию раз и навсегда.</p>
+<p><strong>Ключевая мысль:</strong> GitHub Flow + Conventional Commits + self-review = профессиональный минимум.</p>
+<p><strong>Читать:</strong>
+- <a href="https://www.conventionalcommits.org/ru/">Conventional Commits</a>
+- <a href="https://docs.github.com/ru/get-started/using-github/github-flow">GitHub Flow</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Переименуй последние коммиты сообщениями в стиле Conventional Commits (если нужно — <code>git rebase</code> осторожно или новые коммиты)</li>
+<li>Настрой Prettier в VS Code, отформатируй CSS/HTML</li>
+<li>Создай PR template в <code>.github/pull_request_template.md</code></li>
+<li>Проведи self-review: открой diff последнего PR глазами ревьюера</li>
+<li>Составь личный чеклист перед каждым push (5 пунктов)</li>
+<li>Добавь <code>.prettierrc</code> с базовыми настройками (semi, singleQuote)</li>
+<li>Напиши CHANGELOG.md с секцией для недель 1–4</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Коммиты следуют единому стилю сообщений
+- [ ] Prettier настроен и применён
+- [ ] Есть PR template или чеклист в заметках</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Переименуй последние коммиты сообщениями в стиле Conventional Commits (если нужно — <code>git rebase</code> осторожно или новые коммиты)</li>
+<li>Настрой Prettier в VS Code, отформатируй CSS/HTML</li>
+<li>Создай PR template в <code>.github/pull_request_template.md</code></li>
+<li>Проведи self-review: открой diff последнего PR глазами ревьюера</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 6: conventional commits prettier"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-04--week-04-day-6');</script>
+</body>
+</html>

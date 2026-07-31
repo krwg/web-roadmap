@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 6 (Sat): Переходы и анимации · CSS layouts · web-roadmap</title>
+  <meta name="description" content="День 6 (Sat): Переходы и анимации — неделя 03.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-03--week-03-day-6">
+  <meta http-equiv="refresh" content="0;url=../#week-03--week-03-day-6">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-03--week-03-day-6">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-03-day-6">День 6 (Sat): Переходы и анимации</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>SaaS Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>CSS-переходы (<code>transition</code>) анимируют <strong>изменение</strong> свойства от значения A к B: <code>transition: transform 0.2s ease</code>. Указываешь свойство, длительность, функцию времени (<code>ease</code>, <code>ease-in-out</code>, <code>cubic-bezier</code>). Для hover-эффектов и смены состояний — идеальный инструмент.</p>
+<p><code>@keyframes</code> + <code>animation</code> — для <strong>многошаговых</strong> анимаций: появление модалки, пульсация skeleton loader, бесконечный спиннер. Переход срабатывает при смене класса; keyframes идут по расписанию независимо.</p>
+<p>Производительность: анимируй только <code>transform</code> и <code>opacity</code> — они обрабатываются на GPU и не вызывают reflow всей страницы. Анимация <code>width</code>, <code>height</code>, <code>margin</code> — дорого. Длительность UI-переходов: <strong>150–300ms</strong>; дольше кажется тормозным. Обязательно учитывай <code>prefers-reduced-motion: reduce</code> — у пользователей с вестибулярными нарушениями анимации могут вызывать тошноту.</p>
+<p>Мысленная модель: <code>transition</code> — это ответ на вопрос «как измениться из точки А в точку Б», а <code>@keyframes</code> — это заранее срежиссированный мини-фильм с несколькими сценами, который проигрывается независимо от того, менял ли пользователь состояние элемента. Hover на кнопке — это A → Б, поэтому transition; бесконечно пульсирующий skeleton loader не имеет «состояния Б», к которому он стремится — поэтому keyframes.</p>
+<p>Почему это важно дальше: анимации — то, что отличает статичный сайт от «живого» продукта, и на неделе 6 с JavaScript ты будешь программно добавлять/убирать классы, запускающие эти же CSS-переходы (например, класс <code>.open</code> на модалке) — сегодняшнее понимание, что именно class toggling запускает transition, напрямую подготавливает к событийной модели JS.</p>
+<p>Конкретный пример: карточка с <code>transition: transform 0.2s ease</code> и <code>:hover { transform: translateY(-4px) }</code> создаёт лёгкий эффект «приподнимания» без единой строчки JavaScript — GPU обрабатывает <code>transform</code> без пересчёта всей раскладки страницы, поэтому анимация остаётся плавной даже на слабых устройствах.</p>
+<p>Частое заблуждение — анимировать <code>width</code> или <code>top</code>/<code>left</code> для перемещения и изменения размера элементов, потому что это «интуитивно понятнее». На деле такие анимации заставляют браузер пересчитывать позиции всех соседних элементов на каждом кадре (reflow) — на сложной странице это заметно проседает по FPS, особенно на мобильных. <code>transform: translate()</code> и <code>transform: scale()</code> визуально дают тот же результат, но обрабатываются на отдельном GPU-слое без reflow.</p>
+<p><strong>Ключевая мысль:</strong> <code>transition</code> для состояний, <code>@keyframes</code> для сцен; только <code>transform</code> и <code>opacity</code> на проде — и это правило особенно важно проверить в сегодняшней практике на skeleton loader, где неправильный выбор свойства для анимации сразу заметен по «дёрганности».</p>
+<p><strong>Читать:</strong>
+- <a href="https://developer.mozilla.org/ru/docs/Web/CSS/CSS_transitions/Using_CSS_transitions">MDN: CSS transitions</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/CSS/CSS_animations/Using_CSS_animations">MDN: CSS animations</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Плавные hover-эффекты на кнопках и карточках (<code>transition: 0.2s ease</code>)</li>
+<li>Анимация появления модального блока через <code>@keyframes fadeIn</code></li>
+<li>Skeleton loader для карточки (пульсирующий градиент)</li>
+<li>Оберни анимации в <code>@media (prefers-reduced-motion: no-preference)</code></li>
+<li>Избегай анимации <code>width</code>/<code>height</code> — используй <code>transform</code> и <code>opacity</code></li>
+<li>Добавь <code>will-change: transform</code> на анимируемый элемент (осторожно, не везде)</li>
+<li>Сравни <code>ease</code>, <code>ease-in-out</code>, <code>cubic-bezier</code> — выбери для кнопок</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Анимации на GPU-свойствах (<code>transform</code>, <code>opacity</code>)
+- [ ] <code>prefers-reduced-motion</code> учтён
+- [ ] Переходы не медленнее 300ms для UI-интеракций</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Плавные hover-эффекты на кнопках и карточках (<code>transition: 0.2s ease</code>)</li>
+<li>Анимация появления модального блока через <code>@keyframes fadeIn</code></li>
+<li>Skeleton loader для карточки (пульсирующий градиент)</li>
+<li>Оберни анимации в <code>@media (prefers-reduced-motion: no-preference)</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 03 day 6: transitions and animations"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-03--week-03-day-6');</script>
+</body>
+</html>

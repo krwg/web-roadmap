@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 148 (Пн): Планирование DevHub Capstone · Capstone · web-roadmap</title>
+  <meta name="description" content="День 148 (Пн): Планирование DevHub Capstone — неделя 22.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-22--week-22-day-148">
+  <meta http-equiv="refresh" content="0;url=../#week-22--week-22-day-148">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-22--week-22-day-148">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-22-day-148">День 148 (Пн): Планирование DevHub Capstone</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>DevHub Capstone — синтез 22 недель обучения. Не начинай код в последний день: день 148 — планирование, 149–153 — реализация, 154 — deploy и портфолио. Прочитай полную спецификацию в projects.md: концепция (дашборд + заметки + задачи + GitHub API), обязательный стек, MVP vs nice-to-have.</p>
+<p>Scope control критичен: 7 дней, фиксированный MVP из 9 пунктов. WebSocket, kanban drag-and-drop, chat — после MVP. User stories формата «As a developer, I want…» с acceptance criteria превращают размытые идеи в проверяемые задачи.</p>
+<p>Структура repo: <code>frontend/</code>, <code>backend/</code>, <code>docker-compose.yml</code>, <code>.github/workflows/ci.yml</code>. Выбери один backend: FastAPI (нед. 18) или Express (нед. 19). ER-диаграмма ≥ 5 сущностей, API endpoints list, page map React — артефакты до первой строки кода. Скопируй структуру week-21 как стартовую точку.</p>
+<p>Ментальная модель: планирование — это карта перед походом, а не бюрократия, отнимающая время от «настоящей» работы. Час, потраченный на PLAN.md и ER-диаграмму, экономит часы блуждания в коде посреди недели, когда неясно, зачем нужна ещё одна таблица или откуда взялся баг в связях данных. Для junior-разработчика умение декомпозировать нечёткое задание («сделай платформу разработчика») на конкретные user stories с acceptance criteria — один из самых ценных навыков, который отличает исполнителя от инженера, способного работать самостоятельно.</p>
+<p>Конкретный пример цены отсутствия плана: команды, которые прыгают в код без ER-диаграммы, типично обнаруживают на четвёртый день, что забыли связь many-to-many между notes и tags, и переделывают миграции задним числом, теряя данные тестового прогона. Частое заблуждение — «за 7 дней успею и kanban с drag-and-drop, и WebSocket-чат, и weather widget» — это классический scope creep, который гарантированно оставляет MVP недоделанным; профессиональные команды сначала фиксируют MVP, а «хотелки» уходят в backlog. Артефакты сегодняшнего дня — PLAN.md, ER-диаграмма, page map — не формальность для галочки, а рабочие документы, на которые ты будешь ссылаться каждый день оставшейся недели.</p>
+<p>Для продакшена этот же принцип масштабируется на уровень целых команд: перед стартом крупной фичи инженерные команды пишут design doc или RFC именно по той же причине — зафиксировать scope и получить обратную связь до того, как написана первая строка кода, а не после недели работы впустую. Умение написать короткий, но конкретный план — навык, который пригодится далеко за пределами этого одного проекта.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="#projects--projects-неделя-22-devhub-capstone-финальный">DevHub Capstone</a></li>
+<li><a href="#projects--projects-концепция-devhub">Концепция DevHub</a></li>
+<li><a href="#projects--projects-функции-mvp-минимум">Функции MVP</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> PLAN.md фиксирует scope; два backend одновременно — ловушка недели.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Прочитай <a href="#projects--projects-неделя-22-devhub-capstone-финальный">весь раздел capstone</a> и выпиши чеклист MVP (9 пунктов из projects.md)</li>
+<li>Выбери backend: FastAPI (нед. 18) или Express (нед. 19) — один основной стек</li>
+<li>User stories: минимум 10 штук (auth, tasks, notes, dashboard, profile, API, security, tests, docs)</li>
+<li>ER-диаграмма: <code>users</code>, <code>tasks</code>, <code>notes</code>, <code>tags</code>, <code>note_tags</code> — ≥ 5 сущностей со связями</li>
+<li>API endpoints list: <code>/auth/*</code>, <code>/api/v1/tasks</code>, <code>/api/v1/notes</code>, <code>/api/v1/profile</code>, <code>/api/v1/dashboard</code></li>
+<li>Page map React: <code>/login</code>, <code>/register</code>, <code>/dashboard</code>, <code>/tasks</code>, <code>/notes</code>, <code>/profile</code></li>
+<li>GitHub repo <code>week-22-capstone</code>, README skeleton, GitHub Projects board</li>
+<li>Скопируй структуру из <a href="#projects--projects-неделя-21-task-manager-docker">week-21</a> как стартовую точку</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] MVP scope зафиксирован в <code>PLAN.md</code> — не расползается
+- [ ] ≥ 10 user stories с acceptance criteria
+- [ ] ER-диаграмма и API list в repo
+- [ ] Repo создан, ветка <code>main</code> + strategy feature branches</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Прочитай <a href="#projects--projects-неделя-22-devhub-capstone-финальный">весь раздел capstone</a> и выпиши чеклист MVP (9 пунктов из projects.md)</li>
+<li>Выбери backend: FastAPI (нед. 18) или Express (нед. 19) — один основной стек</li>
+<li>User stories: минимум 10 штук (auth, tasks, notes, dashboard, profile, API, security, tests, docs)</li>
+<li>ER-диаграмма: <code>users</code>, <code>tasks</code>, <code>notes</code>, <code>tags</code>, <code>note_tags</code> — ≥ 5 сущностей со связями</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-22-capstone/</code> → <code>git commit -m "week 22 day 148: DevHub planning PLAN.md and ER diagram"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Scope creep: drag-and-drop kanban + WebSocket + chat в MVP</li>
+<li>Два backend одновременно — выбери один, второй только для сравнения в README</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-22--week-22-day-148');</script>
+</body>
+</html>

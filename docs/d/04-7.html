@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 7 (Sun): Интеграция и практика · Git advanced · web-roadmap</title>
+  <meta name="description" content="День 7 (Sun): Интеграция и практика — неделя 04.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-04--week-04-day-7">
+  <meta http-equiv="refresh" content="0;url=../#week-04--week-04-day-7">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-04--week-04-day-7">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-04-day-7">День 7 (Sun): Интеграция и практика</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>OSS Workflow Kit</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Инструменты <strong>расследования истории</strong>: <code>git log</code> — хронология; <code>git diff</code> — разница между состояниями; <code>git show</code> — один коммит целиком; <code>git blame</code> — кто и когда изменил каждую строку файла. Blame не для поиска виноватых, а для понимания контекста: «зачем эта строка появилась?».</p>
+<p>Отмена изменений — два разных инструмента. <code>git revert &lt;hash&gt;</code> создаёт <strong>новый</strong> коммит, отменяющий старый — безопасно для shared <code>main</code>, история не переписывается. <code>git reset --hard</code> откатывает указатель ветки — <strong>переписывает</strong> историю; только на локальных ветках, никогда на запушенном main без согласования.</p>
+<p><strong>GitHub Pages</strong> публикует статику из ветки <code>gh-pages</code> или через Actions — бесплатный live demo для портфолио. <code>git clone</code> в новую папку — тест: «смогу ли я развернуть проект с нуля?» — must-have перед сдачей.</p>
+<p><strong>Ментальная модель:</strong> думай о <code>revert</code> и <code>reset</code> как о двух разных способах «отменить» на бумаге и в редакторе документа. <code>revert</code> — это зачёркнуть старую запись и дописать новую с пояснением «отменяю предыдущее» — история видна вся, ничего не исчезает. <code>reset --hard</code> — это буквально вырвать страницу из дневника: быстро, но безвозвратно, и если дневник уже кто-то читал (запушен), у него останется страница, которой у тебя больше нет — начнётся рассинхронизация.</p>
+<p><strong>Почему это важно дальше:</strong> в командной работе (и в реальных проектах) <code>reset --hard</code> на общей ветке — одна из немногих Git-операций, которая может по-настоящему навредить чужой работе. Привычка тянуться к <code>revert</code> по умолчанию, а <code>reset</code> использовать только на приватных, ещё не запушенных ветках — защищает и тебя, и коллег. Деплой на GitHub Pages сегодня — это и финальная проверка того, что весь пройденный путь (Git → GitHub → DevTools) складывается в реальный, доступный по ссылке продукт.</p>
+<p><strong>Пример:</strong> ты закоммитил правку, которая сломала лендинг, и уже запушил её в <code>main</code>. <code>git revert HEAD</code> создаст новый коммит, отменяющий изменения — <code>main</code> снова рабочий, а история честно показывает, что было и что исправлено. Если бы ты сделал <code>reset --hard HEAD~1</code> и запушил force — коллега, который уже успел стянуть сломанный коммит, оказался бы в противоречивом состоянии.</p>
+<p><strong>Частое заблуждение:</strong> новички считают <code>git clone</code> в новую папку избыточным шагом «раз всё и так работает у меня». На деле это единственный надёжный способ проверить, что в <code>.gitignore</code> не потерялся нужный файл и что проект действительно воспроизводим с нуля — именно это проверяет сегодняшняя практика перед финальным тегом.</p>
+<p><strong>Ключевая мысль:</strong> <code>revert</code> — безопасная отмена; <code>reset --hard</code> — только локально; clone — финальный тест переносимости.</p>
+<p><strong>Читать:</strong>
+- <a href="https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things">Pro Git: Отмена изменений</a>
+- <a href="https://docs.github.com/ru/pages">GitHub Pages</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Клонируй свой репозиторий в новую папку — проверь, что всё работает</li>
+<li>Найди автора строки через <code>git blame</code> для одного CSS-файла</li>
+<li>Задеплой лендинг на GitHub Pages (branch <code>gh-pages</code> или Actions)</li>
+<li>Проверь live URL в DevTools Network и Lighthouse</li>
+<li>Напиши <code>CONTRIBUTING.md</code> с правилами коммитов и веток</li>
+<li>Добавь LICENSE (MIT) и обнови README со скриншотами недель 1–3</li>
+<li>Поставь тег <code>week-04-done</code> на финальный коммит</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Сайт доступен по публичному URL
+- [ ] Clone → open работает без ручных правок
+- [ ] CONTRIBUTING.md или раздел в README описывает workflow</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Клонируй свой репозиторий в новую папку — проверь, что всё работает</li>
+<li>Найди автора строки через <code>git blame</code> для одного CSS-файла</li>
+<li>Задеплой лендинг на GitHub Pages (branch <code>gh-pages</code> или Actions)</li>
+<li>Проверь live URL в DevTools Network и Lighthouse</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 04 day 7: github pages contributing"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-04--week-04-day-7');</script>
+</body>
+</html>

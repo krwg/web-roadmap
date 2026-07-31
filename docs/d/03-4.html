@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 4 (Thu): Grid — продвинутые макеты · CSS layouts · web-roadmap</title>
+  <meta name="description" content="День 4 (Thu): Grid — продвинутые макеты — неделя 03.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-03--week-03-day-4">
+  <meta http-equiv="refresh" content="0;url=../#week-03--week-03-day-4">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-03--week-03-day-4">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-03-day-4">День 4 (Thu): Grid — продвинутые макеты</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>SaaS Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Продвинутый Grid убирает необходимость в десятках media queries. <code>repeat(auto-fill, minmax(250px, 1fr))</code> создаёт <strong>responsive-сетку</strong>: браузер сам считает, сколько колонок влезет. <code>auto-fill</code> оставляет пустые треки, <code>auto-fit</code> схлопывает их — на широком экране карточки растягиваются, а не остаётся пустая колонка.</p>
+<p><strong>Grid stacking</strong> — два элемента в одной ячейке: наложи текст на изображение, задав обоим <code>grid-row: 1; grid-column: 1</code>. Subgrid (где поддерживается) выравнивает вложенные сетки с родительской — карточки в ряду получают согласованные строки заголовков.</p>
+<p>Правило выбора: <strong>1D → flex, 2D → grid</strong>. Навигация и кнопки — flex; pricing table, features grid, dashboard — grid. Вложенный grid внутри <code>main</code> — sidebar фиксированной ширины, контент на <code>1fr</code>.</p>
+<p>Мысленная модель: <code>auto-fill</code>/<code>auto-fit</code> с <code>minmax()</code> — это не набор фиксированных breakpoint'ов «на 3 колонки при 1024px», а формула, которая пересчитывается на каждый пиксель ширины экрана. Вместо того чтобы перечислять устройства (телефон, планшет, десктоп), ты описываешь правило «сколько минимум места нужно карточке» — и браузер сам решает, сколько карточек влезет в ряд на любом экране, включая устройства, которые ещё не существуют.</p>
+<p>Почему это важно дальше: на завтрашнем дне про адаптивный дизайн ты будешь совмещать этот подход с явными breakpoints через <code>@media</code> — но там, где формула <code>auto-fill</code>/<code>minmax()</code> покрывает задачу, лишний media query не нужен. Это экономит десятки строк CSS в каждом следующем проекте и делает интерфейс устойчивым к нестандартным размерам экрана без дополнительных правок.</p>
+<p>Конкретный пример: галерея из 7 карточек с <code>grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))</code> покажет 5 колонок на экране 1200px и автоматически перестроится в 2 колонки на 500px — без единой строчки <code>@media</code>, просто потому что при 500px помещается только 2 колонки по 200px+.</p>
+<p>Частое заблуждение — путать <code>auto-fill</code> и <code>auto-fit</code>, думая что они одинаковы. Разница проявляется только когда элементов <strong>меньше</strong>, чем может поместиться колонок: <code>auto-fill</code> сохранит пустые невидимые треки (карточки останутся у левого края, не растягиваясь), а <code>auto-fit</code> схлопнет пустые треки и растянет существующие карточки на всю доступную ширину.</p>
+<p><strong>Ключевая мысль:</strong> <code>auto-fill</code>/<code>auto-fit</code> + <code>minmax()</code> — адаптивная сетка без ручных breakpoints, и разница между ними стоит того, чтобы проверить её сегодня на практике вживую, а не запоминать теоретически.</p>
+<p><strong>Читать:</strong>
+- <a href="https://css-tricks.com/snippets/css/complete-guide-grid/">CSS Tricks: Grid Guide</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Галерея с <code>grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))</code></li>
+<li>Dashboard: sidebar 250px, main <code>1fr</code>, виджеты внутри main — вложенный grid</li>
+<li>Карточка с overlay-текстом поверх изображения (grid stack)</li>
+<li>Pinterest-подобная сетка разной высоты (разный <code>grid-row: span N</code>)</li>
+<li>Рефакторинг блога недели 2 на grid-layout</li>
+<li>Сравни <code>auto-fill</code> и <code>auto-fit</code> на одной сетке — зафиксируй разницу скриншотом</li>
+<li>Добавь <code>subgrid</code> (если браузер поддерживает) или запиши fallback</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Галерея адаптируется без единой media query
+- [ ] Dashboard читаем на 1024px и 375px
+- [ ] Осознанный выбор flex vs grid в каждом блоке</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Галерея с <code>grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))</code></li>
+<li>Dashboard: sidebar 250px, main <code>1fr</code>, виджеты внутри main — вложенный grid</li>
+<li>Карточка с overlay-текстом поверх изображения (grid stack)</li>
+<li>Pinterest-подобная сетка разной высоты (разный <code>grid-row: span N</code>)</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 03 day 4: advanced grid layouts"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-03--week-03-day-4');</script>
+</body>
+</html>

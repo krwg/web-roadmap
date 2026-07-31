@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 78 (Пн): useState — память компонента · React state · web-roadmap</title>
+  <meta name="description" content="День 78 (Пн): useState — память компонента — неделя 12.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-12--week-12-day-78">
+  <meta http-equiv="refresh" content="0;url=../#week-12--week-12-day-78">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-12--week-12-day-78">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-12-day-78">День 78 (Пн): useState — память компонента</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Todo Pro</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p><code>useState</code> — фундаментальный hook React, дающий функциональному компоненту локальное состояние. При первом рендере React создаёт ячейку state; при последующих — возвращает сохранённое значение. <code>setState</code> не меняет переменную мгновенно — он планирует ререндер с новым значением. Поэтому <code>console.log(count)</code> сразу после <code>setCount(5)</code> покажет старое значение.</p>
+<p>Иммутабельные обновления обязательны: <code>[...arr, item]</code> для добавления, <code>arr.filter(...)</code> для удаления, <code>arr.map(...)</code> для изменения элемента. Прямая мутация (<code>arr.push</code>, <code>obj.field = x</code>) не вызовет ререндер, потому что ссылка на объект не изменилась. Lazy initialization <code>useState(() =&gt; expensiveCalc())</code> вычисляет начальное значение только при первом рендере — важно для чтения localStorage.</p>
+<p>Функциональный апдейт <code>setCount(c =&gt; c + 1)</code> получает актуальное значение из очереди обновлений. Три таких вызова подряд дадут +3, в отличие от <code>setCount(count + 1)</code>. State изолирован между экземплярами: два <code>&lt;Counter /&gt;</code> на странице имеют независимые счётчики. Несколько <code>useState</code> лучше одного объекта — проще обновлять и меньше риск случайной мутации.</p>
+<p>Полезная мысленная модель: state — это не «переменная», а ячейка в скрытой памяти React, привязанная к позиции компонента в дереве рендеринга. Каждый рендер — это функция, вызванная заново, и все обычные переменные внутри неё создаются с нуля; только то, что явно объявлено через useState, «выживает» между вызовами. Отсюда и правило: <code>count</code> внутри тела компонента — это константа для конкретного рендера, «снимок» на момент вызова, а не текущее значение в реальном времени.</p>
+<p>Это фундамент для всего, что будет дальше: useReducer, Context, внешние стейт-менеджеры (Redux, Zustand) — все они держатся на той же идее иммутабельных обновлений и рендера как чистой функции от state. Пример: если реализовать историю кликов через <code>setHistory(h =&gt; [...h, Date.now()])</code>, каждый вызов добавляет новый элемент, не трогая старые — из истории потом легко построить график или отменить последнее действие (undo), потому что прошлые снимки не испорчены мутацией.</p>
+<p>Частое заблуждение новичков — считать, что <code>setCount</code> меняет <code>count</code> «здесь и сейчас», как обычное присваивание в императивном коде. На самом деле React только помечает компонент как «грязный» и планирует повторный вызов функции-компонента с новым значением; до этого момента в замыкании текущего обработчика <code>count</code> остаётся старым. Это объясняет, почему <code>setCount(count + 1)</code>, вызванный трижды подряд в одном обработчике, использует одно и то же устаревшее значение <code>count</code> из замыкания — отсюда и важность функционального апдейта <code>setCount(c =&gt; c + 1)</code>, который получает свежее значение из очереди, а не из замыкания.</p>
+<p>На практике этого дня именно эта модель объясняет, почему <code>Counter</code> с тремя быстрыми кликами не «теряет» события, а <code>ColorPicker</code> корректно переключает тему даже при частых кликах — React гарантированно обработает каждое обновление очереди, даже если промежуточные значения не видны сразу в коде.</p>
+<p><strong>Читать:</strong>
+- <a href="https://react.dev/reference/react/useState">useState</a>
+- <a href="https://react.dev/learn/state-a-components-memory">react.dev: State: A Component's Memory</a>
+- <a href="https://react.dev/learn/queueing-a-series-of-state-updates">react.dev: Queueing a Series of State Updates</a></p>
+<p><strong>Ключевая мысль:</strong> state — снимок на рендер; обновляй иммутабельно и используй функциональный апдейт при последовательных изменениях.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Создай Vite-проект: <code>npm create vite@latest week-12 -- --template react-ts</code> в <code>learning-log/</code></li>
+<li>Компонент <code>Counter</code> с кнопками <code>+1</code>, <code>-1</code>, <code>Сброс</code></li>
+<li>Компонент <code>ColorPicker</code> — state цвета фона, кнопки переключения темы</li>
+<li>Счётчик кликов в <code>App</code>, передавай <code>count</code> и <code>setCount</code> в дочерний компонент</li>
+<li>Демонстрация функционального апдейта: три <code>setCount(c =&gt; c + 1)</code> подряд</li>
+<li>Lazy init: <code>useState(() =&gt; JSON.parse(localStorage.getItem('x') ?? '0'))</code></li>
+<li>Раздели сложный state на несколько useState</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Нет прямой мутации state (<code>arr.push</code> без копии)</p>
+</li>
+<li>
+<p>[ ] Каждый компонент в отдельном файле</p>
+</li>
+<li>
+<p>[ ] DevTools React показывает обновления state</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Создай Vite-проект: <code>npm create vite@latest week-12 -- --template react-ts</code> в <code>learning-log/</code></li>
+<li>Компонент <code>Counter</code> с кнопками <code>+1</code>, <code>-1</code>, <code>Сброс</code></li>
+<li>Компонент <code>ColorPicker</code> — state цвета фона, кнопки переключения темы</li>
+<li>Счётчик кликов в <code>App</code>, передавай <code>count</code> и <code>setCount</code> в дочерний компонент</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-12
+
+git add src/components/Counter.tsx src/components/ColorPicker.tsx
+
+git commit -m &quot;week-12 day-78: useState, Counter и ColorPicker&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Мутация объекта/массива напрямую — UI не обновится</p>
+</li>
+<li>
+<p>Вызов <code>setCount(count + 1)</code> три раза подряд в одном обработчике даёт +1, не +3 — используй функциональный апдейт</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-12--week-12-day-78');</script>
+</body>
+</html>

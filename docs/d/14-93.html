@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 93 (Вт): Dashboard — статистика и карточки · Frontend SPA · web-roadmap</title>
+  <meta name="description" content="День 93 (Вт): Dashboard — статистика и карточки — неделя 14.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-14--week-14-day-93">
+  <meta http-equiv="refresh" content="0;url=../#week-14--week-14-day-93">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-14--week-14-day-93">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-14-day-93">День 93 (Вт): Dashboard — статистика и карточки</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>React Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Главная страница Dashboard — витрина приложения: несколько независимых виджетов в единой сетке. Композиция через мелкие компоненты (<code>StatCard</code>, <code>Grid</code>) проще в поддержке, чем один монолитный <code>Dashboard.tsx</code>. Каждая карточка получает данные через props или hooks и не знает о соседях.</p>
+<p>CSS Grid с <code>repeat(auto-fit, minmax(240px, 1fr))</code> даёт адаптив без десятка media queries: на мобиле одна колонка, на desktop — четыре. Статистика задач — derived state: вычисляй <code>total</code> и <code>done</code> из массива tasks, не дублируй в отдельном <code>useState</code>, иначе рассинхрон неизбежен.</p>
+<p><code>useMemo</code> здесь оправдан, если фильтрация или агрегация затратна. Skeleton-карточки при загрузке предотвращают layout shift (CLS). Для иконок предпочитай inline SVG или библиотеку вроде lucide-react; у декоративных иконок добавляй <code>aria-hidden</code>, у смысловых — <code>aria-label</code>.</p>
+<p>Мысленная модель Dashboard — это сетка независимых виджетов, каждый из которых «глухой» к соседям: <code>StatCard</code> знает только свои <code>title</code>, <code>value</code>, <code>icon</code>, но ничего не знает о том, что рядом ещё три такие же карточки и откуда вообще берутся данные. Композиция из простых, переиспользуемых кусочков — надёжнее, чем один компонент <code>Dashboard.tsx</code> на 300 строк, где логика статистики, погоды и приветствия перемешаны в одном JSX-дереве.</p>
+<p>Этот подход — не специфика учебного проекта, а стандарт для любых аналитических интерфейсов и админ-панелей в индустрии: <code>StatCard</code>, <code>ChartWidget</code>, <code>ActivityFeed</code> — везде один и тот же принцип «глупый переиспользуемый компонент + умный контейнер, который считает данные».</p>
+<p>Конкретный пример derived state: карточка «Задачи: 5 из 12 выполнено» не должна хранить <code>total</code> и <code>done</code> в отдельном <code>useState</code>, который нужно вручную обновлять при каждом добавлении/удалении/переключении задачи. Правильно — вычислять <code>const done = tasks.filter(t =&gt; t.done).length</code> прямо при рендере: тогда карточка гарантированно не может «отстать» от реальных данных, что бы ни произошло со списком задач.</p>
+<p>Частое заблуждение — «закешировать» подобную статистику в отдельном state ради мнимой оптимизации: якобы пересчитывать <code>filter</code> на каждый рендер дорого. На практике для списков из десятков-сотен задач эта операция занимает доли миллисекунды, а риск рассинхрона (пользователь отметил задачу выполненной, а карточка показывает старое число, потому что забыли обновить отдельный state) — это реальный баг, который случится почти гарантированно. Правило простое: сначала derived state при рендере, и только если Profiler покажет реальную проблему производительности — <code>useMemo</code> вокруг вычисления, но не преждевременно. Это прямо связано с критерием дня «карточки обновляются при изменении tasks» — самый надёжный способ гарантировать это свойство — не хранить копию данных вообще.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout">MDN — CSS Grid</a></li>
+<li><a href="https://react.dev/reference/react/useMemo">React — useMemo</a></li>
+<li><a href="https://web.dev/articles/cls">Web Vitals — CLS</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> статистика — производная от данных tasks, не отдельный источник правды.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Главная <code>/</code> — 4 карточки: задачи (total/done), погода, имя user, дата</li>
+<li>Данные задач из <code>useLocalStorage('tasks')</code></li>
+<li>Приветствие из <code>UserContext</code></li>
+<li>Responsive grid: 1 колонка мобила → 2 → 4 на desktop</li>
+<li>Компонент <code>StatCard</code> с title, value, icon, trend (опционально)</li>
+<li>Форматирование даты через <code>Intl.DateTimeFormat</code></li>
+<li>Empty state на карточке задач: «Добавьте первую задачу»</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Карточки обновляются при изменении tasks</p>
+</li>
+<li>
+<p>[ ] Нет layout shift при загрузке</p>
+</li>
+<li>
+<p>[ ] Контраст текста ≥ WCAG AA (проверь в DevTools)</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Главная <code>/</code> — 4 карточки: задачи (total/done), погода, имя user, дата</li>
+<li>Данные задач из <code>useLocalStorage('tasks')</code></li>
+<li>Приветствие из <code>UserContext</code></li>
+<li>Responsive grid: 1 колонка мобила → 2 → 4 на desktop</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-14
+
+git add src/pages/Dashboard.tsx src/components/ui/StatCard.tsx
+
+git commit -m &quot;week-14 day-93: Dashboard stats и StatCard grid&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p>Хардкод статистики вместо вычисления из реальных данных</p>
+</li>
+<li>
+<p>Иконки без текстовой альтернативы для screen readers</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-14--week-14-day-93');</script>
+</body>
+</html>

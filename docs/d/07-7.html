@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 7 (Sun): Интеграционный проект · Modules &amp; API · web-roadmap</title>
+  <meta name="description" content="День 7 (Sun): Интеграционный проект — неделя 07.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-07--week-07-day-7">
+  <meta http-equiv="refresh" content="0;url=../#week-07--week-07-day-7">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-07--week-07-day-7">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-07-day-7">День 7 (Sun): Интеграционный проект</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Notes Dashboard</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Интеграционный проект недели объединяет всё изученное: модули, localStorage, fetch, формы. Архитектурно раздели код на слои: <code>api</code> — HTTP-запросы и парсинг ответов, <code>cache</code> — чтение/запись в storage с TTL, <code>ui</code> — рендер DOM и обработка событий, <code>app</code> — связывание слоёв. Модуль api не должен знать о DOM, а ui не должен формировать URL запросов — так проще тестировать и менять каждую часть отдельно.</p>
+<p>Кэш с TTL (time-to-live) сохраняет объект <code>{ data, cachedAt }</code> в localStorage. При загрузке сравни <code>Date.now() - cachedAt</code> с лимитом (например, 5 минут): если кэш свежий — покажи данные мгновенно, если нет — запроси с сервера и обнови кэш. При offline (можно симулировать в DevTools) покажи устаревший кэш с предупреждением вместо пустого экрана — это базовый offline-first подход.</p>
+<p>Оборачивай асинхронные операции в <code>try/catch</code> на границе слоёв: пользователь должен видеть понятное сообщение об ошибке, а не пустую страницу. Простой retry — повторить запрос 2–3 раза с задержкой при сетевом сбое. На следующей неделе этот код перепишется на async/await и Promise-утилиты, но принципы слоёв и обработки ошибок останутся.</p>
+<p><strong>Ментальная модель:</strong> зрелое приложение недели удобно представлять как небольшую компанию с чётким разделением обязанностей: <code>api</code> — «отдел закупок», который умеет только ходить наружу за данными и ничего не знает про интерфейс; <code>cache</code> — «склад», хранящий недавно полученное для быстрой выдачи; <code>ui</code> — «витрина», отвечающая только за то, что видит покупатель; <code>app</code> — «менеджер», который командует остальными отделами, но сам ничего не делает руками. Каждый отдел можно заменить или протестировать отдельно, не трогая остальные.</p>
+<p><strong>Почему это важно дальше:</strong> эта слоистая архитектура — не искусственное упражнение, а прямая репетиция того, как строятся production-приложения: разделение на data/network/presentation слои встречается и в vanilla JS, и в React, и в мобильной разработке. Кэш с TTL и offline-first подход — реальные требования, которые проверяющие (и будущие работодатели) ожидают видеть в серьёзном портфолио-проекте.</p>
+<p><strong>Пример:</strong> при повторном открытии дашборда функция <code>getPosts()</code> сначала проверяет кэш — <code>const cached = JSON.parse(localStorage.getItem('posts_cache')); if (cached &amp;&amp; Date.now() - cached.cachedAt &lt; 5 * 60 * 1000) return cached.data;</code> — и только если кэш устарел или отсутствует, идёт в сеть за свежими данными и обновляет <code>cachedAt</code>.</p>
+<p><strong>Частое заблуждение:</strong> новички смешивают весь код в одном <code>app.js</code>, где <code>fetch</code>, обработка ответа и обновление DOM идут подряд в одной функции — работает, пока проект маленький, но при добавлении кэша или изменении источника данных приходится переписывать всё сразу. Чёткое разделение на слои — не бюрократия, а страховка: изменение источника данных (например, переход с JSONPlaceholder на реальный backend) в правильно организованном проекте затронет только <code>api.js</code>, что и является целью финального рефакторинга в сегодняшней практике.</p>
+<p><strong>Читать:</strong>
+- <a href="https://web.dev/storage-for-the-web/">web.dev: Storage for the web</a>
+- <a href="https://developer.mozilla.org/ru/docs/Web/API/Fetch_API">MDN: Fetch API</a>
+- <a href="https://learn.javascript.ru/promise-basics">learn.javascript.ru: Промисы</a> — подготовка к неделе 8</p>
+<p><strong>Ключевая мысль:</strong> зрелое клиентское приложение — это слои (api/cache/ui) плюс явная обработка ошибок, кэша и offline-сценариев.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Собери «Панель постов»: список + детали + форма создания</li>
+<li>Кэшируй список постов в localStorage на 5 минут</li>
+<li>При offline (DevTools → Offline) покажи кэш и предупреждение</li>
+<li>Модули: api, cache, ui, app</li>
+<li>Финальный рефакторинг и коммит <code>feat: posts dashboard</code></li>
+<li>Собери Notes Dashboard: заметки + погода + GitHub search</li>
+<li>Тег <code>week-07-done</code> на финальном коммите</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Полный CRUD UI (create + read, delete опционально)
+- [ ] Кэш с TTL работает
+- [ ] Модульная архитектура</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Собери «Панель постов»: список + детали + форма создания</li>
+<li>Кэшируй список постов в localStorage на 5 минут</li>
+<li>При offline (DevTools → Offline) покажи кэш и предупреждение</li>
+<li>Модули: api, cache, ui, app</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 07 day 7: notes dashboard final"</code></li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-07--week-07-day-7');</script>
+</body>
+</html>

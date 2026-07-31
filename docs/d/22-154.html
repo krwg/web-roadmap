@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 154 (Вс): Deploy, портфолио и финальное ревью · Capstone · web-roadmap</title>
+  <meta name="description" content="День 154 (Вс): Deploy, портфолио и финальное ревью — неделя 22.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-22--week-22-day-154">
+  <meta http-equiv="refresh" content="0;url=../#week-22--week-22-day-154">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-22--week-22-day-154">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-22-day-154">День 154 (Вс): Deploy, портфолио и финальное ревью</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Финальный день — deploy, портфолио и рефлексия. Frontend → Vercel/Netlify (root <code>frontend/</code>, <code>VITE_API_URL</code> = production API). Backend + managed PostgreSQL → Render/Railway/Neon. После deploy: обнови CORS для Vercel domain, rotate <code>JWT_SECRET</code> если был в git, env vars в cloud dashboard.</p>
+<p>Live HTTPS demo — критерий сдачи: register → login → CRUD в браузере. <code>FINAL_REVIEW.md</code>: что узнал за 22 недели, что бы сделал иначе. GitHub Profile README — таблица всех 22 проектов со ссылками. README DevHub: badges, demo URL, screenshots, docker setup, architecture.</p>
+<p>Free tier cold start 30–60 сек — документируй. Забытый CORS update — API works in curl, fails в browser на Vercel. 2-минутный pitch DevHub — устная репетиция архитектуры. Тег <code>week-22-done</code> — финиш роадмапа. Поздравляем: ты junior full-stack ready.</p>
+<p>Ментальная модель: деплой — это момент, когда проект перестаёт быть «у меня на компьютере» и становится реальным продуктом, доступным по HTTPS кому угодно в интернете — переход от localhost к публичному URL меняет требования к конфигурации (CORS, секреты, переменные окружения) даже если код не изменился ни на строчку. Для junior-кандидата live demo — это разница между «я утверждаю, что умею» и «вот ссылка, попробуйте сами»: ссылку на живой проект рекрутер откроет с гораздо большей вероятностью, чем будет разбираться, как поднять твой репозиторий локально.</p>
+<p>Конкретный пример типичного провала: backend работает и отвечает на curl-запросы с production URL, но при заходе через браузер запросы падают с CORS error — потому что при деплое забыли добавить домен Vercel в whitelist <code>Access-Control-Allow-Origin</code>, который до этого содержал только <code>localhost:5173</code>. Частое заблуждение — «раз всё запушено и задеплоено, работа закончена» — но <code>FINAL_REVIEW.md</code> и обновлённый GitHub Profile README — не бюрократия, а то, что реально увидит рекрутер или технический интервьюер в первую очередь: рефлексия о пройденном пути показывает зрелость мышления не хуже самого кода. Тег <code>week-22-done</code>, который ты ставишь сегодня, закрывает 22-недельный путь — но именно эта финальная неделя, с её деплоем, документацией и портфолио, превращает набор учебных проектов в осязаемое доказательство готовности к первой работе full-stack разработчиком.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="#projects--projects-критерии-сдачи-capstone">Критерии сдачи capstone</a></li>
+<li><a href="https://vercel.com/docs">Vercel Docs</a></li>
+<li><a href="https://render.com/docs">Render Docs</a></li>
+<li><a href="#projects--projects-портфолио-после-22-недель">Портфолио после 22 недель</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> deploy + FINAL_REVIEW + profile README — три грани финиша capstone.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><strong>Deploy backend:</strong> Render/Railway — connect repo, <code>DATABASE_URL</code> + <code>JWT_SECRET</code></li>
+<li><strong>Deploy DB:</strong> managed PostgreSQL, run migrations + seed</li>
+<li><strong>Deploy frontend:</strong> Vercel — root <code>frontend/</code>, <code>VITE_API_URL</code> = production API URL</li>
+<li>Update CORS — добавь Vercel domain</li>
+<li>Проверь live demo: HTTPS, register → login → CRUD</li>
+<li>README: badges, live demo URLs, screenshots/GIF, tech stack</li>
+<li><code>FINAL_REVIEW.md</code>: что узнал, что бы сделал иначе</li>
+<li>GitHub Profile README: таблица 22 проектов (как в <a href="#projects--projects-портфолио-после-22-недель">projects.md</a>)</li>
+<li>Резюме PDF с live links; 2-мин pitch DevHub</li>
+<li>Пройди <a href="#ревью-чеклист">ревью-чеклист</a> — ≥ 80% уверенных ответов</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Live HTTPS demo (frontend + API)
+- [ ] <code>FINAL_REVIEW.md</code> заполнен
+- [ ] GitHub profile README обновлён со ссылками на все 22 проекта
+- [ ] README DevHub — demo link, docker setup, architecture, tests</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><strong>Deploy backend:</strong> Render/Railway — connect repo, <code>DATABASE_URL</code> + <code>JWT_SECRET</code></li>
+<li><strong>Deploy DB:</strong> managed PostgreSQL, run migrations + seed</li>
+<li><strong>Deploy frontend:</strong> Vercel — root <code>frontend/</code>, <code>VITE_API_URL</code> = production API URL</li>
+<li>Update CORS — добавь Vercel domain</li>
+<li>Проверь live demo: HTTPS, register → login → CRUD</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-22-capstone/</code> → <code>git commit -m "week 22 day 154: DevHub deploy portfolio FINAL_REVIEW"</code></li>
+<li>Поставь тег: <code>git tag week-22-done</code></li>
+<li>Push tags: <code>git push origin main --tags</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Забытый CORS update — API works in curl, fails in browser on Vercel</li>
+<li>Free tier cold start 30–60 сек — документируй в README</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-22--week-22-day-154');</script>
+</body>
+</html>

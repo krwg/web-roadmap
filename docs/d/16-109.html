@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 109 (Чт): Алгоритмы и Big O · Python OOP · web-roadmap</title>
+  <meta name="description" content="День 109 (Чт): Алгоритмы и Big O — неделя 16.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-16--week-16-day-109">
+  <meta http-equiv="refresh" content="0;url=../#week-16--week-16-day-109">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-16--week-16-day-109">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-16-day-109">День 109 (Чт): Алгоритмы и Big O</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>CLI Task Manager</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Big O описывает, как растёт время или память при увеличении входа, а не абсолютные миллисекунды. O(1) — константа, O(log n) — бинарный поиск, O(n) — один проход, O(n log n) — эффективная сортировка, O(n²) — вложенные циклы. Выбор структуры данных важнее микрооптимизаций: dict lookup O(1) в среднем vs list O(n).</p>
+<p>Linear search перебирает все элементы; binary search требует отсортированный массив и делит пополам — O(log n). На 10⁶ элементов разница колоссальна. Two Sum: brute force O(n²) vs hash map O(n) — классический пример, когда дополнительная память покупает скорость.</p>
+<p>Встроенная сортировка Python (Timsort) — O(n log n); bubble sort O(n²) — учебный, не production. <code>list.append</code> амортизированно O(1), но иногда O(n) при resize. VisuAlgo помогает увидеть рост операций. Замеры через <code>time.perf_counter()</code> убеждают лучше теории.</p>
+<p>Ментальная модель Big O — это не секундомер, а вопрос «как растёт очередь в кассе, если покупателей стало в 10 раз больше». O(1) — очередь не меняется независимо от числа покупателей (хеш-таблица); O(n) — очередь растёт пропорционально (один проход по списку); O(n²) — при удвоении входа время растёт вчетверо (вложенные циклы, попарные сравнения). Асимптотика описывает поведение на больших n, а не абсолютные миллисекунды на конкретной машине.</p>
+<p>Почему это критично для следующей недели: индекс в PostgreSQL (день 117) — это ровно превращение поиска из O(n) (полный перебор, Seq Scan) в O(log n) (B-tree, Index Scan). Без сегодняшнего понимания разницы между линейным и логарифмическим ростом объяснение EXPLAIN ANALYZE останется магией, а с ним — станет очевидным фактом.</p>
+<p>Частое заблуждение — думать, что алгоритм с лучшей асимптотикой всегда быстрее на практике: у O(n log n) может быть больший constant factor, и на маленьких n (скажем, 20 элементов) простой O(n²) bubble sort иногда обгоняет сложную сортировку из-за накладных расходов. Другая ошибка — путать best/average/worst case, говоря «O(n)» про алгоритм, который в худшем случае деградирует до O(n²) (как naive quicksort на отсортированном входе). В практике дня это проверяется замерами: разница между linear и binary search становится заметной именно на больших объёмах — 10⁶ элементов, а не 10. Two Sum — хороший тест на этот сдвиг мышления: наивное решение перебирает все пары чисел (O(n²)), а решение через хеш-таблицу проходит по массиву один раз, на каждом шаге проверяя, не встречалось ли уже нужное дополнение — обмен памяти (дополнительный словарь) на скорость (O(n)) в чистом виде.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://www.bigocheatsheet.com/">Big O Cheat Sheet</a></li>
+<li><a href="https://visualgo.net/">VisuAlgo</a></li>
+<li><a href="https://wiki.python.org/moin/TimeComplexity">Python TimeComplexity (wiki)</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> сначала правильная структура данных и алгоритм, потом микрооптимизации.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Реализуй linear search и binary search (sorted list)</li>
+<li>Замерь время на списке 10⁴ и 10⁶ элементов (<code>time.perf_counter</code>)</li>
+<li>Two Sum: brute force O(n²) vs hash map O(n) — сравни замеры</li>
+<li>Таблица в <code>notes/big-o.md</code>: операция → сложность для list, dict, set</li>
+<li>Реши на бумаге: сложность вложенных циклов и <code>dict.get</code> в цикле</li>
+<li>Опционально: визуализируй binary search на VisuAlgo</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Binary search работает только на sorted input
+- [ ] Замеры подтверждают разницу O(n) vs O(n²)
+- [ ] Two Sum hash map решение за один проход</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Реализуй linear search и binary search (sorted list)</li>
+<li>Замерь время на списке 10⁴ и 10⁶ элементов (<code>time.perf_counter</code>)</li>
+<li>Two Sum: brute force O(n²) vs hash map O(n) — сравни замеры</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-16/</code> → <code>git commit -m "week 16 day 109: Big O benchmarks and Two Sum"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Binary search на unsorted list — неверный результат</li>
+<li>Путаница best/average/worst case — указывай worst</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-16--week-16-day-109');</script>
+</body>
+</html>

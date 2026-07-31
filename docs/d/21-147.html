@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 147 (Вс): E2E smoke test и ревью архитектуры · Docker · web-roadmap</title>
+  <meta name="description" content="День 147 (Вс): E2E smoke test и ревью архитектуры — неделя 21.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-21--week-21-day-147">
+  <meta http-equiv="refresh" content="0;url=../#week-21--week-21-day-147">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-21--week-21-day-147">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-21-day-147">День 147 (Вс): E2E smoke test и ревью архитектуры</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Smoke test — минимальный путь пользователя, не полный E2E suite. <code>SMOKE_TEST.md</code>: compose up → open app → login → CRUD task → refresh → data persists. Health endpoints нужны orchestration (Kubernetes, Render, compose healthcheck). Architecture diagram (Mermaid): client → API → DB → volumes.</p>
+<p>Замерь cold start <code>docker compose up --build</code> — free tier deploy может иметь 30–60 сек warm-up; документируй в README. Сравни week-21 с требованиями DevHub capstone — список gaps в <code>notes/capstone-prep.md</code>. Все env vars в <code>.env.example</code>.</p>
+<p>Неделя 21 — мост к финалу: та же структура <code>frontend/</code> + <code>backend/</code> + <code>docker-compose.yml</code>. Тег <code>week-21-done</code>. Если smoke test проходит — ты готов к DevHub.</p>
+<p>Ментальная модель: smoke test — это не полный regression suite, а быстрая проверка «дым идёт, значит мотор хотя бы завёлся» — минимальный путь, который ловит catastrophic failures за минуту вместо часа полного прогона тестов. Architecture diagram решает другую задачу — она переводит код в общий язык для ревьюера, коллеги или будущего тебя, который забыл детали через полгода. Для junior-разработчика умение за 2 минуты нарисовать архитектуру своего проекта на созвоне — практический навык, который прямо оценивают на техническом интервью.</p>
+<p>Конкретный пример: если <code>docker compose up --build</code> первый раз занимает 45 секунд из-за скачивания base images и сборки, а команда об этом не знает, они решат, что деплой завис, и начнут паниковать — задокументированный cold start снимает эту неопределённость. Частое заблуждение — «раз у меня всё работает локально, значит и в capstone заработает» — но сравнение чек-листа week-21 с требованиями DevHub (список gaps в <code>notes/capstone-prep.md</code>) именно для того и нужно, чтобы найти пробелы заранее, а не в последний день недели 22, когда времени на исправление уже не будет. Mermaid-диаграмма и smoke-checklist, которые ты создаёшь сегодня, станут прямыми шаблонами для <code>ARCHITECTURE.md</code> и <code>SMOKE_TEST.md</code> капстоуна.</p>
+<p>Для продакшена регулярный smoke test — это то, что команды запускают сразу после каждого деплоя, ещё до того как объявить релиз завершённым: если базовый путь пользователя (login → основное действие → выход) не работает, откатывать деплой нужно немедленно, не дожидаясь жалоб реальных пользователей. Привычка писать такой чек-лист за 10 минут до того, как считать задачу «готовой», экономит часы разбора инцидентов в проде.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="#projects--projects-неделя-22-devhub-capstone-финальный">DevHub Capstone spec</a></li>
+<li><a href="https://mermaid.js.org/">Mermaid</a></li>
+<li><a href="https://docs.docker.com/compose/how-tos/startup-order/">Health check pattern</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> smoke test + architecture diagram — входной билет в capstone неделю.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Smoke checklist в <code>SMOKE_TEST.md</code>: compose up → open app → login → CRUD task → refresh → persists</li>
+<li>Mermaid diagram в README: frontend, backend, db, volumes</li>
+<li>Замер cold start <code>docker compose up --build</code> — запиши время</li>
+<li>Проверь все env vars в <code>.env.example</code></li>
+<li>Сравни week-21 с требованиями <a href="#projects--projects-неделя-22-devhub-capstone-финальный">DevHub Capstone</a> — что уже готово</li>
+<li>Список gaps для capstone в <code>notes/capstone-prep.md</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Smoke test checklist пройден
+- [ ] Mermaid diagram в README
+- [ ] Все env vars в <code>.env.example</code></p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Smoke checklist в <code>SMOKE_TEST.md</code>: compose up → open app → login → CRUD task → refresh → persists</li>
+<li>Mermaid diagram в README: frontend, backend, db, volumes</li>
+<li>Замер cold start <code>docker compose up --build</code> — запиши время</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-21/</code> → <code>git commit -m "week 21 day 147: smoke test and architecture diagram"</code></li>
+<li>Поставь тег: <code>git tag week-21-done</code></li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-21--week-21-day-147');</script>
+</body>
+</html>

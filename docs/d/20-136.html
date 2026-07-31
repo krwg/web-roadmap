@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 136 (Ср): OWASP Top 10 — практическая защита · Auth &amp; tests · web-roadmap</title>
+  <meta name="description" content="День 136 (Ср): OWASP Top 10 — практическая защита — неделя 20.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-20--week-20-day-136">
+  <meta http-equiv="refresh" content="0;url=../#week-20--week-20-day-136">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-20--week-20-day-136">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-20-day-136">День 136 (Ср): OWASP Top 10 — практическая защита</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Secure Notes</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>OWASP Top 10 — карта самых частых уязвимостей веб-приложений. Ты уже закрываешь injection parameterized queries (нед. 17–19). Broken authentication — слабые пароли, утечка session. XSS — неэкранированный user-generated HTML; escape output, DOMPurify для rich text.</p>
+<p>Helmet.js выставляет security headers: <code>X-Content-Type-Options</code>, <code>X-Frame-Options</code>, CSP basics. <code>express-rate-limit</code> на <code>/auth/login</code>: 5 попыток / 15 мин per IP → 429 Too Many Requests — защита от brute-force. CORS: явный whitelist origins; <code>origin: '*'</code> с credentials — небезопасно.</p>
+<p>Аудит: <code>.env</code> в <code>.gitignore</code>, <code>.env.example</code> без секретов, проверь <code>git log</code> на утечки. <code>security-audit.md</code> с чеклистом 10 пунктов — deliverable недели. CORS в dev: allow только <code>http://localhost:5173</code>.</p>
+<p>Ментальная модель — думай про безопасность как про слоёный пирог (defense in depth): ни один слой не идеален сам по себе, но вместе hash + JWT + rate limit + headers + CORS перекрывают друг друга. Для junior-позиции знание OWASP Top 10 — не академическое упражнение, а практический чеклист, который спрашивают на security-ориентированных собеседованиях и которым реально пользуются на code review в компаниях с compliance-требованиями (SOC2, PCI DSS).</p>
+<p>Конкретный пример: без rate limit на <code>/auth/login</code> атакующий может перебрать пароли скриптом за секунды — 5 попыток / 15 минут превращают brute-force в непрактичную атаку. Частое заблуждение начинающих — «у меня маленький pet-проект, кому он нужен» — но боты сканируют весь интернет автоматически, а не выбирают жертву вручную; открытый <code>.env</code> в публичном репозитории находят за минуты. Чеклист <code>security-audit.md</code>, который ты заполняешь сегодня, — прямой прообраз <code>SECURITY.md</code> в DevHub capstone (неделя 22): те же 10 пунктов OWASP, но уже против реального multi-user приложения с репутацией на кону.</p>
+<p>Для продакшена CORS — не разовая настройка, а живой список, который меняется с каждым новым окружением: dev допускает <code>localhost:5173</code>, staging — свой домен, прод — финальный домен фронтенда. Забытая запись в whitelist после деплоя — одна из самых частых причин, почему «API работает в Postman, но не в браузере»: curl и Postman не проверяют CORS вообще, эту проверку делает только браузер, поэтому баг обнаруживается лишь при реальном использовании интерфейса. Держи чеклист OWASP под рукой не как разовое упражнение, а как привычку code review для каждого нового endpoint.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://owasp.org/www-project-top-ten/">OWASP Top 10</a></li>
+<li><a href="https://helmetjs.github.io/">Helmet.js</a></li>
+<li><a href="https://github.com/express-rate-limit/express-rate-limit">express-rate-limit</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> безопасность — слои: hash, JWT, rate limit, headers, CORS, audit.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Rate limit на <code>/auth/login</code>: 5 попыток / 15 мин per IP</li>
+<li><code>helmet()</code> в Express; FastAPI — security headers middleware (обзор)</li>
+<li>Аудит API: чеклист OWASP 10 пунктов → <code>security-audit.md</code></li>
+<li><code>.env</code> в <code>.gitignore</code>, <code>.env.example</code> без реальных секретов</li>
+<li>Проверь: нет секретов в <code>git log</code> (<code>git log -p | grep SECRET</code>)</li>
+<li>CORS: allow только <code>http://localhost:5173</code> в dev</li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Rate limiting работает (429 Too Many Requests)
+- [ ] Helmet headers в response (проверь <code>curl -I</code>)
+- [ ] Чеклист OWASP заполнен в <code>security-audit.md</code></p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Rate limit на <code>/auth/login</code>: 5 попыток / 15 мин per IP</li>
+<li><code>helmet()</code> в Express; FastAPI — security headers middleware (обзор)</li>
+<li>Аудит API: чеклист OWASP 10 пунктов → <code>security-audit.md</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-20/</code> → <code>git commit -m "week 20 day 136: OWASP audit rate limit helmet"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>CORS <code>origin: '*'</code> с credentials — небезопасно</li>
+<li>Секреты в git history — rotate keys если утекли</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-20--week-20-day-136');</script>
+</body>
+</html>

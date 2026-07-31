@@ -2,6 +2,18 @@
 
 Формат основан на [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.3.0] — 2026-08-01
+
+### Added
+- Уроки по дням на отдельных страницах (не вся неделя сразу) + prerender `/d/WW-D.html`
+- Комментарии Giscus (GitHub Discussions) под каждой неделей
+- GitHub-интеграции: live star count, Edit/Issue/Source, экспорт/импорт прогресса, clone
+
+### Changed
+- UI в духе Я.Практикум + Apple (frosted nav, pill CTA, lesson chrome)
+- Навигация низa: предыдущий/следующий **день**, затем следующая неделя
+- Фон: CSS mesh для Safari + облегчённый canvas для остальных
+
 ## [1.2.4] — 2026-08-01
 
 ### Changed

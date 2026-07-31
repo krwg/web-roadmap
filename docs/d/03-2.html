@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 2 (Tue): Flexbox — практические паттерны · CSS layouts · web-roadmap</title>
+  <meta name="description" content="День 2 (Tue): Flexbox — практические паттерны — неделя 03.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-03--week-03-day-2">
+  <meta http-equiv="refresh" content="0;url=../#week-03--week-03-day-2">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-03--week-03-day-2">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-03-day-2">День 2 (Tue): Flexbox — практические паттерны</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>SaaS Landing</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>На практике Flexbox решает повторяющиеся паттерны. <strong>Sticky footer</strong>: <code>body { min-height: 100vh; display: flex; flex-direction: column }</code> и <code>main { flex: 1 }</code> — основной контент растягивается, подвал прижат к низу viewport даже на короткой странице. <strong>Кнопка внизу карточки</strong>: flex-column на карточке + <code>margin-top: auto</code> на кнопке — она уезжает вниз, текст выше занимает сколько нужно.</p>
+<p>Разница <code>flex: 1 1 auto</code> и <code>flex: 1 1 0</code>: первый стартует с естественного размера контента, второй — с нуля и делит место поровну. Ловушка: flex-элемент с длинным текстом не сжимается без <code>min-width: 0</code> — браузер считает минимальный размер по контенту и ломает ряд.</p>
+<p><code>order</code> и <code>align-self</code> меняют визуальный порядок и выравнивание отдельного элемента — используй редко. <code>order</code> <strong>не меняет</strong> tab-order для клавиатуры — риск для доступности.</p>
+<p>Мысленная модель для сегодняшних паттернов: <code>margin: auto</code> внутри flex-контейнера — это «пружина», которая заполняет всё доступное свободное пространство в указанном направлении, отталкивая элемент к противоположному краю. <code>margin-top: auto</code> толкает элемент вниз, <code>margin-left: auto</code> — вправо. Это не магия, а логичное следствие того, как flexbox распределяет свободное место между элементами.</p>
+<p>Почему это важно дальше: карточки товаров, карточки блога, панели с кнопками действий внизу — универсальный паттерн, который повторится в SaaS-лендинге этой недели, а затем в любом React/Vue-компоненте с карточкой. Разобравшись сегодня, что «прижать к низу» — это <code>margin-top: auto</code>, а не фиксированная высота с абсолютным позиционированием, ты решаешь один и тот же класс задач один раз навсегда.</p>
+<p>Конкретный пример: карточка товара с описанием разной длины — у одного товара одно предложение, у другого — три. Без <code>margin-top: auto</code> на кнопке «Купить», кнопки окажутся на разной высоте в ряду карточек, что выглядит неаккуратно. С этим свойством все кнопки выравниваются по нижнему краю независимо от длины текста выше.</p>
+<p>Частое заблуждение — думать, что <code>flex: 1</code> всегда даёт элементам одинаковую ширину. Если у элементов разный текстовый контент и не задан явный <code>flex-basis: 0</code>, браузер учитывает содержимое при расчёте начального размера — <code>flex: 1 1 auto</code> (значение по умолчанию <code>flex: 1</code>, если задавать по частям, требует внимания) может дать неравные ширины, тогда как <code>flex: 1 1 0%</code> гарантированно делит место поровну независимо от контента.</p>
+<p><strong>Ключевая мысль:</strong> <code>margin-top: auto</code> — flex-паттерн «прижать к краю»; <code>min-width: 0</code> — страховка от переполнения, и оба паттерна сегодня в практике встретятся напрямую в карточке товара и sticky footer.</p>
+<p><strong>Читать:</strong>
+- <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">CSS Tricks: Flexbox Guide</a></p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li>Карточка товара: изображение, заголовок, описание, цена, кнопка прижата к низу</li>
+<li>Sticky footer: <code>body</code> как flex-column, <code>main { flex: 1 }</code></li>
+<li>Горизонтальный скролл галереи: <code>flex-wrap: nowrap</code>, <code>overflow-x: auto</code></li>
+<li>Pagination: ряд кнопок по центру с <code>gap</code></li>
+<li>Рефакторинг шапки: мобильное меню-иконка (пока без JS — скрытый блок)</li>
+<li>Добавь <code>min-width: 0</code> на карточку с длинным текстом — проверь, что ряд не ломается</li>
+<li>Сверстай card grid на flex с <code>flex-wrap</code> и <code>flex: 1 1 280px</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] Кнопка в карточке всегда внизу при разной длине текста
+- [ ] Footer прижат к низу viewport на короткой странице
+- [ ] Галерея скроллится горизонтально на мобильном</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li>Карточка товара: изображение, заголовок, описание, цена, кнопка прижата к низу</li>
+<li>Sticky footer: <code>body</code> как flex-column, <code>main { flex: 1 }</code></li>
+<li>Горизонтальный скролл галереи: <code>flex-wrap: nowrap</code>, <code>overflow-x: auto</code></li>
+<li>Pagination: ряд кнопок по центру с <code>gap</code></li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add ...</code> → <code>git commit -m "week 03 day 2: flexbox patterns"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li><code>flex: 1</code> на всех детях — не всегда равная ширина, смотри <code>flex-basis</code></li>
+<li>Забытый <code>min-width: 0</code> — flex-элемент не сжимается, ломает вёрстку</li>
+<li>Вертикальное центрирование через margin auto вместо flex — устаревший подход</li>
+</ul></article>
+  </main>
+  <script>location.replace('../#week-03--week-03-day-2');</script>
+</body>
+</html>

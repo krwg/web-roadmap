@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 150 (Ср): Frontend DevHub (React + TypeScript) · Capstone · web-roadmap</title>
+  <meta name="description" content="День 150 (Ср): Frontend DevHub (React + TypeScript) — неделя 22.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-22--week-22-day-150">
+  <meta http-equiv="refresh" content="0;url=../#week-22--week-22-day-150">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-22--week-22-day-150">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-22-day-150">День 150 (Ср): Frontend DevHub (React + TypeScript)</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Frontend DevHub собирает навыки Portfolio SPA (нед. 13) и React Dashboard (нед. 14). React 18+ TypeScript, React Router, Context или Zustand для глобального state. Структура: <code>pages/</code>, <code>components/</code>, <code>hooks/</code>, <code>services/api.ts</code>, <code>types/</code>. <code>VITE_API_URL</code> — base URL API.</p>
+<p>Четыре+ маршрута с Layout: <code>/dashboard</code>, <code>/tasks</code>, <code>/notes</code>, <code>/profile</code>. Shared UI kit: <code>Button</code>, <code>Card</code>, <code>Spinner</code>, <code>ErrorMessage</code> — консистентность. Loading / error / empty на каждой data-fetching странице — не «потом». Mobile-first layout для dashboard.</p>
+<p><code>services/api.ts</code> — typed fetch wrapper; не fetch в каждом компоненте. Tasks: CRUD, фильтр status/priority. Notes: markdown textarea + preview, теги. Dashboard: виджеты статистики, placeholder GitHub repos. TypeScript strict, без <code>any</code> в api layer. Auth подключишь на день 151.</p>
+<p>Ментальная модель: frontend capstone — это не новый набор навыков, а синтез уже отработанных паттернов (Portfolio SPA, React Dashboard) в одном большом приложении — организация <code>pages/hooks/services/types</code> масштабирует то, что раньше умещалось в пару файлов. Для junior frontend-роли способность держать типизацию строгой (<code>TypeScript strict</code>, без <code>any</code> в api layer) на растущем проекте — именно то, что отличает код, готовый к сопровождению командой, от одноразового прототипа.</p>
+<p>Конкретный пример: без shared UI kit (<code>Button</code>, <code>Card</code>, <code>Spinner</code>, <code>ErrorMessage</code>) четыре страницы (<code>dashboard</code>, <code>tasks</code>, <code>notes</code>, <code>profile</code>) неизбежно разъедутся визуально — один разработчик сделает spinner в виде текста «Loading...», другой — CSS-анимацию, и продукт будет выглядеть несобранным, даже если код работает. Частое заблуждение — «auth подключу позже, сейчас не важно» — верно для порядка работы, но опасно, если забыть спроектировать <code>api.ts</code> так, чтобы Bearer-заголовок можно было добавить одной строкой на день 151, а не переписывать весь fetch-слой заново. Четыре маршрута с общим Layout, которые ты собираешь сегодня, — это тот самый page map, который завтра обрастёт защищёнными маршрутами, а через несколько дней — Docker-инфраструктурой для деплоя.</p>
+<p>Для продакшена дисциплина трёх состояний (loading/error/empty) на каждой странице — это то, что реально замечают пользователи и о чём реально жалуются в support-тикетах, если её нет: белый экран без объяснений при ошибке сети выглядит как «сайт сломан», а спиннер, который крутится вечно, создаёт ощущение зависшего приложения. Небольшая инвестиция времени сегодня напрямую конвертируется в воспринимаемое качество продукта.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="#projects--projects-неделя-14-react-dashboard-frontend-milestone">React Dashboard (нед. 14)</a></li>
+<li><a href="#projects--projects-неделя-13-portfolio-spa">Portfolio SPA (нед. 13)</a></li>
+<li><a href="https://vitejs.dev/guide/env-and-mode.html">Vite Env</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> один <code>api.ts</code>, три UI-состояния, shared components — фронтенд capstone в миниатюре.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>npm create vite@latest frontend -- --template react-ts</code></li>
+<li>React Router: Layout + routes <code>/dashboard</code>, <code>/tasks</code>, <code>/notes</code>, <code>/profile</code></li>
+<li><code>services/api.ts</code> — typed fetch wrapper (пока без auth token)</li>
+<li><strong>Dashboard:</strong> статистика задач (виджеты), placeholder для GitHub repos или погоды</li>
+<li><strong>Tasks:</strong> список, create/edit form, фильтр по status/priority</li>
+<li><strong>Notes:</strong> список с preview, markdown editor (textarea + preview), теги</li>
+<li><strong>Profile:</strong> форма bio, avatar URL (пока mock)</li>
+<li>Shared UI: <code>Button</code>, <code>Card</code>, <code>Spinner</code>, <code>ErrorMessage</code></li>
+</ol>
+<p><strong>Критерии:</strong>
+- [ ] 4+ маршрута с общим Layout
+- [ ] Tasks и Notes CRUD через API (без auth пока)
+- [ ] TypeScript strict, нет <code>any</code> в api layer
+- [ ] Loading и error states на всех data-fetching страницах</p>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>npm create vite@latest frontend -- --template react-ts</code></li>
+<li>React Router: Layout + routes <code>/dashboard</code>, <code>/tasks</code>, <code>/notes</code>, <code>/profile</code></li>
+<li><code>services/api.ts</code> — typed fetch wrapper (пока без auth token)</li>
+<li><strong>Dashboard:</strong> статистика задач (виджеты), placeholder для GitHub repos или погоды</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
+<h3>Git</h3>
+<ul>
+<li>Закоммить изменения дня: <code>git add week-22-capstone/frontend/</code> → <code>git commit -m "week 22 day 150: DevHub React TS pages and API client"</code></li>
+</ul>
+<h3>Ловушки</h3>
+<ul>
+<li>Fetch в каждом компоненте — один <code>api.ts</code></li>
+<li>Забытый <code>VITE_API_URL</code> — API calls на undefined</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-22--week-22-day-150');</script>
+</body>
+</html>

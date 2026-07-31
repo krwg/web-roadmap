@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 85 (Пн): React Router — основы · Router &amp; Context · web-roadmap</title>
+  <meta name="description" content="День 85 (Пн): React Router — основы — неделя 13.">
+  <link rel="canonical" href="https://krwg.github.io/web-roadmap/#week-13--week-13-day-85">
+  <meta http-equiv="refresh" content="0;url=../#week-13--week-13-day-85">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="reading-mode">
+  <main class="prose-wrap" style="max-width:820px;margin:24px auto;padding:0 16px">
+    <p><a href="../#week-13--week-13-day-85">Открыть урок</a></p>
+    <article class="prose"><h2 id="week-13-day-85">День 85 (Пн): React Router — основы</h2>
+<blockquote>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<strong>Связь с проектом:</strong> шаг к <strong>Portfolio SPA</strong></p>
+</blockquote>
+<h3>Теория</h3>
+<p>Одностраничное приложение (SPA) живёт в одной HTML-странице, но пользователь ожидает поведение «настоящего сайта»: разные URL, кнопка «Назад» в браузере, закладки на конкретные экраны. React Router решает эту задачу на клиенте: при смене маршрута он размонтирует один набор компонентов и смонтирует другой, не перезагружая документ целиком.</p>
+<p>Три кита базовой настройки — <code>BrowserRouter</code>, <code>Routes</code> и <code>Route</code>. Router подключает приложение к History API браузера (<code>pushState</code> под капотом); <code>Routes</code> выбирает единственный подходящий маршрут; <code>Route</code> связывает путь с компонентом. Для навигации внутри SPA используй <code>Link</code> или <code>NavLink</code>: они меняют URL без полной перезагрузки, в отличие от обычного <code>&lt;a href&gt;</code>, который сбрасывает состояние приложения.</p>
+<p>Layout с <code>&lt;Outlet /&gt;</code> — стандартный паттерн общей оболочки: шапка и меню остаются на месте, а содержимое страницы подставляется в outlet. Catch-all маршрут <code>path="*"</code> обязателен для 404. При деплое в subdirectory (GitHub Pages) понадобится <code>basename</code>; сервер должен отдавать <code>index.html</code> на все пути, иначе прямой заход по URL <code>/about</code> вернёт 404 от nginx, а не твой React-компонент.</p>
+<p>Мысленная модель React Router: URL — это ещё один источник состояния приложения, только он живёт не в React, а в браузере (History API), и Router — это просто мост, который синхронизирует адресную строку с деревом React-компонентов. Смена маршрута — это не HTTP-запрос за новой страницей, а вызов <code>pushState</code>, который меняет URL без перезагрузки, после чего <code>Routes</code> перечитывает текущий путь и решает, какое поддерево компонентов сейчас должно быть смонтировано.</p>
+<p>Эта модель — фундамент всего, что будет дальше на неделе: вложенные маршруты (день 86) — это просто вложенные решения «какое поддерево показать»; protected routes (день 89) — это условный рендер <code>&lt;Navigate&gt;</code> вместо целевого компонента; а на деплое (день 91) станет ясно, что клиентский роутинг работает только пока JS-бандл загружен в браузере — прямой заход по URL требует отдельной настройки сервера.</p>
+<p>Конкретный пример путаницы клиент/сервер: пользователь кликает <code>NavLink</code> на <code>/about</code> — React Router перехватывает клик, меняет URL через <code>pushState</code> и рендерит <code>About</code> без единого сетевого запроса. Но если тот же пользователь наберёт <code>/about</code> в адресной строке и нажмёт Enter, браузер отправит настоящий HTTP-запрос на сервер, и если сервер (nginx, statically-hosted файлы) не настроен отдавать <code>index.html</code> на любой путь, он ответит честным <code>404 Not Found</code> — не потому что React сломался, а потому что запрос вообще не дошёл до React.</p>
+<p>Частое заблуждение новичков — думать, что React Router «делает запросы» за страницы, как многостраничный сайт, и что 404 при обновлении страницы — это баг библиотеки, а не следствие неправильной настройки сервера или отсутствия <code>basename</code> при деплое в поддиректорию. Именно поэтому в практике дня явно указан пункт «прямой переход по URL <code>/about</code> работает» — это проверка не только кода, но и понимания разницы между dev server (который из коробки настроен на SPA fallback) и продакшен-хостингом, который нужно настраивать отдельно.</p>
+<p><strong>Читать:</strong></p>
+<ul>
+<li><a href="https://reactrouter.com/6.28.0/start/tutorial">React Router — Tutorial</a></li>
+<li><a href="https://reactrouter.com/6.28.0/components/link">Link vs NavLink</a></li>
+<li><a href="https://reactrouter.com/6.28.0/hooks/use-params">useParams</a></li>
+<li><a href="https://reactrouter.com/6.28.0/hooks/use-navigate">useNavigate</a></li>
+</ul>
+<p><strong>Ключевая мысль:</strong> SPA-навигация — смена компонентов без перезагрузки; для внутренних ссылок — <code>Link</code>, не <code>&lt;a&gt;</code>.</p>
+<h3>Практика (полный трек)</h3>
+<ol>
+<li><code>npm install react-router-dom</code> в <code>learning-log/week-13/</code></li>
+<li>Страницы: <code>/</code> Home, <code>/about</code> About, <code>/contact</code> Contact</li>
+<li><code>Layout</code> с <code>&lt;Outlet /&gt;</code> — общая шапка и навигация</li>
+<li><code>NavLink</code> с активным классом для текущей страницы</li>
+<li>Страница 404 с ссылкой на главную</li>
+<li>Вынеси маршруты в <code>src/routes.tsx</code> или <code>App.tsx</code></li>
+<li>Проверь: прямой переход по URL <code>/about</code> работает (dev server)</li>
+</ol>
+<p><strong>Критерии:</strong></p>
+<ul>
+<li>
+<p>[ ] Навигация без полной перезагрузки страницы</p>
+</li>
+<li>
+<p>[ ] 404-страница <code>path="*"</code></p>
+</li>
+<li>
+<p>[ ] Layout оборачивает все маршруты</p>
+</li>
+</ul>
+<h3>Практика (лайт / MVP)</h3>
+<ol>
+<li><code>npm install react-router-dom</code> в <code>learning-log/week-13/</code></li>
+<li>Страницы: <code>/</code> Home, <code>/about</code> About, <code>/contact</code> Contact</li>
+<li><code>Layout</code> с <code>&lt;Outlet /&gt;</code> — общая шапка и навигация</li>
+<li><code>NavLink</code> с активным классом для текущей страницы</li>
+</ol>
+<blockquote>
+<p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
+</blockquote>
+<h3>Если застрял</h3>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<h3>Git</h3>
+<pre><code class="language-bash">
+cd learning-log/week-13
+
+git add src/pages/ src/components/Layout.tsx
+
+git commit -m &quot;week-13 day-85: React Router, Layout и 404&quot;
+
+</code></pre>
+<h3>Ловушки</h3>
+<ul>
+<li>
+<p><code>BrowserRouter</code> внутри <code>BrowserRouter</code> — ошибка вложенности</p>
+</li>
+<li>
+<p><code>&lt;a href&gt;</code> вместо <code>&lt;Link&gt;</code> — полная перезагрузка, теряется SPA</p>
+</li>
+</ul>
+<hr></article>
+  </main>
+  <script>location.replace('../#week-13--week-13-day-85');</script>
+</body>
+</html>
