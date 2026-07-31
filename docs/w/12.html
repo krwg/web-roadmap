@@ -22,14 +22,18 @@
 </blockquote>
 <h2 id="week-12-day-78">День 78 (Пн): useState — память компонента</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>React Todo Pro</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p><code>useState</code> — фундаментальный hook React, дающий функциональному компоненту локальное состояние. При первом рендере React создаёт ячейку state; при последующих — возвращает сохранённое значение. <code>setState</code> не меняет переменную мгновенно — он планирует ререндер с новым значением. Поэтому <code>console.log(count)</code> сразу после <code>setCount(5)</code> покажет старое значение.</p>
 <p>Иммутабельные обновления обязательны: <code>[...arr, item]</code> для добавления, <code>arr.filter(...)</code> для удаления, <code>arr.map(...)</code> для изменения элемента. Прямая мутация (<code>arr.push</code>, <code>obj.field = x</code>) не вызовет ререндер, потому что ссылка на объект не изменилась. Lazy initialization <code>useState(() =&gt; expensiveCalc())</code> вычисляет начальное значение только при первом рендере — важно для чтения localStorage.</p>
 <p>Функциональный апдейт <code>setCount(c =&gt; c + 1)</code> получает актуальное значение из очереди обновлений. Три таких вызова подряд дадут +3, в отличие от <code>setCount(count + 1)</code>. State изолирован между экземплярами: два <code>&lt;Counter /&gt;</code> на странице имеют независимые счётчики. Несколько <code>useState</code> лучше одного объекта — проще обновлять и меньше риск случайной мутации.</p>
+<p>Полезная мысленная модель: state — это не «переменная», а ячейка в скрытой памяти React, привязанная к позиции компонента в дереве рендеринга. Каждый рендер — это функция, вызванная заново, и все обычные переменные внутри неё создаются с нуля; только то, что явно объявлено через useState, «выживает» между вызовами. Отсюда и правило: <code>count</code> внутри тела компонента — это константа для конкретного рендера, «снимок» на момент вызова, а не текущее значение в реальном времени.</p>
+<p>Это фундамент для всего, что будет дальше: useReducer, Context, внешние стейт-менеджеры (Redux, Zustand) — все они держатся на той же идее иммутабельных обновлений и рендера как чистой функции от state. Пример: если реализовать историю кликов через <code>setHistory(h =&gt; [...h, Date.now()])</code>, каждый вызов добавляет новый элемент, не трогая старые — из истории потом легко построить график или отменить последнее действие (undo), потому что прошлые снимки не испорчены мутацией.</p>
+<p>Частое заблуждение новичков — считать, что <code>setCount</code> меняет <code>count</code> «здесь и сейчас», как обычное присваивание в императивном коде. На самом деле React только помечает компонент как «грязный» и планирует повторный вызов функции-компонента с новым значением; до этого момента в замыкании текущего обработчика <code>count</code> остаётся старым. Это объясняет, почему <code>setCount(count + 1)</code>, вызванный трижды подряд в одном обработчике, использует одно и то же устаревшее значение <code>count</code> из замыкания — отсюда и важность функционального апдейта <code>setCount(c =&gt; c + 1)</code>, который получает свежее значение из очереди, а не из замыкания.</p>
+<p>На практике этого дня именно эта модель объясняет, почему <code>Counter</code> с тремя быстрыми кликами не «теряет» события, а <code>ColorPicker</code> корректно переключает тему даже при частых кликах — React гарантированно обработает каждое обновление очереди, даже если промежуточные значения не видны сразу в коде.</p>
 <p><strong>Читать:</strong>
 - <a href="https://react.dev/reference/react/useState">useState</a>
 - <a href="https://react.dev/learn/state-a-components-memory">react.dev: State: A Component's Memory</a>
@@ -90,14 +94,18 @@ git commit -m &quot;week-12 day-78: useState, Counter и ColorPicker&quot;
 <hr>
 <h2 id="week-12-day-79">День 79 (Вт): События и controlled components</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>React Todo Pro</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Обработка событий в React похожа на DOM, но есть отличия. Атрибуты пишутся в camelCase: <code>onClick</code>, <code>onChange</code>, <code>onSubmit</code>. React использует Synthetic Events — обёртку над нативными событиями с единым API и пулингом для производительности. <code>e.preventDefault()</code> отменяет действие по умолчанию (перезагрузка формы), <code>e.stopPropagation()</code> останавливает всплытие.</p>
 <p>Controlled component — input, значение которого полностью контролируется React state. Для text input: <code>value={text}</code> + <code>onChange={e =&gt; setText(e.target.value)}</code>. Для checkbox: <code>checked={done}</code> + <code>onChange</code>, не <code>value</code>. Для select: <code>value={priority}</code> на <code>&lt;select&gt;</code>, не <code>selected</code> на <code>&lt;option&gt;</code>. Группа radio: один state, разные <code>value</code> у <code>&lt;input type="radio"&gt;</code>.</p>
 <p>Разница <code>readOnly</code> и <code>disabled</code>: disabled элемент не участвует в tab-навигации и не отправляется с формой; readOnly виден и фокусируем, но не редактируется. <code>defaultValue</code> вместо <code>value</code> делает компонент uncontrolled — React не управляет значением после первого рендера. Для форм с валидацией и сбросом предпочитай controlled.</p>
+<p>Мысленная модель controlled input — однонаправленный цикл: state → JSX (value) → DOM показывает значение → пользователь печатает → событие onChange → setState → React перерисовывает input с новым value. React в этой схеме — единственный источник правды, а DOM-элемент — лишь его «зеркало». Как только это закольцовано, становится понятно, зачем вообще нужен onChange: не только для валидации, а чтобы замкнуть цикл и не дать полю «зависнуть» со старым значением.</p>
+<p>Эта модель критична для всего, что будет дальше: формы с валидацией (день 82), поиск с debounce (неделя 13), позже — библиотеки вроде React Hook Form, которые под капотом используют тот же паттерн, просто оптимизированный. Понимание controlled-цикла также объясняет, почему в React сложно «просто взять и вставить jQuery-плагин» — он мутирует DOM в обход React, и React в следующем рендере затирает изменения.</p>
+<p>Конкретный пример: поле поиска <code>&lt;input value={query} onChange={e =&gt; setQuery(e.target.value)} /&gt;</code> — при каждом нажатии клавиши React перерисовывает input с тем же символом, который пользователь только что ввёл, поэтому визуально ничего не «дёргается», хотя фактически элемент каждый раз получает новый value из state.</p>
+<p>Частая ошибка новичков — задать <code>value</code> только при определённом условии (например, <code>value={isEditing ? text : undefined}</code>), из-за чего React в консоли ругается на переключение input между controlled и uncontrolled в процессе жизни компонента. Правило: если хоть раз указал <code>value</code>, указывай его всегда, даже пустой строкой. Именно эта дисциплина понадобится при переписывании Todo App: чекбокс, textarea и select в одной форме должны быть либо все controlled, либо ни один — смешение ведёт к трудноуловимым багам с фокусом и потерянными нажатиями клавиш.</p>
 <p><strong>Читать:</strong>
 - <a href="https://react.dev/learn/responding-to-events">React — Responding to Events</a>
 - <a href="https://react.dev/reference/react-dom/components/input">React — Forms</a>
@@ -136,7 +144,7 @@ git commit -m &quot;week-12 day-78: useState, Counter и ColorPicker&quot;
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
 cd learning-log/week-12
@@ -158,14 +166,18 @@ git commit -m &quot;week-12 day-79: controlled inputs и Todo на React&quot;
 <hr>
 <h2 id="week-12-day-80">День 80 (Ср): useEffect — побочные эффекты</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>React Todo Pro</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p><code>useEffect</code> синхронизирует React-компонент с внешними системами: DOM API, таймеры, подписки, fetch, localStorage. Сигнатура: <code>useEffect(() =&gt; { /* effect */ return () =&gt; { /* cleanup */ }; }, [deps])</code>. Пустой массив deps <code>[]</code> — effect выполнится один раз при mount (аналог componentDidMount). <code>[dep]</code> — при изменении dep. Без массива deps — при каждом рендере (почти всегда ошибка).</p>
 <p>Cleanup function вызывается перед повторным effect и при unmount: отписка от событий, очистка таймера, abort fetch. Без cleanup — утечки памяти и warnings. React Strict Mode в dev намеренно mount → unmount → mount, чтобы выявить missing cleanup.</p>
 <p>Не всё требует effect. <a href="https://react.dev/learn/you-might-not-need-an-effect">You Might Not Need an Effect</a>: вычисление derived state, обработка клика, валидация формы — это event handlers, не effects. Effect — для синхронизации с внешним миром, когда нет события-повода. Stale closure — классический баг: effect с <code>[]</code> использует устаревший props/state; добавь их в deps. <code>useLayoutEffect</code> выполняется синхронно после DOM-мутаций, до paint — для измерений layout (обзор).</p>
+<p>Полезная мысленная модель, которую подчёркивает сама документация React: useEffect — это не аналог <code>componentDidMount/Update/WillUnmount</code>, а декларативное описание синхронизации. Ты не говоришь React «выполни это после рендера», а говоришь «эта внешняя система должна быть согласована с такими-то значениями»; React сам решает, когда пересинхронизировать — при монтировании, при изменении зависимости, при размонтировании (тогда вызывается cleanup, который «отменяет» предыдущую синхронизацию перед новой).</p>
+<p>Эта модель станет ключевой на следующий день при работе с fetch (effect синхронизирует UI с состоянием сервера) и через неделю — при написании custom hooks, где вся эта логика инкапсулируется. Она же объясняет глубже, зачем нужен строгий список зависимостей: если effect читает <code>props.city</code>, а зависимостей нет, React не знает, что нужно пересинхронизироваться при смене города — эффект продолжает работать со старым значением из замыкания (тот самый stale closure).</p>
+<p>Конкретный пример синхронизации: <code>document.title</code> должен отражать открытую задачу. Effect <code>useEffect(() =&gt; { document.title = task.name }, [task.name])</code> — это не «побочный эффект ради эффекта», а честная синхронизация DOM API (заголовок вкладки) с состоянием React (<code>task.name</code>).</p>
+<p>Частое заблуждение — думать, что зависимости управляют «когда запускать effect», как будто это таймер. На самом деле зависимости — это список всех значений извне, которые effect читает; если хоть одно из них не указано, ESLint <code>exhaustive-deps</code> справедливо ругается, потому что effect может работать с устаревшими данными. Ещё одна ошибка — забыть, что cleanup выполняется не только при unmount, но и перед каждым повторным запуском effect, из-за чего Pomodoro-таймер без правильной очистки заводит второй <code>setInterval</code> поверх первого при каждом ререндере, ускоряя обратный отсчёт вместо того, чтобы просто тикать раз в секунду — именно это стоит поймать в практике этого дня на примере таймера и синхронизации localStorage.</p>
 <p><strong>Читать:</strong>
 - <a href="https://react.dev/reference/react/useEffect">useEffect</a>
 - <a href="https://react.dev/learn/you-might-not-need-an-effect">You Might Not Need an Effect</a>
@@ -204,7 +216,7 @@ git commit -m &quot;week-12 day-79: controlled inputs и Todo на React&quot;
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>UI «не работает» — проверь селекторы в Elements, слушатели в Event Listeners, сеть во вкладке Network.</p>
+<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
 cd learning-log/week-12
@@ -226,14 +238,18 @@ git commit -m &quot;week-12 day-80: useEffect, Pomodoro и localStorage sync&quo
 <hr>
 <h2 id="week-12-day-81">День 81 (Чт): Fetch и паттерн loading/error/data</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>React Todo Pro</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Загрузка данных в React-компоненте — классический сценарий для <code>useEffect</code> + <code>fetch</code>. Паттерн трёх (или четырёх) состояний: <code>loading</code> → <code>success</code> / <code>error</code> / <code>empty</code>. Реализуй через отдельные <code>useState</code> или discriminated union: <code>{ status: 'loading' } | { status: 'error', error: string } | { status: 'success', data: T }</code>. UI рендерит разную разметку в зависимости от <code>status</code>.</p>
 <p>В effect: <code>fetch(url).then(res =&gt; { if (!res.ok) throw new Error(); return res.json() }).then(setData).catch(setError).finally(() =&gt; setLoading(false))</code>. Fetch не reject на HTTP 404 — проверяй <code>res.ok</code>. Race condition: пользователь быстро переключает id, старый ответ приходит последним. Решение — <code>AbortController</code> в cleanup: <code>const ctrl = new AbortController(); fetch(url, { signal: ctrl.signal }); return () =&gt; ctrl.abort()</code>.</p>
 <p>Не вызывай <code>setState</code> на размонтированном компоненте — abort или флаг <code>let cancelled = false</code> в cleanup. Custom hook <code>useFetch&lt;T&gt;(url)</code> инкапсулирует весь паттерн: loading, error, data, refetch. Skeleton UI вместо пустого экрана улучшает perceived performance.</p>
+<p>Мысленная модель здесь — конечный автомат (state machine), а не набор независимых булевых флагов. Если завести отдельные <code>isLoading</code>, <code>isError</code>, <code>data</code> через три <code>useState</code>, ничто не мешает коду случайно оказаться в невозможном состоянии: <code>isLoading = true</code> и <code>isError = true</code> одновременно, хотя по смыслу это взаимоисключающие стадии одного запроса. Discriminated union (<code>{ status: 'idle' | 'loading' | 'success' | 'error', ... }</code>) на уровне типов делает невозможные комбинации невозможными — компилятор TypeScript просто не даст обратиться к <code>data</code>, если <code>status !== 'success'</code>.</p>
+<p>Это ровно тот паттерн, который будет использоваться весь курс дальше: на неделе 14 при загрузке погоды, на неделях 21–22 при интеграции с собственным backend, и позже как база для понимания библиотек вроде React Query или SWR, которые решают тот же automaton плюс кэширование и повторные запросы.</p>
+<p>Конкретный пример race condition: пользователь на <code>PostDetail</code> быстро кликает id=1, затем id=2. Запрос за id=1 может по сети завершиться позже, чем запрос за id=2 (например, из-за более тяжёлого ответа), и тогда экран покажет пост id=1, хотя выбран id=2. <code>AbortController</code> в cleanup effect решает это: при смене id предыдущий fetch отменяется до того, как его <code>.then()</code> успеет вызвать <code>setData</code> с устаревшими данными.</p>
+<p>Частое заблуждение — считать, что достаточно проверить <code>loading</code>, чтобы «на всякий случай» не показывать старые данные; на самом деле без abort или флага <code>cancelled</code> возможен путь, когда компонент уже перешёл к новому запросу, а старый <code>.then()</code> всё равно сработает и молча перезапишет актуальные данные. Именно поэтому в критериях дня явно требуется <code>AbortController</code> в cleanup, а не просто спиннер поверх контента — это прямая защита от этой ошибки при реализации <code>PostList</code>, <code>PostDetail</code> и обобщающего <code>useFetch</code>.</p>
 <p><strong>Читать:</strong>
 - <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">MDN: Fetch API</a>
 - <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController">MDN: AbortController</a>
@@ -272,7 +288,7 @@ git commit -m &quot;week-12 day-80: useEffect, Pomodoro и localStorage sync&quo
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
 cd learning-log/week-12
@@ -294,14 +310,18 @@ git commit -m &quot;week-12 day-81: fetch, loading/error/data и useFetch&quot;
 <hr>
 <h2 id="week-12-day-82">День 82 (Пт): Формы в React</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>React Todo Pro</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Формы в React строятся на controlled components: каждое поле связано с state. Для формы из нескольких полей два подхода: отдельный <code>useState</code> на поле (проще для маленьких форм) или один объект <code>const [form, setForm] = useState({ name: '', email: '' })</code> с обновлением <code>setForm(f =&gt; ({ ...f, name: e.target.value }))</code>. Второй удобен для submit целиком и сброса.</p>
 <p>Валидация на клиенте: <code>required</code>, <code>minLength</code>, regex для email, кастомные правила (пароль ≥ 8 символов). UX-паттерн touched/dirty: показывай ошибки после blur или submit, не при первом символе — это меньше раздражает. <code>useId()</code> генерирует стабильный уникальный id для связки <code>&lt;label htmlFor={id}&gt;</code> и <code>&lt;input id={id}&gt;</code> — важно для accessibility.</p>
 <p>Сброс формы: верни state к начальным значениям. <code>noValidate</code> на <code>&lt;form&gt;</code> отключает браузерную валидацию, если реализуешь свою. Checkbox «согласен с условиями» — отдельный boolean state, блокирующий submit. React 19 Form Actions (обзор) упрощают submit через <code>action</code> prop, но controlled подход остаётся фундаментом.</p>
+<p>Мысленная модель формы: единый объект состояния полей (<code>form</code>) плюс отдельный, вычисляемый на каждый рендер объект ошибок (<code>errors</code>), а не два независимых, синхронизируемых вручную state. Ошибки — производная функция от <code>form</code> и правил валидации: <code>validate(form)</code> вызывается при рендере или в обработчике submit/blur, а не хранится как отдельный <code>useState</code>, который легко забыть обновить и получить рассинхрон между полем и текстом ошибки под ним.</p>
+<p>Это станет фундаментом для форм логина на день 89 этой же недели (React Router + Context), а позже — для форм, отправляющих данные на собственный backend (недели 21+), где к клиентской валидации добавится обработка ошибок сервера (409 Conflict на занятый email и подобное) поверх той же структуры state.</p>
+<p>Конкретный пример: поле «Подтвердите пароль» валидируется не изолированно, а в сравнении с полем «Пароль» — <code>errors.confirmPassword = form.password !== form.confirmPassword ? 'Пароли не совпадают' : null</code>. Это наглядно показывает, что ошибка — производная от всей формы, а не свойство одного поля.</p>
+<p>Частое заблуждение — показывать ошибку сразу при первом введённом символе: пользователь ещё не закончил печатать email, а поле уже красное. UX-паттерн touched/dirty (ошибка показывается после blur или после первой попытки submit) снижает раздражение, но требует дисциплины: <code>touched</code> — тоже часть state формы, обновляемая в <code>onBlur</code>. Другая типичная ошибка — хранить <code>isFormValid</code> отдельным state вместо вычисления <code>Object.keys(errors).length === 0</code> при каждом рендере; при отдельном state легко забыть его обновить после изменения одного из полей, и кнопка submit останется disabled даже у корректно заполненной формы. Именно такую логику нужно продумать при реализации формы регистрации: имя, email, пароль с подтверждением и чекбокс согласия должны валидироваться согласованно, без рассинхрона между полем, ошибкой и состоянием кнопки.</p>
 <p><strong>Читать:</strong>
 - <a href="https://react.dev/reference/react-dom/components/form">React — Forms</a>
 - <a href="https://react.dev/reference/react-dom/components/input">React — input</a>
@@ -362,14 +382,18 @@ git commit -m &quot;week-12 day-82: форма регистрации и вал�
 <hr>
 <h2 id="week-12-day-83">День 83 (Сб): Подъём state (lifting state up)</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>React Todo Pro</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Lifting state up (подъём состояния) решает задачу, когда два или более компонента должны отображать или изменять одни данные. State перемещается к <strong>ближайшему общему родителю</strong>. Родитель хранит данные и передаёт вниз через props; дети сообщают об изменениях через callback props (<code>onSearchChange</code>, <code>onSortChange</code>). Siblings никогда не общаются напрямую — только через родителя.</p>
 <p>Derived state — значения, вычисляемые из props или state при рендере: <code>const filtered = items.filter(i =&gt; i.title.includes(query))</code>. Не дублируй их в отдельном <code>useState</code> — иначе рассинхрон при обновлении источника. Prop drilling на 1–2 уровня — нормально; при глубокой вложенности (неделя 13) поможет Context.</p>
 <p>Container/Presentational split: «умный» компонент управляет state и логикой, «глупый» — только рендерит по props. <code>useMemo</code> (preview) кэширует результат дорогой фильтрации: <code>useMemo(() =&gt; items.filter(...), [items, query])</code> — пересчёт только при изменении deps. Для 10 элементов не нужен; для 1000+ — заметная оптимизация.</p>
+<p>Мысленная модель для lifting state up формулируется просто: «state должен жить настолько низко, насколько возможно, и настолько высоко, насколько необходимо». Это значит — не поднимай вообще всё в корень приложения «на всякий случай»: если состояние нужно только одному компоненту (например, открыт ли dropdown), оно остаётся локальным; поднимается только то, что реально требуется нескольким потребителям одновременно.</p>
+<p>Этот баланс станет критичным на следующей неделе, когда drilling через 4–5 уровней станет неудобным и появится соблазн засунуть вообще всё в Context. Понимание сегодняшнего правила помогает не наступить на грабли «Context для всего»: то, что нужно двум соседним компонентам на одном уровне, поднимается к родителю (как сегодня), а Context нужен только для данных, нужных по-настоящему широко и на разной глубине дерева (тема, авторизация).</p>
+<p>Конкретный пример: <code>SearchBar</code> не может держать <code>searchQuery</code> у себя, а <code>ItemList</code> — фильтровать по нему, если они не знают друг о друге. Оба — дети одного родителя <code>FilterableList</code>, значит, <code>searchQuery</code> поднимается именно туда: родитель хранит state, передаёт <code>value</code> и <code>onChange</code> в <code>SearchBar</code>, а отфильтрованный список — в <code>ItemList</code>.</p>
+<p>Частая ошибка — воспринять «lifting state up» как сигнал переносить в родителя вообще все данные компонента, включая чисто визуальные вещи вроде «наведена ли мышь на элемент» или «раскрыт ли аккордеон» — это только раздувает родителя и провоцирует лишние ререндеры всего поддерева при каждом мелком UI-взаимодействии. Правило простое: поднимай ровно то состояние, которое читают или меняют минимум два разных компонента; всё остальное остаётся локальным. Именно на этом принципе строится рефакторинг Todo App в практике дня: <code>filter</code> и <code>searchQuery</code> поднимаются в общий родитель, а, например, состояние «редактируется ли конкретная задача прямо сейчас» может вполне остаться внутри <code>TodoItem</code>.</p>
 <p><strong>Читать:</strong>
 - <a href="https://react.dev/learn/sharing-state-between-components">Sharing State Between Components</a>
 - <a href="https://react.dev/learn/extracting-state-logic-into-a-reducer">react.dev: Extracting State Logic into a Reducer</a> — preview
@@ -408,7 +432,7 @@ git commit -m &quot;week-12 day-82: форма регистрации и вал�
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
 cd learning-log/week-12
@@ -430,14 +454,18 @@ git commit -m &quot;week-12 day-83: lifting state, FilterableList и сорти�
 <hr>
 <h2 id="week-12-day-84">День 84 (Вс): Ревью и углубление</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~1ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~30м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>React Todo Pro</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Ревью недели — время закрепить правила hooks и подготовиться к React Todo Pro. Правила hooks: вызывай только на верхнем уровне (не в if/for) и только в React-функциях (компонентах или custom hooks). Нарушение ломает порядок hooks между рендерами. Custom hook — функция <code>useTodos()</code>, внутри которой <code>useState</code> + handlers; компонент остаётся тонким, логика переиспользуема.</p>
 <p>React DevTools показывают дерево компонентов, props и state в реальном времени — незаменимый инструмент отладки. ESLint <code>react-hooks/exhaustive-deps</code> предупреждает о missing dependencies в useEffect — не отключай правило без веской причины и комментария. Strict Mode двойной mount — норма в dev, не баг.</p>
 <p>Чеклист code review: state обновляется иммутабельно, effects имеют cleanup, inputs controlled, deps корректны, нет setState на unmounted компоненте. Конспект «useState vs useEffect»: state — для данных UI, effect — для синхронизации с внешним миром. Подготовка к Todo Pro: приоритеты, дедлайны, Quotable API — всё на базе изученных паттернов.</p>
+<p>Мысленная модель, объясняющая Rules of Hooks: React хранит хуки одного компонента как позиционный список — при каждом рендере он ожидает вызовы <code>useState</code>, <code>useEffect</code> и других хуков строго в одном и том же порядке, чтобы сопоставить i-й вызов с i-й ячейкой памяти. Хук не «знает» своё имя переменной, только позицию вызова. Если между рендерами хук иногда вызывается, а иногда пропускается (например, из-за <code>if</code> перед <code>useState</code>), позиции всех последующих хуков смещаются, и React начинает путать состояние одного хука с другим.</p>
+<p>Это понимание становится обязательным на следующей неделе при написании собственных custom hooks: любая условная логика внутри <code>useLocalStorage</code> или <code>useFetch</code> должна быть внутри хука, а не вокруг вызова самого хука. Ошибка на этом уровне не бросает явное исключение сразу — она проявляется как труднообъяснимый баг «состояние перепуталось» через несколько рендеров, что делает её особенно коварной в более крупных проектах.</p>
+<p>Конкретный пример нарушения: <code>if (user) { const [notifications] = useState([]); }</code> — если <code>user</code> появляется не сразу, а после начального рендера, хук, который раньше был третьим по счёту, эту логику меняет, и React ломает сопоставление предыдущих состояний с новыми вызовами.</p>
+<p>Частое заблуждение — воспринимать хуки как «обычные функции», которые можно оборачивать в любые конструкции языка, как обычный <code>useCallback</code>-помощник. На самом деле особый рантайм React делает их зависимыми от порядка вызова, а не от имени — отсюда и линтер <code>react-hooks/rules-of-hooks</code>, который стоит воспринимать не как формальность, а как страховку от невидимых багов. В практике дня это напрямую связано с вынесением логики Todo в <code>useTodos</code>: рефакторинг должен сохранить безусловный порядок вызовов хуков, а Tic-Tac-Toe из официального туториала — хорошая тренировка на управление историей состояния через массив снимков, ту же модель, что используется в Undo/Redo многих реальных приложений.</p>
 <p><strong>Читать:</strong>
 - <a href="https://react.dev/learn/react-developer-tools">React DevTools</a>
 - <a href="https://react.dev/reference/rules/rules-of-hooks">Rules of Hooks</a>
@@ -476,7 +504,7 @@ git commit -m &quot;week-12 day-83: lifting state, FilterableList и сорти�
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <pre><code class="language-bash">
 cd learning-log/week-12

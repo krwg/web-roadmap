@@ -22,14 +22,17 @@
 </blockquote>
 <h2 id="week-21-day-141">День 141 (Пн): Связка Frontend + Backend</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Full-stack начинается там, где фронтенд и бэкенд встречаются в браузере. Same-origin policy: <code>localhost:5173</code> (Vite) и <code>localhost:3000</code> (API) — разные origins. Браузер блокирует cross-origin fetch без заголовков CORS от сервера. Preflight OPTIONS запрос отправляется для «непростых» запросов.</p>
 <p><code>cors</code> middleware в Express или <code>CORSMiddleware</code> в FastAPI с whitelist <code>http://localhost:5173</code>. <code>VITE_API_URL</code> — build-time переменная для фронтенда; <code>DATABASE_URL</code> — runtime для бэкенда. Vite proxy в dev обходит CORS, направляя <code>/api</code> на backend — same-origin для браузера.</p>
 <p>Замени localStorage tasks/notes на API CRUD — это суть недели. Проверь Network tab: нет CORS errors. <code>.env.example</code> для обоих проектов. Hardcoded localhost в production build — сломает deploy.</p>
+<p>Ментальная модель: origin — это тройка (протокол, домен, порт), и браузер по умолчанию блокирует любой fetch между разными origin, если сервер явно не разрешил это через CORS-заголовки. Это защита пользователя, а не бага фреймворка — без same-origin policy любой сайт мог бы читать твою банковскую сессию через скрытый fetch. Для junior full-stack разработчика непонимание CORS — источник часа-двух бесполезной отладки почти в каждом первом проекте; умение быстро прочитать ошибку CORS в консоли и понять, на чьей она стороне (сервер не разрешил origin) — практический навык уровня middle.</p>
+<p>Конкретный пример: если <code>VITE_API_URL</code> не имеет префикса <code>VITE_</code>, Vite просто не включит переменную в bundle — переменная будет <code>undefined</code> в runtime, и ошибка проявится не как CORS, а как fetch на <code>undefined/api/tasks</code>, что сбивает с толку новичков. Частое заблуждение — «CORS настраивается на клиенте» — на самом деле разрешение полностью на стороне сервера (заголовки <code>Access-Control-Allow-Origin</code>), клиент только соблюдает то, что разрешил браузер. Именно этот CORS-контракт между React-клиентом и API — фундамент для docker-compose сети в этой же неделе (день 145), где origin меняются на container hostnames, и для production deploy в DevHub capstone, где появится третий origin — Vercel domain.</p>
+<p>Для продакшена preflight OPTIONS-запрос — источник ещё одной частой путаницы: браузер отправляет его автоматически перед «непростыми» запросами (с кастомными заголовками вроде <code>Authorization</code> или методом <code>PUT</code>/<code>DELETE</code>), и сервер должен явно ответить на OPTIONS без падения — иначе основной запрос до сервера вообще не дойдёт, а в Network tab будет видна только неудачная preflight-строка, что сбивает с толку при первой отладке.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS (MDN)</a></li>
@@ -73,14 +76,17 @@
 <hr>
 <h2 id="week-21-day-142">День 142 (Вт): Единый API-контракт и обработка ошибок</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>API contract — общий язык фронтенда и бэкенда. OpenAPI/Swagger — source of truth: типы, статусы, примеры. Единый формат ошибок <code>{ error: { code, message, details? } }</code> упрощает парсинг на клиенте. 4xx — «ты сделал что-то не так», 5xx — «попробуй позже».</p>
 <p>Три UI-состояния на каждой data-fetching странице: loading (spinner), error (message + retry), empty (подсказка действия). <code>services/api.ts</code> — единый fetch wrapper с auth header и error parsing; не дублируй fetch в 10 компонентах. TypeScript types <code>Task</code>, <code>ApiError</code> в <code>types/api.ts</code>.</p>
 <p>Проверяй <code>res.ok</code> перед <code>json()</code> — иначе парсишь HTML error page как JSON. React Query/SWR — опционально для кеша и retry. Сверь frontend types с OpenAPI вручную или через openapi-typescript.</p>
+<p>Ментальная модель: API contract — это письменный договор между командами (или между тобой сегодняшним и тобой через месяц), а не подразумеваемое соглашение в голове. Если backend меняет форму ошибки без предупреждения, frontend ломается тихо — вот почему OpenAPI-схема и типизированные ошибки экономят часы интеграционной отладки. В реальных компаниях frontend и backend часто пишут разные люди или разные команды, и контракт — единственное, что синхронизирует их работу без созвонов на каждый чих.</p>
+<p>Конкретный пример: если API возвращает <code>{ error: "Not found" }</code> в одном endpoint и <code>{ message: "Not found", code: 404 }</code> в другом, frontend не может написать один универсальный error handler — придётся городить if-ветки под каждый случай, что быстро превращается в технический долг. Частое заблуждение junior-разработчиков — «раз fetch не выбросил exception, значит всё ок» — но fetch не бросает ошибку на HTTP 404/500, только на сетевой сбой, поэтому проверка <code>res.ok</code> обязательна перед <code>res.json()</code>, иначе распарсишь HTML-страницу ошибки как JSON и получишь непонятный краш. Три состояния — loading/error/empty, которые ты добавляешь сегодня на каждую страницу, станут обязательным критерием приёмки для Dashboard и Tasks в DevHub capstone (неделя 22, день 150) — привычка, заложенная сейчас, там уже не потребует отдельного обдумывания.</p>
+<p>Для продакшена единый <code>services/api.ts</code> даёт ещё один практический бонус — единую точку для будущих улучшений вроде retry с exponential backoff или отмены запроса при размонтировании компонента (AbortController). Если fetch-логика раскидана по компонентам, добавление такой функциональности требует правки в десятке мест и почти гарантированно приводит к рассинхронизации поведения между страницами.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://swagger.io/specification/">OpenAPI</a></li>
@@ -111,7 +117,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-21/</code> → <code>git commit -m "week 21 day 142: API client loading error states"</code></li>
@@ -124,14 +130,17 @@
 <hr>
 <h2 id="week-21-day-143">День 143 (Ср): Docker — основы</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Docker упаковывает приложение с зависимостями в воспроизводимый образ. Image — неизменяемый шаблон (слои); container — запущенный экземпляр. Dockerfile: <code>FROM node:20-alpine</code>, <code>WORKDIR</code>, <code>COPY package*.json</code>, <code>RUN npm ci</code>, <code>COPY .</code>, <code>EXPOSE</code>, <code>CMD</code>. Layer caching: сначала зависимости, потом код — быстрее rebuild.</p>
 <p><code>.dockerignore</code> исключает <code>node_modules</code>, <code>.git</code>, <code>.env</code> из build context. <code>docker build -t task-api .</code> и <code>docker run -p 3000:3000 --env-file .env task-api</code>. Multi-stage builds (обзор): build stage + slim runtime. <code>curl localhost:3000/api/health</code> с хоста проверяет container.</p>
 <p>Не копируй весь проект до <code>npm ci</code> — инвалидируешь cache. Root user в container — для prod consider non-root (обзор). Документируй docker commands в README.</p>
+<p>Ментальная модель: Dockerfile — рецепт, image — испечённый и замороженный пирог по рецепту, container — кусок этого пирога у тебя на тарелке прямо сейчас, который можно есть (запускать), выбросить и отрезать заново. Слои Dockerfile кешируются построчно сверху вниз, поэтому порядок инструкций — это оптимизация скорости сборки, а не просто стиль. Для junior-разработчика Docker — это уже не «плюс», а базовое требование в большинстве вакансий 2026 года: почти любая современная инфраструктура (Kubernetes, ECS, Render, Railway) ожидает готовый Docker image.</p>
+<p>Конкретный пример цены ошибки: если скопировать весь проект (<code>COPY . .</code>) до <code>npm ci</code>, то любое изменение в исходном коде инвалидирует кеш зависимостей — пересборка занимает минуты вместо секунд при каждом маленьком изменении кода. Частое заблуждение новичков — «Docker — это как виртуальная машина» — на деле контейнеры используют namespaces и cgroups ядра хоста, а не эмулируют железо, поэтому стартуют за миллисекунды, а не минуты, и делят ядро ОС с хостом. Dockerfile для backend, который ты пишешь сегодня, станет первым сервисом в <code>docker-compose.yml</code> (день 145), а затем — основой Docker-инфраструктуры DevHub capstone (неделя 22, день 152), где та же логика слоёв применится уже к production-сборке.</p>
+<p>Для продакшена размер образа тоже имеет значение: <code>node:20-alpine</code> весит десятки мегабайт против сотен у полного <code>node:20</code>, а меньший образ быстрее скачивается при деплое и содержит меньше поверхности для атак (меньше системных пакетов — меньше потенциальных CVE). Привычка сразу выбирать slim/alpine базовые образы, а не «full», экономит время и деньги на облачном биллинге по трафику и storage в масштабе реальной инфраструктуры.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://docs.docker.com/get-started/overview/">Docker Overview</a></li>
@@ -162,7 +171,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-21/</code> → <code>git commit -m "week 21 day 143: backend Dockerfile"</code></li>
@@ -175,14 +184,17 @@
 <hr>
 <h2 id="week-21-day-144">День 144 (Чт): Docker для frontend и PostgreSQL</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Production frontend в Docker — multi-stage: stage 1 <code>npm run build</code> (Node), stage 2 <code>nginx:alpine</code> копирует <code>dist/</code>. nginx отдаёт static assets с gzip; <code>try_files $uri /index.html</code> — SPA fallback для client-side routes. <code>VITE_API_URL</code> — build-time: пересобирай image при смене API URL.</p>
 <p>Official <code>postgres:16</code> image: env <code>POSTGRES_USER</code>, <code>POSTGRES_PASSWORD</code>, <code>POSTGRES_DB</code>. Named volume <code>pgdata:/var/lib/postgresql/data</code> — данные переживают <code>docker rm</code>. <code>localhost</code> внутри container — сам container, не host machine; в compose network используй имя service <code>db</code>.</p>
 <p>Подними три container вручную перед compose: frontend :80, API :3000, PG :5432. Backend подключается к postgres по hostname <code>db</code> в docker network. Проверь полный flow до <code>docker compose</code>.</p>
+<p>Ментальная модель: named volume — это внешний жёсткий диск, который ты подключаешь к контейнеру; сам контейнер — расходный, а volume переживает <code>docker rm</code> и пересоздание контейнера. Путаница «localhost внутри контейнера = localhost на хосте» — одна из самых частых ошибок новичков в Docker: у каждого контейнера своя сетевая изоляция, и «localhost» там означает сам контейнер, а не машину разработчика. В production-командах эта путаница стоит часов отладки connection refused, поэтому понимание docker network — маркер зрелости junior DevOps-навыков.</p>
+<p>Конкретный пример: если backend в контейнере пытается подключиться к Postgres по <code>localhost:5432</code>, он получит connection refused, даже если Postgres реально запущен и слушает порт — потому что это два разных сетевых namespace; правильный hostname — имя service (<code>db</code>) в общей docker-сети. Частое заблуждение — «раз я указал <code>-p 5432:5432</code>, значит порт открыт для всех контейнеров» — port mapping открывает порт наружу на хост-машину, а между контейнерами используется внутренняя docker network с DNS по именам сервисов. Multi-stage сборка frontend (build + nginx), которую ты делаешь сегодня, и правильное именование сервисов — прямая подготовка к <code>docker-compose.yml</code> завтрашнего дня и к продовому образу DevHub capstone.</p>
+<p>Для продакшена nginx как раздатчик статики — не случайный выбор: он эффективнее Node.js-сервера для отдачи файлов благодаря event-driven архитектуре, умеет gzip/brotli-сжатие «из коробки» и не тратит ресурсы на интерпретацию JavaScript ради банальной раздачи HTML/CSS/JS. <code>try_files $uri /index.html</code> решает специфичную для SPA проблему: без этой директивы прямой заход на <code>/tasks</code> (не через клик в приложении) вернёт 404, потому что физического файла <code>/tasks</code> на диске не существует — весь роутинг живёт в JS-бандле.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://hub.docker.com/_/nginx">nginx docker</a></li>
@@ -213,7 +225,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<p>Документация не клеится — найди один официальный пример (MDN / docs) и сопоставь 1:1 со своим кодом.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-21/</code> → <code>git commit -m "week 21 day 144: frontend nginx and postgres containers"</code></li>
@@ -226,14 +238,17 @@
 <hr>
 <h2 id="week-21-day-145">День 145 (Пт): docker-compose — multi-service</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>docker-compose оркестрирует multi-service приложение одним файлом. Services: <code>db</code>, <code>backend</code>, <code>frontend</code>; networks связывают их; volumes persist data. <code>depends_on</code> задаёт порядок старта, но не готовность БД — добавь healthcheck <code>pg_isready</code> и <code>condition: service_healthy</code>.</p>
 <p><code>DATABASE_URL=postgresql://user:pass@db:5432/tasks</code> — hostname <code>db</code> из имени service. <code>docker compose up --build</code> — одна команда для всего стека. <code>docker compose down -v</code> удаляет volumes — осторожно, потеряешь данные. Seed в entrypoint или init service.</p>
 <p>Smoke test: open frontend → login → create task → refresh → persists. Healthchecks на db и <code>/api/health</code> на backend — обязательны для надёжного старта. Эта структура monorepo — прямой задел для DevHub capstone.</p>
+<p>Ментальная модель: docker-compose.yml — это партитура для оркестра из нескольких контейнеров, где каждый service — отдельный музыкант, а networks и volumes — то, что позволяет им играть вместе и не терять данные между выступлениями. <code>depends_on</code> говорит Docker только порядок запуска процессов, а не готовность приложения внутри — Postgres-контейнер стартует за миллисекунды, но самому PostgreSQL нужны секунды на инициализацию, поэтому без healthcheck backend может упасть с connection refused при первом старте.</p>
+<p>Конкретный пример: <code>condition: service_healthy</code> вместе с <code>pg_isready</code> в healthcheck заставляет Docker дождаться реальной готовности БД принимать соединения, а не просто факта, что контейнер запущен — это разница между «процесс существует» и «процесс готов работать», критичная для надёжного <code>docker compose up</code> без ручных перезапусков. Частое заблуждение — «<code>docker compose down</code> безопасен всегда» — но флаг <code>-v</code> удаляет volumes вместе с данными, и разработчики теряли демо-данные перед показом проекта именно так. Инфраструктура из трёх сервисов с healthcheck, которую ты собираешь сегодня, — это практически готовый <code>docker-compose.yml</code> для DevHub capstone (неделя 22, день 152), где добавится только auth layer и production-нюансы.</p>
+<p>Для продакшена важно понимать разницу между healthcheck и readiness: даже здоровый (<code>healthy</code>) контейнер может быть временно не готов принимать нагрузку (например, прогревает кеш) — в managed-оркестраторах вроде Kubernetes это два разных сигнала (liveness/readiness probes), но идея та же самая, что и в compose healthcheck: не отправляй трафик туда, где сервис формально жив, но фактически ещё не готов отвечать корректно. Эта идея пригодится и за пределами Docker — в любой системе с несколькими зависимыми сервисами.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://docs.docker.com/compose/compose-file/">Compose file reference</a></li>
@@ -279,14 +294,17 @@
 <hr>
 <h2 id="week-21-day-146">День 146 (Сб): Dev vs Prod конфигурация</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~1ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~55м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>12 Factor App: config в environment, dev/prod parity, disposability (containers стартуют быстро). <code>docker-compose.override.yml</code> автоматически мержится в dev; <code>docker-compose.prod.yml</code> — explicit <code>-f</code> для production-like local. Dev: volume mount source + nodemon/uvicorn --reload; prod: optimized image без mounts.</p>
 <p>Логи: <code>docker compose logs -f backend</code>. Secrets в prod — Docker secrets или cloud env, не plain text в compose file. Entrypoint script: wait-for-db → migrate → seed → start server — решает race condition при старте.</p>
 <p>Документируй порты и команды: dev <code>docker compose up</code> vs prod <code>docker compose -f docker-compose.prod.yml up</code>. Dev volume mount может перезаписать <code>node_modules</code> в container — используй named volume для node_modules (обзор). Default passwords только для local.</p>
+<p>Ментальная модель 12 Factor App: конфигурация должна жить в environment variables, а не в коде — тот же image должен уметь запускаться и в dev, и в staging, и в проде, отличаясь только переменными окружения снаружи. Dev/prod parity — принцип, по которому окружения должны быть максимально похожи, чтобы баг «работает у меня, не работает в проде» случался как можно реже. Для junior-разработчика эта дисциплина — то, что отличает pet-проект от продакшен-готового кода: собеседующие часто спрашивают именно про разделение dev/prod конфигурации.</p>
+<p>Конкретный пример проблемы: volume mount исходников в dev-режиме (<code>-v ./backend:/app</code>) может незаметно перезаписать <code>node_modules</code> внутри контейнера локальной версией с хоста, если не выделить отдельный named volume под <code>node_modules</code> — итог: контейнер падает с «module not found», хотя на хосте всё установлено. Частое заблуждение — «дефолтные пароли postgres в compose-файле не проблема, это же локально» — но такие compose-файлы часто копируют в staging без изменений, и default password утекает в реальную инфраструктуру. Entrypoint-скрипт wait-for-db → migrate → seed, который ты пишешь сегодня, решает ту же race condition, что встретится в проде DevHub capstone при первом деплое (неделя 22, день 154) — паттерн одинаков в любом окружении.</p>
+<p>Для продакшена явное разделение dev/prod compose файлов вместо одного «универсального» с кучей <code>if</code>-подобных условий — это разница между конфигурацией, которую можно быстро прочитать и понять, и конфигурацией, требующей мысленно эмулировать все возможные комбинации флагов. Команды, где такое разделение принято с самого начала, тратят заметно меньше времени на «почему в проде включился dev-режим» — классический класс инцидентов из-за спутанной конфигурации.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="https://12factor.net/">12 Factor App</a></li>
@@ -317,7 +335,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-21/</code> → <code>git commit -m "week 21 day 146: dev prod compose configs"</code></li>
@@ -330,14 +348,17 @@
 <hr>
 <h2 id="week-21-day-147">День 147 (Вс): E2E smoke test и ревью архитектуры</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~2.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>Task Manager Docker</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Smoke test — минимальный путь пользователя, не полный E2E suite. <code>SMOKE_TEST.md</code>: compose up → open app → login → CRUD task → refresh → data persists. Health endpoints нужны orchestration (Kubernetes, Render, compose healthcheck). Architecture diagram (Mermaid): client → API → DB → volumes.</p>
 <p>Замерь cold start <code>docker compose up --build</code> — free tier deploy может иметь 30–60 сек warm-up; документируй в README. Сравни week-21 с требованиями DevHub capstone — список gaps в <code>notes/capstone-prep.md</code>. Все env vars в <code>.env.example</code>.</p>
 <p>Неделя 21 — мост к финалу: та же структура <code>frontend/</code> + <code>backend/</code> + <code>docker-compose.yml</code>. Тег <code>week-21-done</code>. Если smoke test проходит — ты готов к DevHub.</p>
+<p>Ментальная модель: smoke test — это не полный regression suite, а быстрая проверка «дым идёт, значит мотор хотя бы завёлся» — минимальный путь, который ловит catastrophic failures за минуту вместо часа полного прогона тестов. Architecture diagram решает другую задачу — она переводит код в общий язык для ревьюера, коллеги или будущего тебя, который забыл детали через полгода. Для junior-разработчика умение за 2 минуты нарисовать архитектуру своего проекта на созвоне — практический навык, который прямо оценивают на техническом интервью.</p>
+<p>Конкретный пример: если <code>docker compose up --build</code> первый раз занимает 45 секунд из-за скачивания base images и сборки, а команда об этом не знает, они решат, что деплой завис, и начнут паниковать — задокументированный cold start снимает эту неопределённость. Частое заблуждение — «раз у меня всё работает локально, значит и в capstone заработает» — но сравнение чек-листа week-21 с требованиями DevHub (список gaps в <code>notes/capstone-prep.md</code>) именно для того и нужно, чтобы найти пробелы заранее, а не в последний день недели 22, когда времени на исправление уже не будет. Mermaid-диаграмма и smoke-checklist, которые ты создаёшь сегодня, станут прямыми шаблонами для <code>ARCHITECTURE.md</code> и <code>SMOKE_TEST.md</code> капстоуна.</p>
+<p>Для продакшена регулярный smoke test — это то, что команды запускают сразу после каждого деплоя, ещё до того как объявить релиз завершённым: если базовый путь пользователя (login → основное действие → выход) не работает, откатывать деплой нужно немедленно, не дожидаясь жалоб реальных пользователей. Привычка писать такой чек-лист за 10 минут до того, как считать задачу «готовой», экономит часы разбора инцидентов в проде.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="#projects--projects-неделя-22-devhub-capstone-финальный">DevHub Capstone spec</a></li>
@@ -368,7 +389,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<p>Устал — сделай коммит текущего прогресса с честным сообщением <code>wip:</code> и паузу 10 минут. Не геройствуй.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-21/</code> → <code>git commit -m "week 21 day 147: smoke test and architecture diagram"</code></li>

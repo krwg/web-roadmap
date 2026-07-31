@@ -24,14 +24,17 @@
 <hr>
 <h2 id="week-22-day-148">День 148 (Пн): Планирование DevHub Capstone</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~1ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>DevHub Capstone — синтез 22 недель обучения. Не начинай код в последний день: день 148 — планирование, 149–153 — реализация, 154 — deploy и портфолио. Прочитай полную спецификацию в projects.md: концепция (дашборд + заметки + задачи + GitHub API), обязательный стек, MVP vs nice-to-have.</p>
 <p>Scope control критичен: 7 дней, фиксированный MVP из 9 пунктов. WebSocket, kanban drag-and-drop, chat — после MVP. User stories формата «As a developer, I want…» с acceptance criteria превращают размытые идеи в проверяемые задачи.</p>
 <p>Структура repo: <code>frontend/</code>, <code>backend/</code>, <code>docker-compose.yml</code>, <code>.github/workflows/ci.yml</code>. Выбери один backend: FastAPI (нед. 18) или Express (нед. 19). ER-диаграмма ≥ 5 сущностей, API endpoints list, page map React — артефакты до первой строки кода. Скопируй структуру week-21 как стартовую точку.</p>
+<p>Ментальная модель: планирование — это карта перед походом, а не бюрократия, отнимающая время от «настоящей» работы. Час, потраченный на PLAN.md и ER-диаграмму, экономит часы блуждания в коде посреди недели, когда неясно, зачем нужна ещё одна таблица или откуда взялся баг в связях данных. Для junior-разработчика умение декомпозировать нечёткое задание («сделай платформу разработчика») на конкретные user stories с acceptance criteria — один из самых ценных навыков, который отличает исполнителя от инженера, способного работать самостоятельно.</p>
+<p>Конкретный пример цены отсутствия плана: команды, которые прыгают в код без ER-диаграммы, типично обнаруживают на четвёртый день, что забыли связь many-to-many между notes и tags, и переделывают миграции задним числом, теряя данные тестового прогона. Частое заблуждение — «за 7 дней успею и kanban с drag-and-drop, и WebSocket-чат, и weather widget» — это классический scope creep, который гарантированно оставляет MVP недоделанным; профессиональные команды сначала фиксируют MVP, а «хотелки» уходят в backlog. Артефакты сегодняшнего дня — PLAN.md, ER-диаграмма, page map — не формальность для галочки, а рабочие документы, на которые ты будешь ссылаться каждый день оставшейся недели.</p>
+<p>Для продакшена этот же принцип масштабируется на уровень целых команд: перед стартом крупной фичи инженерные команды пишут design doc или RFC именно по той же причине — зафиксировать scope и получить обратную связь до того, как написана первая строка кода, а не после недели работы впустую. Умение написать короткий, но конкретный план — навык, который пригодится далеко за пределами этого одного проекта.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="#projects--projects-неделя-22-devhub-capstone-финальный">DevHub Capstone</a></li>
@@ -79,14 +82,17 @@
 <hr>
 <h2 id="week-22-day-149">День 149 (Вт): Backend DevHub</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~1ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Backend DevHub — layered API: routers → services → repositories → PostgreSQL. Переиспользуй паттерны Library REST API (нед. 18) или Express Notes (нед. 19): APIRouter/Express Router, Pydantic/Zod validation, пагинация <code>{ items, total, page, size }</code>, OpenAPI/Swagger.</p>
 <p>Схема БД: <code>users</code>, <code>tasks</code>, <code>notes</code>, <code>tags</code>, <code>note_tags</code> — минимум 5 сущностей со связями. CRUD tasks с <code>user_id</code> FK; notes с markdown body и тегами many-to-many. <code>GET /api/v1/dashboard/stats</code> — агрегаты для виджетов. Пока без auth — заглушка <code>user_id</code>, auth на день 151.</p>
 <p>Миграции: Alembic (FastAPI) или SQL scripts (Express). Seed: demo user + sample data для демо и тестов. <code>.env.example</code>: <code>DATABASE_URL</code>, <code>JWT_SECRET</code>, <code>APP_ENV</code>. God router на 500 строк — разбей по доменам. Пагинация с первого дня — иначе сломается на реальных данных.</p>
+<p>Ментальная модель: layered architecture (routers → services → repositories) — это как конвейер: каждый слой отвечает за одну зону ответственности, и изменение в одной зоне (например, смена ORM) не требует переписывать HTTP-обработчики. Для junior backend-разработчика способность структурировать API не «одним файлом на 2000 строк», а по доменам — прямой признак, который ревьюер видит за первые пять минут просмотра репозитория на собеседовании или в портфолио.</p>
+<p>Конкретный пример: <code>GET /api/v1/dashboard/stats</code> выглядит как простой endpoint, но требует агрегации из нескольких таблиц (count tasks by status, recent notes) — если логику агрегации не вынести в отдельный service, она расползётся дублированием в разных местах роутера при добавлении новых виджетов. Частое заблуждение — «auth — это скучная обвязка, сделаю CRUD, а потом уже security» — на самом деле откладывание auth на день 151 осознанно: это позволяет сосредоточиться на форме данных сегодня, но заглушка <code>user_id</code> должна быть явной и задокументированной, а не забытой лазейкой. Сегодняшняя схема БД (users, tasks, notes, tags, note_tags) — это тот самый набор ≥5 сущностей, который прямо проверяется в критериях сдачи capstone, поэтому качество миграций и seed данных сейчас определяет, насколько гладко пройдёт остаток недели.</p>
+<p>Для продакшена OpenAPI/Swagger документация, которую генерирует FastAPI автоматически (или которую нужно написать вручную для Express), — это не просто «красивая страница», а контракт, на который будет опираться frontend-разработчик (день 150) при написании типов; расхождение между реальным API и документацией — источник багов интеграции, которые сложно диагностировать без явного сравнения запроса и ответа.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="#projects--projects-неделя-18-library-rest-api">Library REST API (нед. 18)</a></li>
@@ -121,7 +127,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-22-capstone/backend/</code> → <code>git commit -m "week 22 day 149: DevHub backend models and CRUD API"</code></li>
@@ -134,14 +140,17 @@
 <hr>
 <h2 id="week-22-day-150">День 150 (Ср): Frontend DevHub (React + TypeScript)</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~1ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Frontend DevHub собирает навыки Portfolio SPA (нед. 13) и React Dashboard (нед. 14). React 18+ TypeScript, React Router, Context или Zustand для глобального state. Структура: <code>pages/</code>, <code>components/</code>, <code>hooks/</code>, <code>services/api.ts</code>, <code>types/</code>. <code>VITE_API_URL</code> — base URL API.</p>
 <p>Четыре+ маршрута с Layout: <code>/dashboard</code>, <code>/tasks</code>, <code>/notes</code>, <code>/profile</code>. Shared UI kit: <code>Button</code>, <code>Card</code>, <code>Spinner</code>, <code>ErrorMessage</code> — консистентность. Loading / error / empty на каждой data-fetching странице — не «потом». Mobile-first layout для dashboard.</p>
 <p><code>services/api.ts</code> — typed fetch wrapper; не fetch в каждом компоненте. Tasks: CRUD, фильтр status/priority. Notes: markdown textarea + preview, теги. Dashboard: виджеты статистики, placeholder GitHub repos. TypeScript strict, без <code>any</code> в api layer. Auth подключишь на день 151.</p>
+<p>Ментальная модель: frontend capstone — это не новый набор навыков, а синтез уже отработанных паттернов (Portfolio SPA, React Dashboard) в одном большом приложении — организация <code>pages/hooks/services/types</code> масштабирует то, что раньше умещалось в пару файлов. Для junior frontend-роли способность держать типизацию строгой (<code>TypeScript strict</code>, без <code>any</code> в api layer) на растущем проекте — именно то, что отличает код, готовый к сопровождению командой, от одноразового прототипа.</p>
+<p>Конкретный пример: без shared UI kit (<code>Button</code>, <code>Card</code>, <code>Spinner</code>, <code>ErrorMessage</code>) четыре страницы (<code>dashboard</code>, <code>tasks</code>, <code>notes</code>, <code>profile</code>) неизбежно разъедутся визуально — один разработчик сделает spinner в виде текста «Loading...», другой — CSS-анимацию, и продукт будет выглядеть несобранным, даже если код работает. Частое заблуждение — «auth подключу позже, сейчас не важно» — верно для порядка работы, но опасно, если забыть спроектировать <code>api.ts</code> так, чтобы Bearer-заголовок можно было добавить одной строкой на день 151, а не переписывать весь fetch-слой заново. Четыре маршрута с общим Layout, которые ты собираешь сегодня, — это тот самый page map, который завтра обрастёт защищёнными маршрутами, а через несколько дней — Docker-инфраструктурой для деплоя.</p>
+<p>Для продакшена дисциплина трёх состояний (loading/error/empty) на каждой странице — это то, что реально замечают пользователи и о чём реально жалуются в support-тикетах, если её нет: белый экран без объяснений при ошибке сети выглядит как «сайт сломан», а спиннер, который крутится вечно, создаёт ощущение зависшего приложения. Небольшая инвестиция времени сегодня напрямую конвертируется в воспринимаемое качество продукта.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="#projects--projects-неделя-14-react-dashboard-frontend-milestone">React Dashboard (нед. 14)</a></li>
@@ -176,7 +185,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Код «магический» — объясни вслух каждый шаг как пятилетке. Где споткнулся — там дыра в понимании.</p>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-22-capstone/frontend/</code> → <code>git commit -m "week 22 day 150: DevHub React TS pages and API client"</code></li>
@@ -189,14 +198,17 @@
 <hr>
 <h2 id="week-22-day-151">День 151 (Чт): Auth — JWT end-to-end</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Auth end-to-end — обязательный MVP пункт. Переиспользуй Secure Notes (нед. 20): bcrypt/passlib, JWT, middleware на protected routes. Backend: <code>POST /auth/register</code>, <code>POST /auth/login</code>; все <code>/api/v1/*</code> требуют <code>Authorization: Bearer</code>. <code>user_id</code> из JWT payload — не из request body (IDOR уязвимость).</p>
 <p>Frontend: <code>AuthProvider</code>, <code>useAuth()</code>, <code>/login</code>, <code>/register</code>, protected routes с redirect. <code>api.ts</code> — auto Bearer header, logout on 401. Rate limit на login, CORS whitelist, helmet — из недели 20. Начни <code>SECURITY.md</code> с OWASP checklist.</p>
 <p>E2E manual test: register → login → create task → logout → login → task visible. User A не видит данные User B → 403. JWT secret в git — rotate немедленно. Задокументируй выбор localStorage vs httpOnly cookie.</p>
+<p>Ментальная модель: auth в capstone — не отдельная фича, а сквозной слой, который пронизывает буквально каждый существующий endpoint и компонент — именно поэтому его добавляют после того, как CRUD уже работает, а не в начале, чтобы не отлаживать две сложные вещи одновременно. Для нанимающего junior full-stack инженера способность интегрировать auth end-to-end в уже существующую кодовую базу без переписывания архитектуры с нуля — куда более реалистичный сценарий работы, чем стартовать проект «с чистого листа».</p>
+<p>Конкретный пример риска: если миграция привязки <code>tasks</code>/<code>notes</code> к <code>user_id</code> сделана небрежно (например, дефолтное значение <code>user_id = 1</code> для старых записей), в проде это создаст ситуацию, где новый пользователь внезапно видит демо-данные предыдущего — классическая ошибка, которую тестовый прогон «user A не видит данные user B» обязан поймать. Частое заблуждение — «раз я использую JWT, IDOR мне не грозит» — сам факт наличия токена не защищает, если backend всё равно читает <code>user_id</code> из тела запроса вместо payload токена; уязвимость возникает именно в этой конкретной строчке кода, а не в отсутствии JWT вообще. Auth end-to-end, который ты собираешь сегодня, — последний функциональный кирпич MVP перед инфраструктурными днями (Docker, тесты, деплой), поэтому качество этого дня определяет, будет ли остаток недели про полировку или про латание дыр в безопасности.</p>
+<p>Для продакшена стоит помнить: <code>SECURITY.md</code>, который ты начинаешь сегодня, — живой документ, а не разовый чеклист. В реальных компаниях подобные документы обновляются при каждом security review и служат доказательством due diligence перед аудиторами или партнёрами — привычка вести такую документацию с первого капстоун-проекта переносится в профессиональную практику без переучивания.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="#projects--projects-неделя-20-secure-notes">Secure Notes (нед. 20)</a></li>
@@ -231,7 +243,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
+<p>Слишком много концептов сразу — вернись к одному примеру из теории и повтори его руками, меняя имена.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-22-capstone/</code> → <code>git commit -m "week 22 day 151: DevHub JWT auth frontend backend"</code></li>
@@ -244,14 +256,17 @@
 <hr>
 <h2 id="week-22-day-152">День 152 (Пт): Docker — локальный full-stack</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Docker Compose — критерий сдачи capstone: <code>docker compose up</code> поднимает всё локально. Переиспользуй Task Manager Docker (нед. 21): services <code>db</code>, <code>backend</code>, <code>frontend</code>; healthchecks; named volumes; entrypoint wait-for-db → migrate → seed → start.</p>
 <p>Multi-stage frontend Dockerfile (nginx + dist). Backend Dockerfile slim. <code>VITE_API_URL</code> как build arg — в docker network указывает на backend service, не localhost. <code>.dockerignore</code> в обоих папках. <code>ARCHITECTURE.md</code> с Mermaid: client → API → DB → volumes.</p>
 <p>README «запуск за 5 команд»: clone → copy <code>.env</code> → <code>docker compose up --build</code> → open browser. Backend стартует до PG — healthcheck + retry в entrypoint. Полный smoke: auth + CRUD через dockerized frontend.</p>
+<p>Ментальная модель: docker compose up для целого capstone — это финальная репетиция перед premiere: если что-то не заводится в контейнерах, лучше узнать это сегодня, а не в день деплоя, когда времени на диагностику почти не останется. Для оценки готовности к junior-позиции воспроизводимость окружения («работает не только у меня») — один из первых критериев, которые технический ревьюер портфолио проверяет буквально за одну команду <code>docker compose up --build</code>.</p>
+<p>Конкретный пример: <code>VITE_API_URL</code> — build-time переменная, поэтому её нельзя просто передать в <code>docker run</code> как runtime env — если её значение зашито на localhost во время <code>npm run build</code> внутри Docker, production-сборка frontend будет пытаться достучаться до localhost из браузера пользователя, а не до реального backend, и все запросы будут падать молча. Частое заблуждение — «раз локально все три сервиса работают по отдельности, вместе тоже заработают» — но именно network-конфигурация (hostname <code>backend</code> вместо <code>localhost</code>, healthcheck на PostgreSQL) чаще всего ломается при первой сборке compose-стека. ARCHITECTURE.md с Mermaid-диаграммой, который ты создаёшь сегодня, станет частью финального README и будет тем документом, который ревьюер или интервьюер откроет первым, чтобы за 30 секунд понять устройство твоего DevHub.</p>
+<p>Для продакшена «запуск за 5 команд» в README — это не про красоту, а про снижение барьера для onboarding: чем больше шагов и недокументированных предположений («у тебя же уже установлен Postgres 16, да?») требует локальный запуск, тем меньше шанс, что коллега, ревьюер или рекрутер вообще дойдут до того, чтобы попробовать проект — большинство просто закроют вкладку после первой непонятной ошибки.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="#projects--projects-неделя-21-task-manager-docker">Task Manager Docker (нед. 21)</a></li>
@@ -299,14 +314,17 @@
 <hr>
 <h2 id="week-22-day-153">День 153 (Сб): Тесты и CI</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~55м теория · ~3ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Quality gate capstone: pytest ≥ 15, Vitest ≥ 12, ESLint без ошибок, CI green on push. Тесты из MVP: auth flow, CRUD tasks, 401 без token, 403 cross-user. GitHub Actions: job <code>backend</code> (postgres service + pytest) + job <code>frontend</code> (vitest + lint). Badge CI в README.</p>
 <p>Test DB isolation — postgres service в CI или SQLite in-memory; не production. Flaky tests из shared state — изолируй fixtures с rollback. <code>npm audit</code> / <code>pip audit</code> — зафиксируй в <code>SECURITY.md</code>. Auth flow должен быть покрыт тестами, не только manual E2E.</p>
 <p>Локально все тесты зелёные перед push. CI без postgres service — тесты падают на GitHub. Это последний рубеж перед deploy: если CI красный, deploy откладывается.</p>
+<p>Ментальная модель: quality gate — это шлагбаум, который физически не пускает недоделанный код дальше, а не вежливая рекомендация. Тесты на auth flow и cross-user isolation (403) — не для галочки количества, а потому что именно эти сценарии чаще всего ломаются при рефакторинге и именно они наносят максимальный репутационный ущерб, если баг просочится в прод. Для junior-кандидата зелёный CI badge на GitHub рядом с ≥15 backend и ≥12 frontend тестами — конкретное, проверяемое доказательство инженерной дисциплины, которое весит больше любых слов в резюме.</p>
+<p>Конкретный пример: postgres service в GitHub Actions должен быть объявлен явно в workflow — если локально тесты используют реальный Postgres, а в CI забыли добавить сервис, тесты будут падать с connection refused именно на GitHub, хотя «на моей машине всё зелёное»; это одна из самых частых причин красного CI у новичков. Частое заблуждение — «раз тесты проходят локально один раз, в CI тоже пройдут» — flaky tests из-за shared state (например, два теста создают пользователя с одинаковым email) проявляются именно в CI, где тесты могут выполняться в другом порядке или параллельно. Green CI, который ты добиваешься сегодня, — формальный шлюз перед деплоем: день 154 начинается только если этот шлагбаум поднят.</p>
+<p>Для продакшена ESLint без ошибок — минимальная, но обязательная планка стиля: она не заменяет тесты, но ловит целый класс проблем до code review (неиспользуемые переменные, потенциальные null-referenced, несогласованный стиль) и экономит время ревьюера на комментарии вроде «убери console.log». Badge CI в README — маленькая деталь, которая на практике заметно повышает доверие к репозиторию при первом взгляде.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="#projects--projects-обязательный-стек">Quality в стеке</a></li>
@@ -340,7 +358,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Тесты/валидация красные — сначала один failing case, почини его, только потом следующий.</p>
+<p>Запутался в структуре файлов — нарисуй дерево папок на бумаге, потом создай пустые файлы и заполни по одному.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-22-capstone/</code> → <code>git commit -m "week 22 day 153: DevHub tests and GitHub Actions CI"</code></li>
@@ -353,14 +371,16 @@
 <hr>
 <h2 id="week-22-day-154">День 154 (Вс): Deploy, портфолио и финальное ревью</h2>
 <blockquote>
-<p><strong>Время (полный):</strong> ~1ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
-<strong>Время (лайт):</strong> ~25м теория · ~1.5ч практика (MVP) · ~10м Git<br>
+<p><strong>Время (полный):</strong> ~2ч теория · ~3.5ч практика · ~15м Git · ~45м ревью<br>
+<strong>Время (лайт):</strong> ~50м теория · ~1.5ч практика (MVP) · ~10м Git<br>
 <strong>Связь с проектом:</strong> шаг к <strong>DevHub Capstone</strong></p>
 </blockquote>
 <h3>Теория</h3>
 <p>Финальный день — deploy, портфолио и рефлексия. Frontend → Vercel/Netlify (root <code>frontend/</code>, <code>VITE_API_URL</code> = production API). Backend + managed PostgreSQL → Render/Railway/Neon. После deploy: обнови CORS для Vercel domain, rotate <code>JWT_SECRET</code> если был в git, env vars в cloud dashboard.</p>
 <p>Live HTTPS demo — критерий сдачи: register → login → CRUD в браузере. <code>FINAL_REVIEW.md</code>: что узнал за 22 недели, что бы сделал иначе. GitHub Profile README — таблица всех 22 проектов со ссылками. README DevHub: badges, demo URL, screenshots, docker setup, architecture.</p>
 <p>Free tier cold start 30–60 сек — документируй. Забытый CORS update — API works in curl, fails в browser на Vercel. 2-минутный pitch DevHub — устная репетиция архитектуры. Тег <code>week-22-done</code> — финиш роадмапа. Поздравляем: ты junior full-stack ready.</p>
+<p>Ментальная модель: деплой — это момент, когда проект перестаёт быть «у меня на компьютере» и становится реальным продуктом, доступным по HTTPS кому угодно в интернете — переход от localhost к публичному URL меняет требования к конфигурации (CORS, секреты, переменные окружения) даже если код не изменился ни на строчку. Для junior-кандидата live demo — это разница между «я утверждаю, что умею» и «вот ссылка, попробуйте сами»: ссылку на живой проект рекрутер откроет с гораздо большей вероятностью, чем будет разбираться, как поднять твой репозиторий локально.</p>
+<p>Конкретный пример типичного провала: backend работает и отвечает на curl-запросы с production URL, но при заходе через браузер запросы падают с CORS error — потому что при деплое забыли добавить домен Vercel в whitelist <code>Access-Control-Allow-Origin</code>, который до этого содержал только <code>localhost:5173</code>. Частое заблуждение — «раз всё запушено и задеплоено, работа закончена» — но <code>FINAL_REVIEW.md</code> и обновлённый GitHub Profile README — не бюрократия, а то, что реально увидит рекрутер или технический интервьюер в первую очередь: рефлексия о пройденном пути показывает зрелость мышления не хуже самого кода. Тег <code>week-22-done</code>, который ты ставишь сегодня, закрывает 22-недельный путь — но именно эта финальная неделя, с её деплоем, документацией и портфолио, превращает набор учебных проектов в осязаемое доказательство готовности к первой работе full-stack разработчиком.</p>
 <p><strong>Читать:</strong></p>
 <ul>
 <li><a href="#projects--projects-критерии-сдачи-capstone">Критерии сдачи capstone</a></li>
@@ -399,7 +419,7 @@
 <p>Лайт-DoD: этих шагов достаточно, если теория прочитана и есть коммит.</p>
 </blockquote>
 <h3>Если застрял</h3>
-<p>Не понимаешь ошибку — прочитай её с конца: файл, строка, тип. Открой DevTools / терминал и воспроизведи на 5 строках кода.</p>
+<p>Застрял &gt;20 мин — выпиши вход/выход задачи в 3 строки. Сделай минимальный пример в <code>playground.*</code>, без копипаста из ИИ.</p>
 <h3>Git</h3>
 <ul>
 <li>Закоммить изменения дня: <code>git add week-22-capstone/</code> → <code>git commit -m "week 22 day 154: DevHub deploy portfolio FINAL_REVIEW"</code></li>
